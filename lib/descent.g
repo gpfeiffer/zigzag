@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.13 2004/03/25 14:30:04 goetz Exp $
+#A  $Id: descent.g,v 1.14 2004/04/13 11:18:08 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -103,14 +103,15 @@ end;
 #
 #  elt must be a matrix in the X basis.
 #
-CharacterDescentElt:= function(W, yy, elt)
+CharacterDescentElt:= function(W, elt)
 
-   local cc, chi, c, i;
+   local cc, ddd, chi, c, i;
 
    chi:= [];
+   ddd:= SubsetsShapes(Shapes(W));
    cc:= ConjugacyClasses(W);
    for c in cc do
-      i:= Position(yy.ddd, Set(CoxeterWord(W, Representative(c))));
+      i:= Position(ddd, Set(CoxeterWord(W, Representative(c))));
       Add(chi, elt[i][i]);
    od;
 
@@ -245,7 +246,7 @@ end;
 #
 MaximalAJKL:= function(W, s)
 
-   local yy, S, M, pos, cosrep, aJML, inn, out, J, L, ddd, sub, j, l, x;
+   local S, M, pos, cosrep, aJML, inn, out, J, L, ddd, sub, j, l, x;
 
    ddd:= SubsetsShapes(Shapes(W));
    S:= W.rootInclusion{[1..W.semisimpleRank]};
