@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: iterator.g,v 1.2 2002/12/03 11:42:54 goetz Exp $
+#A  $Id: iterator.g,v 1.3 2002/12/03 18:01:27 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Iterators">
 ##  This file contains a dispatcher for iterators on domains.
@@ -59,10 +59,10 @@
 ##  gap> Print(itr.next());  while itr.hasNext() do Print(", ", itr.next()); od;
 ##  2, 3, 5, 7, 11gap> Print("\n");  Unbind(itr);
 ##  
-</Example>
-</Description>
-</ManSection>
-<#/GAPDoc>
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 IteratorSet:= function(set)
     local itr, i;
@@ -119,8 +119,16 @@ end;
 ##
 #F  DomainOps.Iterator( <domain> ) . . . . . . . . . . . . . . . .  iterator.
 ##
+##  <#GAPDoc Label="Iterator(domain)">
+##  <ManSection>
+##  <Meth Name="Iterator" Label="for domains" Arg="domain"/>
+##  <Returns>an iterator for the domain <A>domain</A>.</Returns>
+##  <Description>
 ##  The default iterator for domain is the iterator over its set of elements.
 ##  Particular domains can implement their own more space efficient versions.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 DomainOps.Iterator:= function(D)
     return IteratorSet(Elements(D));

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.4 2002/12/03 11:43:40 goetz Exp $
+     $Id: zigzag.xml,v 1.5 2002/12/03 18:00:51 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -179,6 +179,8 @@ that use shapes.
 <#Include Label="IteratorSet">
 
 <#Include Label="Iterator">
+
+<#Include Label="Iterator(domain)">
 
 </Section>
 
