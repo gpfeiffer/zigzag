@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.12 2004/03/16 10:40:43 goetz Exp $
+#A  $Id: descent.g,v 1.13 2004/03/25 14:30:04 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -561,8 +561,8 @@ WhatCharacters:= function(W, eta)
         ind:= Induced(ctc[i], ct, ctc[i].irreducibles, fus);
         pos:= Filtered([1..Length(ind)], x-> ind[x] = eta[i]);
         ctc[i].selected:= ctc[i].irreducibles{pos};
-        kernel:= KernelChar(ctc[i].selected[1]);
-        ns:= NormalSubgroups(cen);
+   #     kernel:= KernelChar(ctc[i].selected[1]);
+   #     ns:= NormalSubgroups(cen);
 
         data[i]:= rec(index:= i,
                       w:= Representative(cc[i]),
@@ -570,8 +570,8 @@ WhatCharacters:= function(W, eta)
                       centralizer:= cen,
                       table:= ctc[i],
                       fusion:= fus,
-                      chars:= pos,
-                      kernel:= ns[Position(List(ns, x-> Set(FusionConjugacyClasses(x, cen))), kernel)]
+                      chars:= pos
+   #                   kernel:= ns[Position(List(ns, x-> Set(FusionConjugacyClasses(x, cen))), kernel)]
                       );
     od;
     
