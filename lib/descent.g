@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.10 2004/03/11 09:46:23 goetz Exp $
+#A  $Id: descent.g,v 1.11 2004/03/15 11:55:07 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -542,7 +542,8 @@ end;
 # for each class, list: order of w, order of the character l, order of l(w)
 # compare wrt to powermap.
 WhatCharacters:= function(W, eta)
-    local   cc,  ct,  ctc,  data,  i,  cen,  fus,  ind,  pos;
+    local   cc,  ct,  ctc,  data,  i,  cen,  fus,  ind,  pos,  kernel,  
+            ns;
     
     cc:= ConjugacyClasses(W);
     ct:= CharTable(W); 
@@ -559,11 +560,18 @@ WhatCharacters:= function(W, eta)
         ind:= Induced(ctc[i], ct, ctc[i].irreducibles, fus);
         pos:= Filtered([1..Length(ind)], x-> ind[x] = eta[i]);
         ctc[i].selected:= ctc[i].irreducibles{pos};
-        data[i]:= [
-          ct.orders[i],
-          Set(ctc[i].selected[1]),
-          ctc[i].selected[1][Position(fus, i)]
-        ];
+        kernel:= KernelChar(ctc[i].selected[1]);
+        ns:= NormalSubgroups(cen);
+
+        data[i]:= rec(index:= i,
+                      w:= Representative(cc[i]),
+                      order:= ct.orders[i],
+                      centralizer:= cen,
+                      table:= ctc[i],
+                      fusion:= fus,
+                      chars:= pos,
+                      kernel:= ns[Position(List(ns, x-> Set(FusionConjugacyClasses(x, cen))), kernel)]
+                      );
     od;
     
     return data;
