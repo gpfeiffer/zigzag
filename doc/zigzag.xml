@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.6 2002/12/04 18:04:28 goetz Exp $
+     $Id: zigzag.xml,v 1.7 2002/12/04 21:25:16 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -162,30 +162,7 @@ In this section I describe some methods for shapes.
 
 <#Include Label="Relation(shape)">
 
-<ManSection>
-<Meth Name="ShapeOps.Complement" Arg="shape"/>
-<Returns>
-  returns the underlying directed graph of the shape as a binary relation.
-</Returns>
-<Description>
-...
-<Example>
-gap> W:= CoxeterGroup("A", 3);;  W.name:= "W";;
-gap> J:= [1];; sh:= Shape(W, J);;  WJ:= ReflectionSubgroup(W, J);;
-gap> co:= sh.operations.Complement(sh);
-Subgroup( W, [ ( 2, 5)( 3, 9)( 4, 6)( 8,11)(10,12) ] )
-gap> Intersection(co, WJ);
-Subgroup( W, [  ] )
-gap> NJ:= Normalizer(W, WJ);;
-gap> IsSubgroup(NJ, co);
-true
-gap> Size(co) = Index(NJ, WJ);
-true
-gap> NJ = Subgroup(W, Union(List([WJ, co], Generators)));
-true
-</Example>
-</Description>
-</ManSection>
+<#Include Label="Complement(shape)">
 
 <#Include Label="ConjugacyClasses(shape)">
 
