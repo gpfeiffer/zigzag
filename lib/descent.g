@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.3 2002/11/04 16:51:44 goetz Exp $
+#A  $Id: descent.g,v 1.4 2002/11/04 17:35:41 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -634,7 +634,7 @@ end;
 
 #############################################################################  
 ##  
-##  
+#F  RightRegularX( <D> )
 ##  
 RightRegularX:= function(D)
     local   W,  n,  subsets,  complmt,  xxx,  d,  m,  c,  e,  p,  WJ;
@@ -811,7 +811,7 @@ CCharacters:= function(W)
     od;
     
     ect:= ECharacters(W);
-    ccc:= CoxeterClassesClasses(W).cposi;
+    ccc:= ConjugacyClasses(Shapes(W));
     
     for i in [1..Length(ect)] do
         lis:= List(ind{ccc[i]}, x-> MatScalarProducts(ct, ct.irreducibles, x));
