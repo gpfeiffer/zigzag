@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.6 2002/11/22 13:24:22 goetz Exp $
+#A  $Id: descent.g,v 1.7 2002/11/22 13:28:49 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -58,10 +58,10 @@ end;
 
 #############################################################################
 ##  
-#F  DescentAlgebraOps.Print( <D> )  
+#F  Print( <descalg> )  
 ##  
-DescentAlgebraOps.Print:= function(D)
-    Print("DescentAlgebra( ", D.W, " )");
+DescentAlgebraOps.Print:= function(this)
+    Print("DescentAlgebra( ", this.W, " )");
 end;
 
 
@@ -76,7 +76,7 @@ end;
 DescentAlgebraOps.MuNu:= function(D)
     local   lll,  mu,  j0,  a,  j,  k0,  b,  k,  l;
     
-    lll:= List(Constituents(Shapes(D.W)), Size);
+    lll:= List(Shapes(D.W), Size);
     mu:= [];  j0:= 0;
     for a in lll do
         for j in j0 + [1..a] do
@@ -97,26 +97,6 @@ DescentAlgebraOps.MuNu:= function(D)
     return rec(mu:= mu, nu:= mu^-1);
 end;
     
-## A QIdempotent is an element e with e^2 = a * e for some a \in K, ie.
-## a scalar multiple of a proper idempotent.
-IsQIdempotent:= function(m)
-
-   local i, j, n, mm;
-
-   n:= Length(m);
-
-   # locate pivot.
-   for i in [1..n] do
-     for j in [1..n] do
-        if m[i][j] <> 0 then
-           mm := m^2;
-           return mm = mm[i][j]/m[i][j] * m;
-        fi;
-     od;
-   od;
-
-end;
-
 #############################################################################
 ##
 ## the prefixes of a given element w.
@@ -204,6 +184,9 @@ PrefixesIterator:= function(W, w)
 end;
 
 
+##???  $Y_K$ should be an object ...
+
+
 # And how to make $Y_K$?  Here $K \subseteq \{1, \dots, n\}$.
 # Use: $Y_K$ is the interval from $w_{\hat{K}}$ to $w_K w_0$.
 # Which is isomorphic to the interval from $1$ to $w = w_{\hat{K}} w_K w_0$.
@@ -233,162 +216,6 @@ DescentClassIterator:= function(W, K)
     ditr.next:= function() return w * itr.next(); end;
     
     return ditr;
-end;
-
-
-## Print out the matrices.
-LeftRegular2Latex:= function(m, name)
-
-   local i, j, k, nnn, c, string, lll;
-   nnn:= [1..Length(m.xxx)];
-   lll:= Filtered([2..Length(m.ddd)], x-> Size(m.ddd[x]) > Size(m.ddd[x-1]));
-   c:= "|";
-   for i in nnn do
-      if i in lll then Append(c, "|\c");  fi;
-      Add(c, 'c');
-   od;
-   Add(c, '|');
-
-   string:= function(p)
-      if p = 0 then return ".";
-      else return p;
-      fi;
-   end;
-
-   for i in nnn do
-      Print("\\[\\begin{array}{", c, "}\\hline\n");
-      for j in nnn do
-         if j in lll then Print("\\hline\n"); fi;
-         Print(string(m.xxx[i][j][1]));
-         for k in nnn do
-            if k > 1 then
-               Print("&\c", string(m.xxx[i][j][k]));
-            fi;
-
-         od;
-         Print("\\\\\n");
-      od;
-      Print("\\hline\\end{array}\\]\n");
-   od;
-end;
-
-
-## Print out all the matrices.
-LeftRegular2Latex1:= function(m, name)
-
-   local i, j, k, nnn, c, string, lll;
-   nnn:= [1..Length(m.xxx)];
-   lll:= Filtered([2..Length(m.ddd)], x-> Size(m.ddd[x]) > Size(m.ddd[x-1]));
-   c:= "|";
-   for i in nnn do
-      if i in lll then Append(c, "|\c");  fi;
-      Add(c, 'c');
-   od;
-   Add(c, '|');
-
-   string:= function(p) if p = 0 then return "."; else return p; fi; end;
-
-   for i in nnn do
-      Print("\\[\\begin{array}{", c, "}\\hline\n");
-      for j in nnn do
-         if j in lll then Print("\\hline\n"); fi;
-         Print(string(m.xxx[i][j][1]));
-         for k in nnn do
-            if k > 1 then
-               Print("&\c", string(m.xxx[i][j][k]));
-            fi;
-
-         od;
-         Print("\\\\\n");
-      od;
-      Print("\\hline\\end{array}\\]\n");
-   od;
-   for i in nnn do
-      Print("\\[\\begin{array}{", c, "}\\hline\n");
-      for j in nnn do
-         if j in lll then Print("\\hline\n"); fi;
-         Print(string(m.xxx[j][i][1]));
-         for k in nnn do
-            if k > 1 then
-               Print("&\c", string(m.xxx[j][i][k]));
-            fi;
-
-         od;
-         Print("\\\\\n");
-      od;
-      Print("\\hline\\end{array}\\]\n");
-   od;
-   for i in nnn do
-      Print("\\[\\begin{array}{", c, "}\\hline\n");
-      for j in nnn do
-         if j in lll then Print("\\hline\n"); fi;
-         Print(string(m.xxx[1][j][i]));
-         for k in nnn do
-            if k > 1 then
-               Print("&\c", string(m.xxx[k][j][i]));
-            fi;
-
-         od;
-         Print("\\\\\n");
-      od;
-      Print("\\hline\\end{array}\\]\n");
-   od;
-end;
-
-## Print out a list of block matrices.
-## 'm' is the list of matrices, block is a list of block sizes.
-## the matrices are printed twice: once with one matrix for every 1st
-## coordinate, and once with one matrix for every second coordinate.
-## (and the third coordinates? not now though)
-## local function 'print' takes care of printing zeros very small.
-##
-Mats2Latex:= function(m, block)
-
-   local i, j, k, nnn, c, string, lll;
-   nnn:= [1..Length(m)];
-   lll:= [];  j:= 0;
-   for i in block do
-       j:= j + i;
-       Add(lll, j);
-   od;
-   c:= "|";
-   for i in nnn do
-      Add(c, 'c');
-      if i in lll then Append(c, "|\c");  fi;
-   od;
-
-   string:= function(p) if p = 0 then return "."; else return p; fi; end;
-
-   for i in nnn do
-      Print("\\[\\begin{array}{", c, "}\\hline\n");
-      for j in nnn do
-         Print(string(m[i][j][1]));
-         for k in nnn do
-            if k > 1 then
-               Print("&\c", string(m[i][j][k]));
-            fi;
-
-         od;
-         Print("\\\\\n");
-         if j in lll then Print("\\hline\n"); fi;
-      od;
-      Print("\\end{array}\\]\n");
-   od;
-   for i in nnn do
-      Print("\\[\\begin{array}{", c, "}\\hline\n");
-      for j in nnn do
-         Print(string(m[j][i][1]));
-         for k in nnn do
-            if k > 1 then
-               Print("&\c", string(m[j][i][k]));
-            fi;
-
-         od;
-         Print("\\\\\n");
-         if j in lll then Print("\\hline\n"); fi;
-      od;
-      Print("\\end{array}\\]\n");
-   od;
 end;
 
 
@@ -762,7 +589,7 @@ ECharacters:= function(W)
     
     sec:= SizesDescentConjugacyClasses(W);
     nu:= DescentAlgebraOps.MuNu(DescentAlgebra(W)).nu;
-    ee:= [];  a:= 0;  lll:= List(Constituents(Shapes(W)), Size);
+    ee:= [];  a:= 0;  lll:= List(Shapes(W), Size);
     for l in lll do
         Add(ee, Sum(nu{a+[1..l]}));
         a:= a + l;
@@ -814,7 +641,7 @@ CCharacters:= function(W)
     od;
     
     ect:= ECharacters(W);
-    ccc:= List(Constituents(Shapes(W)), ConjugacyClasses);
+    ccc:= List(Shapes(W), ConjugacyClasses);
     
     for i in [1..Length(ect)] do
         lis:= List(ind{ccc[i]}, x-> MatScalarProducts(ct, ct.irreducibles, x));
@@ -876,7 +703,7 @@ ProjectiveIdempotents:= function(D)
         return D.projectiveIdempotents;
     fi;
 
-    lll:= List(Constituents(Shapes(D.W)), Size);
+    lll:= List(Shapes(D.W), Size);
     nu:= DescentAlgebraOps.MuNu(D).nu;
     xxx:= LeftRegularX(D);
     
@@ -930,7 +757,7 @@ RadicalDescent:= function(D)
     
     xxx:= LeftRegularX(D);
     rad:= [];  a:= 0;
-    for e in Constituents(Shapes(D.W)) do
+    for e in Shapes(D.W) do
         for i in a + [2..Size(e)] do
             Add(rad, xxx[i]-xxx[i-1]);
         od;
@@ -946,7 +773,7 @@ RadicalSeriesDescent:= function(W)
     return ser;
 end;
 
-
+##??? This should be a binary relation ...
 #############################################################################
 ##
 ##  For type A:  The partitions quiver.
