@@ -5,9 +5,9 @@
 ##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
 ##  package for descent algebras of finite Coxeter groups.
 ##
-#Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
+#Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.14 2004/04/13 11:18:08 goetz Exp $
+#A  $Id: descent.g,v 1.15 2004/04/20 11:58:33 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -269,7 +269,7 @@ MaximalAJKL:= function(W, s)
           L:= OnSets(M, x);
           out:= Filtered(inn, s-> OnSets(L, W.(W.rootRestriction[s]))[Length(L)] <= W.parentN);
       fi;
-      Print(" i: ", inn, " o: ", out, "\n");
+      InfoZigzag2(" i: ", inn, " o: ", out, "\n");
       for J in Combinations(inn) do
          L:= OnSets(Difference(J, out), x^-1);
          j:= Position(ddd, J);  l:= Position(sub, L);
@@ -392,6 +392,21 @@ LeftRegularX:= function(D)
     D.leftRegularX:= x;
     return x;
 end;
+
+#  deprecate:
+LeftRegularY:= function(D)
+    local   inc;
+    inc:= IncidenceMatShapes(Shapes(W))^-1;
+    return List(inc, l-> l * LeftRegularX(D));
+end;
+
+#  deprecate:
+LeftRegularE:= function(D)
+    local   nu;
+    nu:= DescentAlgebraOps.MuNu(DescentAlgebra(W)).nu;    
+    return List(nu, l-> l * LeftRegularX(D));
+end;
+
 
 #############################################################################
 #

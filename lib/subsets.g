@@ -5,9 +5,9 @@
 ##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
 ##  package for descent algebras of finite Coxeter groups.
 ##
-#Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
+#Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.7 2004/04/13 11:20:22 goetz Exp $
+#A  $Id: subsets.g,v 1.8 2004/04/20 11:58:56 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
