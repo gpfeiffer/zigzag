@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.1 2002/05/07 17:10:40 goetz Exp $
+#A  $Id: shapes.g,v 1.2 2002/05/08 09:54:46 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -148,19 +148,19 @@ end;
 
 ##  base change x -> y;
 ShapesOps.IncidenceMat:= function(shapes)
-    local   subsets,  bbb,  a,  l,  b;
+    local   subsets,  inc,  a,  l,  b;
 
     subsets:= ShapesOps.Subsets(shapes);    
-    bbb:= [];
+    inc:= [];
     for a in subsets do 
         l:= [];
         for b in subsets do 
             if IsSubset(b, a) then Add(l, 1); else Add(l, 0); fi; 
         od;
-        Add(bbb, l);
+        Add(inc, l);
     od;
 
-    return bbb;
+    return inc;
 end;
 
 
@@ -211,6 +211,49 @@ ShapesOps.Display:= function(shapes, options)
         Print(CartanName(WJ), ": ", Length(e), ";\n");
     od;
     
+end;
+
+
+#############################################################################
+##
+##  the parabolic permutation characters.
+##
+XCharacters:= function(W)
+    local   pch,  ct,  lambda,  sub,  cts,  fus;
+    
+    # initialize list of permchars.
+    pch:= [];
+    ct:= CharTable(W);
+    
+    # loop over classes of parabolics.
+    for lambda in Elements(Shapes(W)) do
+        sub:= ReflectionSubgroup(W, lambda[1]); 
+#        InfoZigzag2("CharTable of ...");
+        cts:= CharTable(sub);
+#        InfoZigzag2(cts.name, "\n");
+        fus:= FusionConjugacyClasses(sub, W);
+        Add(pch, Induced(cts, ct, [0*cts.classes+1], fus)[1]);
+    od;
+    
+    return pch;
+end;
+
+#############################################################################
+##
+##  PIE stripped permutation characters.
+##
+YCharacters:= function(W)
+    local   shapes,  lll,  iii,  i;
+
+    shapes:= Shapes(W);
+    # address book:
+    lll:= List(Elements(shapes), Length);
+    iii:= [];
+    for i in [1..Length(lll)] do
+        Append(iii, 0 * [1..lll[i]] + i); 
+    od;
+
+    return ShapesOps.IncidenceMat(shapes)^-1 * XCharacters(W){iii};
 end;
 
 

@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.1 2002/05/07 17:10:40 goetz Exp $
+#A  $Id: descent.g,v 1.2 2002/05/08 09:54:46 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -476,48 +476,6 @@ end;
 ##sol:= SlowCombine(lis, sum, [1..Length(cc)]);;
 
 #############################################################################
-##
-##  the parabolic permutation characters.
-##
-XCharacters:= function(W)
-    local   yy,  pch,  ct,  j,  sub,  cts,  fus,  ind,  i;
-    
-    # determine reps of parabolic classes.
-    yy:= CoxeterClassesSubsets(W);
-
-    # initialize list of permchars.
-    pch:= [];
-    ct:= CharTable(W);
-    
-    # loop over parabolics.
-    for j in Set(yy.ccc) do
-        sub:= ReflectionSubgroup(W, yy.ddd[j[1]]); 
-        cts:= CharTable(sub);
-Print(cts.name, "\n");
-        fus:= FusionConjugacyClasses(sub, W);
-        ind:= Induced(cts, ct, [0*cts.classes+1], fus)[1];
-        for i in j do
-            pch[i]:= ind;
-        od;
-    od;
-    
-    return pch;
-end;
-
-
-           
-#############################################################################
-#
-# PIE stripped permutation characters.
-
-YCharacters:= function(W)
-    local   yy;
-    yy:= CoxeterClassesSubsets(W);
-    return yy.bbb^-1* XCharacters(W);
-end;
-
-
-#############################################################################
 #
 #  Given W and s in S. Let M = S - s.  Loop over X_M and determine a_{JML}.
 #  Returns a rectangular matrix with rows J subseteq S and cols L subseteq M.
@@ -623,7 +581,7 @@ end;
 ##  
 ##  
 RightRegularX:= function(D)
-    local   n,  yy,  subsets,  complmt,  xxx,  d,  m,  c,  e,  p,  WJ;
+    local   W,  n,  subsets,  complmt,  xxx,  d,  m,  c,  e,  p,  WJ;
     
     if IsBound(D.rightRegularX) then
         return D.rightRegularX;
@@ -695,13 +653,14 @@ end;
 #  there is probably a more efficient way to do this ...
 #
 SizesDescentConjugacyClasses:= function(W)
-    local   yy,  cc,  sec,  csp,  per,  J,  row,  des,  w,  p,  class;
+    local   subsets,  cc,  sec,  csp,  per,  J,  row,  des,  w,  p,  
+            class;
     
     if IsBound(W.sizesDescentConjugacyClasses) then
         return W.sizesDescentConjugacyClasses;
     fi;
     
-    yy:= CoxeterClassesSubsets(W);
+    subsets:= Concatenation(Elements(Shapes(W)));
     cc:= ConjugacyClasses(W);
     sec:= [];
     
@@ -712,7 +671,7 @@ SizesDescentConjugacyClasses:= function(W)
         # now can identify class of w by
         #   PositionSorted(csp, CycleStructurePerm(w))/per
         
-       for J in yy.ddd do
+       for J in subsets do
            row:= List(cc, x-> 0);
            des:= DescentClassIterator(W, J);
            while des.hasNext() do
@@ -725,7 +684,7 @@ SizesDescentConjugacyClasses:= function(W)
        od;
        Print("\n");
    else
-       for J in yy.ddd do
+       for J in subsets do
            row:= [];
            des:= DescentClass(W, J);
            for class in cc do
@@ -742,16 +701,19 @@ end;
     
 # here is the procedure to calculate the Lie characters.
 ECharacters:= function(W)
-    local   yy,  sec,  beta,  ee,  dia;
+    local   sec,  nu,  ee,  a,  lll,  l,  dia;
     
-    yy:= CoxeterClassesSubsets(W);
     sec:= SizesDescentConjugacyClasses(W);
-    beta:= MuBeta(W).beta;
-    ee:= List(Set(yy.ccc), x-> Sum(beta{x}));
+    nu:= DescentAlgebraOps.MuNu(DescentAlgebra(W)).nu;
+    ee:= [];  a:= 0;  lll:= List(Elements(Shapes(W)), Size);
+    for l in lll do
+        Add(ee, Sum(nu{a+[1..l]}));
+        a:= a + l;
+    od;
+
     dia:= DiagonalMat(List(ConjugacyClasses(W), x-> Size(W)/Size(x)));
-    
-    # sort wrt. conjugacy classes!? No.
-    return ee * yy.bbb * sec * dia;
+    Error();
+    return ee * ShapesOps.IncidenceMat(Shapes(W)) * sec * dia;
 end;
 
 # this will find all possible combinations of characters that are
@@ -862,6 +824,7 @@ ProjectiveIdempotents:= function(D)
     EEE:= [];  a:= 0;
     for l in lll do
         Add(EEE, Sum(nu{a+[1..l]}) * xxx);
+        a:= a + l;
     od;
 
     D.projectiveIdempotents:= EEE;
