@@ -5,9 +5,9 @@
 ##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
 ##  package for descent algebras of finite Coxeter groups.
 ##
-#Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
+#Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.19 2004/04/13 11:19:32 goetz Exp $
+#A  $Id: shapes.g,v 1.20 2004/04/20 12:00:04 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -555,6 +555,14 @@ end;
 
 
 #############################################################################
+ComplementsShapes:= function(shapes)
+    local   subsets,  S;
+    subsets:= SubsetsShapes(shapes);  S:= subsets[Length(subsets)];
+    return PermList(List(subsets, a-> Position(subsets, Difference(S, a))));
+end;
+
+
+#############################################################################
 ##
 #F  IncidenceMatShapes( <shapes> ) . . . . . . . . . . .  incidence matrix.
 ##
@@ -817,6 +825,11 @@ Involutions:= function(W)
         inv:= Union(inv, ConjugacyClass(W, LongestCoxeterElement(ReflectionSubgroup(W, Representative(s)))));
     od;
     return inv;
+end;
+
+#############################################################################
+PrimeShapes:= function(W)
+    return 0; ##FIXME
 end;
 
 
