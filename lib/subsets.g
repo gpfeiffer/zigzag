@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.6 2002/11/28 11:38:21 goetz Exp $
+#A  $Id: subsets.g,v 1.7 2004/04/13 11:20:22 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -446,13 +446,31 @@ end;
 DescentClassOps.Representative:= function(this)
     return this.bot;  # which is $w_{\bar{K}}$.
 end;
-    
+
+#############################################################################
+##
+##  Is there quick way to a way to find the size of a DescentClass
+##  without listing all its elements?
+##  Yes:
+##  |Y_K| = \sum_{J contains K} (-1)^{|J - K|} |X_J|
+##
+DescentClassOps.Size:= function(this)
+    local   sum,  L;
+
+    sum:= 0;    # loop over all J above K.
+    for L in Combinations(Difference([1..this.W.semisimpleRank], this.K)) do
+        sum:= sum + (-1)^Size(L) 
+              * Size(ParabolicTransversal(this.W, Union(this.K, L)));
+    od;
+    return sum;
+end;
+
     
 #############################################################################
 ##
 ##  list all of them in shapes order.
 ##
-##??? remember them in W?
+##??? remember them in W? No.
 ##
 DescentClasses:= function(W)
     return List(SubsetsShapes(Shapes(W)), x-> DescentClass(W, x));
