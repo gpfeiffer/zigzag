@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.5 2002/11/11 09:59:18 goetz Exp $
+#A  $Id: descent.g,v 1.6 2002/11/22 13:24:22 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -76,7 +76,7 @@ end;
 DescentAlgebraOps.MuNu:= function(D)
     local   lll,  mu,  j0,  a,  j,  k0,  b,  k,  l;
     
-    lll:= List(Elements(Shapes(D.W)), Size);
+    lll:= List(Constituents(Shapes(D.W)), Size);
     mu:= [];  j0:= 0;
     for a in lll do
         for j in j0 + [1..a] do
@@ -542,7 +542,7 @@ MaximalAJKL:= function(W, s)
 
    local yy, S, M, pos, WM, cosrep, aJML, inn, out, J, L, ddd, sub, j, l, x;
 
-   ddd:= Concatenation(Elements(Shapes(W)));
+   ddd:= SubsetsShapes(Shapes(W));
    S:= W.rootInclusion{[1..W.semisimpleRank]};
    M:= Difference(S, [s]);
    pos:= Filtered([1..Length(ddd)], x-> IsSubset(M, ddd[x]));
@@ -645,7 +645,7 @@ RightRegularX:= function(D)
     
     W:= D.W;
     n:= W.semisimpleRank;
-    subsets:= Concatenation(Elements(Shapes(W)));
+    subsets:= SubsetsShapes(Shapes(W));
     complmt:= List(subsets, x-> Position(subsets, Difference([1..n], x)));
     xxx:= [];
     for d in subsets do
@@ -716,7 +716,7 @@ SizesDescentConjugacyClasses:= function(W)
         return W.sizesDescentConjugacyClasses;
     fi;
     
-    subsets:= Concatenation(Elements(Shapes(W)));
+    subsets:= SubsetsShapes(Shapes(W));
     cc:= ConjugacyClasses(W);
     sec:= [];
     
@@ -762,7 +762,7 @@ ECharacters:= function(W)
     
     sec:= SizesDescentConjugacyClasses(W);
     nu:= DescentAlgebraOps.MuNu(DescentAlgebra(W)).nu;
-    ee:= [];  a:= 0;  lll:= List(Elements(Shapes(W)), Size);
+    ee:= [];  a:= 0;  lll:= List(Constituents(Shapes(W)), Size);
     for l in lll do
         Add(ee, Sum(nu{a+[1..l]}));
         a:= a + l;
@@ -770,7 +770,7 @@ ECharacters:= function(W)
 
     dia:= DiagonalMat(List(ConjugacyClasses(W), x-> Size(W)/Size(x)));
     Error();
-    return ee * ShapesOps.IncidenceMat(Shapes(W)) * sec * dia;
+    return ee * IncidenceMatShapes(Shapes(W)) * sec * dia;
 end;
 
 #############################################################################
@@ -814,7 +814,7 @@ CCharacters:= function(W)
     od;
     
     ect:= ECharacters(W);
-    ccc:= ConjugacyClasses(Shapes(W));
+    ccc:= List(Constituents(Shapes(W)), ConjugacyClasses);
     
     for i in [1..Length(ect)] do
         lis:= List(ind{ccc[i]}, x-> MatScalarProducts(ct, ct.irreducibles, x));
@@ -876,7 +876,7 @@ ProjectiveIdempotents:= function(D)
         return D.projectiveIdempotents;
     fi;
 
-    lll:= List(Elements(Shapes(D.W)), Size);
+    lll:= List(Constituents(Shapes(D.W)), Size);
     nu:= DescentAlgebraOps.MuNu(D).nu;
     xxx:= LeftRegularX(D);
     
@@ -930,11 +930,11 @@ RadicalDescent:= function(D)
     
     xxx:= LeftRegularX(D);
     rad:= [];  a:= 0;
-    for e in Elements(Shapes(D.W)) do
-        for i in a + [2..Length(e)] do
+    for e in Constituents(Shapes(D.W)) do
+        for i in a + [2..Size(e)] do
             Add(rad, xxx[i]-xxx[i-1]);
         od;
-        a:= a + Length(e);
+        a:= a + Size(e);
     od;
     return rad;
 end;
