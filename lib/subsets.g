@@ -7,12 +7,13 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.4 2002/11/25 18:09:03 goetz Exp $
+#A  $Id: subsets.g,v 1.5 2002/11/26 14:29:22 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
 ##  
 RequirePackage("chevie");
+RequirePackage("monoid");
 
 #############################################################################
 ##
@@ -30,10 +31,18 @@ if not IsBound(InfoZigzag2) then InfoZigzag2:= Ignore; fi;
 ##
 
 #############################################################################
+##
+#O  PrefixesOps . . . . . . . . . . . . . . . . . . . . .  operations record.
+##
+##  A Prefix is a Domain.
+##
 PrefixesOps:= OperationsRecord("PrefixesOps", DomainOps);
 
 #############################################################################
 ##
+#C  Prefixes( <W>, <w> ) . . . . . . . . . . . . . . . . . . . . constructor.
+##
+##  represents the prefixes of a given element w in W.
 ##  ??? find more descriptive names for w and W.  coxeterGroup and element?
 ##
 Prefixes:= function(W, w)
@@ -47,13 +56,20 @@ Prefixes:= function(W, w)
           );
 end;
 
+
 #############################################################################
+##
+#F  IsPrefixes( <obj> ) . . . . . . . . . . . . . . . . . . . . . type check.
+##
 IsPrefixes:= function(obj)
     return IsRec(obj) and IsBound(obj.isPrefixes) and obj.isPrefixes = true;
 end;
 
 
 #############################################################################
+##
+#F  Print( <prefixes> ) . . . . . . . . . . . . . . . . . . . . . . .  print.
+##
 PrefixesOps.Print:= function(this)
     Print("Prefixes( ", this.W, ", ", this.w, " )");
 end;
@@ -61,74 +77,97 @@ end;
 
 #############################################################################
 ##
-## the prefixes of a given element w.
-##
-##  WARNING: Elements should return a set!
+#F  Elements( <prefixes> ) . . . . . . . . . . . . . . . . . . . .  elements.
 ##
 PrefixesOps.Elements:= function(this)
-    local W, X, Y, Z, S, i, x;
+    local W, X, Y, Z, S, i, x, y, k, edges, perm;
 
     W:= this.W;
-    S:= W.rootInclusion{[1..W.semisimpleRank]};
-    Y:= [this.w];  X:= [];
+    S:= W.rootInclusion{[1 .. W.semisimpleRank]};
+    Y:= [this.w];  X:= [];  edges:= [];  k:= 0;
     while Y <> [] do
         Append(X, Y);
         Z:= [];
         for x in Y do
+            k:= k + 1;  edges[k]:= [];
             for i in S do
                 if i / x > W.parentN then
-                    AddSet(Z, x * W.(W.rootRestriction[i]));
+                    y:= x * W.(W.rootRestriction[i]);
+                    AddSet(Z, y);
+                    edges[k][i]:= y;
                 fi;
             od;
         od;
         Y:= Z;
     od;
 
-    return Set(X);
+    perm:= Sortex(X);
+    edges:= Permuted(edges, perm);
+    for x in edges do
+        for i in [1..Length(x)] do
+            if IsBound(x[i]) then
+                x[i]:= Position(X, x[i]);
+            fi;
+        od;
+    od;
+    this.edges:= edges;
+    
+    return X;
 end;
 
 #############################################################################
 ##
-# the iterator version of a set of prefixes:
-# it consists of a linked list of elements to be processed,
-# pointers to the back (next element to be expanded),
-# the middle (where the next length starts)
-# the focus (next element to be returned) and the front
-# where the next prefix is to be put in the queue.
-#
-# initially:
-#
-#  foc
-#   v
-#   w -> .
-#   ^    ^
-#   b    f
+#F  Iterator( < prefixes> ) . . . . . . . . . . . . . . . . . . . . iterator.
+##
+##  the iterator version of a set of prefixes:
+##  it consists of a queue (linked list) of elements to be processed,
+##  pointers to the back (next element to be expanded),
+##  the focus (next element to be returned) and the head
+##  where the next prefix is to be put in the queue.
+##
+##  initially:
+##
+##    f
+##    v
+##    w -> .
+##    ^    ^
+##    b    h
+##
 ##
 PrefixesOps.Iterator:= function(this)
 
     local   W,  S,  head,  focus,  back,  itr;
 
     W:= this.W;
-    S:= W.rootInclusion{[1..W.semisimpleRank]};
+    S:= W.rootInclusion{[1 .. W.semisimpleRank]};
 
     head:= rec();
     focus:= rec(w:= this.w, next:= head);
     back:= focus; 
 
     itr:= rec();
-
+    
+##    
+##  hasNext() simply checks whether 'focus' is lookin' at an element.
+##    
     itr.hasNext:= function()
         return IsBound(focus.w);
     end;
-
+    
+##
+##  next() simply returns the element 'focus' is lookin at.  But before it
+##  does that it needs to advance 'focus' to the next element in the queue,
+##  and if the queue in front of 'focus' happens to be empty it needs to 
+##  fill it up with prefixes of elements between 'back and 'focus'.
+##
     itr.next:= function()
         local   w,  x,  i,  Z, y;
         w:=  focus.w;
         focus:= focus.next;   
         if not IsBound(focus.w) then
-            Z:= [];
 
             # expand back.w to focus.w
+            Z:= [];
             while not IsIdentical(back, focus) do
                 x:= back.w;
                 for i in S do
@@ -154,19 +193,43 @@ end;
 
 #############################################################################
 ##
-##  More generally, every (weak) interval [w1, w2] can be described as a 
-##  "shifted"
-##  prefix set.
+#F  PrefixesOps.Edges( <prefixes> ) . . . . . . . . . . . . . . . . .  edges.
 ##
-##  TODO ...
+PrefixesOps.Edges:= function(this)
+    this.operations.Elements(this);  # expand the prefixes.
+    return this.edges;
+end;
+
+
+#############################################################################
+##
+#F  PrefixesOps.Relation( <prefixes> )
+##
+PrefixesOps.Relation:= function(this)
+    return Relation(List(this.operations.Edges(this), Set));
+end;
+
+
+#############################################################################
+##
+##  Weak (Bruhat) Intervals.  More generally, every (weak) interval [w1, w2]
+##  can be described as a "shifted" prefix set.
 ##
 
 
 #############################################################################
+##
+#O  WeakIntervalOps . . . . . . . . . . . . . . . . . . .  operations record.
+##
 WeakIntervalOps:= OperationsRecord("WeakIntervalOps", DomainOps);
 
 
 #############################################################################
+##
+#C  WeakInterval( <W>, <bot>, <top> ) . . . . . . . . . . . . .  constructor.
+##
+##  represents the interval from <bot> to <top> in <W>.
+##
 WeakInterval:= function(W, bot, top)
     return 
       rec(
@@ -182,6 +245,9 @@ end;
 
 
 #############################################################################
+##
+#F  IsWeakInterval( <obj> ) . . . . . . . . . . . . . . . . . . . type check.
+##
 IsWeakInterval:= function(obj)
     return IsRec(obj) and IsBound(obj.isWeakInterval) 
            and obj.isWeakInterval = true;
@@ -189,6 +255,9 @@ end;
 
 
 #############################################################################
+##
+#F  Print( <interval> )  . . . . . . . . . . . . . . . . . . . . . . . print.
+##
 WeakIntervalOps.Print:= function(this)
     Print("WeakInterval( ", this.W, ", ", this.bot, ", ", this.top, " )");
 end;
@@ -196,14 +265,22 @@ end;
 
 #############################################################################
 ##
+#F  Elements( <interval> ) . . . . . . . . . . . . . . . . . . . .  elements.
+##
 ##  the interval [bot, top] is isomorphic to the interval [1, bot^-1 * top].
 ##
 WeakIntervalOps.Elements:= function(this)
-    return Set(this.bot * Elements(this.pre));
+    local   list;
+    list:= this.bot * Elements(this.pre);
+    this.perm:= Sortex(list);
+    return list;
 end;
 
 
 #############################################################################
+##
+#F  Iterator( <interval> ) . . . . . . . . . . . . . . . . . . . .  iterator.
+##
 WeakIntervalOps.Iterator:= function(this)
     local   preitr,  itr;
     preitr:= Iterator(this.pre);
@@ -216,8 +293,20 @@ end;
 
 
 #############################################################################
+##
+#F  Size( <interval> ) . . . . . . . . . . . . . . . . . . . . . . . .  size.
+##
 WeakIntervalOps.Size:= function(this)
     return Size(this.pre);
+end;
+
+
+#############################################################################
+##
+#F  WeakIntervalOps.Relation( <interval> )
+##
+WeakIntervalOps.Relation:= function(this)
+    return this.pre.operations.Relation(this.pre)^this.perm;
 end;
 
 
@@ -232,10 +321,9 @@ ParabolicTransversalOps:=
 #############################################################################
 ParabolicTransversal:= function(W, J)
     ##??? need to check the arguments?
-    local this, w;
-    w:= LongestCoxeterElement(ReflectionSubgroup(W, J))
-        * LongestCoxeterElement(W);
-    this:= Prefixes(W, w);
+    local this;
+    this:= Prefixes(LongestCoxeterElement(ReflectionSubgroup(W, J))
+                   * LongestCoxeterElement(W));
     this.isParabolicTransversal:= true;
     this.operations:= ParabolicTransversalOps;
     this.J:= J;
