@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.2 2002/05/08 09:54:46 goetz Exp $
+#A  $Id: shapes.g,v 1.3 2002/11/04 16:48:20 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -204,11 +204,21 @@ end;
 #F  Display( <shapes> )
 ##
 ShapesOps.Display:= function(shapes, options)
-    local   e,  WJ;
+    local   e,  WJ,  el;
     
-    for e in Elements(shapes) do
-        WJ:= ReflectionSubgroup(shapes.W, e[1]);
-        Print(CartanName(WJ), ": ", Length(e), ";\n");
+    # determine names, if necessary.
+    if not IsBound(shapes.name) then
+        shapes.name:= [];
+        for e in Elements(shapes) do
+            WJ:= ReflectionSubgroup(shapes.W, e[1]);
+            Add(shapes.name, CartanName(WJ));
+        od;
+    fi;
+    
+    el:= Elements(shapes);
+    
+    for e in [1..Length(el)] do
+        Print(shapes.name[e], " [", Length(el[e]), "], ");
     od;
     
 end;
