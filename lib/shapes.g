@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.9 2002/11/26 14:27:48 goetz Exp $
+#A  $Id: shapes.g,v 1.10 2002/11/28 11:39:16 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -97,8 +97,8 @@ end;
 ##  That makes it much (!!) faster than simple conjugacy tests!!
 ##
 ShapeOps.Elements:= function(this)
-    local   W,  S,  onParabolics,  orbit,  transversal,  edges,  k,  
-            l,  a,  i,  b,  pos,  perm, wM;
+    local   W,  S,  K,  L, onParabolics,  orbit,  transversal,  edges,  k,  
+            l,  i,  pos,  perm, d, e;
     
     # get the Coxeter System (W, S) to work in.
     W:= this.W;  S:= W.rootInclusion{[1..W.semisimpleRank]};
@@ -113,22 +113,23 @@ ShapeOps.Elements:= function(this)
     # and their negatives $[1..n]+N$. 
     # Mod by $N$ takes everything back into $[0..n-1]$.
     onParabolics:= function(J, i)
-        wM:= LongestCoxeterElement(ReflectionSubgroup(W, Union(J, [i])));
-        return List(OnSets(J, wM), x-> (x-1) mod W.parentN + 1);
+        d:= LongestCoxeterElement(ReflectionSubgroup(W, J)) * 
+            LongestCoxeterElement(ReflectionSubgroup(W, Union(J, [i])));
+        return Set(List(OnSets(J, d), x-> (x-1) mod W.parentN + 1));
     end;
     
     # extended orbit algorithm.
     orbit:= [this.J];  transversal:= [()];  edges:= [];  k:= 0;  l:= 1;
-    for a in orbit do
+    for K in orbit do
         k:= k+1;  edges[k]:= [];
-        for i in Difference(S, a) do 
-            b:= onParabolics(a, i);  pos:= Position(orbit, b);
+        for i in Difference(S, K) do 
+            L:= onParabolics(K, i);  pos:= Position(orbit, L);
             if pos = false then
-                Add(orbit, b);
-                Add(transversal, transversal[k] * wM);
+                Add(orbit, L);
+                Add(transversal, transversal[k] * d);
                 l:= l+1;  pos:= l;
             fi;
-            edges[k][i]:= rec(v:= pos, w:= wM);
+            edges[k][i]:= rec(v:= pos, d:= d);
         od;
     od;
     
@@ -136,13 +137,13 @@ ShapeOps.Elements:= function(this)
     perm:= Sortex(orbit);
     this.transversal:= Permuted(transversal, perm);
     edges:= Permuted(edges, perm);
-    for a in edges do
-        for i in [1..Length(a)] do
-            if IsBound(a[i]) then a[i].v:= a[i].v^perm; fi;
+    for e in edges do
+        for i in [1..Length(e)] do
+            if IsBound(e[i]) then e[i].v:= e[i].v^perm; fi;
         od;
     od;
     this.edges:= edges;
-    this.root:= 1^perm;
+    this.root:= 1^perm;  ##??? don't need that do we?
     
     return orbit;
 end;
@@ -209,9 +210,9 @@ NormalizerShape:= function(W, J)
         for j in [1..Length(e)] do
             if IsBound(e[j]) then
                 if e[j].v = i then
-                    AddSet(ears, t[i] * e[j].w / t[i]);
+                    AddSet(ears, t[i] * e[j].d / t[i]);
                 else
-                    AddSet(eyes, t[i] * e[j].w / t[e[j].v]);
+                    AddSet(eyes, t[i] * e[j].d / t[e[j].v]);
                 fi;
             fi;
         od;
