@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.6 2002/11/22 13:23:33 goetz Exp $
+#A  $Id: shapes.g,v 1.7 2002/11/22 13:27:43 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -242,59 +242,25 @@ ShapeOps.ConjugacyClasses:= function(this)
 end;
 
 
-##  TODO: Shapes(W) should return the list of shapes (as list) and store it
-##  in W.
-
-#############################################################################
-##  
-#O  ShapesOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
-##  
-##  Warning: Shapes is not a domain/set.
-##
-ShapesOps:= OperationsRecord("ShapesOps");
-
 #############################################################################
 ##  
 #C  Shapes( <W> ) . . . . . . . . . . . . . . . . . . . . . . .  constructor.
-##  
-##  returns an object that represents the shapes of the Coxeter group <W>.
 ##  
 ##  contains: a list of subsets of [1..n], sorted by rank, index, conjugacy;
 ##            a list of Coxeter classes;
 ##      and the mapping of conjugacy classes of elements to Coxeter classes.
 ##
-##  public fields:
-##    W, the Coxeter group.
-##  
-Shapes:= function(W)
-    local   this;
-    this:= rec(operations:= ShapesOps);
-    this.W:= W; 
-    return this;
-end;
-
-#############################################################################  
-##  
-#F  Print( <shapes> ) . . . . . . . . . . . . . . . . . . . . . . . .  print.
-##  
-ShapesOps.Print:= function(this)
-    Print("Shapes( ", this.W, " )");
-end;
-
-#############################################################################  
-##  
-#F  Constituents( <shapes> ) . . . . . . . . . . . . . . . . .  constituents.
 ##  
 ##  returns a list of Coxeter classes; each class consisting of its members
 ##  in the form of subsets of S, sorted lexicographically. The classes are
 ##  sorted by rank, and within each rank by the size of the parabolic
 ##  subgroup.
 ##
-ShapesOps.Constituents:= function(this)
-    local   W,  S,  shapes,  l,  d,  sh,  pos;
+Shapes:= function(W)
+    local   S,  shapes,  l,  d,  sh,  pos;
     
     # get the Coxeter System (W, S) to work in.
-    W:= this.W;  S:= W.rootInclusion{[1..W.semisimpleRank]};
+    S:= W.rootInclusion{[1..W.semisimpleRank]};
     
     # initialize.
     shapes:= [];
@@ -329,7 +295,7 @@ end;
 ##  classes of elements of $W$ of the corresponding shape.
 ##
 SubsetsShapes:= function(shapes)
-    return Concatenation(List(Constituents(shapes), Elements));
+    return Concatenation(List(shapes, Elements));
 end;
 
 
@@ -367,15 +333,13 @@ end;
 ##  returns the Condensed Inc Mat under conjugation ... ???
 ##
 CollapsedIncMatShapes:= function(shapes)
-    local   mat,  a,  J,  row,  b;
+    local   mat,  a,  row,  b;
     
-    shapes:= Constituents(shapes);
     mat:= [];
     for a in shapes do
-        J:= Representative(a);
         row:= [];
         for b in shapes do
-            Add(row, Number(Elements(b), x-> IsSubset(J, x)));
+            Add(row, Number(Elements(b), x-> IsSubset(a.J, x)));
         od;
         Add(mat, row);
     od;
@@ -390,38 +354,19 @@ end;
 ##  returns the Condensed Fus Mat under conjugation ... ???
 ##
 CollapsedFusMatShapes:= function(shapes)
-    local   el,  mat,  a,  el1,  fus,  row,  i;
+    local   mat,  a,  fus,  row,  i;
     
-    el:= Constituents(shapes);
     mat:= [];
-    for a in el do
-        el1:= Constituents(Shapes(ReflectionSubgroup(a.W, a.J)));        
-        fus:= List(el1, x-> PositionProperty(el, y-> IsSubset(y, x)));
-        row:= List(el, x-> 0);
+    for a in shapes do
+        fus:= List(Shapes(ReflectionSubgroup(a.W, a.J)),
+                   x-> PositionProperty(shapes, y-> IsSubset(y, x)));
+        row:= List(shapes, x-> 0);
         for i in fus do
             row[i]:= row[i] + 1;
         od;
         Add(mat, row);
     od;
     return mat;
-end;
-
-
-#############################################################################
-##
-#F  Display( <shapes> ) . . . . . . . . . . . . . . . . . . . . . .  display.
-##
-##  display the Shapes object as a list of types with multiplicities.
-##
-ShapesOps.Display:= function(this, options)
-    local   el,  i;
-    
-    el:= Constituents(this);
-    Display(el[1]);
-    for i in [2.. Length(el)] do
-        Print(", ");
-        Display(el[i]);
-    od;
 end;
 
 
@@ -439,7 +384,7 @@ XCharacters:= function(W)
     ct:= CharTable(W);
     
     # loop over classes of parabolics.
-    for lambda in Constituents(Shapes(W)) do
+    for lambda in Shapes(W) do
         sub:= ReflectionSubgroup(W, Representative(lambda));
         InfoZigzag2("CharTable of ...");
         cts:= CharTable(sub);
@@ -465,7 +410,7 @@ YCharacters:= function(W)
     shapes:= Shapes(W);
     
     # make an address book:
-    lll:= List(Constituents(shapes), Size);
+    lll:= List(shapes, Size);
     iii:= [];
     for i in [1..Length(lll)] do
         Append(iii, 0 * [1..lll[i]] + i); 
