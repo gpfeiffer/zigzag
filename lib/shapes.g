@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.8 2002/11/22 18:10:48 goetz Exp $
+#A  $Id: shapes.g,v 1.9 2002/11/26 14:27:48 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -46,11 +46,23 @@ ShapeOps:= OperationsRecord("ShapeOps", DomainOps);
 ##    J, the parabolic subset of S.
 ##  
 Shape:= function(W, J)
-    local this;
-    this:= rec(operations:= ShapeOps);
-    this.isDomain:= true;  
-    this.W:= W;  this.J:= J;
-    return this;
+    return 
+      rec(
+          isDomain:= true,
+          isShape:= true,
+          operations:= ShapeOps,
+          W:= W,
+          J:= J
+          );
+end;
+
+
+#############################################################################
+##
+#F  IsShape( <obj> )  . . . . . . . . . . . . . . . . . . . . . . type check.
+##
+IsShape:= function(obj)
+    return IsRec(obj) and IsBound(obj.isShape) and obj.isShape = true;
 end;
 
 
@@ -220,7 +232,7 @@ RelationShape:= function(W, J)
     local   shape,  list;
     shape:= Shape(W, J);
     list:= List(shape.operations.Edges(shape), Set);
-    return Relation(List(list, x-> List(x, y-> y[1])));
+    return Relation(List(list, x-> List(x, y-> y.v)));
 end;
 
 
