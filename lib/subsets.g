@@ -7,11 +7,12 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.1 2002/11/22 17:14:49 goetz Exp $
+#A  $Id: subsets.g,v 1.2 2002/11/22 18:09:30 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
 ##  
+RequirePackage("chevie");
 
 #############################################################################
 ##
@@ -24,6 +25,8 @@ if not IsBound(InfoZigzag2) then InfoZigzag2:= Ignore; fi;
 ##
 ##  Prefixes.  All types of subsets in this file are in some sense sets of
 ##  prefixes of a given word.  So we provide the general functions first.
+##
+##  TODO: the prefixes form a lattice ...
 ##
 
 #############################################################################
@@ -140,7 +143,17 @@ end;
 
 #############################################################################
 ##
+##  More generally, every interval [w1, w2] can be described as a "shifted"
+##  prefix set.
+##
+##  TODO ...
+##
+
+#############################################################################
+##
 ##  Coset Representatives.  Aka $X_J$.  Is the prefix set of $w_J w_0$.
+##
+##??? A ParabolicTransversal "is a" Prefixes set.  So inherit!
 ##
 ParabolicTransversalOps:= 
   OperationsRecord("ParabolicTransversalOps", DomainOps);
@@ -150,7 +163,7 @@ ParabolicTransversal:= function(W, J)
     ##??? need to check the arguments?
     local w;
     w:= LongestCoxeterElement(ReflectionSubgroup(W, J))
-        * LongestCoxeterElement(W));
+        * LongestCoxeterElement(W);
     return 
       rec( operations:= ParabolicTransversalOps,
            isDomain:= true,
@@ -161,13 +174,13 @@ end;
 
 #############################################################################
 ParabolicTransversalOps.Print:= function(this)
-    Print("ParabolicTransversal( ", W, ", ", J, " )");
+    Print("ParabolicTransversal( ", this.W, ", ", this.J, " )");
 end;
 
 
 #############################################################################
 ParabolicTransversalOps.Size:= function(this)
-    return Index(this.W, ReflectionSubgroup(W, this.J));
+    return Index(this.W, ReflectionSubgroup(this.W, this.J));
 end;
 
 
@@ -201,11 +214,18 @@ DescentClassOps:= OperationsRecord("DescentClassOps", DomainOps);
 #############################################################################
 DescentClass:= function(W, K)
     ##??? need to check the arguments?
+    
+    ##??? should store w_K and w_{\bar{K}}
     return 
       rec( operations:= DescentClassOps,
            isDomain:= true,
            W:= W,
            K:= K );
+end;
+
+#############################################################################
+DescentClassOps.Print:= function(this)
+    Print("DescentClass( ", this.W, ", ", this.K, " )");
 end;
 
 #############################################################################
@@ -217,7 +237,7 @@ DescentClassOps.Elements:= function(this)
    w:= LongestCoxeterElement(ReflectionSubgroup(W, Difference([1..n], K)));
    Y:= Prefixes(W, w * LongestCoxeterElement(ReflectionSubgroup(W, K)) 
                      * LongestCoxeterElement(W));
-   return Set(w * Y);
+   return Set(w * Elements(Y));
 end;
 
 #############################################################################
@@ -228,8 +248,8 @@ DescentClassOps.Iterator:= function(this)
     W:= this.W;  K:= this.K;
     n:= W.semisimpleRank;   
     w:= LongestCoxeterElement(ReflectionSubgroup(W, Difference([1..n], K)));
-    itr:= PrefixesIterator(W, w*LongestCoxeterElement(ReflectionSubgroup(W, K))
-                  * LongestCoxeterElement(W));
+    itr:= Iterator(Prefixes(W, w*LongestCoxeterElement(ReflectionSubgroup(W, K))
+                  * LongestCoxeterElement(W)));
     ditr:= rec();
     ditr.hasNext:= function() return itr.hasNext(); end;
     ditr.next:= function() return w * itr.next(); end;
@@ -238,7 +258,18 @@ DescentClassOps.Iterator:= function(this)
 end;
 
 
+#############################################################################
+##
+##  What about left coset reps?  I know they are just the inverses ... but
+##  how do they fit into this scheme best?
+##
 
+#############################################################################
+##
+##  Double Coset Reps.
+##
+##  TODO ...
+##
 
 
 #############################################################################
