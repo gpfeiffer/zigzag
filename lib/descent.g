@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.9 2002/11/25 18:07:38 goetz Exp $
+#A  $Id: descent.g,v 1.10 2004/03/11 09:46:23 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -448,9 +448,12 @@ SizesDescentConjugacyClasses:= function(W)
            row:= [];
            des:= DescentClass(W, J);
            for class in cc do
-               Add(row, Size(Intersection(des, class)));
+               Add(row, Number(Elements(des), x-> x in class));
+#               Unbind(class.elements);
+               Print(",\c");
            od;
            Add(sec, row);
+           Print("\n");
        od;
    fi;
    
@@ -461,6 +464,8 @@ end;
 #############################################################################
 ##
 # here is the procedure to calculate the Lie characters.
+##
+##  
 ECharacters:= function(W)
     local   sec,  nu,  ee,  a,  lll,  l,  dia;
     
@@ -473,7 +478,7 @@ ECharacters:= function(W)
     od;
 
     dia:= DiagonalMat(List(ConjugacyClasses(W), x-> Size(W)/Size(x)));
-    Error();
+#    Error();
     return ee * IncidenceMatShapes(Shapes(W)) * sec * dia;
 end;
 
@@ -485,7 +490,7 @@ end;
 # 2. scalar product with YCharacters gives sizes of Y intersect C.
 # 3. sums over Coxeter classes yield ECharacters.
 # (not required) 4. summing over all elements of C results in a symmetric
-# table.  This last test reduces the numer of possibilites in the case
+# table.  This last test reduces the number of possibilites in the case
 # of non-crystallographic Coxeter groups.   For the crystallographic
 # case, there seems to be a unique solution after step 3, in many cases 
 # after step 2 already.
