@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.3 2002/11/25 12:33:28 goetz Exp $
+#A  $Id: subsets.g,v 1.4 2002/11/25 18:09:03 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -470,30 +470,35 @@ end;
 ##
 ##  Scheisse: funktioniert nicht!
 ##
-ParabolicDoubleTransversalOps.Elements:= function(this)
-    local   W,  J,  K,  WJ,  WK,  S,  X,  Z,  w,  x,  i;
+#ParabolicDoubleTransversalOps.Elements:= function(this)
+#    local   W,  J,  K,  WJ,  WK,  S,  X,  Z,  w,  x,  i;
+#
+#    W:= this.W;  J:= this.J;  K:= this.K;
+#    WJ:= ReflectionSubgroup(W, J);
+#    WK:= ReflectionSubgroup(W, K);
+#    S:= W.rootInclusion{[1..W.semisimpleRank]};
+#    X:= [];
+#    Z:= [LongestCoxeterElement(WJ) * LongestCoxeterElement(W)];
+#    for w in Z do
+#        InfoZigzag1("lookin at ", CoxeterWord(W, w), ":\n");
+#        x:= ReducedInCoxeterCoset(WK, w^-1)^-1;
+#        InfoZigzag1("reduced to ", CoxeterWord(W, x), ".\n");
+#        if not x in X then
+#            InfoZigzag1("NEW!!!\n");
+#            Add(X, x);
+#            for i in LeftDescentSet(W, x^-1) do
+#                InfoZigzag1("Adding ", CoxeterWord(W, x * W.(W.rootRestriction[i])), "...\n");
+#                Add(Z, x * W.(W.rootRestriction[i]));
+#            od;
+#        fi;
+#    od;
+#    
+#    return Set(X);
+#end;
 
-    W:= this.W;  J:= this.J;  K:= this.K;
-    WJ:= ReflectionSubgroup(W, J);
-    WK:= ReflectionSubgroup(W, K);
-    S:= W.rootInclusion{[1..W.semisimpleRank]};
-    X:= [];
-    Z:= [LongestCoxeterElement(WJ) * LongestCoxeterElement(W)];
-    for w in Z do
-        InfoZigzag1("lookin at ", CoxeterWord(W, w), ":\n");
-        x:= ReducedInCoxeterCoset(WK, w^-1)^-1;
-        InfoZigzag1("reduced to ", CoxeterWord(W, x), ".\n");
-        if not x in X then
-            InfoZigzag1("NEW!!!\n");
-            Add(X, x);
-            for i in LeftDescentSet(W, x^-1) do
-                InfoZigzag1("Adding ", CoxeterWord(W, x * W.(W.rootRestriction[i])), "...\n");
-                Add(Z, x * W.(W.rootRestriction[i]));
-            od;
-        fi;
-    od;
-    
-    return Set(X);
+ParabolicDoubleTransversalOps.Elements:= function(this)
+    return Intersection(ParabolicTransversal(this.W, this.J),
+                   LeftParabolicTransversal(this.W, this.K));
 end;
 
 
