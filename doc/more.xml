@@ -1,34 +1,3 @@
-\Section{Shape}%
-\index{constructor!of a shape}
-
-'Shape( <W>, <J> )'
-
-constructs the shape  of <J> in <W>.  Here <W> is  a finite Coxeter group
-of rank <M>n</M> and <J> is a subset of <M>[1..n]</M>.
-
-|    gap> W:= CoxeterGroup("E", 6);; 
-    gap> Shape(W, [1, 2, 3]);
-    Shape( CoxeterGroup("E", 6), [ 1, 2, 3 ] ) |
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\Section{Set Functions for a Shape}
-
-All  set theoretic  functions  described in  chapter  "Domains" are  also
-applicable  to  shapes.   This  section  describes  which  functions  are
-implemented  specially  for shapes.   Functions  not  mentioned here  are
-handled by  the default methods  described in the respective  sections of
-chapter "Domains".
-
-'Elements( <shape> )'
-\index{Elements!for a Shape}
-
-returns the set  of elements of a  shape, that is the sorted  list of all
-the conjugates of a subset <M>J</M> of <M>S</M>.
-
-|    gap> W:= CoxeterGroup("A", 3);;
-    gap> Elements(Shape(W, [2]));
-    [ [ 1 ], [ 2 ], [ 3 ] ] |
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \Section{ShapeOps.Transversal}
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.2 2002/11/29 15:36:02 goetz Exp $
+     $Id: zigzag.xml,v 1.3 2002/11/29 21:18:43 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -47,26 +47,89 @@ subgroups, and  the set of conjugacy  classes of elements  (and so the
 set of elements) into classes.<P/>
 
 Shapes are  domains, so  every set theoretic  function for a domain
-can be applied to a shape (see "Set Functions for a Shape").<P/>
+can be applied to a shape (see section&nbsp;<Ref Label="Sect:ShapesAsSets"/>).<P/>
 
-The functions described here are in the file <F>"shapes.g"</F>.
+The functions described here are in the file <F>shapes.g</F>.
 
-<Section><Heading>Shape Functions</Heading>
+<Section><Heading>Shape Constructors and Methods.</Heading>
+
+In this section I describe the functions that construct shapes
+and work on shapes.
 
 <ManSection>
-	    
-	    <Func Name="Shape" Arg="W, J"/>
-<Returns>a new shape</Returns>
+<Func Name="Shape" Arg="W, J"/>
+<Returns>a new shape,  the shape of <A>J</A> in <A>W</A>. </Returns>
 <Description>
-This is the simple constructor for the shape class.</Description>
-	  </ManSection>
+This is the simple constructor for the shape class.  It constructs and
+returns the shape of <A>J</A> in <A>W</A>.  Here <A>W</A> is a finite
+Coxeter group of rank <M>n</M> and <A>J</A> is a subset of
+<M>[1..n]</M>.
 <Example>
-    gap> W:= CoxeterGroup("E", 6);; 
-    gap> Shape(W, [1, 2, 3]);
-    Shape( CoxeterGroup("E", 6), [ 1, 2, 3 ] )
+gap> W:= CoxeterGroup("E", 6);; 
+gap> Shape(W, [1, 2, 3]);
+Shape( CoxeterGroup("E", 6), [ 1, 2, 3 ] )
 </Example>
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="IsShape" Arg="obj"/>
+<Returns><K>true</K> if <A>obj</A> is a shape and <K>false</K> otherwise.</Returns>
+</ManSection>
+
+
 </Section>
+
+<Section Label="Sect:ShapesAsSets">
+<Heading>Set Functions for Shapes.</Heading>
+
+Shapes are domains and therefore all set theoretic functions described
+in  chapter "Domains"  are also  applicable to  shapes.   This section
+describes  which  functions  are  implemented  specially  for  shapes.
+Functions  not  mentioned here  are  handled  by  the default  methods
+described in the respective sections of chapter "Domains".
+
+More precisely, every shape has as its operations record
+<C>ShapeOps</C> which inherits from <C>DomainOps</C>
+and overrides the methods below to make it work or to provide 
+more efficient implementations.
+
+
+<ManSection>
+<Meth Name="Elements" Arg="shape"/>
+<Returns>the set of elements of the shape <A>shape</A>.</Returns>
+<Description>
+The shape of <M>J</M> in <M>W</M> consists of all subsets of <M>S</M>
+which are conjugate to <M>J</M> under <M>W</M>.
+These conjugates can be efficiently computed
+using <Cite Key="GePf2000" Where="Theorem 2.3.3"/>.
+<Example>
+gap> W:= CoxeterGroup("A", 3);;
+gap> Elements(Shape(W, [2]));
+[ [ 1 ], [ 2 ], [ 3 ] ] 
+</Example>
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="Representative" Arg="shape"/>
+<Returns>a representative of the shape <A>shape</A>.</Returns>
+<Description>The representative of a shape constructed 
+as <C>Shape(W, J)</C> (see <Ref Label="Shape"/>) will be its
+initial element <C>J</C>.
+<Example>
+gap> W:= CoxeterGroup("A", 3);;
+gap> Representative(Shape(W, [2]));
+[ 2 ]
+</Example>
+</Description>
+</ManSection>
+
+</Section>
+
 </Chapter>
 </Body>
+  <Bibliography Databases="zigzag"/>
+  <TheIndex/>
 
 </Book>
