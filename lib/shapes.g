@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.17 2004/03/02 18:22:40 goetz Exp $
+#A  $Id: shapes.g,v 1.18 2004/03/08 16:59:41 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -480,10 +480,37 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
+ShapesRank:= function(W, l)
+    local   S,  shapes,  d,  sh,  pos;
+    
+    # get the Coxeter System (W, S) to work in.
+    S:= W.rootInclusion{[1..W.semisimpleRank]};
+    
+    # initialize.
+    shapes:= [];
+    d:= Combinations(S, l);
+
+    # sort 'd' wrt size.
+    Sort(d, function(a, b) 
+        return 
+          Size(ReflectionSubgroup(W, a)) < Size(ReflectionSubgroup(W, b)); 
+    end);
+    
+    # orbits algorithm.
+    while d <> [] do
+        sh:= Shape(W, d[1]);
+        pos:= List(Elements(sh), x-> Position(d, x));
+        d:= d{Difference([1..Length(d)], pos)};
+        Add(shapes, sh);
+    od;
+    
+    return shapes;
+end;
+
 Shapes:= function(W)
     local   S,  shapes,  l,  d,  sh,  pos;
     
-    # lets see, we might know it already.
+    # lets see, we might know them already.
     if IsBound(W.shapes) then  return W.shapes;  fi;
     
     # get the Coxeter System (W, S) to work in.
