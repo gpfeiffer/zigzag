@@ -2,7 +2,7 @@
 %%
 %A  GAP documentation                             Goetz.Pfeiffer@nuigalway.ie
 %%
-%A  $Id: shapes.tex,v 1.2 2002/11/22 13:31:30 goetz Exp $
+%A  $Id: shapes.tex,v 1.3 2002/11/28 18:37:28 goetz Exp $
 %%
 %Y  Copyright (C) 2002, Department of Mathematics, NUI, Galway, Ireland.
 %%
@@ -119,6 +119,44 @@ in the list of elements, and where |w| gives the permutation $w$.
 The edges of  a shape are constructed whenever the  elements of the shape
 are determined (see "Set Functions for a Shape").
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Section{ShapeOps.Complement}
+
+'<shape>.operations.Complement( <shape> )'
+
+The *complement* of a shape is the group of all paths that
+start and end at the representative <J>.  It is called complement,
+because this group is the complement of $W_J$  in its normalizer
+$N(W_J)$ in $W$.
+
+|    gap> W:= CoxeterGroup("A", 5);;  J:= [4, 5];;
+    gap> sh:= Shape(W, J);;
+    gap> cpl:= sh.operations.Complement(sh);
+    Subgroup( CoxeterGroup("A", 5),
+    [ ( 1, 6)( 2,17)( 3, 7)( 8,11)(12,14)(16,21)(18,22)(23,26)(27,29),
+      ( 1,16)( 2, 6)( 7,10)(11,13)(14,15)(17,21)(22,25)(26,28)(29,30) ] )
+    gap> WJ:= ReflectionSubgroup(W, J);; NJ:= Normalizer(W, WJ);;
+    gap> IsSubgroup(NJ, cpl);
+    true
+    gap> Size(cpl) = Index(NJ, WJ);
+    true
+    gap> Intersection(WJ, cpl);
+    Subgroup( CoxeterGroup("A", 5), [  ] ) |
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Section{ShapeOps.Relation}
+
+'<shape>.operations.Relation( <shape> )'
+
+returns the binary  relation induced by the directed  edges on the vertex
+set of the graph associated to the shape of <J> in <W> (see \"Relation\").
+
+|    gap> W:= CoxeterGroup("A", 5);;  J:= [4, 5];;
+    gap> sh:= Shape(W, J);;
+    gap> rel:= sh.operations.Relation(sh);
+    Relation( [ [ 1, 2 ], [ 1, 2, 3 ], [ 2, 3, 4 ], [ 3, 4 ] ] ) |
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \Section{Shape Records}
 
@@ -163,34 +201,6 @@ the functions that will create them if not present.
         is  the transversal of  the shape  and can  be obtained  from the
         function 'ShapeOps.Transversal' (see "ShapeOps.Transversal").
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\Section{Functions for Coxeter Groups using a Shape}
-
-The    functions    'NormalizerShape'    (see   "NormalizerShape")    and
-'RelationShape' (see "RelationShape") use  a shape to provide information
-about a Coxeter group <W>.  For  the sake of users of Coxeter groups that
-are not familiar with shapes, the  arguments passed are <W> and a set <J>
-rather than the shape of <J> in <W>.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\Section{NormalizerShape}
-
-'NormalizerShape( <W>, <J> )'
-
-The *normalizer* of a shape is ...
-
-...
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\Section{RelationShape}
-
-'RelationShape( <W>, <J> )'
-
-returns the binary  relation induced by the directed  edges on the vertex
-set of the graph associated to the shape of <J> in <W> (see \"Relation\").
-
-...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \Section{Shapes}
