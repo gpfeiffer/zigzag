@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.8 2002/11/22 18:11:55 goetz Exp $
+#A  $Id: descent.g,v 1.9 2002/11/25 18:07:38 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -245,7 +245,7 @@ end;
 #
 MaximalAJKL:= function(W, s)
 
-   local yy, S, M, pos, WM, cosrep, aJML, inn, out, J, L, ddd, sub, j, l, x;
+   local yy, S, M, pos, cosrep, aJML, inn, out, J, L, ddd, sub, j, l, x;
 
    ddd:= SubsetsShapes(Shapes(W));
    S:= W.rootInclusion{[1..W.semisimpleRank]};
@@ -253,8 +253,7 @@ MaximalAJKL:= function(W, s)
    pos:= Filtered([1..Length(ddd)], x-> IsSubset(M, ddd[x]));
    sub:= ddd{pos};
 
-   WM:= ReflectionSubgroup(W, M);
-   cosrep:= PrefixesIterator(W, LongestCoxeterElement(WM) * LongestCoxeterElement(W));
+   cosrep:= Iterator(ParabolicTransversal(W, M));
 
    aJML:= List(ddd, x-> 0*pos);
    
@@ -434,7 +433,7 @@ SizesDescentConjugacyClasses:= function(W)
         
        for J in subsets do
            row:= List(cc, x-> 0);
-           des:= DescentClassIterator(W, J);
+           des:= Iterator(DescentClass(W, J));
            while des.hasNext() do
                w:= des.next();
                p:= PositionSorted(csp, CycleStructurePerm(w))/per;
