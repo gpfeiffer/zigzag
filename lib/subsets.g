@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.5 2002/11/26 14:29:22 goetz Exp $
+#A  $Id: subsets.g,v 1.6 2002/11/28 11:38:21 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -322,7 +322,7 @@ ParabolicTransversalOps:=
 ParabolicTransversal:= function(W, J)
     ##??? need to check the arguments?
     local this;
-    this:= Prefixes(LongestCoxeterElement(ReflectionSubgroup(W, J))
+    this:= Prefixes(W, LongestCoxeterElement(ReflectionSubgroup(W, J))
                    * LongestCoxeterElement(W));
     this.isParabolicTransversal:= true;
     this.operations:= ParabolicTransversalOps;
@@ -489,6 +489,12 @@ end;
 
 
 #############################################################################
+LeftParabolicTransversalOps.Print:= function(this)
+    Print("LeftParabolicTransversal( ", this.W, ", ", this.J, " )");
+end;
+
+
+#############################################################################
 IsLeftParabolicTransversal:= function(obj)
     return IsRec(obj) and IsBound(obj.isLeftParabolicTransversal) and
            obj.isLeftParabolicTransversal = true;
@@ -520,6 +526,13 @@ end;
 
 
 #############################################################################
+LeftParabolicTransversalOps.\in:= function(w, this)
+    return w^-1 in this.right;
+end;
+
+
+
+#############################################################################
 ##
 ##  Double Coset Reps.
 ##
@@ -527,17 +540,17 @@ end;
 ##
 
 #############################################################################
-ParabolicDoubleTransversalOps:= 
-  OperationsRecord("ParabolicDoubleTransversalOps", DomainOps);
+DoubleParabolicTransversalOps:= 
+  OperationsRecord("DoubleParabolicTransversalOps", DomainOps);
 
 
 #############################################################################
-ParabolicDoubleTransversal:= function(W, J, K)
+DoubleParabolicTransversal:= function(W, J, K)
     return 
       rec(
           isDomain:= true,
-          isParabolicDoubleTransversal:= true,
-          operations:= ParabolicDoubleTransversalOps,
+          isDoubleParabolicTransversal:= true,
+          operations:= DoubleParabolicTransversalOps,
           W:= W,
           J:= J,
           K:= K
@@ -546,8 +559,8 @@ end;
 
 
 #############################################################################
-ParabolicDoubleTransversalOps.Print:= function(this)
-    Print("ParabolicDoubleTransversal( ", this.W, ", ", this.J, ", ", 
+DoubleParabolicTransversalOps.Print:= function(this)
+    Print("DoubleParabolicTransversal( ", this.W, ", ", this.J, ", ", 
           this.K, " )");
 end;
 
@@ -558,7 +571,7 @@ end;
 ##
 ##  Scheisse: funktioniert nicht!
 ##
-#ParabolicDoubleTransversalOps.Elements:= function(this)
+#DoubleParabolicTransversalOps.Elements:= function(this)
 #    local   W,  J,  K,  WJ,  WK,  S,  X,  Z,  w,  x,  i;
 #
 #    W:= this.W;  J:= this.J;  K:= this.K;
@@ -584,9 +597,129 @@ end;
 #    return Set(X);
 #end;
 
-ParabolicDoubleTransversalOps.Elements:= function(this)
-    return Intersection(ParabolicTransversal(this.W, this.J),
-                   LeftParabolicTransversal(this.W, this.K));
+DoubleParabolicTransversalOps.Elements:= function(this)
+    local   left,  itr,  list,  w;
+    
+    left:= LeftParabolicTransversal(this.W, this.K);
+    itr:= Iterator(ParabolicTransversal(this.W, this.J));
+    list:= [];
+    while itr.hasNext() do
+        w:= itr.next();
+        if w in left then
+            Add(list, w);
+        fi;
+    od;
+    
+    return Set(list);
+        
+#    return Filtered(Elements(ParabolicTransversal(this.W, this.J)),
+#                   w-> w in LeftParabolicTransversal(this.W, this.K));
+end;
+
+
+#############################################################################
+PDTransversalOps:= 
+  OperationsRecord("PDTransversalOps", DomainOps);
+
+
+#############################################################################
+PDTransversal:= function(W, J, K)
+    return 
+      rec(
+          isDomain:= true,
+          isPDTransversal:= true,
+          operations:= PDTransversalOps,
+          W:= W,
+          J:= J,
+          K:= K
+          );
+end;
+
+
+#############################################################################
+PDTransversalOps.Print:= function(this)
+    Print("PDTransversal( ", this.W, ", ", this.J, ", ", 
+          this.K, " )");
+end;
+
+
+#############################################################################
+##
+##  see Algorithm E (p.51).
+##
+##  Scheisse: funktioniert nicht!
+##
+PDTransversalOps.Elements:= function(this)
+    local   W,  J,  K,  WJ,  WK,  S,  X,  Z,  w,  x,  i;
+
+    W:= this.W;  J:= this.J;  K:= this.K;
+    WJ:= ReflectionSubgroup(W, J);
+    WK:= ReflectionSubgroup(W, K);
+    S:= W.rootInclusion{[1..W.semisimpleRank]};
+    X:= [];
+    Z:= [LongestCoxeterElement(WJ) * LongestCoxeterElement(W)];
+    for w in Z do
+        InfoZigzag1("lookin at ", CoxeterWord(W, w), ":\n");
+        x:= ReducedInCoxeterCoset(WK, w^-1)^-1;
+        InfoZigzag1("reduced to ", CoxeterWord(W, x), ".\n");
+        if not x in X then
+            InfoZigzag1("NEW!!!\n");
+            Add(X, x);
+            for i in Difference(LeftDescentSet(W, w^-1), K) do
+                InfoZigzag1("Adding ", CoxeterWord(W, w * W.(W.rootRestriction[i])), "...\n");
+                Add(Z, w * W.(W.rootRestriction[i]));
+            od;
+            for i in LeftDescentSet(W, x^-1) do
+                InfoZigzag1("Adding ", CoxeterWord(W, x * W.(W.rootRestriction[i])), "...\n");
+                Add(Z, x * W.(W.rootRestriction[i]));
+            od;
+        fi;
+    od;
+    
+    return Set(X);
+end;
+
+
+#############################################################################
+XJKLOps:= OperationsRecord("XJKLOps", DomainOps);
+
+#############################################################################
+XJKL:= function(W, J, K, L)
+    #??? take care of special cases
+    # J or K or L = S or 0
+    # J = K = L
+    return 
+      rec(
+          isDomain:= true,
+          isXJKL:= true,
+          operations:= XJKLOps,
+          W:= W,
+          J:= J,
+          K:= K,
+          L:= L
+          );
+end;
+
+
+#############################################################################
+XJKLOps.Print:= function(this)
+    Print("XJKL( ", this.W, ", ", this.J, ", ", this.K, ", ", this.L, " )");
+end;
+
+
+#############################################################################
+IsXJKL:= function(obj)
+    return IsRec(obj) and IsBound(obj.isXJKL) and obj.XJKL = true;
+end;
+
+
+#############################################################################
+XJKLOps.Elements:= function(this)
+    return 
+      Filtered(Elements(DoubleParabolicTransversal(this.W, this.J, this.K)),
+              d -> Intersection(
+                      List(OnSets(this.J, d), x-> (x-1) mod this.W.parentN + 1),
+                      this.K) = this.L);
 end;
 
 
