@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.15 2004/02/24 19:38:08 goetz Exp $
+#A  $Id: shapes.g,v 1.16 2004/03/02 13:45:02 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -206,6 +206,14 @@ ShapeOps.Elements:= function(this)
     this.root:= 1^perm;  ##??? dont need that do we?
     
     return orbit;
+end;
+
+#############################################################################
+##
+#F  <l> = <r>  . . . . . . . . . . . . . . . . . . . . . . . . equality test.
+##
+ShapeOps.\= := function(l, r)
+    return l.W = r.W and l.J in r;
 end;
 
 
