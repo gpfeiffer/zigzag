@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.4 2002/11/04 17:35:41 goetz Exp $
+#A  $Id: descent.g,v 1.5 2002/11/11 09:59:18 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -754,7 +754,8 @@ SizesDescentConjugacyClasses:= function(W)
    return sec;
 end;
     
-    
+#############################################################################
+##
 # here is the procedure to calculate the Lie characters.
 ECharacters:= function(W)
     local   sec,  nu,  ee,  a,  lll,  l,  dia;
@@ -772,6 +773,8 @@ ECharacters:= function(W)
     return ee * ShapesOps.IncidenceMat(Shapes(W)) * sec * dia;
 end;
 
+#############################################################################
+##  
 # this will find all possible combinations of characters that are
 #
 # 1. induced linear characters of the centralizer, one for each class C.
