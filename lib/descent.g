@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.2 2002/05/08 09:54:46 goetz Exp $
+#A  $Id: descent.g,v 1.3 2002/11/04 16:51:44 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -332,6 +332,62 @@ LeftRegular2Latex1:= function(m, name)
          Print("\\\\\n");
       od;
       Print("\\hline\\end{array}\\]\n");
+   od;
+end;
+
+## Print out a list of block matrices.
+## 'm' is the list of matrices, block is a list of block sizes.
+## the matrices are printed twice: once with one matrix for every 1st
+## coordinate, and once with one matrix for every second coordinate.
+## (and the third coordinates? not now though)
+## local function 'print' takes care of printing zeros very small.
+##
+Mats2Latex:= function(m, block)
+
+   local i, j, k, nnn, c, string, lll;
+   nnn:= [1..Length(m)];
+   lll:= [];  j:= 0;
+   for i in block do
+       j:= j + i;
+       Add(lll, j);
+   od;
+   c:= "|";
+   for i in nnn do
+      Add(c, 'c');
+      if i in lll then Append(c, "|\c");  fi;
+   od;
+
+   string:= function(p) if p = 0 then return "."; else return p; fi; end;
+
+   for i in nnn do
+      Print("\\[\\begin{array}{", c, "}\\hline\n");
+      for j in nnn do
+         Print(string(m[i][j][1]));
+         for k in nnn do
+            if k > 1 then
+               Print("&\c", string(m[i][j][k]));
+            fi;
+
+         od;
+         Print("\\\\\n");
+         if j in lll then Print("\\hline\n"); fi;
+      od;
+      Print("\\end{array}\\]\n");
+   od;
+   for i in nnn do
+      Print("\\[\\begin{array}{", c, "}\\hline\n");
+      for j in nnn do
+         Print(string(m[j][i][1]));
+         for k in nnn do
+            if k > 1 then
+               Print("&\c", string(m[j][i][k]));
+            fi;
+
+         od;
+         Print("\\\\\n");
+         if j in lll then Print("\\hline\n"); fi;
+      od;
+      Print("\\end{array}\\]\n");
    od;
 end;
 
@@ -851,11 +907,11 @@ CartanMatDescent:= function(D)
 end;
 
 # a gen set for the homs from Pi to Pj.
-HomDescent:= function(W, i, j)
+HomDescent:= function(D, i, j)
     local   xxx,  EEE,  ll,  hom;
     
-    xxx:= LeftRegularX(W);
-    EEE:= ProjectiveIdempotents(W);
+    xxx:= LeftRegularX(D);
+    EEE:= ProjectiveIdempotents(D);
     ll:= Length(EEE[1]);
     hom:=  Set(List(xxx, x-> EEE[i][ll] * x) * EEE[j]);
     TriangulizeMat(hom);
@@ -866,17 +922,16 @@ end;
 # second: the radical.
 # Brute force again ...
 #
-RadicalDescent:= function(W)
-    local   yy,  ccc,  xxx,  rad,  c,  i;
+RadicalDescent:= function(D)
+    local   xxx,  rad,  a,  e,  i;
     
-    yy:= CoxeterClassesSubsets(W);
-    ccc:= Set(yy.ccc);
-    xxx:= LeftRegularX(W);
-    rad:= [];
-    for c in ccc do
-        for i in [2..Length(c)] do
-            Add(rad, xxx[c[i]]-xxx[c[i-1]]);
+    xxx:= LeftRegularX(D);
+    rad:= [];  a:= 0;
+    for e in Elements(Shapes(D.W)) do
+        for i in a + [2..Length(e)] do
+            Add(rad, xxx[i]-xxx[i-1]);
         od;
+        a:= a + Length(e);
     od;
     return rad;
 end;
