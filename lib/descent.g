@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.7 2002/11/22 13:28:49 goetz Exp $
+#A  $Id: descent.g,v 1.8 2002/11/22 18:11:55 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -97,128 +97,6 @@ DescentAlgebraOps.MuNu:= function(D)
     return rec(mu:= mu, nu:= mu^-1);
 end;
     
-#############################################################################
-##
-## the prefixes of a given element w.
-##
-Prefixes:= function(W, w)
-   local X, Y, Z, S, i, x;
-
-   S:= W.rootInclusion{[1..W.semisimpleRank]};
-   Y:= [w];  X:= [];
-   while Y <> [] do
-      Append(X, Y);
-      Z:= [];
-      for x in Y do
-         for i in S do
-            if i / x > W.parentN then
-               AddSet(Z, x*W.(W.rootRestriction[i]));
-            fi;
-         od;
-      od;
-      Y:= Z;
-   od;
-
-   return X;
-end;
-
-# the iterator version of a set of prefixes:
-# it consists of a linked list of elements to be processed,
-# pointers to the back (next element to be expanded),
-# the middle (where the next length starts)
-# the focus (next element to be returned) and the front
-# where the next prefix is to be put in the queue.
-#
-# initially:
-#
-#  foc
-#   v
-#   w -> .
-#   ^    ^
-#   b    f
-##
-PrefixesIterator:= function(W, w)
-    
-    local   S,  head,  focus,  back,  itr;
-    
-   S:= W.rootInclusion{[1..W.semisimpleRank]};
-    
-    head:= rec();
-    focus:= rec(w:= w, next:= head);
-    back:= focus; 
-    
-    itr:= rec();
-    
-    itr.hasNext:= function()
-        return IsBound(focus.w);
-    end;
-    
-    itr.next:= function()
-        local   w,  x,  i,  Z, y;
-        w:=  focus.w;
-        focus:= focus.next;   
-        if not IsBound(focus.w) then
-            Z:= [];
-            
-            # expand back.w to focus.w
-            while not IsIdentical(back, focus) do
-                x:= back.w;
-                for i in S do
-                    if i / x > W.parentN then
-                        y:= x*W.(W.rootRestriction[i]);
-                        if not y in Z then
-                            AddSet(Z, y);
-                            head.w:= y;
-                            head.next:= rec();
-                            head:= head.next;
-                        fi;
-                    fi;
-                od;
-                back:= back.next;
-            od;
-        fi;
-        return w;
-    end;
-    
-    return itr;
-end;
-
-
-##???  $Y_K$ should be an object ...
-
-
-# And how to make $Y_K$?  Here $K \subseteq \{1, \dots, n\}$.
-# Use: $Y_K$ is the interval from $w_{\hat{K}}$ to $w_K w_0$.
-# Which is isomorphic to the interval from $1$ to $w = w_{\hat{K}} w_K w_0$.
-#
-# Here Y_K = { w \in W : sw > w <==> s \in K }
-#
-DescentClass:= function(W, K)
-   local   n,  w,  Y;
-
-   n:= W.semisimpleRank;   
-   w:= LongestCoxeterElement(ReflectionSubgroup(W, Difference([1..n], K)));
-   Y:= Prefixes(W, w * LongestCoxeterElement(ReflectionSubgroup(W, K)) 
-                     * LongestCoxeterElement(W));
-   return w * Y;
-end;
-
-# iterator version
-DescentClassIterator:= function(W, K)
-    local   n,  w,  itr, ditr;
-
-    n:= W.semisimpleRank;   
-    w:= LongestCoxeterElement(ReflectionSubgroup(W, Difference([1..n], K)));
-    itr:= PrefixesIterator(W, w*LongestCoxeterElement(ReflectionSubgroup(W, K))
-                  * LongestCoxeterElement(W));
-    ditr:= rec();
-    ditr.hasNext:= function() return itr.hasNext(); end;
-    ditr.next:= function() return w * itr.next(); end;
-    
-    return ditr;
-end;
-
-
 #############################################################################
 #
 #  turn $a \in \Sigma(W)$ into the character $\theta(a)$.
