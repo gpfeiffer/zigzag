@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.14 2002/12/04 21:24:58 goetz Exp $
+#A  $Id: shapes.g,v 1.15 2004/02/24 19:38:08 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -203,7 +203,7 @@ ShapeOps.Elements:= function(this)
         od;
     od;
     this.edges:= edges;
-    this.root:= 1^perm;  ##??? don't need that do we?
+    this.root:= 1^perm;  ##??? dont need that do we?
     
     return orbit;
 end;
@@ -465,7 +465,7 @@ end;
 Shapes:= function(W)
     local   S,  shapes,  l,  d,  sh,  pos;
     
-    # let's see, we might know it already.
+    # lets see, we might know it already.
     if IsBound(W.shapes) then  return W.shapes;  fi;
     
     # get the Coxeter System (W, S) to work in.
@@ -723,6 +723,28 @@ YCharacters:= function(W)
 
     return IncidenceMatShapes(shapes)^-1 * XCharacters(W){iii};
 end;
+
+#############################################################################
+##
+##  Find all ConjugacyClasses of involutions as shapes with a center.
+##  Reference: Richardson.
+##  must care for the case of W being a parabolic subgroup.
+##  how about reflection subgroups?
+##  FIXME: What is the most efficient way to do this?
+##
+Involutions:= function(W)
+    local   inv,  s,  r,  g,  w;
+    inv:= [];
+    for s in Shapes(W) do
+        r:= Representative(s);
+        w:= LongestCoxeterElement(ReflectionSubgroup(W, r));
+        if ForAll(r, x-> x^w = x+W.parentN) then
+            Add(inv, s);
+        fi;
+    od;
+    return inv;    
+end;
+
 
 
 #############################################################################
