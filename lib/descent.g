@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.11 2004/03/15 11:55:07 goetz Exp $
+#A  $Id: descent.g,v 1.12 2004/03/16 10:40:43 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -445,16 +445,17 @@ SizesDescentConjugacyClasses:= function(W)
        Print("\n");
    else
        for J in subsets do
-           row:= [];
-           des:= DescentClass(W, J);
-           for class in cc do
-               Add(row, Number(Elements(des), x-> x in class));
-#               Unbind(class.elements);
-               Print(",\c");
+           row:= List(cc, x-> 0);
+           des:= Iterator(DescentClass(W, J));
+           while des.hasNext() do
+               w:= des.next();
+               p:= PositionProperty(cc, x-> w in x);
+               row[p]:= row[p] + 1;
            od;
            Add(sec, row);
-           Print("\n");
+           Print(",\c");
        od;
+       Print("\n");
    fi;
    
    W.sizesDescentConjugacyClasses:= sec;
