@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.15 2004/04/20 11:58:33 goetz Exp $
+#A  $Id: descent.g,v 1.16 2005/03/01 16:56:25 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -396,14 +396,14 @@ end;
 #  deprecate:
 LeftRegularY:= function(D)
     local   inc;
-    inc:= IncidenceMatShapes(Shapes(W))^-1;
+    inc:= IncidenceMatShapes(Shapes(D.W))^-1;
     return List(inc, l-> l * LeftRegularX(D));
 end;
 
 #  deprecate:
 LeftRegularE:= function(D)
     local   nu;
-    nu:= DescentAlgebraOps.MuNu(DescentAlgebra(W)).nu;    
+    nu:= DescentAlgebraOps.MuNu(D).nu;    
     return List(nu, l-> l * LeftRegularX(D));
 end;
 
