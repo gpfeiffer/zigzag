@@ -1,0 +1,31 @@
+TODO:
+=====
+
+* X_J^{-1} : left reps, LeftParabolicTransversal (emphasizing the lack of symmetry!)
+
+* X_{JK}: double coset representatives
+
+* X_{JKL}  with special case X_{JJJ}
+
+* subgroups: X_J^M, X_{JK}^M, ...
+
+* (complex) products:
+   w * [w1, w2] = [w w1. w w2]
+   X_J^M * X_M = X_J
+   A * B = { a * b | a \in A, b \in B }
+  
+* intersections:
+   X_J^{-1} \cap X_K = X_{JK},
+   X_J \cap X_K = X_{J \cup K}
+
+*  Y_J, Y_{JK}, Y_{JKL} ...
+
+*  Z_J, Z_{JK}. Z_{JKL} ...
+
+*  membership: w in X_J, w in Y_K ...
+
+* LeftCells ...
+
+* Bruhat intervals ...
+
+* All of that wrt to ReflectionLength ...
