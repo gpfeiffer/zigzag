@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.7 2002/11/22 13:27:43 goetz Exp $
+#A  $Id: shapes.g,v 1.8 2002/11/22 18:10:48 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -259,6 +259,11 @@ end;
 Shapes:= function(W)
     local   S,  shapes,  l,  d,  sh,  pos;
     
+    if IsBound(W.shapes) then
+        return W.shapes;
+    fi;
+    
+    
     # get the Coxeter System (W, S) to work in.
     S:= W.rootInclusion{[1..W.semisimpleRank]};
     
@@ -282,7 +287,9 @@ Shapes:= function(W)
             Add(shapes, sh);
         od;
     od;
-
+    
+    # remember the shapes before returning them.
+    W.shapes:= shapes;
     return shapes;
 end;
 
