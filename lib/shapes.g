@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.16 2004/03/02 13:45:02 goetz Exp $
+#A  $Id: shapes.g,v 1.17 2004/03/02 18:22:40 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -214,6 +214,16 @@ end;
 ##
 ShapeOps.\= := function(l, r)
     return l.W = r.W and l.J in r;
+end;
+
+#############################################################################
+##
+#F  <l> < <r>  . . . . . . . . . . . . . . . . . . . . . . . . .  comparison.
+##
+ShapeOps.\< := function(l, r)
+    if not IsShape(l) then return false; fi;
+    if not IsShape(r) then return false; fi;
+    return l.W < r.W or l.W = r.W and Elements(l) < Elements(r);
 end;
 
 
