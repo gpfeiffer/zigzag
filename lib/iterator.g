@@ -7,54 +7,100 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: iterator.g,v 1.1 2002/11/22 13:29:12 goetz Exp $
+#A  $Id: iterator.g,v 1.2 2002/12/03 11:42:54 goetz Exp $
 ##
+##  <#GAPDoc Label="Intro:Iterators">
 ##  This file contains a dispatcher for iterators on domains.
 ##  
-##  An iterator is a record that provides two functions 'hasNext()'
-##  and 'next()'  that can be used to loop over the elements of a
+##  An <E>iterator</E> <Index>Iterator</Index>
+##  is a record that provides two functions <C>hasNext()</C>
+##  and <C>next()</C>  that can be used to loop over the elements of a
 ##  (finite) domain.
 ##  
-##  'hasNext()' returns 'true' if there are still elements to be looped over.
+##  <C>hasNext()</C> returns <K>true</K> if there are still elements to
+##  be looped over.<Index Key="hasNext"><C>hasNext()</C></Index>
 ##  
-##  'next()' returns the next element from the domain.
-##
-##  After the loop, the iterator object is garbage and shoul be discarded.
+##  <C>next()</C> returns the next element from the domain.
+##  <Index Key="next"><C>next()</C></Index>
 ##
 ##  Typical usage:
-##  
+##  <Example>
 ##  itr:= Iterator(domain);
 ##  while itr.hasNext() do
 ##      Print(itr.next(), "\n");
 ##  od;
+##  </Example>
 ##
+##  Iterators are disposable.
+##  After the loop, the iterator object 
+##  that was used is garbage and should be discarded.
+##
+##  <#/GAPDoc>
 ##
 
 #############################################################################
 ##  
-##  An iterator for sets:
+#F  IteratorSet( <set> ) . . . . . . . . . . . . . . . . . . . . .  iterator.
+##
+##  <#GAPDoc Label="IteratorSet">
+##  <ManSection>
+##  <Func Name="IteratorSet" Arg="set"/>
+##  <Returns>
+##    an iterator for the set <A>set</A>
+##  </Returns>
+##  <Description>
+##  <Example>
+##  gap> X:= [2, 3, 5, 7, 11];
+##  [ 2, 3, 5, 7, 11 ]
+##  gap> itr:= IteratorSet(X);
+##  rec(
+##    hasNext := function (  ) ... end,
+##    next := function (  ) ... end )
+##  gap> Print(itr.next());  while itr.hasNext() do Print(", ", itr.next()); od;
+##  2, 3, 5, 7, 11gap> Print("\n");  Unbind(itr);
+##  
+</Example>
+</Description>
+</ManSection>
+<#/GAPDoc>
 ##
 IteratorSet:= function(set)
-    local itr;
-    itr:= rec(set:= set, i:= 0);
+    local itr, i;
+    
+    # initialize.
+    i:=0;  itr:= rec();
+    
+    # the hasNext() function.
     itr.hasNext:= function() 
-        return itr.i < Length(itr.set);
+        return i < Length(set);
     end;
+    
+    # the next() function.
     itr.next:= function() 
-        itr.i:= itr.i + 1;
-        return itr.set[itr.i]; 
+        i:= i + 1;
+        return set[i]; 
     end;
+    
     return itr;
 end;
 
+
 #############################################################################
 ##
-#F  Iterator( <domain> )
+#F  Iterator( <domain> ) . . . . . . . . . . . . . . . . . . . . .  iterator. 
 ##
-##  returns an iterator for the domain.  
-##  
-##  An iterator is to be used only once and therefore it must not be
-##  remembered.
+##  <#GAPDoc Label="Iterator">
+##  <ManSection>
+##  <Oper Name="Iterator" Arg="domain"/>
+##  <Returns>
+##    an iterator for the domain <A>domain</A>.
+##  </Returns>
+##  <Description>
+##    An iterator is to be used only once and therefore it must not be
+##    remembered.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 Iterator:= function(D)
     local  itr;

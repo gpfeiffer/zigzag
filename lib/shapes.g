@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.11 2002/11/29 15:43:35 goetz Exp $
+#A  $Id: shapes.g,v 1.12 2002/12/03 11:45:33 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -38,8 +38,26 @@ ShapeOps:= OperationsRecord("ShapeOps", DomainOps);
 #C  Shape( <W>, <WJ> )  . . . . . . . . . . . . . . . . . . . .  constructor.
 #C  Shape( <W>, <w> ) . . . . . . . . . . . . . . . . . . . . .  constructor.
 ##  
-##  returns an object that represents the shape of <J> in the Coxeter group 
-##  <W>.
+##  <#GAPDoc Label="Shape">
+##  <ManSection>
+##  <Func Name="Shape" Arg="W, J"/>
+##  <Returns>
+##    a new shape, an object that represents the shape of <A>J</A> in 
+##    <A>W</A>. 
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for the shape class.  It constructs and
+##  returns the shape of <A>J</A> in <A>W</A>.  Here <A>W</A> is a finite
+##  Coxeter group of rank <M>n</M> and <A>J</A> is a subset of
+##  <M>[1..n]</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("E", 6);; 
+##  gap> Shape(W, [1, 2, 3]);
+##  Shape( CoxeterGroup("E", 6), [ 1, 2, 3 ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 ##  public fields:
 ##    W, the Coxeter group.
@@ -61,6 +79,15 @@ end;
 ##
 #F  IsShape( <obj> )  . . . . . . . . . . . . . . . . . . . . . . type check.
 ##
+##  <#GAPDoc Label="IsShape">
+##  <ManSection>
+##  <Func Name="IsShape" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a shape and <K>false</K> otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
 IsShape:= function(obj)
     return IsRec(obj) and IsBound(obj.isShape) and obj.isShape = true;
 end;
@@ -70,6 +97,8 @@ end;
 ##  
 #F  Print( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
+##  
+##
 ShapeOps.Print:= function(this)
     Print("Shape( ", this.W, ", ", this.J, " )");
 end;
@@ -81,6 +110,22 @@ end;
 ##
 ##  A shape, as a class of parabolic subsets, has a representative.
 ##
+##  <#GAPDoc Label="Representative(shape)">
+##  <ManSection>
+##  <Meth Name="Representative" Arg="shape" Label="for shapes"/>
+##  <Returns>a representative of the shape <A>shape</A>.</Returns>
+##  <Description>The representative of a shape constructed 
+##  as <C>Shape(W, J)</C> (see <Ref Label="Shape"/>) will be its
+##  initial element <C>J</C>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> Representative(Shape(W, [2]));
+##  [ 2 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
 ShapeOps.Representative:= function(this)
     return this.J;
 end;
@@ -90,11 +135,26 @@ end;
 ##  
 #F  Elements( <shape> ) . . . . . . . . . . . . . . . . . . . . . . elements.
 ##  
-##  returns the set of members of a Coxeter class
-##  in the form of subsets of S, sorted lexicographically. 
-##
-##  This function implements the Lusztig-Spaltenstein Theorem [GP 2.3.3].
-##  That makes it much (!!) faster than simple conjugacy tests!!
+##  <#GAPDoc Label="Elements(shape)">
+##  <ManSection>
+##  <Meth Name="Elements" Arg="shape" Label="for shapes"/>
+##  <Returns>
+##    the set of elements of the shape <A>shape</A>.
+##  </Returns>
+##  <Description>
+##  The shape of <M>J</M> in <M>W</M> consists of all subsets of <M>S</M>
+##  which are conjugate to <M>J</M> under <M>W</M>.
+##  The conjugates can be efficiently computed
+##  using <Cite Key="GePf2000" Where="Theorem 2.3.3"/>.
+##  This is much faster than simple conjugacy tests.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> Elements(Shape(W, [2]));
+##  [ [ 1 ], [ 2 ], [ 3 ] ] 
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 ShapeOps.Elements:= function(this)
     local   W,  S,  K,  L, onParabolics,  orbit,  transversal,  edges,  k,  
@@ -260,19 +320,30 @@ end;
 ##            a list of Coxeter classes;
 ##      and the mapping of conjugacy classes of elements to Coxeter classes.
 ##
+##  <#GAPDoc Label="Shapes">
+##  <ManSection>
+##  <Func Name="Shapes" Arg="W"/>
+##  <Returns>
+##    the list of shapes of the Coxeter group <A>W</A>.
+##  </Returns>
+##  <Description>
+##  The shapes are sorted by rank, and within each rank by the size of the
+##  corresponding parabolic subgroup.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;  W.name:= "W";;
+##  gap> Shapes(W);                                
+##  [ Shape( W, [  ] ), Shape( W, [ 1 ] ), Shape( W, [ 1, 3 ] ), 
+##    Shape( W, [ 1, 2 ] ), Shape( W, [ 1, 2, 3 ] ) ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##  
-##  returns a list of Coxeter classes; each class consisting of its members
-##  in the form of subsets of S, sorted lexicographically. The classes are
-##  sorted by rank, and within each rank by the size of the parabolic
-##  subgroup.
-##
 Shapes:= function(W)
     local   S,  shapes,  l,  d,  sh,  pos;
     
-    if IsBound(W.shapes) then
-        return W.shapes;
-    fi;
-    
+    # let's see, we might know it already.
+    if IsBound(W.shapes) then  return W.shapes;  fi;
     
     # get the Coxeter System (W, S) to work in.
     S:= W.rootInclusion{[1..W.semisimpleRank]};
@@ -391,7 +462,50 @@ end;
 ##
 ##  XCharacters( <W> ) . . . . . . . . . . . . . . . . . . . . .  characters.
 ##
-##  returns the list of parabolic permutation characters of W.
+##  <#GAPDoc Label="XCharacters">
+##  <ManSection>
+##  <Func Name="XCharacters" Arg="W"/>
+##  <Returns>
+##    the list of parabolic permutation characters of <A>W</A>.
+##  </Returns>
+##  <Description>
+##  <Example>
+##  gap> W:= CoxeterGroup("D", 4);;
+##  gap> xch:= XCharacters(W);                     
+##  [ [ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], 
+##    [ 96, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], 
+##    [ 48, 8, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], 
+##    [ 48, 0, 0, 8, 0, 0, 8, 0, 0, 0, 0, 0, 0 ], 
+##    [ 48, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 0, 0 ], 
+##    [ 32, 0, 0, 8, 0, 0, 0, 0, 0, 2, 0, 0, 0 ], 
+##    [ 24, 4, 0, 6, 0, 2, 4, 4, 0, 0, 0, 0, 0 ], 
+##    [ 8, 4, 0, 4, 2, 0, 0, 0, 0, 2, 0, 0, 0 ], 
+##    [ 8, 0, 0, 4, 0, 0, 4, 0, 0, 2, 0, 2, 0 ], 
+##    [ 8, 0, 0, 4, 0, 0, 0, 4, 0, 2, 0, 0, 2 ], 
+##    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ] ]
+##  gap> ct:= CharTable(W);;  Unbind(ct.irredinfo);
+##  gap> Display(ct, rec(chars:= xch, letter:= "X", powermap:= false,        
+##  >                    centralizers:= false));
+##  W( D4 )
+##  
+##          1111. 11.11 .1111 211. 1.21 2.11 22.+ 22.- .22 31. .31 4.+ 4.-
+##  
+##  X.1       192     .     .    .    .    .    .    .   .   .   .   .   .
+##  X.2        96     .     .    8    .    .    .    .   .   .   .   .   .
+##  X.3        48     8     .    8    .    .    .    .   .   .   .   .   .
+##  X.4        48     .     .    8    .    .    8    .   .   .   .   .   .
+##  X.5        48     .     .    8    .    .    .    8   .   .   .   .   .
+##  X.6        32     .     .    8    .    .    .    .   .   2   .   .   .
+##  X.7        24     4     .    6    .    2    4    4   .   .   .   .   .
+##  X.8         8     4     .    4    2    .    .    .   .   2   .   .   .
+##  X.9         8     .     .    4    .    .    4    .   .   2   .   2   .
+##  X.10        8     .     .    4    .    .    .    4   .   2   .   .   2
+##  X.11        1     1     1    1    1    1    1    1   1   1   1   1   1
+##  
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 XCharacters:= function(W)
     local   pch,  ct,  lambda,  sub,  cts,  fus;
@@ -417,9 +531,64 @@ end;
 ##
 ##  YCharacters( <W> ) . . . . . . . . . . . . . . . . . . . . .  characters.
 ##
-##  returns the list of PIE stripped permutation characters of W, one
-##  character for each subset $J \subseteq S$, sorted in the same order as the
-##  'Subsets'.
+##  <#GAPDoc Label="YCharacters">
+##  <ManSection>
+##  <Func Name="YCharacters" Arg="W"/>
+##  <Returns>
+##    the list of PIE stripped parabolic permutation characters of <A>W</A>.
+##  </Returns>
+##  <Description>
+##  There is  one
+##  character for each subset <M>J \subseteq S</M>, sorted in the same order
+##  as the
+##  <C>SubsetsShapes(W)</C> (see <Ref Label="SubsetsShapes"/>).
+##  <Example>
+##  gap> W:= CoxeterGroup("D", 4);;
+##  gap> ych:= YCharacters(W);
+##  [ [ 1, 1, 1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1 ], 
+##    [ 7, -1, -1, -3, 1, 1, -1, 3, -1, 1, -1, 1, -1 ], 
+##    [ 7, -1, -1, -3, 1, 1, 3, -1, -1, 1, -1, -1, 1 ], 
+##    [ 23, 3, -1, -5, 1, -1, 3, 3, -1, -1, -1, 1, 1 ], 
+##    [ 7, 3, -1, -3, -1, 1, -1, -1, -1, 1, -1, 1, 1 ], 
+##    [ 17, 1, 1, -1, -1, -1, -3, -3, 1, -1, 1, 1, 1 ], 
+##    [ 17, -3, 1, -1, 1, -1, 1, -3, 1, -1, 1, -1, 1 ], 
+##    [ 17, -3, 1, -1, 1, -1, -3, 1, 1, -1, 1, 1, -1 ], 
+##    [ 17, -3, 1, 1, -1, 1, -3, 1, 1, -1, 1, -1, 1 ], 
+##    [ 17, -3, 1, 1, -1, 1, 1, -3, 1, -1, 1, 1, -1 ], 
+##    [ 17, 1, 1, 1, 1, 1, -3, -3, 1, -1, 1, -1, -1 ], 
+##    [ 23, 3, -1, 5, -1, 1, 3, 3, -1, -1, -1, -1, -1 ], 
+##    [ 7, 3, -1, 3, 1, -1, -1, -1, -1, 1, -1, -1, -1 ], 
+##    [ 7, -1, -1, 3, -1, -1, 3, -1, -1, 1, -1, 1, -1 ], 
+##    [ 7, -1, -1, 3, -1, -1, -1, 3, -1, 1, -1, -1, 1 ], 
+##    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ] ]
+##  gap> ct:= CharTable(W);;  Unbind(ct.irredinfo);
+##  gap> Display(ct, rec(chars:= ych, letter:= "Y", powermap:= false,
+##  >                    centralizers:= false));
+##  W( D4 )
+##  
+##          1111. 11.11 .1111 211. 1.21 2.11 22.+ 22.- .22 31. .31 4.+ 4.-
+##  
+##  Y.1         1     1     1   -1   -1   -1    1    1   1   1   1  -1  -1
+##  Y.2         7    -1    -1   -3    1    1   -1    3  -1   1  -1   1  -1
+##  Y.3         7    -1    -1   -3    1    1    3   -1  -1   1  -1  -1   1
+##  Y.4        23     3    -1   -5    1   -1    3    3  -1  -1  -1   1   1
+##  Y.5         7     3    -1   -3   -1    1   -1   -1  -1   1  -1   1   1
+##  Y.6        17     1     1   -1   -1   -1   -3   -3   1  -1   1   1   1
+##  Y.7        17    -3     1   -1    1   -1    1   -3   1  -1   1  -1   1
+##  Y.8        17    -3     1   -1    1   -1   -3    1   1  -1   1   1  -1
+##  Y.9        17    -3     1    1   -1    1   -3    1   1  -1   1  -1   1
+##  Y.10       17    -3     1    1   -1    1    1   -3   1  -1   1   1  -1
+##  Y.11       17     1     1    1    1    1   -3   -3   1  -1   1  -1  -1
+##  Y.12       23     3    -1    5   -1    1    3    3  -1  -1  -1  -1  -1
+##  Y.13        7     3    -1    3    1   -1   -1   -1  -1   1  -1  -1  -1
+##  Y.14        7    -1    -1    3   -1   -1    3   -1  -1   1  -1   1  -1
+##  Y.15        7    -1    -1    3   -1   -1   -1    3  -1   1  -1  -1   1
+##  Y.16        1     1     1    1    1    1    1    1   1   1   1   1   1
+##  
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 YCharacters:= function(W)
     local   shapes,  lll,  iii,  i;
