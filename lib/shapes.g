@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.4 2002/11/11 09:58:48 goetz Exp $
+#A  $Id: shapes.g,v 1.5 2002/11/19 20:50:15 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -35,6 +35,8 @@ ShapeOps:= OperationsRecord("ShapeOps", DomainOps);
 #############################################################################
 ##  
 #C  Shape( <W>, <J> ) . . . . . . . . . . . . . . . . . . . . .  constructor.
+#C  Shape( <W>, <WJ> )  . . . . . . . . . . . . . . . . . . . .  constructor.
+#C  Shape( <W>, <w> ) . . . . . . . . . . . . . . . . . . . . .  constructor.
 ##  
 ##  returns an object that represents the shape of <J> in the Coxeter group 
 ##  <W>.
@@ -135,7 +137,8 @@ end;
 #############################################################################
 # TODO: Is this reflection subgroup safe?
 NormalizerShape:= function(W, J)
-    local   shape,  e,  t,  movers,  shakers,  i,  j,  nor;
+    local   shape,  edges,  t,  movers,  shakers,  i,  e,  j,  nor;
+    
     shape:= Shape(W, J);
     edges:= shape.operations.Edges(shape);  
     t:= shape.operations.Transversal(shape);
@@ -209,13 +212,10 @@ end;
 ##  
 #F  Elements( <shapes> ) . . . . . . . . . . . . . . . . . . . . .  elements.
 ##  
-##  returns a list of coxeter classes; each class consisting of its members
+##  returns a list of Coxeter classes; each class consisting of its members
 ##  in the form of subsets of S, sorted lexicographically. The classes are
 ##  sorted by rank, and within each rank by the size of the parabolic
-##  subgroup.  (administrative information.)
-##
-##  This function implements the Lusztig-Spaltenstein Theorem [GP 2.3.3].
-##  That makes it much (!!) faster than simple conjugacy tests!!
+##  subgroup.
 ##
 ShapesOps.Elements:= function(this)
     local   W,  S,  elms,  l,  d,  orbit,  pos;
@@ -298,7 +298,7 @@ end;
 ShapesOps.IncidenceMat:= function(this)
     local   subsets,  inc,  a,  l,  b;
 
-    subsets:= ShapesOps.Subsets(this);    
+    subsets:= this.operations.Subsets(this);    
     inc:= [];
     for a in subsets do 
         l:= [];
