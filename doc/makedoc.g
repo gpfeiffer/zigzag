@@ -4,5 +4,6 @@ files:= [];
 bookname:= "ZigZag";
 str:= ComposedXMLString(path, main, files);
 r:= ParseTreeXMLString(str);
-CheckAndCleanUpGapDocTree(r);
+CheckAndCleanGapDocTree(r);
 l:= GAPDoc2LaTeX(r);;
+FileString(Filename(path, Concatenation(bookname, ".tex")), l);
