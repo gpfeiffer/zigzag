@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.12 2002/12/03 11:45:33 goetz Exp $
+#A  $Id: shapes.g,v 1.13 2002/12/04 18:04:37 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -211,21 +211,75 @@ end;
 
 #############################################################################
 ##
-#F  ShapeOps.Transversal( <shape> )  . . . . . . . . . . . . . . transversal.
+#F  ShapeOps.Edges( <shape> ) . . . . . . . . . . . . . . . . . . . .  edges.
 ##
-ShapeOps.Transversal:= function(this)
+##  <#GAPDoc Label="Edges(shape)">
+##  <ManSection>
+##  <Meth Name="ShapeOps.Edges" Arg="shape"/>
+##  <Returns>
+##    the list of edges of the graph formed by the elements of the shape 
+##    <A>shape</A>.
+##  </Returns>
+##  <Description>
+##  <C>ShapeOps.Edges(shape)</C> returns a list of lists <C>l</C>
+##  with <C>l[i][k]</C> bound to a record <C>r</C> if vertex <C>i</C>
+##  is the initial vertex of a directed edge with label <C>k</C>.
+##  In that
+##  case the record <C>r</C> has two components, <C>v</C>
+##  for the (address of the) terminal vertex of the edge
+##  and <C>d</C> for the conjugating element $d_J^M = w_J w_M \in W$
+##  that maps the intial vertex to the terminal vertex.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 2);;
+##  gap> sh:= Shape(W, [1]);;
+##  gap> sh.operations.Edges(sh);
+##  [ [ , rec(
+##            v := 2,
+##            d := (1,2,6)(3,4,5) ) ], [ rec(
+##            v := 1,
+##            d := (1,6,2)(3,5,4) ) ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
+ShapeOps.Edges:= function(this)
     this.operations.Elements(this);  # expand the shape.
-    return this.transversal;
+    return this.edges;
 end;
 
 
 #############################################################################
 ##
-#F  ShapeOps.Edges( <shape> ) . . . . . . . . . . . . . . . . . . . .  edges.
+#F  ShapeOps.Transversal( <shape> )  . . . . . . . . . . . . . . transversal.
 ##
-ShapeOps.Edges:= function(this)
+##  <#GAPDoc Label="Transversal(shape)">
+##  <ManSection>
+##  <Meth Name="ShapeOps.Transversal" Arg="shape"/>
+##  <Returns>
+##    a transversal of the graph formed by the elements of the shape 
+##    <A>shape</A>.
+##  </Returns>
+##  <Description>
+##  ...
+##  
+##  The transversal is constructed together with the elements of <A>shape</A>.
+##  
+##  ...
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> sh:= Shape(W, [1]);;
+##  gap> sh.operations.Transversal(sh);
+##  [ (), ( 1, 2,10)( 3, 6, 5)( 4, 7, 8)( 9,12,11),
+##    ( 1, 3)( 2,12)( 4,10)( 5,11)( 6, 8)( 7, 9) ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##    
+ShapeOps.Transversal:= function(this)
     this.operations.Elements(this);  # expand the shape.
-    return this.edges;
+    return this.transversal;
 end;
 
 
@@ -285,7 +339,24 @@ end;
 ##
 #F  ShapeOps.Relation( <shape> )  . . . . . . . . . . . . . . . . . relation.
 ##
-##  returns the underlying directed graph of the shape as a binary relation.
+##  <#GAPDoc Label="Relation(shape)">
+##  <ManSection>
+##  <Meth Name="ShapeOps.Relation" Arg="shape"/>
+##  <Returns>
+##    the directed graph formed by the elements of the shape as a
+##    binary relation.
+##  </Returns>
+##  <Description>
+##  ...
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> sh:= Shape(W, [1]);;
+##  gap> sh.operations.Relation(sh);
+##  Relation( [ [ 1, 2 ], [ 1, 3 ], [ 2, 3 ] ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 ShapeOps.Relation:= function(this)
     local  list;
@@ -298,8 +369,32 @@ end;
 ##
 #F  ConjugacyClasses( <shape> )  . . . . . . . . . . . . . conjugacy classes.
 ##
-##  returns the list of addresses of conjugacy
-##  classes of elements of $W$ of the corresponding shape.
+##  <#GAPDoc Label="ConjugacyClasses(shape)">
+##  <ManSection>
+##  <Meth Name="ConjugacyClasses" Label="for shapes" Arg="shape"/>
+##  <Meth Name="ShapeOps.ConjugacyClasses" Arg="shape"/>
+##  <Returns>
+##    the list of addresses of conjugacy
+##    classes of elements of $W$ of  shape <A>shape</A>.
+##  </Returns>
+##  <Description>
+##  ...
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> List(ConjugacyClasses(W), x-> CoxeterWord(W, Representative(x)));
+##  [ [  ], [ 1 ], [ 1, 3 ], [ 1, 2 ], [ 1, 2, 3 ] ]
+##  gap> ConjugacyClasses(Shape(W, [1,2]));
+##  [ 4 ]
+##  gap> W:= CoxeterGroup("B", 3);;
+##  gap> List(ConjugacyClasses(W), x-> CoxeterWord(W, Representative(x)));
+##  [ [  ], [ 1 ], [ 1, 2, 1, 2 ], [ 1, 2, 1, 2, 3, 2, 1, 2, 3 ], [ 2 ],
+##    [ 1, 2 ], [ 1, 3 ], [ 1, 2, 1, 2, 3 ], [ 2, 3 ], [ 1, 2, 3 ] ]
+##  gap> ConjugacyClasses(Shape(W, [1,2]));
+##  [ 3, 6 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 ShapeOps.ConjugacyClasses:= function(this)
     local   W,  cc;
@@ -378,9 +473,6 @@ end;
 #############################################################################
 ##
 #F  SubsetsShapes( <shapes> ) . . . . . . . . . . . . . . . . .  subsets.
-##
-##  returns a list of lists, one for every shape, of addresses of conjugacy
-##  classes of elements of $W$ of the corresponding shape.
 ##
 SubsetsShapes:= function(shapes)
     return Concatenation(List(shapes, Elements));
@@ -539,9 +631,8 @@ end;
 ##  </Returns>
 ##  <Description>
 ##  There is  one
-##  character for each subset <M>J \subseteq S</M>, sorted in the same order
-##  as the
-##  <C>SubsetsShapes(W)</C> (see <Ref Label="SubsetsShapes"/>).
+##  character for each subset <M>J \subseteq S</M>, sorted in shape order;
+##  see <Ref Func="SubsetsShapes"/>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("D", 4);;
 ##  gap> ych:= YCharacters(W);

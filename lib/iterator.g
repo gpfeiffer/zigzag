@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: iterator.g,v 1.3 2002/12/03 18:01:27 goetz Exp $
+#A  $Id: iterator.g,v 1.4 2002/12/04 18:04:59 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Iterators">
 ##  This file contains a dispatcher for iterators on domains.
@@ -124,7 +124,8 @@ end;
 ##  <Meth Name="Iterator" Label="for domains" Arg="domain"/>
 ##  <Returns>an iterator for the domain <A>domain</A>.</Returns>
 ##  <Description>
-##  The default iterator for domain is the iterator over its set of elements.
+##  The default iterator for a domain is the iterator returned by 
+##  <Ref Func="IteratorSet"/> for its set of elements.
 ##  Particular domains can implement their own more space efficient versions.
 ##  </Description>
 ##  </ManSection>
@@ -133,6 +134,34 @@ end;
 DomainOps.Iterator:= function(D)
     return IteratorSet(Elements(D));
 end;
+
+#############################################################################
+IteratorRange:= function(range)
+    local   itr,  len,  more,  lo,  hi,  inc,  val;
+    
+    # check argument.
+    if not IsRange(range) then Error("<range> must be a range"); fi;
+    
+    # initialize.
+    itr:= rec();  len:= Length(range);  more:= len > 0;
+    if more then
+        lo:= range[1];  hi:= range[len]; 
+        if len > 1 then inc:= range[2]-lo; else inc:= 0; fi;
+    fi;
+    
+    # the hasNext() function.
+    itr.hasNext:= function() return more; end;
+    
+    # the next() function.
+    itr.next:= function() 
+        local val;
+        more:= lo <> hi;  val:= lo;  lo:= lo + inc;
+        return val; 
+    end;
+    
+    return itr;
+end;
+         
 
 #############################################################################
 ##
