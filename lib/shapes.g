@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.18 2004/03/08 16:59:41 goetz Exp $
+#A  $Id: shapes.g,v 1.19 2004/04/13 11:19:32 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -507,6 +507,8 @@ ShapesRank:= function(W, l)
     return shapes;
 end;
 
+##  FIXME:  use ShapesRank in function below and publish it!
+
 Shapes:= function(W)
     local   S,  shapes,  l,  d,  sh,  pos;
     
@@ -693,6 +695,13 @@ XCharacters:= function(W)
 end;
 
 #############################################################################
+ParabolicTom:= function(W)
+    local   c;
+    c:= List(Shapes(W), x-> ConjugacyClasses(x)[1]);
+    return List(XCharacters(W), x-> x{c});
+end;
+
+#############################################################################
 ##
 ##  YCharacters( <W> ) . . . . . . . . . . . . . . . . . . . . .  characters.
 ##
@@ -771,13 +780,24 @@ end;
 
 #############################################################################
 ##
+##  ZCharacters
+##
+##  zeta_K = sgn * pi_{S-K}, or as suitable  combination of the theta_K:
+##
+ZCharacters:= function(W)
+    return TransposedMat(IncidenceMatShapes(Shapes(W))) * YCharacters(W);
+end;
+
+
+#############################################################################
+##
 ##  Find all ConjugacyClasses of involutions as shapes with a center.
 ##  Reference: Richardson.
 ##  must care for the case of W being a parabolic subgroup.
 ##  how about reflection subgroups?
 ##  FIXME: What is the most efficient way to do this?
 ##
-Involutions:= function(W)
+InvolutionShapes:= function(W)
     local   inv,  s,  r,  g,  w;
     inv:= [];
     for s in Shapes(W) do
@@ -790,6 +810,14 @@ Involutions:= function(W)
     return inv;    
 end;
 
+Involutions:= function(W)
+    local   inv,  s;
+    inv:= [];
+    for s in InvolutionShapes(W) do
+        inv:= Union(inv, ConjugacyClass(W, LongestCoxeterElement(ReflectionSubgroup(W, Representative(s)))));
+    od;
+    return inv;
+end;
 
 
 #############################################################################
