@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.20 2004/04/20 12:00:04 goetz Exp $
+#A  $Id: shapes.g,v 1.21 2005/04/13 17:27:56 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -830,6 +830,70 @@ end;
 #############################################################################
 PrimeShapes:= function(W)
     return 0; ##FIXME
+end;
+
+#############################################################################
+ShapeOps.CartanName:= function(sh)
+    #FIXME: this naming scheme works only for small irreducibles ...
+    #FIXME: and maybe we have to take care of types B and F ...
+    #FIXME: the best solution probably leaves room for changes by hand ...
+    local   typ,  t,  name;
+    
+    # get Cartan type.
+    typ:= Copy(CartanType(ReflectionSubgroup(W, sh.J)));
+    
+    # trivial case first.
+    if typ = [] then return "\\emptyset"; fi;
+    
+    # switch to rank information.
+    for t in typ do
+        t[2]:= Length(t[2]);
+    od;
+    
+    Sort(typ, function(a, b) return a > b; end);
+    
+    #FIXME: this naming scheme works only for small irreducibles ...
+    for t in [2..Length(typ)] do
+        if typ[t][1] <> "A" then
+            Error("not yet implemented");
+        fi;
+    od;
+    
+    for t in [1..Length(typ)] do
+        if typ[t][2] > 9 then
+            Error("not yet implemented");
+        fi;
+    od;
+    
+    
+    name:= typ[1][1];
+    Append(name, "_{");
+    for t in typ do
+        Append(name, String(t[2]));
+    od;
+    Append(name, "}");
+    IsString(name);
+    
+    return name;
+end;
+
+
+NamesShapes:= function(shapes)
+    local   nam,  n,  pos,  i,  j;
+    nam:= List(shapes, CartanName);
+    for n in nam do
+        pos:= Filtered([1..Length(nam)], i-> nam[i] = n);
+        if Length(pos) > 1 then
+            for i in [1..Length(pos)] do
+                for j in [1..i] do
+                    Add(nam[pos[i]], '\'');
+                    IsString(nam[pos[i]]);
+                od;
+            od;
+        fi;
+    od;
+    
+    return nam;
 end;
 
 
