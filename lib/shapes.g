@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.21 2005/04/13 17:27:56 goetz Exp $
+#A  $Id: shapes.g,v 1.22 2005/04/14 15:22:38 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -469,7 +469,8 @@ end;
 ##  </Returns>
 ##  <Description>
 ##  The shapes are sorted by rank, and within each rank by the size of the
-##  corresponding parabolic subgroup.
+##  corresponding parabolic subgroup, and within the same parabolic size
+##  by the size of the shape.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;  W.name:= "W";;
 ##  gap> Shapes(W);                                
@@ -504,10 +505,19 @@ ShapesRank:= function(W, l)
         Add(shapes, sh);
     od;
     
+    Sort(shapes, function(a, b)
+        local l;
+        l:= Size(ReflectionSubgroup(W, a.J)) - Size(ReflectionSubgroup(W, b.J));
+        if l = 0 then
+            return Size(a) < Size(b);
+        else
+            return l < 0;
+        fi;
+    end);
+        
+    
     return shapes;
 end;
-
-##  FIXME:  use ShapesRank in function below and publish it!
 
 Shapes:= function(W)
     local   S,  shapes,  l,  d,  sh,  pos;
@@ -523,20 +533,7 @@ Shapes:= function(W)
 
     # loop over all possible ranks l.  
     for l in [0..Length(S)] do 
-        d:= Combinations(S, l);
-
-        # sort 'd' wrt size.
-        Sort(d, function(a, b) return 
-          Size(ReflectionSubgroup(W, a)) < Size(ReflectionSubgroup(W, b)); 
-        end);
-
-        # orbits algorithm.
-        while d <> [] do
-            sh:= Shape(W, d[1]);
-            pos:= List(Elements(sh), x-> Position(d, x));
-            d:= d{Difference([1..Length(d)], pos)};
-            Add(shapes, sh);
-        od;
+        Append(shapes, ShapesRank(W, l));
     od;
     
     # remember the shapes before returning them.
