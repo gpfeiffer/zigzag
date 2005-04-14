@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.16 2005/03/01 16:56:25 goetz Exp $
+#A  $Id: descent.g,v 1.17 2005/04/14 14:34:59 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -62,6 +62,14 @@ end;
 ##  
 DescentAlgebraOps.Print:= function(this)
     Print("DescentAlgebra( ", this.W, " )");
+end;
+
+#############################################################################
+##  
+##  
+##  
+DescentAlgebraOps.Dimension:= function(this)
+    return 2^this.W.semisimpleRank;
 end;
 
 
@@ -673,12 +681,89 @@ RadicalDescent:= function(D)
     return rad;
 end;
 
-RadicalSeriesDescent:= function(W)
-    local   ser;
-    ser:= [];
-    # ...
-    return ser;
+RadicalSeriesDescent:= function(D)
+    local   rad,  l,  r,  ser;
+    
+    rad:= RadicalDescent(D);
+    if rad = [] then return []; fi;
+    
+    l:= Length(rad[1]);
+    r:= List(rad, x-> x[l]);
+    ser:= [r];
+    
+    while true do
+        r:= Union(List(r, x-> List(rad, y-> x * y)));
+        TriangulizeMat(r);
+        r:= Difference(r, [0*r[1]]);
+        if r = [] then 
+            return ser; 
+        fi;
+        Add(ser, r);
+    od;
+    
 end;
+
+#############################################################################
+##  
+##  
+##  
+ProjectiveModule:= function(D, i)
+    local   ser,  zero,  hom,  j,  lis,  s;
+
+    ser:= List(RadicalSeriesDescent(D), x-> VectorSpace(x, Cyclotomics));
+    zero:= 0*[1..Dimension(D)];
+    hom:= [];
+    for j in [1..Length(Shapes(D.W))] do
+        hom[j]:= VectorSpace(HomDescent(D, i, j), Cyclotomics, zero);
+    od;
+    lis:= [List(hom, Dimension)];
+    for s in ser do 
+        Add(lis, List(hom, h-> Dimension(Intersection(s, h))));
+    od;
+    
+    for j in [2..Length(lis)] do
+        if lis[j] = 0*lis[j] then
+            Unbind(lis[j]);
+        else
+            lis[j-1]:= lis[j-1] - lis[j];
+        fi;
+    od;
+        
+    return lis;
+end;
+
+LaTeXProjectiveModule:= function(D, i)
+    local   lis,  nam,  text,  j,  comma,  k;
+    lis:= ProjectiveModule(D, i);
+    nam:= NamesShapes(Shapes(D.W));
+    text:= "$\\begin{array}[b]{|c|}\\hline\n";
+    for j in [1..Length(lis)] do
+        comma:= false;
+        for k in [1..Length(nam)] do
+            if lis[j][k] > 0 then
+                if comma then
+                    Append(text, "\\, ");
+                fi;
+                if lis[j][k] = 1 then
+                    Append(text, nam[k]);
+                else 
+                    Append(text, "(");
+                    Append(text, nam[k]);
+                    Append(text, ")^{");
+                    Append(text, String(lis[j][k]));
+                    Append(text, "}");
+                fi;
+                comma:= true;
+            fi;
+        od;
+        Append(text, "\\\\\\hline\n");
+    od;
+    Append(text, "\\end{array}$");
+    
+    return text;
+end;
+
+
 
 ##??? This should be a binary relation ...
 #############################################################################
