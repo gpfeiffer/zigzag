@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.22 2005/04/14 15:22:38 goetz Exp $
+#A  $Id: shapes.g,v 1.23 2005/04/15 13:15:34 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -837,7 +837,7 @@ ShapeOps.CartanName:= function(sh)
     local   typ,  t,  name;
     
     # get Cartan type.
-    typ:= Copy(CartanType(ReflectionSubgroup(W, sh.J)));
+    typ:= Copy(CartanType(ReflectionSubgroup(sh.W, sh.J)));
     
     # trivial case first.
     if typ = [] then return "\\emptyset"; fi;
