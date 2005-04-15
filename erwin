@@ -1,0 +1,181 @@
+gap> for i in [1..n] do
+> Print(LaTeXProjectiveModule(D, nam, i), "\n"); od;
+Error, Function: number of args must be 2
+gap> for i in [1..n] do
+> Print(LaTeXProjectiveModule(D, i), "\n"); od;
+$\begin{array}[b]{|c|}\hline
+\emptyset\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{1}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{11}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{2}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{111}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{21}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{3}\\\hline
+A_{1}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{1111}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{211}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{22}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{31}\\\hline
+A_{11}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{4}\\\hline
+A_{11}\, A_{2}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+D_{4}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{2111}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{221}\\\hline
+A_{111}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{311}\\\hline
+A_{111}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{32}\\\hline
+A_{21}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{41}\\\hline
+A_{111}\, A_{21}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+D_{41}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{5}\\\hline
+(A_{21})^{2}\, A_{3}\\\hline
+A_{1}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+D_{5}\\\hline
+A_{111}\, A_{21}\, A_{3}\\\hline
+A_{1}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{2211}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{321}\\\hline
+(A_{211})^{2}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{411}\\\hline
+A_{1111}\, A_{211}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{33}\\\hline
+A_{31}\\\hline
+A_{11}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{42}\\\hline
+(A_{211})^{2}\, A_{22}\, A_{31}\\\hline
+A_{11}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+D_{42}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{51}\\\hline
+(A_{211})^{2}\, A_{31}\\\hline
+A_{11}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+D_{51}\\\hline
+A_{1111}\, A_{211}\, A_{31}\\\hline
+A_{11}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{6}\\\hline
+A_{211}\, A_{22}\, (A_{31})^{2}\, A_{4}\\\hline
+(A_{11})^{2}\, A_{2}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+D_{6}\\\hline
+A_{211}\, (A_{31})^{2}\, A_{4}\\\hline
+(A_{11})^{2}\, A_{2}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+E_{6}\\\hline
+(A_{211})^{2}\, A_{31}\, A_{4}\\\hline
+(A_{11})^{2}\, A_{2}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{421}\\\hline
+(A_{2111})^{2}\, A_{221}\, A_{311}\\\hline
+A_{111}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{43}\\\hline
+A_{221}\, A_{311}\, (A_{32})^{2}\, A_{41}\\\hline
+A_{111}\, (A_{21})^{2}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{61}\\\hline
+A_{2111}\, A_{221}\, (A_{311})^{2}\, A_{41}\\\hline
+(A_{111})^{2}\, A_{21}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+D_{52}\\\hline
+A_{2111}\, A_{221}\, A_{32}\, A_{41}\\\hline
+A_{111}\, (A_{21})^{2}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+A_{7}\\\hline
+A_{221}\, A_{311}\, (A_{32})^{2}\, (A_{41})^{2}\, A_{5}\\\hline
+(A_{111})^{2}\, (A_{21})^{4}\, A_{3}\\\hline
+A_{1}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+E_{61}\\\hline
+(A_{2111})^{2}\, A_{311}\, A_{41}\\\hline
+(A_{111})^{2}\, A_{21}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+D_{7}\\\hline
+A_{2111}\, A_{311}\, (A_{32})^{2}\, A_{41}\, D_{41}\, A_{5}\\\hline
+(A_{111})^{2}\, (A_{21})^{4}\, A_{3}\\\hline
+A_{1}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+E_{7}\\\hline
+(A_{221})^{2}\, (A_{311})^{2}\, (A_{32})^{2}\, (A_{41})^{4}\, A_{5}\, D_{5}\\\\
+hline
+(A_{111})^{5}\, (A_{21})^{8}\, (A_{3})^{2}\\\hline
+(A_{1})^{2}\\\hline
+\end{array}$
+$\begin{array}[b]{|c|}\hline
+E_{8}\\\hline
+A_{22}\, A_{2211}\, (A_{321})^{3}\, (A_{411})^{3}\, A_{33}\, (A_{42})^{3}\, (A\
+_{51})^{2}\, (D_{51})^{2}\, (A_{6})^{2}\\\hline
+(A_{1111})^{4}\, (A_{211})^{15}\, (A_{22})^{4}\, (A_{31})^{10}\, (A_{4})^{2}\\\
+\hline
+(A_{11})^{8}\, (A_{2})^{2}\\\hline
+\end{array}$
+gap> LogTo();
