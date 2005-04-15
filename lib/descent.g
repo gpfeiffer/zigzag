@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.17 2005/04/14 14:34:59 goetz Exp $
+#A  $Id: descent.g,v 1.18 2005/04/15 13:18:48 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -732,17 +732,16 @@ ProjectiveModule:= function(D, i)
     return lis;
 end;
 
-LaTeXProjectiveModule:= function(D, i)
-    local   lis,  nam,  text,  j,  comma,  k;
+LaTeXProjectiveModule:= function(D, nam, i)
+    local   lis,  text,  j,  comma,  k;
     lis:= ProjectiveModule(D, i);
-    nam:= NamesShapes(Shapes(D.W));
     text:= "$\\begin{array}[b]{|c|}\\hline\n";
     for j in [1..Length(lis)] do
         comma:= false;
         for k in [1..Length(nam)] do
             if lis[j][k] > 0 then
                 if comma then
-                    Append(text, "\\, ");
+                    Append(text, "\\, \c");
                 fi;
                 if lis[j][k] = 1 then
                     Append(text, nam[k]);
