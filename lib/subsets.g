@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.8 2004/04/20 11:58:56 goetz Exp $
+#A  $Id: subsets.g,v 1.9 2005/05/06 13:48:03 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -417,11 +417,6 @@ DescentClassOps.Print:= function(this)
     Print("DescentClass( ", this.W, ", ", this.K, " )");
 end;
 
-#############################################################################
-##
-##???  Is there a more efficient method for the size of Y_K?  
-##  something that uses the moebius inversion?
-##
 
 #############################################################################
 ##
