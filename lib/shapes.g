@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.23 2005/04/15 13:15:34 goetz Exp $
+#A  $Id: shapes.g,v 1.24 2005/05/23 16:55:11 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -128,6 +128,17 @@ end;
 ##  
 ShapeOps.Representative:= function(this)
     return this.J;
+end;
+
+
+#############################################################################
+##
+#F  Rank( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . . rank.
+##
+##  The rank of a shape is the size of its elements.
+##
+ShapeOps.Rank:= function(this)
+    return Size(this.J);
 end;
 
 
@@ -600,6 +611,63 @@ CollapsedIncMatShapes:= function(shapes)
         row:= [];
         for b in shapes do
             Add(row, Number(Elements(b), x-> IsSubset(a.J, x)));
+        od;
+        Add(mat, row);
+    od;
+    return mat;
+end;
+
+
+IncMatShapes:= function(shapes)
+    local   mat,  a,  row,  nor,  b;
+    
+    mat:= [];
+    for a in shapes do
+        row:= [];
+        nor:= a.operations.Complement(a);
+        for b in shapes do
+            Add(row, Length(Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets)));
+        od;
+        Add(mat, row);
+    od;
+    return mat;
+end;
+
+
+FusMatShapes1:= function(shapes)
+    local   mat,  a,  row,  nor,  b;
+    
+    mat:= [];
+    for a in shapes do
+        row:= [];
+        nor:= Closure(ReflectionSubgroup(a.W, a.J), a.operations.Complement(a));
+        for b in shapes do
+            Add(row, Length(Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets)));
+        od;
+        Add(mat, row);
+    od;
+    return mat;
+end;
+
+FusMatShapes:= function(shapes)
+    local   mat,  a,  row,  nor,  sub,  aaa,  b,  orb,  n;
+    
+    mat:= [];
+    for a in shapes do
+        row:= [];
+        nor:= a.operations.Complement(a);
+        sub:= ReflectionSubgroup(a.W, a.J);
+        aaa:= Shapes(sub);
+        for b in shapes do
+            orb:= Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets);
+            orb:= List(orb, x-> Filtered(x, y-> IsSubset([1..W.semisimpleRank], y)));
+            if orb = [] then
+                n:= 0;
+            else
+                n:= Size(Set(List(orb, x-> Set(List(x, y-> PositionProperty(aaa, z-> y in z))))));
+            fi;
+            
+            Add(row, n);
         od;
         Add(mat, row);
     od;
