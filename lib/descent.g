@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.18 2005/04/15 13:18:48 goetz Exp $
+#A  $Id: descent.g,v 1.19 2005/05/23 17:00:51 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -252,7 +252,7 @@ end;
 #
 #  iterator version.
 #
-MaximalAJKL:= function(W, s)
+MaximalAJKL1:= function(W, s)
 
    local S, M, pos, cosrep, aJML, inn, out, J, L, ddd, sub, j, l, x;
 
@@ -300,6 +300,50 @@ MaximalAJKL:= function(W, s)
    return out;
 end;
   
+MaximalAJKL2:= function(W, s)
+
+   local S, M, pos, cosrep, aJML, inn, out, J, L, ddd, sub, j, l, x;
+
+   ddd:= SubsetsShapes(Shapes(W));
+   S:= W.rootInclusion{[1..W.semisimpleRank]};
+   M:= Difference(S, [s]);
+   pos:= Filtered([1..Length(ddd)], x-> IsSubset(M, ddd[x]));
+   sub:= ddd{pos};
+
+   cosrep:= Iterator(ParabolicTransversal(W, M));
+
+   aJML:= List(ddd, x-> 0*pos);
+   
+   
+#   for x in cosrep do
+   while cosrep.hasNext() do
+      x:= cosrep.next();
+      inn:= Difference(S, RightDescentSet(W, x));
+      InfoZigzag2(" i: ", inn, "\n");
+      for J in Combinations(inn) do
+         L:= Intersection(M, OnSets(J, x^-1));
+         j:= Position(ddd, J);  l:= Position(sub, L);
+         aJML[j][l]:= aJML[j][l] + 1;
+      od;
+   od;
+
+   # compress into pos/val (where pos is relative to all of ddd!)
+   out:= rec(pos:= [], val:= []);
+   for j in [1..Length(aJML)] do
+      out.pos[j]:= [];  out.val[j]:= [];
+      for l in [1..Length(aJML[j])] do
+         if aJML[j][l] > 0 then
+            Add(out.pos[j], pos[l]);
+            Add(out.val[j], aJML[j][l]);
+         fi;
+      od;
+   od;
+   out.ddd:= ddd; out.sub:= sub;
+   return out;
+end;
+
+MaximalAJKL:= MaximalAJKL2;
+
 # a function to blow up an aJML.
 MatCompressedAJKL:= function(aJKL)
     local   n,  mat,  i,  j;
@@ -703,6 +747,38 @@ RadicalSeriesDescent:= function(D)
     
 end;
 
+MatsRadsDescent:= function(D)
+    local   rad,  hom,  l,  zero,  i,  j,  mat,  k;
+    
+    
+    rad:= List(RadicalSeriesDescent(D), x-> VectorSpace(x, Rationals));
+    hom:= [];
+    l:= Length(Shapes(D.W));
+    zero:= 0*[1..Dimension(D)];
+    for i in [1..l] do
+        hom[i]:= [];
+        for j in [1..l] do
+            hom[i][j]:= VectorSpace(HomDescent(D, i, j), Rationals, zero);
+        od;
+    od;
+    mat:= [];
+    for k in [1..Length(rad)] do
+        mat[k]:= [];
+        for i in [1..l] do
+            mat[k][i]:= [];
+            for j in [1..l] do
+                mat[k][i][j]:= Dimension(Intersection(hom[i][j], rad[k]));
+            od;
+        od;
+    od;
+    
+    for k in [2..Length(mat)] do
+        mat[k-1]:= mat[k-1] - mat[k];
+    od;
+    
+    return mat;
+end;
+
 #############################################################################
 ##  
 ##  
@@ -710,11 +786,11 @@ end;
 ProjectiveModule:= function(D, i)
     local   ser,  zero,  hom,  j,  lis,  s;
 
-    ser:= List(RadicalSeriesDescent(D), x-> VectorSpace(x, Cyclotomics));
+    ser:= List(RadicalSeriesDescent(D), x-> VectorSpace(x, Rationals));
     zero:= 0*[1..Dimension(D)];
     hom:= [];
     for j in [1..Length(Shapes(D.W))] do
-        hom[j]:= VectorSpace(HomDescent(D, i, j), Cyclotomics, zero);
+        hom[j]:= VectorSpace(HomDescent(D, i, j), Rationals, zero);
     od;
     lis:= [List(hom, Dimension)];
     for s in ser do 
@@ -762,6 +838,23 @@ LaTeXProjectiveModule:= function(D, nam, i)
     return text;
 end;
 
+#############################################################################
+##
+## ich glaub wir brauchen ne function die zu einem Vector die entsprechende
+## Matrix macht.
+##
+MatDescentVec:= function(D, vec)
+    local   xxx,  mat,  i;
+
+    xxx:= LeftRegularX(D);
+    
+    mat:= NullMat(Dimension(D), Dimension(D));
+    for i in [1..Length(xxx)] do
+        mat:= mat + vec[i] * xxx[i];
+    od;
+    
+    return mat;
+end;
 
 
 ##??? This should be a binary relation ...
@@ -818,6 +911,168 @@ MajorIndex:= function(perm)
     
     return maj;
 end;
+
+#############################################################################
+##  
+##  
+RanMatDescent:= function(D)
+    local   mat,  xxx,  shapes,  i,  row,  iii,  j,  jjj,  lis;
+    
+    mat:= [];
+    xxx:= LeftRegularX(D);
+    shapes:= Shapes(D.W);
+    for i in [1..Length(shapes)] do
+        row:= [];
+        iii:= Sum(shapes{[1..i-1]}, Size) + [1..Size(shapes[i])];
+        for j in [1..Length(shapes)] do
+            jjj:= Sum(shapes{[1..j-1]}, Size) + [1..Size(shapes[j])];
+            lis:= List(iii, i-> List(jjj, j-> List(xxx, x-> x[i][j])));
+            Add(row, RankMat(Concatenation(lis)));
+        od;
+        Add(mat, row);
+    od;
+    return mat;
+end;
+
+SizMatDescent:= function(D)
+    local   mat,  xxx,  shapes,  i,  row,  iii,  j,  jjj,  lis;
+    
+    mat:= [];
+    xxx:= LeftRegularX(D);
+    shapes:= Shapes(D.W);
+    for i in [1..Length(shapes)] do
+        row:= [];
+        iii:= Sum(shapes{[1..i-1]}, Size) + [1..Size(shapes[i])];
+        for j in [1..Length(shapes)] do
+            jjj:= Sum(shapes{[1..j-1]}, Size) + [1..Size(shapes[j])];
+            lis:= List(iii, i-> List(jjj, j-> List(xxx, x-> x[i][j])));
+            Add(row, Size(Set(Filtered(Concatenation(lis), x-> x <> 0*x))));
+        od;
+        Add(mat, row);
+    od;
+    return mat;
+end;
+
+
+##  
+##  for each mu >= lambda the set of nontrivial vectors aJKL, 
+##  J <= S, K \in mu, L \in lambda.
+##
+LisMatDescent:= function(D)
+    local   mat,  xxx,  shapes,  i,  row,  iii,  j,  jjj,  lis;
+    
+    mat:= [];
+    xxx:= LeftRegularX(D);
+    shapes:= Shapes(D.W);
+    for i in [1..Length(shapes)] do
+        row:= [];
+        iii:= Sum(shapes{[1..i-1]}, Size) + [1..Size(shapes[i])];
+        for j in [1..Length(shapes)] do
+            jjj:= Sum(shapes{[1..j-1]}, Size) + [1..Size(shapes[j])];
+            lis:= List(iii, i-> List(jjj, j-> List(xxx, x-> x[i][j])));
+            Add(row, Set(Filtered(Concatenation(lis), x-> x <> 0*x)));
+        od;
+        Add(mat, row);
+    od;
+    return mat;
+end;
+
+##  
+##  
+ClosLis:= function(lis)
+    local   l,  clo,  i,  j,  a,  b;
+    ##  
+    l:= Length(lis);
+    clo:= [];
+    for i in [1..l] do
+        clo[i]:= [];
+        for j in [1..l] do
+            clo[i][j]:= Copy(lis[i][j]);
+            for a in [j+1..i] do
+                UniteSet(clo[i][j], lis[i][a]);
+            od;
+            for b in [j..i-1] do
+                UniteSet(clo[i][j], lis[b][j]);
+            od;
+        od;
+    od;
+    return clo;
+end;
+
+OpenLis:= function(lis)
+    local   l,  clo,  i,  j,  a,  b;
+    ##  
+    l:= Length(lis);
+    clo:= [];
+    for i in [1..l] do
+        clo[i]:= [];
+        for j in [1..l] do
+            clo[i][j]:= [];
+            for a in [j+1..i] do
+                UniteSet(clo[i][j], lis[i][a]);
+            od;
+            for b in [j..i-1] do
+                UniteSet(clo[i][j], lis[b][j]);
+            od;
+        od;
+    od;
+    return clo;
+end;
+
+##  
+##  
+ClosLisRank:= function(lis, rank)
+    local   l,  clo,  i,  j,  a,  b;
+    ##  
+    l:= Length(lis);
+    clo:= [];
+    for i in [1..l] do
+        clo[i]:= [];
+        for j in [1..l] do
+            clo[i][j]:= Copy(lis[i][j]);
+            for a in [j+1..i] do
+                if rank[j] = rank[a] - 1 then
+                    UniteSet(clo[i][j], lis[i][a]);
+                fi;
+            od;
+            for b in [j..i-1] do
+                if rank[b] = rank[i] - 1 then
+                    UniteSet(clo[i][j], lis[b][j]);
+                fi;
+            od;
+        od;
+    od;
+    return clo;
+end;
+
+OpenLisRank:= function(lis, rank)
+    local   l,  clo,  i,  j,  a,  b;
+    ##  
+    l:= Length(lis);
+    clo:= [];
+    for i in [1..l] do
+        clo[i]:= [];
+        for j in [1..l] do
+            clo[i][j]:= [];
+            for a in [j+1..i] do
+                if rank[j] = rank[a] - 1 then
+                    UniteSet(clo[i][j], lis[i][a]);
+                fi;
+            od;
+            for b in [j..i-1] do
+                if rank[b] = rank[i] - 1 then
+                    UniteSet(clo[i][j], lis[b][j]);
+                fi;
+            od;
+        od;
+    od;
+    return clo;
+end;
+
+                      
+
+    
+
 
 #############################################################################
 ##
