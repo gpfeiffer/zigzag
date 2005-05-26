@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.24 2005/05/23 16:55:11 goetz Exp $
+#A  $Id: shapes.g,v 1.25 2005/05/26 14:19:54 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -660,7 +660,7 @@ FusMatShapes:= function(shapes)
         aaa:= Shapes(sub);
         for b in shapes do
             orb:= Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets);
-            orb:= List(orb, x-> Filtered(x, y-> IsSubset([1..W.semisimpleRank], y)));
+            orb:= List(orb, x-> Filtered(x, y-> IsSubset([1..a.W.semisimpleRank], y)));
             if orb = [] then
                 n:= 0;
             else
