@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.20 2005/05/27 19:02:46 goetz Exp $
+#A  $Id: descent.g,v 1.21 2005/05/27 19:03:44 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -454,7 +454,7 @@ end;
 
 #  deprecate:
 LeftRegularZ:= function(D)
-    local   inc;
+    local   w0;
     w0:= LeftRegularY(D)[1];
     #  warning: hier muss man eigentlich noch die Reihenfolge umdrehn:
     # dies hier ergibt die Liste der z_{\hat{J}} !!!
