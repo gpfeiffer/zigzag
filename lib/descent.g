@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.19 2005/05/23 17:00:51 goetz Exp $
+#A  $Id: descent.g,v 1.20 2005/05/27 19:02:46 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -450,6 +450,15 @@ LeftRegularY:= function(D)
     local   inc;
     inc:= IncidenceMatShapes(Shapes(D.W))^-1;
     return List(inc, l-> l * LeftRegularX(D));
+end;
+
+#  deprecate:
+LeftRegularZ:= function(D)
+    local   inc;
+    w0:= LeftRegularY(D)[1];
+    #  warning: hier muss man eigentlich noch die Reihenfolge umdrehn:
+    # dies hier ergibt die Liste der z_{\hat{J}} !!!
+    return List(LeftRegularX(D), x-> x * w0);
 end;
 
 #  deprecate:
@@ -1069,9 +1078,23 @@ OpenLisRank:= function(lis, rank)
     return clo;
 end;
 
-                      
 
-    
+
+##  
+##  
+##  
+Lat:= function(D, i, j)
+    local   r,  sss,  xxx,  ttt,  f,  c;
+    r:= function(mat) if mat = [] then return 0; fi; return RankMat(mat); end;
+    sss:= SubsetsShapes(Shapes(D.W));
+    xxx:= List(RightRegularX(D), MatCompressedAJKL);
+    ttt:= List(xxx, TransposedMat);
+    f:= Filtered([j..i], k-> IsSubset(sss[i], sss[k]) and IsSubset(sss[k], sss[j]));
+    c:= List(Filtered(Cartesian(f, f), x-> x[1] >= x[2]), x-> ttt[x[1]][x[2]]);
+    return r(c) - r(Difference(c, [ttt[i][j]]));
+end;
+
+
 
 
 #############################################################################
