@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.25 2005/05/26 14:19:54 goetz Exp $
+#A  $Id: shapes.g,v 1.26 2005/08/26 17:15:49 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -891,6 +891,34 @@ Involutions:= function(W)
     od;
     return inv;
 end;
+
+SpecialInvolutions:= function(W)
+    local   invo,  spec,  s,  J,  WJ,  NJ;
+    
+    invo:= InvolutionShapes(W);
+    spec:= [];
+    for s in invo do
+        J:= s.J;
+        WJ:= ReflectionSubgroup(W, J);
+        NJ:= ShapeOps.Complement(s);
+        if Size(CommutatorSubgroup(WJ, NJ)) = 1 then
+            Add(spec, LongestCoxeterElement(ReflectionSubgroup(W, Representative(s))));
+        fi;
+    od;
+    return spec;
+end;
+
+OrlikSolomonCharacter:= function(W)
+    local   reg,  sum,  s;
+    reg:= PermutationCharacter(W, TrivialSubgroup(W));
+    sum:= 0*reg;
+    for s in SpecialInvolutions(W) do
+        sum:= sum + 2 * PermutationCharacter(W, Subgroup(W, [s])) - reg;
+    od;
+    return sum;
+end;
+
+
 
 #############################################################################
 PrimeShapes:= function(W)
