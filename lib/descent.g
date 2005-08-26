@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.21 2005/05/27 19:03:44 goetz Exp $
+#A  $Id: descent.g,v 1.22 2005/08/26 17:16:25 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -488,6 +488,14 @@ end;
 #
 #  intersections of Descent and Conjugacy classes.
 #  there is probably a more efficient way to do this ...
+##  
+##  Application:  to calculate the symmetric matrix  \theta(x_J)(x_K)
+##  
+##  inc:= IncidenceMatShapes(Shapes(W));
+##  zs:= SizesDescentConjugacyClasses(W);
+##  yct:= YCharacters(W);
+##  mat:= inc * yct * TransposedMat(inc * sz);
+##  
 #
 SizesDescentConjugacyClasses:= function(W)
     local   subsets,  cc,  sec,  csp,  per,  J,  row,  des,  w,  p,  
@@ -620,8 +628,8 @@ end;
 # for each class, list: order of w, order of the character l, order of l(w)
 # compare wrt to powermap.
 WhatCharacters:= function(W, eta)
-    local   cc,  ct,  ctc,  data,  i,  cen,  fus,  ind,  pos,  kernel,  
-            ns;
+    local   cc,  ct,  ctc,  data,  i,  cen,  fus,  ind,  pos,  WJ,  
+            cenJ,  fusJ;
     
     cc:= ConjugacyClasses(W);
     ct:= CharTable(W); 
@@ -639,7 +647,12 @@ WhatCharacters:= function(W, eta)
         pos:= Filtered([1..Length(ind)], x-> ind[x] = eta[i]);
         ctc[i].selected:= ctc[i].irreducibles{pos};
    #     kernel:= KernelChar(ctc[i].selected[1]);
-   #     ns:= NormalSubgroups(cen);
+        #     ns:= NormalSubgroups(cen);
+        
+        WJ:= ReflectionSubgroup(W, Set(CoxeterWord(W, Representative(cc[i]))));
+        cenJ:= Intersection(cen, WJ);
+        fusJ:= FusionConjugacyClasses(cenJ, cen);
+        
 
         data[i]:= rec(index:= i,
                       w:= Representative(cc[i]),
@@ -647,6 +660,7 @@ WhatCharacters:= function(W, eta)
                       centralizer:= cen,
                       table:= ctc[i],
                       fusion:= fus,
+                      fusionJ:= fusJ,
                       chars:= pos
    #                   kernel:= ns[Position(List(ns, x-> Set(FusionConjugacyClasses(x, cen))), kernel)]
                       );
