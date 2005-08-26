@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.9 2005/05/06 13:48:03 goetz Exp $
+#A  $Id: subsets.g,v 1.10 2005/08/26 17:10:39 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -481,7 +481,7 @@ end;
 
 #############################################################################
 ##
-##  is not a Prefixes set, so can't inherit. But composition works.
+##  is not a Prefixes set, so cannot inherit. But composition works.
 ##
 LeftParabolicTransversalOps:= 
   OperationsRecord("LeftParabolicTransversalOps", DomainOps);
