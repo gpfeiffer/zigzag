@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.22 2005/08/26 17:16:25 goetz Exp $
+#A  $Id: descent.g,v 1.23 2005/11/07 08:34:16 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -1108,6 +1108,58 @@ Lat:= function(D, i, j)
     return r(c) - r(Difference(c, [ttt[i][j]]));
 end;
 
+
+#############################################################################  
+##  
+##  given aaa \subset D, generate the space aaa.D
+##
+RightIdeal:= function(aaa, D)
+    local   zero,  xxx,  base,  space,  a,  x,  y;
+
+    zero:= 0*[1..Dimension(D)];
+    xxx:= LeftRegularX(D);
+    base:= [];  space:= RowSpace(Rationals, base, zero);
+    for a in aaa do
+        if not a in space then
+            Add(base, a);
+            space:= RowSpace(Rationals, base, zero);
+        fi;
+    od;
+    for a in base do
+        for x in xxx do
+            y:= a * x;
+            if not y in space then
+                Add(base, y);
+                space:= RowSpace(Rationals, base, zero);
+            fi;
+        od;
+    od;
+    return space;
+end;
+
+LeftIdeal:= function(aaa, D)
+    local   zero,  xxx,  base,  space,  a,  x,  y;
+
+    zero:= 0*[1..Dimension(D)];
+    xxx:= IdentityMat(Dimension(D));
+    base:= [];  space:= RowSpace(Rationals, base, zero);
+    for a in aaa do
+        if not a in space then
+            Add(base, a);
+            space:= RowSpace(Rationals, base, zero);
+        fi;
+    od;
+    for a in base do
+        for x in xxx do
+            y:= x * MatDescentVec(D, a);
+            if not y in space then
+                Add(base, y);
+                space:= RowSpace(Rationals, base, zero);
+            fi;
+        od;
+    od;
+    return space;
+end;
 
 
 
