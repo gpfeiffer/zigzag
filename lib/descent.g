@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.23 2005/11/07 08:34:16 goetz Exp $
+#A  $Id: descent.g,v 1.24 2006/05/29 12:01:59 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -464,7 +464,8 @@ end;
 #  deprecate:
 LeftRegularE:= function(D)
     local   nu;
-    nu:= DescentAlgebraOps.MuNu(D).nu;    
+    # (delete) nu:= DescentAlgebraOps.MuNu(D).nu;    
+    nu:= Call(D, "MuNu").nu;    
     return List(nu, l-> l * LeftRegularX(D));
 end;
 
@@ -556,7 +557,8 @@ ECharacters:= function(W)
     local   sec,  nu,  ee,  a,  lll,  l,  dia;
     
     sec:= SizesDescentConjugacyClasses(W);
-    nu:= DescentAlgebraOps.MuNu(DescentAlgebra(W)).nu;
+    # (delete) nu:= DescentAlgebraOps.MuNu(DescentAlgebra(W)).nu;
+    nu:= Call(DescentAlgebra(W), "MuNu").nu;
     ee:= [];  a:= 0;  lll:= List(Shapes(W), Size);
     for l in lll do
         Add(ee, Sum(nu{a+[1..l]}));
@@ -678,15 +680,16 @@ end;
 # Could be more efficient if the matrices were not all fully blown up!
 # Also could take into account its lower triangular shape!
 #
-ProjectiveIdempotents:= function(D)
+PrimitiveIdempotents:= function(D)
     local   lll,  nu,  xxx,  EEE,  a,  l;
     
-    if IsBound(D.projectiveIdempotents) then
-        return D.projectiveIdempotents;
+    if IsBound(D.primitiveIdempotents) then
+        return D.primitiveIdempotents;
     fi;
 
     lll:= List(Shapes(D.W), Size);
-    nu:= DescentAlgebraOps.MuNu(D).nu;
+    # (delete) nu:= DescentAlgebraOps.MuNu(D).nu;
+    nu:= Call(D, "MuNu").nu;
     xxx:= LeftRegularX(D);
     
     EEE:= [];  a:= 0;
@@ -695,7 +698,7 @@ ProjectiveIdempotents:= function(D)
         a:= a + l;
     od;
 
-    D.projectiveIdempotents:= EEE;
+    D.primitiveIdempotents:= EEE;
     return EEE;
 end;
 
@@ -704,7 +707,7 @@ CartanMatDescent:= function(D)
     local   xxx,  EEE,  car,  l,  ll,  i,  j;
     
     xxx:= LeftRegularX(D);
-    EEE:= ProjectiveIdempotents(D);
+    EEE:= PrimitiveIdempotents(D);
     car:= []; 
     l:= Length(EEE);  ll:= Length(EEE[1]);
     for i in [1..l] do
@@ -723,7 +726,7 @@ HomDescent:= function(D, i, j)
     local   xxx,  EEE,  ll,  hom;
     
     xxx:= LeftRegularX(D);
-    EEE:= ProjectiveIdempotents(D);
+    EEE:= PrimitiveIdempotents(D);
     ll:= Length(EEE[1]);
     hom:=  Set(List(xxx, x-> EEE[i][ll] * x) * EEE[j]);
     TriangulizeMat(hom);
@@ -1162,6 +1165,27 @@ LeftIdeal:= function(aaa, D)
 end;
 
 
+
+#############################################################################
+##
+##  How to find Right multiplication by the primitive idempotents
+##  in terms of the E Basis.
+##
+RightPIE:= function(D)
+    local   EEE,  r,  mat;
+    
+    EEE:= List(PrimitiveIdempotents(D), x-> x[Dimension(D)]);
+    r:= List(RightRegularX(D), MatCompressedAJKL);
+    # (delete) mat:= D.operations.MuNu(D).nu;
+    mat:= Call(D, "MuNu").nu;
+    return List(EEE, e-> mat*Sum([1..Length(e)], i-> e[i]*r[i])/mat);
+end;
+
+
+##  Helper.  How to turn a  composition of n into a set composition of [1..n]
+SetComposition:= function(l)
+    return List([1..Length(l)], i-> Sum(l{[1..i-1]}) + [1..l[i]]);
+end;
 
 #############################################################################
 ##
