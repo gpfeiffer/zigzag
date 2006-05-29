@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.10 2005/08/26 17:10:39 goetz Exp $
+#A  $Id: subsets.g,v 1.11 2006/05/29 12:00:36 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -196,7 +196,7 @@ end;
 #F  PrefixesOps.Edges( <prefixes> ) . . . . . . . . . . . . . . . . .  edges.
 ##
 PrefixesOps.Edges:= function(this)
-    this.operations.Elements(this);  # expand the prefixes.
+    Call(this, "Elements");  # expand the prefixes.
     return this.edges;
 end;
 
@@ -206,7 +206,7 @@ end;
 #F  PrefixesOps.Relation( <prefixes> )
 ##
 PrefixesOps.Relation:= function(this)
-    return Relation(List(this.operations.Edges(this), Set));
+    return Relation(List(Call(this, "Edges"), Set));
 end;
 
 
@@ -306,7 +306,8 @@ end;
 #F  WeakIntervalOps.Relation( <interval> )
 ##
 WeakIntervalOps.Relation:= function(this)
-    return this.pre.operations.Relation(this.pre)^this.perm;
+    # (delete) return this.pre.operations.Relation(this.pre)^this.perm;
+    return Call(this.pre, "Relation")^this.perm;
 end;
 
 
