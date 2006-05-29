@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.8 2006/05/29 12:45:10 goetz Exp $
+     $Id: zigzag.xml,v 1.9 2006/05/29 12:59:42 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -9,14 +9,14 @@
 <Book Name="zigzag">
   <TitlePage>
     <Title><Package>ZigZag</Package></Title>
-    <Version>Version 0.17</Version>
+    <Version>Version 0.18</Version>
     <Author>
 Götz Pfeiffer
 <Email>goetz.pfeiffer@nuigalway.ie</Email>
 <Homepage>http://schmidt.nuigalway.ie/zigzag</Homepage>
 </Author>
     <Copyright>
-&copyright; 2002 Götz Pfeiffer, 
+&copyright; 2006 Götz Pfeiffer, 
 Department of Mathematics, NUI, Galway, Ireland
 </Copyright>
   </TitlePage>
@@ -24,6 +24,22 @@ Department of Mathematics, NUI, Galway, Ireland
   <TableOfContents/>
 
   <Body>
+<!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+<Chapter>
+<Heading>Methods.</Heading>
+
+<#Include Label="Intro:Methods">
+
+<Section>
+<Heading>Method Calls.</Heading>
+
+<#Include Label="Call">
+
+<#Include Label="ApplyMethod">
+
+</Section>
+</Chapter>
+
 <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 <Chapter>
 <Heading>Iterators.</Heading>
@@ -137,6 +153,7 @@ Write a function that produces iterators for permutation groups.
 
 </Chapter>
 
+<!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 <Chapter>
 <Heading>Shapes.</Heading>
 
