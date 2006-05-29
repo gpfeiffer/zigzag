@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.7 2002/12/04 21:25:16 goetz Exp $
+     $Id: zigzag.xml,v 1.8 2006/05/29 12:45:10 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -24,6 +24,119 @@ Department of Mathematics, NUI, Galway, Ireland
   <TableOfContents/>
 
   <Body>
+<!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+<Chapter>
+<Heading>Iterators.</Heading>
+
+<#Include Label="Intro:Iterators">
+
+<Section>
+<Heading>Default Iterators.</Heading>
+
+<#Include Label="IteratorSet">
+
+<#Include Label="Iterator">
+
+<#Include Label="Iterator(domain)">
+
+</Section>
+
+<Section>
+<Heading>Examples of Iterators.</Heading>
+The iterator for sets is implemented as follows.
+<Listing Type="From iterator.g"><![CDATA[
+IteratorSet:= function(set)
+    local itr, i;
+    
+    # initialize.
+    i:=0;  itr:= rec();
+    
+    # the hasNext() function.
+    itr.hasNext:= function() 
+        return i < Length(set);
+    end;
+    
+    # the next() function.
+    itr.next:= function() 
+        i:= i + 1;
+        return set[i]; 
+    end;
+    
+    return itr;
+end;]]>
+</Listing>
+Here the state of the iterator, i.e., the set <A>set</A>that it is looping
+over and the current position <C>i</C> in the set are parameters
+and local variables of the function <Ref Func="IteratorSet"/>.   As such they
+are not accessible (not even for debugging) from the outside when
+the iterator methods <C>hasNext()</C> and <C>next()</C> are executed.
+This way of data hiding prevents the state variables from being accidentally
+corrupted.<P/>
+
+Alternatively, the state can be stored in form of fields of the iterator record.
+<Listing><![CDATA[
+IteratorSet:= function(set)
+    local itr;
+    
+    # initialize.
+    itr:= rec(set:= set, i:= 0);
+    
+    # the hasNext() function.
+    itr.hasNext:= function() 
+        return itr.i < Length(itr.set);
+    end;
+    
+    # the next() function.
+    itr.next:= function() 
+        itr.i:= itr.i + 1;
+        return itr.set[itr.i]; 
+    end;
+    
+    return itr;
+end;]]>
+</Listing>
+This might be considered unsafe by some.  <P/>
+
+As further example, here is an iterator for ranges.
+<Listing><![CDATA[
+IteratorRange:= function(range)
+    local   itr,  len,  more,  lo,  hi,  inc,  val;
+    
+    # check argument.
+    if not IsRange(range) then Error("<range> must be a range"); fi;
+    
+    # initialize.
+    itr:= rec();  len:= Length(range);  more:= len > 0;
+    if more then
+        lo:= range[1];  hi:= range[len]; 
+        if len > 1 then inc:= range[2]-lo; else inc:= 0; fi;
+    fi;
+    
+    # the hasNext() function.
+    itr.hasNext:= function() return more; end;
+    
+    # the next() function.
+    itr.next:= function() 
+        local val;
+        more:= lo <> hi;  val:= lo;  lo:= lo + inc;
+        return val; 
+    end;
+    
+    return itr;
+end;]]>
+</Listing>
+There is probably no need for such a type of iterator, since the <K>for</K> loop
+does a perfect job of looping over ranges.  However, this is how I would write it.
+
+<Subsection>
+<Heading>Exercise.</Heading>
+Write a function that produces iterators for permutation groups.
+</Subsection>
+
+</Section>
+
+</Chapter>
+
 <Chapter>
 <Heading>Shapes.</Heading>
 
@@ -200,118 +313,6 @@ gap> SubsetsShapes(Shapes(CoxeterGroup("B", 3)));
 
 </Chapter>
 
-<!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
-<Chapter>
-<Heading>Iterators.</Heading>
-
-<#Include Label="Intro:Iterators">
-
-<Section>
-<Heading>Default Iterators.</Heading>
-
-<#Include Label="IteratorSet">
-
-<#Include Label="Iterator">
-
-<#Include Label="Iterator(domain)">
-
-</Section>
-
-<Section>
-<Heading>Examples of Iterators.</Heading>
-The iterator for sets is implemented as follows.
-<Listing Type="From iterator.g"><![CDATA[
-IteratorSet:= function(set)
-    local itr, i;
-    
-    # initialize.
-    i:=0;  itr:= rec();
-    
-    # the hasNext() function.
-    itr.hasNext:= function() 
-        return i < Length(set);
-    end;
-    
-    # the next() function.
-    itr.next:= function() 
-        i:= i + 1;
-        return set[i]; 
-    end;
-    
-    return itr;
-end;]]>
-</Listing>
-Here the state of the iterator, i.e., the set <A>set</A>that it is looping
-over and the current position <C>i</C> in the set are parameters
-and local variables of the function <Ref Func="IteratorSet"/>.   As such they
-are not accessible (not even for debugging) from the outside when
-the iterator methods <C>hasNext()</C> and <C>next()</C> are executed.
-This way of data hiding prevents the state variables from being accidentally
-corrupted.<P/>
-
-Alternatively, the state can be stored in form of fields of the iterator record.
-<Listing><![CDATA[
-IteratorSet:= function(set)
-    local itr;
-    
-    # initialize.
-    itr:= rec(set:= set, i:= 0);
-    
-    # the hasNext() function.
-    itr.hasNext:= function() 
-        return itr.i < Length(itr.set);
-    end;
-    
-    # the next() function.
-    itr.next:= function() 
-        itr.i:= itr.i + 1;
-        return itr.set[itr.i]; 
-    end;
-    
-    return itr;
-end;]]>
-</Listing>
-This might be considered unsafe by some.  <P/>
-
-As further example, here is an iterator for ranges.
-<Listing><![CDATA[
-IteratorRange:= function(range)
-    local   itr,  len,  more,  lo,  hi,  inc,  val;
-    
-    # check argument.
-    if not IsRange(range) then Error("<range> must be a range"); fi;
-    
-    # initialize.
-    itr:= rec();  len:= Length(range);  more:= len > 0;
-    if more then
-        lo:= range[1];  hi:= range[len]; 
-        if len > 1 then inc:= range[2]-lo; else inc:= 0; fi;
-    fi;
-    
-    # the hasNext() function.
-    itr.hasNext:= function() return more; end;
-    
-    # the next() function.
-    itr.next:= function() 
-        local val;
-        more:= lo <> hi;  val:= lo;  lo:= lo + inc;
-        return val; 
-    end;
-    
-    return itr;
-end;]]>
-</Listing>
-There is probably no need for such a type of iterator, since the <K>for</K> loop
-does a perfect job of looping over ranges.  However, this is how I would write it.
-
-<Subsection>
-<Heading>Exercise.</Heading>
-Write a function that produces iterators for permutation groups.
-</Subsection>
-
-</Section>
-
-</Chapter>
 
 
 </Body>
