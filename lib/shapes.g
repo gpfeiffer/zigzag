@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.27 2006/05/25 11:57:11 goetz Exp $
+#A  $Id: shapes.g,v 1.28 2006/05/29 11:59:29 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -261,7 +261,7 @@ end;
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 2);;
 ##  gap> sh:= Shape(W, [1]);;
-##  gap> sh.operations.Edges(sh);
+##  gap> Call(sh, "Edges");
 ##  [ [ , rec(
 ##            v := 2,
 ##            d := (1,2,6)(3,4,5) ) ], [ rec(
@@ -273,7 +273,8 @@ end;
 ##  <#/GAPDoc>
 ##  
 ShapeOps.Edges:= function(this)
-    this.operations.Elements(this);  # expand the shape.
+    # (delete) this.operations.Elements(this);  # expand the shape.
+    Call(this, "Elements");  # expand the shape.
     return this.edges;
 end;
 
@@ -298,7 +299,7 @@ end;
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
 ##  gap> sh:= Shape(W, [1]);;
-##  gap> sh.operations.Transversal(sh);
+##  gap> Call(sh, "Transversal");
 ##  [ (), ( 1, 2,10)( 3, 6, 5)( 4, 7, 8)( 9,12,11),
 ##    ( 1, 3)( 2,12)( 4,10)( 5,11)( 6, 8)( 7, 9) ]
 ##  </Example>
@@ -307,7 +308,7 @@ end;
 ##  <#/GAPDoc>
 ##    
 ShapeOps.Transversal:= function(this)
-    this.operations.Elements(this);  # expand the shape.
+    Call(this, "Elements");  # expand the shape.
     return this.transversal;
 end;
 
@@ -348,7 +349,7 @@ end;
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;  W.name:= "W";;
 ##  gap> J:= [1];; sh:= Shape(W, J);;  WJ:= ReflectionSubgroup(W, J);;
-##  gap> co:= sh.operations.Complement(sh);
+##  gap> co:= Call(sh, "Complement");
 ##  Subgroup( W, [ ( 2, 5)( 3, 9)( 4, 6)( 8,11)(10,12) ] )
 ##  gap> Intersection(co, WJ);
 ##  Subgroup( W, [  ] )
@@ -371,8 +372,10 @@ end;
 ShapeOps.Complement:= function(this)
     local   edges,  t,  eyes,  ears,  i,  e,  j,  nor;
 
-    edges:= this.operations.Edges(this);  
-    t:= this.operations.Transversal(this);
+    # (delete) edges:= this.operations.Edges(this);  
+    edges:= Call(this, "Edges");  
+    # (delete) t:= this.operations.Transversal(this);
+    t:= Call(this, "Transversal");
     eyes:= [];  ears:= [];  i:= 0;
     for e in edges do
         i:= i+1;
@@ -408,7 +411,7 @@ end;
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
 ##  gap> sh:= Shape(W, [1]);;
-##  gap> sh.operations.Relation(sh);
+##  gap> Call(sh, "Relation");
 ##  Relation( [ [ 1, 2 ], [ 1, 3 ], [ 2, 3 ] ] )
 ##  </Example>
 ##  </Description>
@@ -417,7 +420,7 @@ end;
 ##
 ShapeOps.Relation:= function(this)
     local  list;
-    list:= List(this.operations.Edges(this), Set);
+    list:= List(Call(this, "Edges"), Set);
     return Relation(List(list, x-> List(x, y-> y.v)));
 end;
 
@@ -624,7 +627,8 @@ IncMatShapes:= function(shapes)
     mat:= [];
     for a in shapes do
         row:= [];
-        nor:= a.operations.Complement(a);
+        # (delete) nor:= a.operations.Complement(a);
+        nor:= Call(a, "Complement");
         for b in shapes do
             Add(row, Length(Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets)));
         od;
@@ -640,7 +644,8 @@ FusMatShapes1:= function(shapes)
     mat:= [];
     for a in shapes do
         row:= [];
-        nor:= Closure(ReflectionSubgroup(a.W, a.J), a.operations.Complement(a));
+        # (delete) nor:= Closure(ReflectionSubgroup(a.W, a.J), a.operations.Complement(a));
+        nor:= Closure(ReflectionSubgroup(a.W, a.J), Call(a, "Complement"));
         for b in shapes do
             Add(row, Length(Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets)));
         od;
@@ -655,7 +660,7 @@ FusMatShapes:= function(shapes)
     mat:= [];
     for a in shapes do
         row:= [];
-        nor:= a.operations.Complement(a);
+        nor:= Call(a, "Complement");
         sub:= ReflectionSubgroup(a.W, a.J);
         aaa:= Shapes(sub);
         for b in shapes do
@@ -900,7 +905,8 @@ SpecialInvolutions:= function(W)
     for s in invo do
         J:= s.J;
         WJ:= ReflectionSubgroup(W, J);
-        NJ:= ShapeOps.Complement(s);
+        # (delete) NJ:= ShapeOps.Complement(s);
+        NJ:= Call(s, "Complement");
         if Size(CommutatorSubgroup(WJ, NJ)) = 1 then
             Add(spec, LongestCoxeterElement(ReflectionSubgroup(W, Representative(s))));
         fi;
@@ -1004,7 +1010,7 @@ end;
 
 #############################################################################
 ##  
-#O  ShapeOps . . . . . . . . . . . . . . . . . . . . . . . operations record.
+#O  PointedShapeOps  . . . . . . . . . . . . . . . . . . . operations record.
 ##  
 PointedShapeOps:= OperationsRecord("PointedShapeOps", DomainOps);
 
@@ -1145,7 +1151,8 @@ PointedShapeOps.Elements:= function(this)
     j:= Position(el, this.J);
     L:= sh[i].J;
     s:= this.s^(sh[i].transversal[j]^-1);
-    o:= Orbit(ShapeOps.Complement(sh[i]), s);
+    # (delete) o:= Orbit(ShapeOps.Complement(sh[i]), s);
+    o:= Orbit(Call(sh[i], "Complement"), s);
     for x in sh[i].transversal do
         J:= OnSets(L, x);
         for t in o do
@@ -1160,7 +1167,8 @@ ShapeOps.Points:= function(this)
     local   points,  o;
     
     points:= [];
-    for o in Orbits(ShapeOps.Complement(this), this.J) do
+# (delete) for o in Orbits(ShapeOps.Complement(this), this.J) do
+    for o in Orbits(Call(this, "Complement"), this.J) do
         Add(points, o[1]);
     od;
     return points;
@@ -1176,7 +1184,8 @@ PointedShapes:= function(W)
     list:= [];
     for sh in Shapes(W) do
         L:= Representative(sh);
-        points:= ShapeOps.Points(sh);
+        # (delete) points:= ShapeOps.Points(sh);
+        points:= Call(sh, "Points");
         for s in points do
             Add(list, PointedShape(W, L, s));
         od;
@@ -1187,16 +1196,16 @@ end;
 #############################################################################
 PointedShapeOps.Tail:= function(this)
     local   sh,  i;
-    sh:= Shapes(W);
-    i:= Position(sh, Shape(W, Difference(this.J, [this.s])));
+    sh:= Shapes(this.W);
+    i:= Position(sh, Shape(this.W, Difference(this.J, [this.s])));
     return sh[i];
 end;
 
 #############################################################################
 PointedShapeOps.Head:= function(this)
     local   sh,  i;
-    sh:= Shapes(W);
-    i:= Position(sh, Shape(W, this.J));
+    sh:= Shapes(this.W);
+    i:= Position(sh, Shape(this.W, this.J));
     return sh[i];
 end;
 
@@ -1213,26 +1222,25 @@ ArrowEnds:= function(W, arrow)
     return [Difference(L, [s]), Difference(L, [t])];    
 end;
 
+
 ###
 ###  next:  the mu map.
 ###
-ShapeOps.Matrix:= function(shape)
-    return rec(tail:= shape, head:= shape, mat:=IdentityMat(Size(shape)));
+ShapeOps.Matrix:= function(this)
+    return rec(tail:= this, head:= this, mat:=IdentityMat(Size(this)));
 end;
 
-PointedShapeOps.Matrix:= function(ps)
+PointedShapeOps.Matrix:= function(this)
     local   W,  shapes,  shL,  shJ,  subL,  subJ,  mat,  e,  i,  ends,  j;
     
-    W:= ps.W;
-    shapes:= Shapes(W);
-    shL:= shapes[Position(shapes, Shape(W, ps.J))];
-    shJ:= shapes[Position(shapes, Shape(W, Difference(ps.J, [ps.s])))];
+    shL:= Call(this, "Head");
+    shJ:= Call(this, "Tail");
     subL:= Elements(shL);
     subJ:= Elements(shJ);
     mat:= NullMat(Length(subL), Length(subJ));
-    for e in Elements(ps) do
+    for e in Elements(this) do
         i:= Position(subL, e[1]);
-        ends:= ArrowEnds(W, e);
+        ends:= ArrowEnds(this.W, e);
         j:= Position(subJ, ends[1]);
         mat[i][j]:= mat[i][j] + 1;
         j:= Position(subJ, ends[2]);
@@ -1241,10 +1249,283 @@ PointedShapeOps.Matrix:= function(ps)
     return rec(tail:= shJ, head:= shL, mat:= mat);
 end;
 
-##  How to produce a list of all paths.
-#PathsShapes:= function(W)
+##  How to produce a list of all paths.  A path is a (possibly empty)
+##  sequence of pointed shapes.
+PathsShapes:= function(W)
+    local   sh,  list,  ps,  shape,  mat,  i,  j,  l,  p,  a;
+    
+    # initialize.
+    sh:= Shapes(W);
+    list:= List(sh, i-> List(sh, j-> [])); # N x N array of empty lists.
+    ps:= PointedShapes(W);
+    
+    # install paths of length 1.
+    for shape in ps do
+        # (delete) mat:= PointedShapeOps.Matrix(shape);
+        mat:= Call(shape, "Matrix");
+        if mat.mat <> 0*mat.mat then    # ignore zero paths.
+            i:= Position(sh, mat.head);
+            j:= Position(sh, mat.tail);
+            Add(list[i][j], [shape]);
+        fi;
+    od;
+    
+    # form the closure.
+    for i in [1..Length(sh)] do
+        for j in [1..Length(sh)] do
+            for l in [1..Length(sh)] do
+                for a in list[i][j] do
+                    for p in list[j][l] do
+                        Add(list[i][l], Concatenation(p, a));
+                        Print(".\c");
+                    od;
+                od;
+            od;
+        od;
+    od;
+    
+    return list;
+end;
+
+# (delete) MatrixPath:= p -> Product(Reversed(p), x-> PointedShapeOps.Matrix(x).mat);
+MatrixPath:= p -> Product(Reversed(p), x-> Call(x, "Matrix").mat);
+
+
+#############################################################################
+##
+##  Doubly Pointed Shapes.
+##
+##  A *doubly pointed shape* is an equivalence class pairs of triples (J, s, t) with
+##  s, t \in J \subseteq S, s \neq t, under the conjugation action of W.
+##
+
+##  Representatives can be obtained by choosing s as representatives
+##  of the orbits of N_L on L, for every shape representative L.
+##
+
+
+
+#############################################################################
+##  
+#O  DoublyPointedShapeOps  . . . . . . . . . . . . . . . . operations record.
+##  
+DoublyPointedShapeOps:= OperationsRecord("DoublyPointedShapeOps", DomainOps);
+
+#############################################################################
+##  
+#C  DoublyPointedShape( <W>, <J>, <s>, <t> )  . . . . . . . . .  constructor.
+##  
+##  <#GAPDoc Label="Shape">
+##  <ManSection>
+##  <Func Name="Shape" Arg="W, J"/>
+##  <Returns>
+##    a new shape, an object that represents the shape of <A>J</A> in 
+##    <A>W</A>. 
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for the shape class.  It constructs and
+##  returns the shape of <A>J</A> in <A>W</A>.  Here <A>W</A> is a finite
+##  Coxeter group of rank <M>n</M> and <A>J</A> is a subset of
+##  <M>[1..n]</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("E", 6);; 
+##  gap> Shape(W, [1, 2, 3]);
+##  Shape( CoxeterGroup("E", 6), [ 1, 2, 3 ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+##  public fields:
+##    W, the Coxeter group.
+##    J, the parabolic subset of S.
+##  
+DoublyPointedShape:= function(W, J, s, t)
+    return 
+      rec(
+          isDomain:= true,
+          isDoublyPointedShape:= true,
+          operations:= DoublyPointedShapeOps,
+          W:= W,
+          J:= J,
+          s:= s,
+          t:= t
+          );
+end;
+
+
+#############################################################################
+##
+#F  IsShape( <obj> )  . . . . . . . . . . . . . . . . . . . . . . type check.
+##
+##  <#GAPDoc Label="IsShape">
+##  <ManSection>
+##  <Func Name="IsShape" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a shape and <K>false</K> otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsDoublyPointedShape:= function(obj)
+    return IsRec(obj) and IsBound(obj.isDoublyPointedShape) 
+           and obj.isDoublyPointedShape = true;
+end;
+
+
+#############################################################################  
+##  
+#F  Print( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
+##  
+##  
+##
+DoublyPointedShapeOps.Print:= function(this)
+    Print("DoublyPointedShape( ", this.W, ", ", this.J, ", ", this.s, ", ",
+          this.t, " )");
+end;
+
+
+#############################################################################
+##
+#F  Representative( <shape> ) . . . . . . . . . . . . . . . . representative.
+##
+##  A shape, as a class of parabolic subsets, has a representative.
+##
+##  <#GAPDoc Label="Representative(shape)">
+##  <ManSection>
+##  <Meth Name="Representative" Arg="shape" Label="for shapes"/>
+##  <Returns>a representative of the shape <A>shape</A>.</Returns>
+##  <Description>The representative of a shape constructed 
+##  as <C>Shape(W, J)</C> (see <Ref Label="Shape"/>) will be its
+##  initial element <C>J</C>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> Representative(Shape(W, [2]));
+##  [ 2 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
+DoublyPointedShapeOps.Representative:= function(this)
+    return [this.J, this.s, this.t];
+end;
+
+#############################################################################  
+##  
+#F  Elements( <shape> ) . . . . . . . . . . . . . . . . . . . . . . elements.
+##  
+##  <#GAPDoc Label="Elements(shape)">
+##  <ManSection>
+##  <Meth Name="Elements" Arg="shape" Label="for shapes"/>
+##  <Returns>
+##    the set of elements of the shape <A>shape</A>.
+##  </Returns>
+##  <Description>
+##  The shape of <M>J</M> in <M>W</M> consists of all subsets of <M>S</M>
+##  which are conjugate to <M>J</M> under <M>W</M>.
+##  The conjugates can be efficiently computed
+##  using <Cite Key="GePf2000" Where="Theorem 2.3.3"/>.
+##  This is much faster than simple conjugacy tests.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> Elements(Shape(W, [2]));
+##  [ [ 1 ], [ 2 ], [ 3 ] ] 
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+DoublyPointedShapeOps.Elements:= function(this)
+    local   elm,  W,  sh,  i,  el,  j,  L,  s,  nnn,  o,  st,  t,  oo,  
+            x,  J,  ss,  r,  tt;
+    
+    elm:= [];
+    W:= this.W;
+    
+    sh:= Shapes(W);  # carefully bring in sync with shape internals ...
+    i:= Position(sh, Shape(W, this.J));
+    el:= Elements(sh[i]);
+    j:= Position(el, this.J);
+    L:= sh[i].J;
+    s:= this.s^(sh[i].transversal[j]^-1);
+    nnn:= Call(sh[i], "Complement");
+    o:= Orbit(nnn, s);
+    st:= Stabilizer(nnn, s);
+    t:= this.t^(sh[i].transversal[j]^-1);
+    oo:= Orbit(st, t);
+    for x in sh[i].transversal do
+        J:= OnSets(L, x);
+        for ss in o do
+            r:= RepresentativeOperation(nnn, s, ss);  # is this too expensive?
+            for tt in oo do
+                Add(elm, [J, ss^x, tt^(r * x)]);
+            od;
+        od;
+    od;
+    return Set(elm);
+end;
+
+#############################################################################
+DoublyPointedShapeOps.Tail:= function(this)
+    local   sh,  i;
+    sh:= Shapes(this.W);
+    i:= Position(sh, Shape(this.W, Difference(this.J, [this.s, this.t])));
+    return sh[i];
+end;
+
+#############################################################################
+##
+##  this is the same function as in PointedShapeOps.
+##
+DoublyPointedShapeOps.Head:= function(this)
+    local   sh,  i;
+    sh:= Shapes(this.W);
+    i:= Position(sh, Shape(this.W, this.J));
+    return sh[i];
+end; 
+
+#############################################################################
+##
+##  a double arrow is an element of a DoublyPointedShape
+##
+DoubleArrowEnds:= function(W, arrow)
+    local   L,  wL,  K,  wK,  J,  wJ;
+    
+    L:= arrow[1];
+    wL:= LongestCoxeterElement(ReflectionSubgroup(W, L));
+    K:= Difference(L, arrow{[2]});
+    wK:= LongestCoxeterElement(ReflectionSubgroup(W, K));
+    J:= Difference(K, arrow{[3]});
+    wJ:= LongestCoxeterElement(ReflectionSubgroup(W, J));
+    return [J, OnSets(J, wJ*wK), OnSets(J, wK*wL), OnSets(J, wJ*wL)];
+end;
 
     
+
+#############################################################################
+DoublyPointedShapeOps.Matrix:= function(this)
+    local   shL,  shJ,  subL,  subJ,  mat,  e,  i,  ends,  j;
+    
+    shL:= Call(this, "Head");
+    shJ:= Call(this, "Tail");
+    subL:= Elements(shL);
+    subJ:= Elements(shJ);
+    mat:= NullMat(Length(subL), Length(subJ));
+    for e in Elements(this) do
+        i:= Position(subL, e[1]);
+        ends:= DoubleArrowEnds(this.W, e);
+        j:= Position(subJ, ends[1]);
+        mat[i][j]:= mat[i][j] + 1;
+        j:= Position(subJ, ends[2]);
+        mat[i][j]:= mat[i][j] - 1;
+        j:= Position(subJ, ends[3]);
+        mat[i][j]:= mat[i][j] - 1;
+        j:= Position(subJ, ends[4]);
+        mat[i][j]:= mat[i][j] + 1;
+    od;
+    return mat;
+end;
 
 
 #############################################################################
