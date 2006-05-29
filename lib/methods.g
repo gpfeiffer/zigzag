@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: methods.g,v 1.1 2006/05/29 11:52:04 goetz Exp $
+#A  $Id: methods.g,v 1.2 2006/05/29 12:55:35 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Methods">
 ##  This file contains support for methods.
@@ -29,15 +29,44 @@
 ##
 
 #############################################################################
-##  
-#F  Call( ... )
 ##
-##  method must return a value!
+#F  Call( <object>, <method> ) . . . . . . . . . . . . . . . . . method call. 
+##
+##  <#GAPDoc Label="Call">
+##  <ManSection>
+##  <Func Name="Call" Arg="object, method"/>
+##  <Returns>
+##    the result of <A>object.operations.(method)(object)</A>.
+##  </Returns>
+##  <Description>
+##    Calls the method <A>method</A> on behalf of the object <A>object</A>.
+##    The method must return a value!
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 Call:= function(object, method)
     return object.operations.(method)(object);
 end;
 
+#############################################################################
+##
+#F  ApplyMethod( <object>, <method>, <arg1>, ... ) . . . . . . . method call. 
+##
+##  <#GAPDoc Label="ApplyMethod">
+##  <ManSection>
+##  <Func Name="ApplyMethod" Arg="object, method, args"/>
+##  <Returns>
+##    the result of <A>object.operations.(method)(object)</A>.
+##  </Returns>
+##  <Description>
+##    Calls the method <A>method</A> on behalf of the object <A>object</A>
+##    with further arguments <A>args</A>
+##    The method must return a value!
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 ApplyMethod:= function(arg)
     local   object,  method,  list;
     
