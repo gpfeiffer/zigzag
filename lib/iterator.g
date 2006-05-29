@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: iterator.g,v 1.4 2002/12/04 18:04:59 goetz Exp $
+#A  $Id: iterator.g,v 1.5 2006/05/29 11:53:46 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Iterators">
 ##  This file contains a dispatcher for iterators on domains.
@@ -107,7 +107,8 @@ Iterator:= function(D)
     if IsSet(D)  then
         itr:= IteratorSet(D);
     elif IsDomain(D)  then
-        itr:= D.operations.Iterator(D);
+        # (delete) itr:= D.operations.Iterator(D);
+        itr:= Call(D, "Iterator");
     else
         Error( "<D> must be a domain or a set" );
     fi;
