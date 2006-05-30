@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.2 2006/05/30 08:13:38 goetz Exp $
+#A  $Id: alleys.g,v 1.3 2006/05/30 09:57:16 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -19,12 +19,14 @@
 
 #############################################################################
 HeadArrow:= function(W, arrow)
+    local   sh;
     sh:= Shapes(W);
     return sh[PositionProperty(sh, x-> arrow[1] in x)];
 end;
 
 #############################################################################
 TailArrow:= function(W, arrow)
+    local   sh;
     sh:= Shapes(W);
     return sh[PositionProperty(sh, x-> Difference(arrow[1], arrow[2]) in x)];
 end;
@@ -35,25 +37,6 @@ OnArrows:= function(arrow, d)
 end;
                    
 #############################################################################
-DeltaArrow1:= function(W, arrow)
-    local   L,  list,  head,  res,  K,  new,  d;
-
-    L:= arrow[1];
-    list:= arrow[2];
-    if list = [] then
-        head:= Elements(HeadArrow(W, arrow));
-        res:= List(head, x-> 0);
-        res[Position(head, L)]:= 1;
-    else
-        K:= Difference(L, list{[1]});
-        new:= [K, list{[2..Length(list)]}];
-        d:= LongestCoxeterElement(ReflectionSubgroup(W, K))
-            * LongestCoxeterElement(ReflectionSubgroup(W, L));
-        res:= DeltaArrow1(W, new) - DeltaArrow1(W, OnArrows(new, d));
-    fi;
-    return res;
-end;
-
 DeltaArrow:= function(W, arrow)
     local   L,  list,  head,  res,  K,  d,  lft,  rgt;
     
