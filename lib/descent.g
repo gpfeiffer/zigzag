@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.24 2006/05/29 12:01:59 goetz Exp $
+#A  $Id: descent.g,v 1.25 2006/05/30 09:19:53 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -42,7 +42,7 @@ DescentAlgebraOps:= OperationsRecord("DescentAlgebraOps", AlgebraOps);
 ##  
 DescentAlgebra:= function(W)
     local   this;
-    this:= rec(W:= W, operations:= DescentAlgebraOps);
+    this:= rec(W:= W, operations:= DescentAlgebraOps, isDescentAlgebra:= true);
     
     this.GetAJKL:= function(J, K, L)
         local   xxx,  l;
@@ -54,6 +54,12 @@ DescentAlgebra:= function(W)
     end;
 
     return this;
+end;
+
+#############################################################################
+IsDescentAlgebra:= function(obj)
+    return IsRec(obj) and IsBound(obj.isDescentAlgebra)
+           and obj.isDescentAlgebra = true;
 end;
 
 #############################################################################
