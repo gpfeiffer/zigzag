@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.1 2006/05/29 11:52:23 goetz Exp $
+#A  $Id: alleys.g,v 1.2 2006/05/30 08:13:38 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -20,13 +20,13 @@
 #############################################################################
 HeadArrow:= function(W, arrow)
     sh:= Shapes(W);
-    return sh[Position(sh, Shape(W, arrow[1]))];
+    return sh[PositionProperty(sh, x-> arrow[1] in x)];
 end;
 
 #############################################################################
 TailArrow:= function(W, arrow)
     sh:= Shapes(W);
-    return sh[Position(sh, Shape(W, Difference(arrow[1], arrow[2])))];
+    return sh[PositionProperty(sh, x-> Difference(arrow[1], arrow[2]) in x)];
 end;
 
 #############################################################################
@@ -35,9 +35,9 @@ OnArrows:= function(arrow, d)
 end;
                    
 #############################################################################
-DeltaArrow:= function(W, arrow)
+DeltaArrow1:= function(W, arrow)
     local   L,  list,  head,  res,  K,  new,  d;
-    
+
     L:= arrow[1];
     list:= arrow[2];
     if list = [] then
@@ -49,7 +49,31 @@ DeltaArrow:= function(W, arrow)
         new:= [K, list{[2..Length(list)]}];
         d:= LongestCoxeterElement(ReflectionSubgroup(W, K))
             * LongestCoxeterElement(ReflectionSubgroup(W, L));
-        res:= DeltaArrow(W, new) - DeltaArrow(W, OnArrows(new, d));
+        res:= DeltaArrow1(W, new) - DeltaArrow1(W, OnArrows(new, d));
+    fi;
+    return res;
+end;
+
+DeltaArrow:= function(W, arrow)
+    local   L,  list,  head,  res,  K,  d,  lft,  rgt;
+    
+    L:= arrow[1];
+    list:= arrow[2];
+    if list = [] then
+        head:= Elements(HeadArrow(W, arrow));
+        res:= List(head, x-> 0);
+        res[Position(head, L)]:= 1;
+    else
+        K:= Difference(L, list{[1]});
+        d:= LongestCoxeterElement(ReflectionSubgroup(W, K))
+            * LongestCoxeterElement(ReflectionSubgroup(W, L));
+        lft:= [K, list{[2..Length(list)]}];
+        rgt:= OnArrows(lft, d);
+        if lft = rgt then # early 0 detection
+            res:= List(Elements(TailArrow(W, arrow)), x-> 0);
+        else
+            res:= DeltaArrow(W, lft) - DeltaArrow(W, rgt);
+        fi;
     fi;
     return res;
 end;
