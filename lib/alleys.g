@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.3 2006/05/30 09:57:16 goetz Exp $
+#A  $Id: alleys.g,v 1.4 2006/05/31 09:08:30 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -60,6 +60,15 @@ DeltaArrow:= function(W, arrow)
     fi;
     return res;
 end;
+
+#############################################################################
+ProductArrows:= function(a, b)
+    if Difference(a[1], a[2]) = b[1] then
+        return [a[1], Concatenation(a[2], b[2])];
+    fi;
+    return 0;
+end;
+
 
     
 #############################################################################
@@ -198,6 +207,40 @@ ArrowClasses:= function(W)
             new:= [arrow[1], Concatenation(arrow[2], [s])];
             Ns:= Stabilizer(N, s);
             Add(list, ArrowClass(W, new));
+            hhh(new, Ns);
+        od;
+    end;
+            
+    for sh in Shapes(W) do
+        new:= [Representative(sh), []];
+        Add(list, ArrowClass(W, new));
+        N:= Call(sh, "Complement");
+        hhh(new, N);
+    od;
+    return list;
+end;
+
+EssentialArrowClasses:= function(W)
+    local   list,  hhh,  sh,  new,  N;
+    
+    list:= [];
+    
+    hhh:= function(arrow, N)
+        local   L,  o,  s,  new,  Ns,  m,  c;
+        
+        L:= Difference(arrow[1], arrow[2]);
+        for o in Orbits(N, L) do
+            s:= o[1];
+            new:= [arrow[1], Concatenation(arrow[2], [s])];
+            m:= DeltaArrow(W, new);
+            if m <> 0*m then
+                c:= ArrowClass(W, new);
+                m:= Call(c, "Matrix").mat;
+                if m <> 0*m then 
+                    Add(list, c);
+                fi;
+            fi;
+            Ns:= Stabilizer(N, s);
             hhh(new, Ns);
         od;
     end;
