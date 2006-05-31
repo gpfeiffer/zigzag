@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.4 2006/05/31 09:08:30 goetz Exp $
+#A  $Id: alleys.g,v 1.5 2006/05/31 09:18:44 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -238,6 +238,7 @@ EssentialArrowClasses:= function(W)
                 m:= Call(c, "Matrix").mat;
                 if m <> 0*m then 
                     Add(list, c);
+                    Print(".\c");
                 fi;
             fi;
             Ns:= Stabilizer(N, s);
