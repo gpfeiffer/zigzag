@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.5 2006/05/31 09:18:44 goetz Exp $
+#A  $Id: alleys.g,v 1.6 2006/06/01 07:52:43 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -60,6 +60,25 @@ DeltaArrow:= function(W, arrow)
     fi;
     return res;
 end;
+
+#############################################################################
+#
+#  Deprecate:
+#
+BigMatrixArrow:= function(W, arrow)
+    local   sub,  mat,  sh,  l,  i,  j;
+    
+    sub:= SubsetsShapes(Shapes(W));
+    mat:= NullMat(Length(sub), Length(sub));
+    sh:= Shapes(W);
+    l:= SetComposition(List(sh, Size));
+    i:= Position(sub, arrow[1]);
+    j:= PositionProperty(sh, x-> Difference(arrow[1], arrow[2]) in x);
+    mat[i]{j}:= DeltaArrow(W, arrow);    
+    return mat;
+end;
+
+
 
 #############################################################################
 ProductArrows:= function(a, b)
@@ -339,6 +358,84 @@ Negative:= function(matrix)
     return new;    
 end;
 
+##
+##  Arrow classes can be multiplied. 
+##
+##  how to do this efficiently ?
+##
+ArrowClassOps.\*:= function(l, r)
+    local   W,  res,  all,  a,  b,  c;
+    
+    res:= [];
+    
+    #  arrow * arrow class.
+    if not IsArrowClass(l) then
+        for b in Elements(r) do
+            c:= ProductArrows(l, b);
+            if c <> 0 then
+                Add(res, c);
+            fi;
+        od;
+        return res;
+    fi;
+    
+    # arrow class * arrow
+    if not IsArrowClass(r) then
+        for a in Elements(l) do
+            c:= ProductArrows(a, r);
+            if c <> 0 then
+                Add(res, c);
+            fi;
+        od;
+        return res;
+    fi;
+    
+    # arrow class * arrow class.
+    if l.W <> r.W then
+        Error("factors must have same W component");
+    fi;
+    
+    W:= l.W;
+    
+    # unless they fit together
+    if Call(l, "Tail") <> Call(r, "Head") then
+        return res;
+    fi;
+    
+    # form all products of all members.
+    all:= [];
+    for a in Elements(l) do
+        for b in Elements(r) do
+            c:= ProductArrows(a, b);
+            if c <> 0 then
+                Add(all, c);
+            fi;
+        od;
+    od;
+    
+    # Q: can the same nonzero c ever occur twice ?
+    # no: because of unique factorization.
+    
+    a:= Length(all);
+    all:= Set(all);
+    if a <> Size(all) then
+        Error("Panic: problem with unique factorization!");
+    fi;
+    
+    
+    # split into classes
+    while all <> [] do
+        c:= ArrowClass(W, all[1]);
+        Add(res, c);
+        a:= Length(all);
+        all:= Difference(all, Elements(c));
+        if a <> Size(all) + Size(c) then
+            Error("Panic:  problem with arrow class products!");
+        fi;
+    od;
+    
+    return res;
+end;
 
  
     
