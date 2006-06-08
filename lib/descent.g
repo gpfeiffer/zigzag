@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.25 2006/05/30 09:19:53 goetz Exp $
+#A  $Id: descent.g,v 1.26 2006/06/08 09:40:09 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -470,7 +470,6 @@ end;
 #  deprecate:
 LeftRegularE:= function(D)
     local   nu;
-    # (delete) nu:= DescentAlgebraOps.MuNu(D).nu;    
     nu:= Call(D, "MuNu").nu;    
     return List(nu, l-> l * LeftRegularX(D));
 end;
@@ -1192,6 +1191,12 @@ end;
 SetComposition:= function(l)
     return List([1..Length(l)], i-> Sum(l{[1..i-1]}) + [1..l[i]]);
 end;
+##  
+##  
+##  Helper.  Test for not 0.
+IsNonZero:= m -> m <> 0*m;
+##  
+
 
 #############################################################################
 ##
