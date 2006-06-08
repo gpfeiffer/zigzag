@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.28 2006/05/29 11:59:29 goetz Exp $
+#A  $Id: shapes.g,v 1.29 2006/06/08 09:41:10 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -394,6 +394,30 @@ ShapeOps.Complement:= function(this)
     nor.ears:= ears;  nor.eyes:= eyes;
     return nor;
 end;
+
+NormalizerComplement:= function(W, J)
+    local   shape,  j,  x,  com,  new;
+    
+    # if all shapes are known, work with them.
+    if IsBound(W.shapes) then    
+        shape:= W.shapes[PositionProperty(W.shapes, x-> J in x)];
+    
+    # otherwise construct a single shape.
+    else
+        shape:= Shape(W, J);        
+    fi;
+    
+    j:= Position(Elements(shape), J);
+    x:= shape.transversal[j];
+    
+    com:= Call(shape, "Complement");
+    new:= com^x;
+    new.ears:= OnTuples(com.ears, x);
+    new.eyes:= OnTuples(com.eyes, x);
+    
+    return new;    
+end;
+
 
 #############################################################################
 ##
@@ -1290,6 +1314,8 @@ end;
 # (delete) MatrixPath:= p -> Product(Reversed(p), x-> PointedShapeOps.Matrix(x).mat);
 MatrixPath:= p -> Product(Reversed(p), x-> Call(x, "Matrix").mat);
 
+##  TODO: get rid of Doubly Pointed Shapes.  Everything they can do can be
+##  done with arrow classes ...
 
 #############################################################################
 ##
