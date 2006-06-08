@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.6 2006/06/01 07:52:43 goetz Exp $
+#A  $Id: alleys.g,v 1.7 2006/06/08 09:42:38 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -74,7 +74,7 @@ BigMatrixArrow:= function(W, arrow)
     l:= SetComposition(List(sh, Size));
     i:= Position(sub, arrow[1]);
     j:= PositionProperty(sh, x-> Difference(arrow[1], arrow[2]) in x);
-    mat[i]{j}:= DeltaArrow(W, arrow);    
+    mat[i]{l[j]}:= DeltaArrow(W, arrow);    
     return mat;
 end;
 
@@ -209,6 +209,77 @@ ArrowClassOps.Representative:= function(this)
 end;
 
 #############################################################################
+StabilizerArrow:= function(W, arrow)
+    return Stabilizer(NormalizerComplement(W, arrow[1]), arrow[2], OnTuples);
+end;
+
+
+#############################################################################
+ArrowClassOps.Children:= function(this)
+    local   stab,  children,  o,  new;
+    
+    if IsBound(this.stab) then
+        stab:= this.stab;
+    elif IsBound(this.parent) then
+        stab:= this.parent.stab;
+        stab:= Stabilizer(stab, this.arrow[2][Length(this.arrow[2])]);
+    else
+        stab:= StabilizerArrow(this.W, this.arrow);
+    fi;
+    this.stab:= stab;
+    
+    children:= [];
+    for o in Orbits(stab, ApplyFunc(Difference, this.arrow)) do
+        new:= [this.arrow[1], Copy(this.arrow[2])];
+        Add(new[2], o[1]);
+        Add(children, ArrowClass(W, new));
+    od;
+    
+    for o in children do
+        o.parent:= this;
+    od;
+    
+    return children;
+end;
+
+
+BreadthFirst:= function(tree)
+    local   list,  next;
+    
+    list:= [tree];
+    for next in list do
+        Append(list, Call(next, "Children"));
+    od;
+    return list;
+end;
+
+PreOrder:= function(tree)
+   local   list,  c;
+    
+    list:= [tree];
+    for c in Call(tree, "Children") do
+        Append(list, PreOrder(c));
+    od;
+    return list;
+end;
+
+PreOrderProperty:= function(tree, property)
+    local   list,  c;
+    
+    list:= [];
+    if property(tree) then
+        Add(list, tree);
+    fi;
+    
+    for c in Call(tree, "Children") do
+        Append(list, PreOrderProperty(c, property));
+    od;
+    return list;
+end;
+
+
+
+#############################################################################
 ##
 #F  ArrowClasses
 ##
@@ -235,6 +306,15 @@ ArrowClasses:= function(W)
         Add(list, ArrowClass(W, new));
         N:= Call(sh, "Complement");
         hhh(new, N);
+    od;
+    return list;
+end;
+
+ArrowClasses1:= function(W)
+    local   list,  shape;
+    list:= [];
+    for shape in Shapes(W) do
+        Append(list, BreadthFirst(ArrowClass(W, [shape.J, []])));
     od;
     return list;
 end;
@@ -306,7 +386,7 @@ ArrowClassOps.Elements:= function(this)
     W:= this.W;
     
     sh:= Shapes(W);  # carefully bring in sync with shape internals ...
-    i:= Position(sh, Shape(W, this.arrow[1]));
+    i:= PositionProperty(sh, x-> this.arrow[1] in x);
     j:= Position(Elements(sh[i]), this.arrow[1]);
     L:= sh[i].J;
     list:= OnTuples(this.arrow[2], sh[i].transversal[j]^-1);
@@ -322,13 +402,13 @@ end;
 
 #############################################################################
 ArrowClassOps.Tail:= function(this)
-    return Position(Shapes(this.W), 
-                   Shape(this.W, ApplyFunc(Difference, this.arrow)));
+    return PositionProperty(Shapes(this.W), 
+                   x-> ApplyFunc(Difference, this.arrow) in x);
 end;
 
 #############################################################################
 ArrowClassOps.Head:= function(this)
-    return Position(Shapes(this.W), Shape(this.W, this.arrow[1]));
+    return PositionProperty(Shapes(this.W), x-> this.arrow[1] in x);
 end;
 
 
@@ -349,6 +429,20 @@ ArrowClassOps.Matrix:= function(this)
     od;
     return rec(tail:= J, head:= L, mat:= mat);
 end;
+
+ArrowClassOps.BigMatrix:= function(this)
+    local   sh,  m,  l,  mat;
+    
+    sh:= Shapes(this.W); 
+    m:= Sum(sh, Size);
+    l:= SetComposition(List(sh, Size));
+    mat:= NullMat(m, m);
+    m:= Call(this, "Matrix");
+    mat{l[m.head]}{l[m.tail]}:= m.mat;
+    return mat;
+end;
+
+    
 
 Negative:= function(matrix)
     local   new;
