@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.7 2006/06/08 09:42:38 goetz Exp $
+#A  $Id: alleys.g,v 1.8 2006/06/14 08:20:13 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -59,6 +59,24 @@ DeltaArrow:= function(W, arrow)
         fi;
     fi;
     return res;
+end;
+
+#############################################################################
+LittleDeltaArrow:= function(W, arrow)
+    local   L,  list,  K,  d,  lft,  rgt;
+    
+    L:= arrow[1];
+    list:= arrow[2];
+    if list = [] then
+        Error("arrow must have length > 0");
+    else
+        K:= Difference(L, list{[1]});
+        d:= LongestCoxeterElement(ReflectionSubgroup(W, K))
+            * LongestCoxeterElement(ReflectionSubgroup(W, L));
+        lft:= [K, list{[2..Length(list)]}];
+        rgt:= OnArrows(lft, d);
+    fi;
+    return [lft, rgt];
 end;
 
 #############################################################################
