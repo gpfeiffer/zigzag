@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.8 2006/06/14 08:20:13 goetz Exp $
+#A  $Id: alleys.g,v 1.9 2006/06/16 13:34:31 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -548,6 +548,25 @@ ArrowClassOps.\*:= function(l, r)
     
     return res;
 end;
+
+#############################################################################
+ArrowClassOps.Length:= function(this)
+    return Length(this.arrow[2]);
+end;
+
+#############################################################################
+##
+##  the width of an arrow class alpha is the Size of alpha(L),
+##  the number of arrows in the class with the same head L.
+##  Thus the size of the class is the size of the shape of its head
+##  times its width.  In most cases, the width is 1.
+##
+##
+ArrowClassOps.Width:= function(this)
+    return Index(StabilizerArrow(W, [this.arrow[1], []]),
+                 StabilizerArrow(W, this.arrow));
+end;
+
 
  
     
