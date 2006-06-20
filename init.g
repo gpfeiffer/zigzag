@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: init.g,v 1.8 2006/06/20 08:26:55 goetz Exp $
+#A  $Id: init.g,v 1.9 2006/06/20 08:30:28 goetz Exp $
 ##
 RequirePackage("monoid");
 RequirePackage("chevie");
@@ -72,8 +72,6 @@ AUTO( ReadPkg( "zigzag", "lib", "subsets.g" ),
       IsXJL );
 
 AUTO( ReadPkg( "zigzag", "lib", "zigzag.g" ),
-      InfoZigzag1,
-      InfoZigzag2,
       DescentAlgebraOps,
       DescentAlgebra,
       IsDescentAlgebra,
