@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.9 2006/06/16 13:34:31 goetz Exp $
+#A  $Id: alleys.g,v 1.10 2006/06/20 08:14:02 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -106,6 +106,46 @@ ProductArrows:= function(a, b)
     return 0;
 end;
 
+##
+##  the product of a list of arrows.
+ProductArrowList:= function(list)
+    local   product,  i;
+    
+    # trivial case: the empty product.
+    if list = [] then return [[], []]; fi;
+    
+    product:= list[1];
+    for i in [2..Length(list)] do
+        product:= ProductArrows(product, list[i]);
+    od;
+    
+    return product;
+end;
+
+
+#############################################################################
+##
+##  Every arrow of length > 0 has a unique factorization into arrows of
+##  length 1.
+##
+FactorsArrow:= function(a)
+    local   factors,  b;
+    
+    # protect a against accidental corruption.
+    a:= Copy(a);
+    
+    # trivial case first.
+    if a[2] = [] then return [a];  fi;
+    
+    factors:= [];
+    while Length(a[2]) > 0 do
+        b:= a[2]{[1]};
+        Add(factors, [a[1], b]);
+        a:= [Difference(a[1], b), a[2]{[2..Length(a[2])]}];
+    od;
+    
+    return factors;
+end;
 
     
 #############################################################################
@@ -301,7 +341,7 @@ end;
 ##
 #F  ArrowClasses
 ##
-ArrowClasses:= function(W)
+ArrowClasses0:= function(W)
     local   list,  hhh,  sh,  new,  N;
     
     list:= [];
@@ -328,7 +368,7 @@ ArrowClasses:= function(W)
     return list;
 end;
 
-ArrowClasses1:= function(W)
+ArrowClasses:= function(W)
     local   list,  shape;
     list:= [];
     for shape in Shapes(W) do
@@ -448,6 +488,59 @@ ArrowClassOps.Matrix:= function(this)
     return rec(tail:= J, head:= L, mat:= mat);
 end;
 
+#  how to multiply two such matrices.  checked!  Turn into proper objects?
+ProductArrowMatrices:= function(a, b)
+    if a.tail = b.head then
+        return rec(tail:= b.tail, head:= a.head, mat:= a.mat * b.mat);
+    fi;
+    return 0;
+end;
+
+##  the product of a list of arrows.
+ProductArrowMatrixList:= function(list)
+    local   product,  i;
+    
+    # trivial case: the empty product.
+    if list = [] then return 1; fi;  # ???
+    
+    product:= list[1];
+    for i in [2..Length(list)] do
+        product:= ProductArrowMatrices(product, list[i]);
+    od;
+    
+    return product;
+end;
+
+
+
+SumArrowMatrices:= function(a, b)
+    if a.tail = b.tail and a.head = b.head then
+        return rec(tail:= b.tail, head:= a.head, mat:= a.mat + b.mat);
+    fi;
+    Error("think ...");
+end;
+
+
+ArrowClassOps.Delta:= function(this)
+    local   sh,  J,  mat,  e;
+
+    sh:= Shapes(this.W);
+    J:= Call(this, "Tail");
+    mat:= List(Elements(sh[J]), x-> 0);
+    for e in Elements(this) do
+        mat:= mat + DeltaArrow(this.W, e);
+    od;
+    return rec(support:= J, mat:= mat);
+end;
+
+# a path is a sequence of arrows, with adjacent ones multiplyable.
+DeltaPath:= function(path)
+    local   p;
+    
+    p:= ProductArrowMatrixList(List(path, x-> Call(x, "Matrix")));
+    return rec(support:= p.tail, mat:= Sum(p.mat));
+end;
+
 ArrowClassOps.BigMatrix:= function(this)
     local   sh,  m,  l,  mat;
     
@@ -556,19 +649,146 @@ end;
 
 #############################################################################
 ##
-##  the width of an arrow class alpha is the Size of alpha(L),
+##  the *depth* of an arrow class alpha is the Size of alpha(L),
 ##  the number of arrows in the class with the same head L.
-##  Thus the size of the class is the size of the shape of its head
-##  times its width.  In most cases, the width is 1.
+##  the *width of an arrow class is the size of the shape of its head.
+##  Thus the size of the class is its width
+##  times its depth.  In most cases, the depth is 1.  Also,
+##  arrow classes of larger depth tend to map to 0.
 ##
 ##
-ArrowClassOps.Width:= function(this)
+ArrowClassOps.Depth:= function(this)
     return Index(StabilizerArrow(W, [this.arrow[1], []]),
                  StabilizerArrow(W, this.arrow));
 end;
 
+ArrowClassOps.Width:= function(this)
+    return Size(Shapes(W)[Call(this, "Head")]);
+end;
 
- 
+#############################################################################
+##  
+##  Find the last irreducible factor (actually the first when you read
+##  left to right ...)
+##
+ArrowClassOps.Suffix:= function(this)
+    local   fff,  i,  lft,  rgt,  pro;
+    
+    # idempotent case first.
+    if this.arrow[2] = [] then
+        return this;
+    fi;
+    
+    # short case next.
+    if Length(this.arrow[2]) = 1 then
+        return this;
+    fi;
+    
+    fff:= FactorsArrow(this.arrow);
+    for i in [1..Length(fff)-1] do
+        lft:= ArrowClass(this.W, ProductArrowList(fff{[1..i]}));
+        rgt:= ArrowClass(this.W, ProductArrowList(fff{[i+1..Length(fff)]}));
+        pro:= lft * rgt;
+        if Length(pro) = 1 and pro[1] = this then
+            return lft;
+        fi;
+    od;
+    
+    return this;
+          
+end;
+
+# a path is a sequence of arrows, with adjacent ones multiplyable.
+DeltaPath:= function(path)
+    local   p;
+    
+    p:= ProductArrowMatrixList(List(path, x-> Call(x, "Matrix")));
+    return rec(support:= p.tail, mat:= Sum(p.mat));
+end;
+
+
+QuiverRelations:= function(W)
+    local   aaa,  path,  path0,  more,  a,  relations,  sss,  l,  
+            null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
+            line,  pos,  i,  b;
+    
+    # start with a reasonably small set of arrow classes.
+    aaa:= Filtered(ArrowClasses(W), x-> IsNonZero(Call(x, "Delta").mat));
+    aaa:= Filtered(aaa, x-> x = Call(x, "Suffix"));
+    InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
+    
+    # split idempotents from nilpotents.
+    path:= [];  path0:= [];  more:= [];
+    for a in aaa do
+        if a.arrow[2] = [] then
+            Add(path0, a);
+        else
+            Add(more, [a]);
+        fi;
+    od;
+    InfoZigzag1("Of which ", Length(path0), " have length 0.\n");
+    
+    relations:= [];
+    
+    sss:= SubsetsShapes(Shapes(W));
+    l:= SetComposition(List(Shapes(W), Size));
+    null:= List(sss, x-> 0);
+    
+    while more <> [] do
+        
+        Add(path, more);
+        InfoZigzag1("Added ", Length(more), " paths of length ", Length(path), ".\n");
+        
+        # consider all paths at once.
+        all:= Concatenation(path);
+        
+        mat:= [];
+        for a in all do
+            delta:= DeltaPath(a);
+            new:= Copy(null);
+            new{l[delta.support]}:= delta.mat;
+            Add(mat, new);
+        od;
+        
+        kern:= NullspaceMat(mat);
+        InfoZigzag1("Found ", Length(kern), " relations.\n");
+        
+        
+        # FIXME:
+        # suppose adr is a list of back references such that 
+        #   all[i] = path[adr[i][1]][adr[i][2]] ...
+        adr:= Concatenation(List([1..Length(path)], i-> TransposedMat([List(path[i], x-> i), [1..Length(path[i])]])));
+
+        
+        # find all relations.
+        delete:= List(path, x-> []);
+        for line in kern do
+            pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
+            Add(relations, rec(paths:= all{pos}, coeffs:= line{pos}));
+            Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
+        od;
+        
+        # remove obsoletes.
+        for i in [1..Length(path)] do
+            path[i]:= path[i]{Difference([1..Length(path[i])], delete[i])};
+        od;
+        
+        InfoZigzag1("Length: ", List(path, Length), ": ", Length(path0) + Sum(path, Length), ".\n");
+        
+        # extend paths.
+        more:= [];
+        for a in path[Length(path)] do
+            for b in path[1] do
+                if a[Length(a)] * b[1] <> [] then
+                    Add(more, Concatenation(a, b));
+                fi; 
+            od;
+        od;
+        
+    od;
+    
+    return rec(path0:= path0, path:= path, relations:= relations);
+end;
     
 
 #############################################################################
