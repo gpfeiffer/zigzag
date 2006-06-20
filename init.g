@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: init.g,v 1.5 2006/05/30 09:47:41 goetz Exp $
+#A  $Id: init.g,v 1.6 2006/06/20 08:14:37 goetz Exp $
 ##
 RequirePackage("monoid");
 RequirePackage("chevie");
@@ -89,5 +89,6 @@ AUTO( ReadPkg( "zigzag", "lib", "zigzag.g" ),
       PrimitiveIdempotents,
       CartanMatDescent,
       RightPIE,
-      SetComposition );
+      SetComposition,
+      IsNonZero );
 
