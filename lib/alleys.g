@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.10 2006/06/20 08:14:02 goetz Exp $
+#A  $Id: alleys.g,v 1.11 2006/06/20 08:27:17 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -290,7 +290,7 @@ ArrowClassOps.Children:= function(this)
     for o in Orbits(stab, ApplyFunc(Difference, this.arrow)) do
         new:= [this.arrow[1], Copy(this.arrow[2])];
         Add(new[2], o[1]);
-        Add(children, ArrowClass(W, new));
+        Add(children, ArrowClass(this.W, new));
     od;
     
     for o in children do
@@ -658,12 +658,12 @@ end;
 ##
 ##
 ArrowClassOps.Depth:= function(this)
-    return Index(StabilizerArrow(W, [this.arrow[1], []]),
-                 StabilizerArrow(W, this.arrow));
+    return Index(StabilizerArrow(this.W, [this.arrow[1], []]),
+                 StabilizerArrow(this.W, this.arrow));
 end;
 
 ArrowClassOps.Width:= function(this)
-    return Size(Shapes(W)[Call(this, "Head")]);
+    return Size(Shapes(this.W)[Call(this, "Head")]);
 end;
 
 #############################################################################
