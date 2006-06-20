@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: init.g,v 1.9 2006/06/20 08:30:28 goetz Exp $
+#A  $Id: init.g,v 1.10 2006/06/20 08:31:34 goetz Exp $
 ##
 RequirePackage("monoid");
 RequirePackage("chevie");
@@ -46,7 +46,8 @@ AUTO( ReadPkg( "zigzag", "lib", "arrows"),
       ArrowClassOps,
       ArrowClass,
       IsArrowClass,
-      ArrowClasses );
+      ArrowClasses,
+      QuiverRelations );
 
 AUTO( ReadPkg( "zigzag", "lib", "subsets.g" ),
       PrefixesOps,
