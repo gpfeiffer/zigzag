@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: init.g,v 1.6 2006/06/20 08:14:37 goetz Exp $
+#A  $Id: init.g,v 1.7 2006/06/20 08:25:37 goetz Exp $
 ##
 RequirePackage("monoid");
 RequirePackage("chevie");
@@ -35,7 +35,8 @@ AUTO( ReadPkg( "zigzag", "lib", "shapes" ),
       YCharacters,
       ZCharacters,
       InvolutionShapes,
-      Involutions );
+      Involutions,
+      NormalizerComplement );
 
 AUTO( ReadPkg( "zigzag", "lib", "arrows"),
       HeadArrow,
