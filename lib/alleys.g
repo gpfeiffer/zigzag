@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.11 2006/06/20 08:27:17 goetz Exp $
+#A  $Id: alleys.g,v 1.12 2006/06/21 11:38:11 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -789,7 +789,39 @@ QuiverRelations:= function(W)
     
     return rec(path0:= path0, path:= path, relations:= relations);
 end;
+
+
+#############################################################################
+VerifyQuiver:= function(qr)
+    local   W,  D,  mu,  eee,  l,  a,  mat,  fa;
     
+    # trivial case: nothing to verify.
+    if qr.path = [] then
+        return true;
+    fi;
+        
+    W:= qr.path0[1].W;
+    D:= DescentAlgebra(W);
+    mu:= Call(D, "MuNu").mu;
+    eee:= List(LeftRegularE(D), x-> x^mu);
+    l:= SetComposition(List(Shapes(W), Size));
+    
+    # it suffices to check the paths of length 1.
+    for a in qr.path[1] do
+        Print("checking ", a, " ...\c");
+        mat:= Call(Product(a), "Matrix");
+        Print(" = ", Sum(mat.mat), " ...\c");
+        fa:= Sum(mat.mat) * eee{l[mat.tail]};
+        fa{l[mat.head]}{l[mat.tail]}:= fa{l[mat.head]}{l[mat.tail]} - mat.mat;
+        if fa <> 0*fa then 
+            return false;
+        fi;
+        Print (" OK.\n");
+    od;
+    
+    return true;
+end;
+
 
 #############################################################################
 ##
