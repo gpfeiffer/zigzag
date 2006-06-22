@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.12 2006/06/21 11:38:11 goetz Exp $
+#A  $Id: alleys.g,v 1.13 2006/06/22 10:05:49 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -808,15 +808,22 @@ VerifyQuiver:= function(qr)
     
     # it suffices to check the paths of length 1.
     for a in qr.path[1] do
-        Print("checking ", a, " ...\c");
+        Print("checking \c");
         mat:= Call(Product(a), "Matrix");
-        Print(" = ", Sum(mat.mat), " ...\c");
+        Print(" ...\c");
         fa:= Sum(mat.mat) * eee{l[mat.tail]};
         fa{l[mat.head]}{l[mat.tail]}:= fa{l[mat.head]}{l[mat.tail]} - mat.mat;
         if fa <> 0*fa then 
             return false;
         fi;
-        Print (" OK.\n");
+        Print (" OK.  ");
+        fa:= mat.mat[1] * eee{l[mat.tail]};
+        if Length(l[mat.head]) * eee[l[mat.head][1]] * fa = fa then
+            Print("Eigenvalue good also.\n");
+        else
+            Print("*** EIGENVALUE OUT OF LINE ***\n");
+        fi;
+        
     od;
     
     return true;
