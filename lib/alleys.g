@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.13 2006/06/22 10:05:49 goetz Exp $
+#A  $Id: alleys.g,v 1.14 2006/06/30 14:08:49 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -209,7 +209,6 @@ ArrowClass:= function(W, arrow)
           );
 end;
 
-
 #############################################################################
 ##
 #F  IsShape( <obj> )  . . . . . . . . . . . . . . . . . . . . . . type check.
@@ -300,7 +299,10 @@ ArrowClassOps.Children:= function(this)
     return children;
 end;
 
-
+#############################################################################
+##
+##  Here are a few tree walking functions.
+##
 BreadthFirst:= function(tree)
     local   list,  next;
     
@@ -312,7 +314,7 @@ BreadthFirst:= function(tree)
 end;
 
 PreOrder:= function(tree)
-   local   list,  c;
+    local   list,  c;
     
     list:= [tree];
     for c in Call(tree, "Children") do
@@ -321,18 +323,58 @@ PreOrder:= function(tree)
     return list;
 end;
 
+PostOrder:= function(tree)
+    local   list,  c;
+    
+    list:= [];
+    for c in Call(tree, "Children") do
+        Append(list, PostOrder(c));
+    od;
+    Add(list, tree);
+    return list;
+end;
+
+NrPreOrder:= function(tree)
+    return 1 + Sum(Call(tree, "Children"), NrPreOrder);
+end;
+
 PreOrderProperty:= function(tree, property)
     local   list,  c;
     
     list:= [];
     if property(tree) then
         Add(list, tree);
+        InfoZigzag1(".\c");
     fi;
     
     for c in Call(tree, "Children") do
         Append(list, PreOrderProperty(c, property));
     od;
     return list;
+end;
+
+PostOrderProperty:= function(tree, property)
+    local   list,  c;
+    
+    list:= [];
+    for c in Call(tree, "Children") do
+        Append(list, PostOrderProperty(c, property));
+    od;
+    if property(tree) then
+        Add(list, tree);
+        InfoZigzag1(".\c");
+    elif list <> [] then
+        Add(list, tree);
+        InfoZigzag1("+\c");
+    fi;
+    
+    return list;
+end;
+
+NrPreOrderProperty:= function(tree, p)
+    local a;
+    a:= 0;  if p(tree) then a:= 1; fi;
+    return a + Sum(Call(tree, "Children"), c-> NrPreOrderProperty(c, p));
 end;
 
 
@@ -376,6 +418,11 @@ ArrowClasses:= function(W)
     od;
     return list;
 end;
+
+NrArrowClasses:= function(W)
+    return Sum(Shapes(W), x-> NrPreOrder(ArrowClass(W, [x.J, []])));
+end;
+    
 
 EssentialArrowClasses:= function(W)
     local   list,  hhh,  sh,  new,  N;
@@ -789,6 +836,208 @@ QuiverRelations:= function(W)
     
     return rec(path0:= path0, path:= path, relations:= relations);
 end;
+
+QuiverRelations1:= function(W)
+    local   aaa,  path,  path0,  more,  a,  relations,  sss,  l,  
+            null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
+            line,  pos,  i,  b;
+    
+    # start with a reasonably small set of arrow classes.
+    aaa:= [];
+    for a in Shapes(W) do
+        Append(aaa, PreOrderProperty(ArrowClass(W, [a.J, []]), x-> IsNonZero(Call(x, "Delta").mat)));
+        InfoZigzag1("\n");
+    od;
+
+#    aaa:= Filtered(ArrowClasses(W), x-> IsNonZero(Call(x, "Delta").mat));
+    aaa:= Filtered(aaa, x-> x = Call(x, "Suffix"));
+    InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
+    
+    # split idempotents from nilpotents.
+    path:= [];  path0:= [];  more:= [];
+    for a in aaa do
+        if a.arrow[2] = [] then
+            Add(path0, a);
+        else
+            Add(more, [a]);
+        fi;
+    od;
+    InfoZigzag1("Of which ", Length(path0), " have length 0.\n");
+    
+    relations:= [];
+    
+    sss:= SubsetsShapes(Shapes(W));
+    l:= SetComposition(List(Shapes(W), Size));
+    null:= List(sss, x-> 0);
+    
+    while more <> [] do
+        
+        Add(path, more);
+        InfoZigzag1("Added ", Length(more), " paths of length ", Length(path), ".\n");
+        
+        # consider all paths at once.
+        all:= Concatenation(path);
+        
+        mat:= [];
+        for a in all do
+            delta:= DeltaPath(a);
+            new:= Copy(null);
+            new{l[delta.support]}:= delta.mat;
+            Add(mat, new);
+        od;
+        
+        kern:= NullspaceMat(mat);
+        InfoZigzag1("Found ", Length(kern), " relations.\n");
+        
+        
+        # FIXME:
+        # suppose adr is a list of back references such that 
+        #   all[i] = path[adr[i][1]][adr[i][2]] ...
+        adr:= Concatenation(List([1..Length(path)], i-> TransposedMat([List(path[i], x-> i), [1..Length(path[i])]])));
+
+        
+        # find all relations.
+        delete:= List(path, x-> []);
+        for line in kern do
+            pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
+            Add(relations, rec(paths:= all{pos}, coeffs:= line{pos}));
+            Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
+        od;
+        
+        # remove obsoletes.
+        for i in [1..Length(path)] do
+            path[i]:= path[i]{Difference([1..Length(path[i])], delete[i])};
+        od;
+        
+        InfoZigzag1("Length: ", List(path, Length), ": ", Length(path0) + Sum(path, Length), ".\n");
+        
+        # extend paths.
+        more:= [];
+        for a in path[Length(path)] do
+            for b in path[1] do
+                if a[Length(a)] * b[1] <> [] then
+                    Add(more, Concatenation(a, b));
+                fi; 
+            od;
+        od;
+        
+    od;
+    
+    return rec(path0:= path0, path:= path, relations:= relations);
+end;
+
+#############################################################################
+##
+##  a product for arrow classes forming a path ...
+##
+ArrowClassProduct:= function ( abc )
+    local  pro, i;
+    pro := abc[1];
+    for i  in [ 2 .. Length( abc ) ]  do
+        pro := pro * abc[i];
+        if Length( pro ) = 1  then
+            pro := pro[1];
+        else
+            Error( "think!" );
+        fi;
+    od;
+    return pro;
+end;
+
+
+#############################################################################
+PrintQuiver:= function(qr)
+    local   short,  shortarrow,  name,  vertex,  i,  gens,  e,  mat,  
+            r,  p;
+    
+    short:= function(set)
+        local   text,  s;
+        
+        text:= "";
+        for s in set do
+            Append(text, String(s));
+        od;
+        IsString(text);
+        return text;
+    end;
+    
+    shortarrow:= function(a)
+        local   text;
+        text:= "[";
+        Append(text, short(a[1]));
+        Append(text, ";");
+        Append(text, short(a[2]));
+        Append(text, "]");
+        return text;
+    end;
+    
+    name:= NamesShapes(Shapes(W));
+    vertex:= qr.path0;
+    PrintDynkinDiagram(vertex[1].W);
+    
+    Print("\nVertices:\n");
+    for i in [1..Length(vertex)] do
+        Print(i, ". ", name[i], " [", short(vertex[i].arrow[1]), "]\n");
+    od;
+    
+    if qr.path = [] then return; fi;
+    
+    gens:= List(qr.path[1], x-> x[1]);
+    Print("\nEdges:\n");
+    for e in gens do
+        mat:= Call(e, "Matrix");
+        Print(mat.tail, " --> ", mat.head, ". ", 
+              shortarrow(e.arrow), "\n");
+    od;
+    
+    Print("\nRelations:\n");
+    for r in qr.relations do
+        if Difference(Union(r.paths), gens) = [] then
+            i:= 0;
+            for p in r.paths do
+                i:= i + 1;
+                Print("+", r.coeffs[i], "(");
+                for e in p do
+                    mat:= Call(e, "Matrix");
+                    Print(mat.head, "---");
+                od;
+                Print(mat.tail, ") \c");
+            od;
+            for p in r.paths do
+                for e in p do
+                    Print(shortarrow(e.arrow), "\c");
+                od;
+                Print(", ");
+            od;
+            Print("\n");
+        fi;
+    od;
+        
+end;
+
+#############################################################################
+##
+##  The Cartan Mat, decomposed along the radical series.
+##
+DimensionsMatrix:= function(qr)
+    local   W,  l,  dim,  k,  mat,  p,  i,  j;
+    
+    W:= qr.path0[1].W;
+    l:= Length(Shapes(W));
+    dim:= [];
+    for k in [1..Length(qr.path)] do
+        mat:= NullMat(l, l);
+        for p in qr.path[k] do
+            i:= Call(p[1], "Matrix").head;
+            j:= Call(p[Length(p)], "Matrix").tail;
+            mat[i][j]:= mat[i][j] + 1;
+        od;
+        dim[k]:= mat;
+    od;
+    
+    return dim;
+end;
+
 
 
 #############################################################################
