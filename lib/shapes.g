@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.29 2006/06/08 09:41:10 goetz Exp $
+#A  $Id: shapes.g,v 1.30 2006/06/30 14:09:19 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -1198,6 +1198,14 @@ ShapeOps.Points:= function(this)
     return points;
 end;
       
+
+#############################################################################
+##
+##  How to turn a shape into an arrow class.
+##
+ShapeOps.ArrowClass:= function(this)
+    return ArrowClass(this.W, [this.J, []]);
+end;
 
 #############################################################################
 ##
