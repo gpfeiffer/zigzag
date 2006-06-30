@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.26 2006/06/08 09:40:09 goetz Exp $
+#A  $Id: descent.g,v 1.27 2006/06/30 14:09:45 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -693,7 +693,6 @@ PrimitiveIdempotents:= function(D)
     fi;
 
     lll:= List(Shapes(D.W), Size);
-    # (delete) nu:= DescentAlgebraOps.MuNu(D).nu;
     nu:= Call(D, "MuNu").nu;
     xxx:= LeftRegularX(D);
     
@@ -1181,7 +1180,6 @@ RightPIE:= function(D)
     
     EEE:= List(PrimitiveIdempotents(D), x-> x[Dimension(D)]);
     r:= List(RightRegularX(D), MatCompressedAJKL);
-    # (delete) mat:= D.operations.MuNu(D).nu;
     mat:= Call(D, "MuNu").nu;
     return List(EEE, e-> mat*Sum([1..Length(e)], i-> e[i]*r[i])/mat);
 end;
