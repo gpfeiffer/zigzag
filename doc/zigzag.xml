@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.9 2006/05/29 12:59:42 goetz Exp $
+     $Id: zigzag.xml,v 1.10 2006/07/05 18:49:33 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -24,6 +24,7 @@ Department of Mathematics, NUI, Galway, Ireland
   <TableOfContents/>
 
   <Body>
+
 <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 <Chapter>
 <Heading>Methods.</Heading>
@@ -36,6 +37,37 @@ Department of Mathematics, NUI, Galway, Ireland
 <#Include Label="Call">
 
 <#Include Label="ApplyMethod">
+
+</Section>
+</Chapter>
+
+<!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+<Chapter>
+<Heading>Tree Walking.</Heading>
+
+<#Include Label="Intro:Walker">
+
+<Section>
+<Heading>Breadth First Serach.</Heading>
+
+<#Include Label="BreadthFirst">
+
+</Section>
+
+<Section>
+<Heading>Depth First Serach.</Heading>
+
+<#Include Label="BreadthFirst">
+
+<#Include Label="PreOrder">
+
+<#Include Label="NrPreOrder">
+
+<#Include Label="PreOrderProperty">
+
+<#Include Label="NrPreOrderProperty">
+
+<#Include Label="PostOrder">
 
 </Section>
 </Chapter>
