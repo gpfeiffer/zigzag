@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.27 2006/06/30 14:09:45 goetz Exp $
+#A  $Id: descent.g,v 1.28 2006/07/05 18:53:07 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -20,13 +20,6 @@ RequirePackage("chevie");
 ##
 ##  * Avoid the expansion of RightRegularX into full matrices ...
 ##
-
-#############################################################################
-##
-#F  InfoZigzag? . . . . . . . . . . . . . . . . . . . . . . . info functions.
-##
-if not IsBound(InfoZigzag1) then InfoZigzag1:= Ignore; fi;
-if not IsBound(InfoZigzag2) then InfoZigzag2:= Ignore; fi;
 
 ##  create descent algebras as a subclass of Algebra -- need to provide
 ##  special functions later ...
