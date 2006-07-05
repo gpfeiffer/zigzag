@@ -1,7 +1,9 @@
 path:= Directory("/home/goetz/text/descent/zigzag/doc");
 main:= "zigzag.xml";
-files:= [ "../methods.g", "../iterator.g", "../shapes.g" ];
-bookname:= "ZigZag";
+lib:= "../lib/";
+files:= [ "methods.g", "walker.g", "iterator.g", "shapes.g" ];
+files:= List(files, x-> Concatenation(lib, x));
+bookname:= "zigzag";
 str:= ComposedXMLString(path, main, files);
 r:= ParseTreeXMLString(str);
 CheckAndCleanGapDocTree(r);
