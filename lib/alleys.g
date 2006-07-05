@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.14 2006/06/30 14:08:49 goetz Exp $
+#A  $Id: alleys.g,v 1.15 2006/07/05 18:46:53 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -298,86 +298,6 @@ ArrowClassOps.Children:= function(this)
     
     return children;
 end;
-
-#############################################################################
-##
-##  Here are a few tree walking functions.
-##
-BreadthFirst:= function(tree)
-    local   list,  next;
-    
-    list:= [tree];
-    for next in list do
-        Append(list, Call(next, "Children"));
-    od;
-    return list;
-end;
-
-PreOrder:= function(tree)
-    local   list,  c;
-    
-    list:= [tree];
-    for c in Call(tree, "Children") do
-        Append(list, PreOrder(c));
-    od;
-    return list;
-end;
-
-PostOrder:= function(tree)
-    local   list,  c;
-    
-    list:= [];
-    for c in Call(tree, "Children") do
-        Append(list, PostOrder(c));
-    od;
-    Add(list, tree);
-    return list;
-end;
-
-NrPreOrder:= function(tree)
-    return 1 + Sum(Call(tree, "Children"), NrPreOrder);
-end;
-
-PreOrderProperty:= function(tree, property)
-    local   list,  c;
-    
-    list:= [];
-    if property(tree) then
-        Add(list, tree);
-        InfoZigzag1(".\c");
-    fi;
-    
-    for c in Call(tree, "Children") do
-        Append(list, PreOrderProperty(c, property));
-    od;
-    return list;
-end;
-
-PostOrderProperty:= function(tree, property)
-    local   list,  c;
-    
-    list:= [];
-    for c in Call(tree, "Children") do
-        Append(list, PostOrderProperty(c, property));
-    od;
-    if property(tree) then
-        Add(list, tree);
-        InfoZigzag1(".\c");
-    elif list <> [] then
-        Add(list, tree);
-        InfoZigzag1("+\c");
-    fi;
-    
-    return list;
-end;
-
-NrPreOrderProperty:= function(tree, p)
-    local a;
-    a:= 0;  if p(tree) then a:= 1; fi;
-    return a + Sum(Call(tree, "Children"), c-> NrPreOrderProperty(c, p));
-end;
-
-
 
 #############################################################################
 ##
