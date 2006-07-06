@@ -7,13 +7,14 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.16 2006/07/06 18:20:39 goetz Exp $
+#A  $Id: alleys.g,v 1.17 2006/07/06 18:59:52 goetz Exp $
 ##
-##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
 ##  
-##  An <E>arrow</E> <Index>arrow</Index> is a pair consisting of a subset L of S and a list (s_1, ..., s_l) of pairwise different elements of L.
-##
+##  <#GAPDoc Label="Intro:Arrows">
+##    An <E>arrow</E> <Index>arrow</Index> is a pair consisting of a subset
+##    <M>L</M> of <M>S</M> and a list <M>(s_1, ..., s_l)</M> of pairwise
+##    different elements of <M>L</M>.
 ##  <#/GAPDoc>
 ##
 
@@ -169,20 +170,18 @@ ArrowClassOps:= OperationsRecord("ArrowClassOps", DomainOps);
 
 #############################################################################
 ##  
-#C  Shape( <W>, <J> ) . . . . . . . . . . . . . . . . . . . . .  constructor.
-#C  Shape( <W>, <WJ> )  . . . . . . . . . . . . . . . . . . . .  constructor.
-#C  Shape( <W>, <w> ) . . . . . . . . . . . . . . . . . . . . .  constructor.
+#C  ArrowClass( <W>, <arrow> )  . . . . . . . . . . . . . . . .  constructor.
 ##  
-##  <#GAPDoc Label="Shape">
+##  <#GAPDoc Label="ArrowClass">
 ##  <ManSection>
-##  <Func Name="Shape" Arg="W, J"/>
+##  <Func Name="ArrowClass" Arg="W, J"/>
 ##  <Returns>
-##    a new shape, an object that represents the shape of <A>J</A> in 
-##    <A>W</A>. 
+##    a new arrow class, an object that represents the class of <A>arrow</A>
+##    under <A>W</A>.
 ##  </Returns>
 ##  <Description>
-##  This is the simple constructor for the shape class.  It constructs and
-##  returns the shape of <A>J</A> in <A>W</A>.  Here <A>W</A> is a finite
+##  This is the simple constructor for an arrow class.  It constructs and
+##  returns the class  of <A>arrow</A> in <A>W</A>.  Here <A>W</A> is a finite
 ##  Coxeter group of rank <M>n</M> and <A>J</A> is a subset of
 ##  <M>[1..n]</M>.
 ##  <Example>
@@ -196,7 +195,7 @@ ArrowClassOps:= OperationsRecord("ArrowClassOps", DomainOps);
 ##
 ##  public fields:
 ##    W, the Coxeter group.
-##    J, the parabolic subset of S.
+##    arrow, an arrow for W.
 ##  
 ArrowClass:= function(W, arrow)
     return 
@@ -211,13 +210,13 @@ end;
 
 #############################################################################
 ##
-#F  IsShape( <obj> )  . . . . . . . . . . . . . . . . . . . . . . type check.
+#F  IsArrowClass( <obj> ) . . . . . . . . . . . . . . . . . . . . type check.
 ##
-##  <#GAPDoc Label="IsShape">
+##  <#GAPDoc Label="IsArrowClass">
 ##  <ManSection>
-##  <Func Name="IsShape" Arg="obj"/>
+##  <Func Name="IsArrowClass" Arg="obj"/>
 ##  <Returns>
-##    <K>true</K> if <A>obj</A> is a shape and <K>false</K> otherwise.
+##    <K>true</K> if <A>obj</A> is an arrow class and <K>false</K> otherwise.
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -232,8 +231,6 @@ end;
 ##  
 #F  Print( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-##  
-##
 ArrowClassOps.Print:= function(this)
     Print("ArrowClass( ", this.W, ", ", this.arrow, " )");
 end;
@@ -241,7 +238,7 @@ end;
 
 #############################################################################
 ##
-#F  Representative( <shape> ) . . . . . . . . . . . . . . . . representative.
+#F  Representative( <arrowclass> ) . . . . . . . . . . . . . . . . representative.
 ##
 ##  A shape, as a class of parabolic subsets, has a representative.
 ##
