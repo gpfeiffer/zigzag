@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: walker.g,v 1.1 2006/07/05 18:45:41 goetz Exp $
+#A  $Id: walker.g,v 1.2 2006/07/06 18:22:03 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Walker">
 ##  This file contains some tree walking and counting functions.
@@ -36,6 +36,10 @@
 ##    the root, followed by the vertices at depth 1, followed by the
 ##    vertices at depth 2, \ldots\
 ##    The usual orbit algorithm is an example of a breadth first search.
+##  <Example>
+##  gap> BreadthFirst(BinomialTree(4));
+##  [ 4, 0, 1, 2, 3, 0, 0, 1, 0, 1, 2, 0, 0, 0, 1, 0 ]
+##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -63,6 +67,10 @@ end;
 ##  <Description>
 ##    The tree <A>tree</A> is expanded depth first, and vertices are
 ##    listed when they are encountered for the first time.
+##  <Example>
+##  gap> PreOrder(BinomialTree(4));
+##  [ 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0 ]
+##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -90,6 +98,10 @@ end;
 ##  <Description>
 ##    The tree <A>tree</A> is expanded depth first, and vertices are
 ##    counted when they are encountered for the first time.
+##  <Example>
+##  gap> NrPreOrder(BinomialTree(4));
+##  16
+##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -113,6 +125,10 @@ end;
 ##    The tree <A>tree</A> is expanded depth first, and a vertex is
 ##    listed when it is encountered for the first time, provided it
 ##    satisfies the given property <A>property</A>.
+##  <Example>
+##  gap> PreOrderProperty(BinomialTree(4), x-> x.n > 0);
+##  [ 4, 1, 2, 1, 3, 1, 2, 1 ]
+##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -147,14 +163,18 @@ end;
 ##    The tree <A>tree</A> is expanded depth first, and a vertex is
 ##    counted when it is encountered for the first time, provided it
 ##    satisfies the given property <A>property</A>.
+##  <Example>
+##  gap> NrPreOrderProperty(BinomialTree(4), x-> x.n > 0);
+##  8
+##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-NrPreOrderProperty:= function(tree, p)
+NrPreOrderProperty:= function(tree, pro)
     local a;
-    a:= 0;  if p(tree) then a:= 1; fi;
-    return a + Sum(Call(tree, "Children"), c-> NrPreOrderProperty(c, p));
+    a:= 0;  if pro(tree) then a:= 1; fi;
+    return a + Sum(Call(tree, "Children"), c-> NrPreOrderProperty(c, pro));
 end;
 
 #############################################################################
@@ -170,6 +190,10 @@ end;
 ##  <Description>
 ##    The tree <A>tree</A> is expanded depth first, and vertices are
 ##    listed when they are encountered for the last time.
+##  <Example>
+##  gap> PostOrder(BinomialTree(4));
+##  [ 0, 0, 1, 0, 0, 1, 2, 0, 0, 1, 0, 0, 1, 2, 3, 4 ]
+##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -203,6 +227,10 @@ end;
 ##    <A>property</A>.  In post-order, all descendants of a vertex
 ##    have been visited when it has to be decided whether to list the
 ##    vertex or not.
+##  <Example>
+##  gap> PostOrderProperty(BinomialTree(4), x-> x.n = 1);
+##  [ 1, 1, 2, 1, 1, 2, 3, 4 ]
+##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -214,18 +242,50 @@ PostOrderProperty:= function(tree, property)
     for c in Call(tree, "Children") do
         Append(list, PostOrderProperty(c, property));
     od;
-    if property(tree) then
+    if list <> [] or property(tree) then
         Add(list, tree);
-        InfoZigzag1(".\c");
-    elif list <> [] then
-        Add(list, tree);
-        InfoZigzag1("+\c");
     fi;
     
     return list;
 end;
 
 
+#############################################################################
+##
+#F  NrPostOrderProperty( <tree>, <property> ) . . . . . . depth first search.
+##
+##  <#GAPDoc Label="NrPostOrderProperty">
+##  <ManSection>
+##  <Func Name="NrPostOrderProperty" Arg="tree, property"/>
+##  <Returns>
+##    the list of vertices of the tree <A>tree</A> having descendants
+##    with the given property <A>property</A> in post-order.
+##  </Returns>
+##  <Description>
+##    The tree <A>tree</A> is expanded depth first, and a vertex is
+##    counted when it is encountered for the last time, provided it or
+##    one of its descendants satisfies the given property
+##    <A>property</A>.  In post-order, all descendants of a vertex
+##    have been visited when it has to be decided whether to count the
+##    vertex or not.
+##  <Example>
+##  gap> NrPostOrderProperty(BinomialTree(4), x-> x.n = 1);
+##  8
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+NrPostOrderProperty:= function(tree, pro)
+    local   sum;
+    
+    sum:= Sum(Call(tree, "Children"), x-> NrPostOrderProperty(x, pro));
+    if sum > 0 or pro(tree) then
+        sum:= sum + 1;
+    fi;
+    
+    return sum;
+end;
 
 #############################################################################
 ##
@@ -243,5 +303,25 @@ BinomialTreeOps.Print:= function(this)
     Print(this.n);
 end;
 
-     
-   
+BinomialTreeOps.indent:= 0;
+
+BinomialTreeOps.Display:= function(this, dummy)   
+    local  c;
+    
+    if this.n > 0 then
+        for c in [1..BinomialTreeOps.indent] do
+            Print(" ");
+        od;
+    fi;
+    Print("-", this.n);
+    if this.n = 0 then
+        Print("\n");
+    fi;
+    
+    BinomialTreeOps.indent:= BinomialTreeOps.indent + 2;
+    for c in Call(this, "Children") do
+        Display(c);
+    od;
+    BinomialTreeOps.indent:= BinomialTreeOps.indent - 2;
+end;
+
