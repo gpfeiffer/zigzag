@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: init.g,v 1.11 2006/07/05 18:47:25 goetz Exp $
+#A  $Id: init.g,v 1.12 2006/07/06 19:29:58 goetz Exp $
 ##
 
 #############################################################################
@@ -33,17 +33,20 @@ if not IsBound(InfoZigzag2) then InfoZigzag2:= Ignore; fi;
 AUTO( ReadPkg( "zigzag", "lib", "arrows" ),
   HeadArrow, TailArrow, OnArrows, DeltaArrow, LittleDeltaArrow,
   BigMatrixArrow, ProductArrows, ProductArrowList, FactorsArrow,
-  ArrowClassOps, ArrowClass, IsArrowClass, StabilizerArrow,
-  ArrowClasses0, ArrowClasses, NrArrowClasses, EssentialArrowClasses,
-  ProductArrowMatrices, ProductArrowMatrixList, SumArrowMatrices,
-  DeltaPath, Negative, DeltaPath, QuiverRelations, QuiverRelations1,
-  ArrowClassProduct, PrintQuiver, DimensionsMatrix, VerifyQuiver );
+  StabilizerArrow );
+
+AUTO( ReadPkg( "zigzag", "lib", "bundles" ),
+  BundleOps, Bundle, IsBundle, Bundles0, Bundles, NrBundles,
+  EssentialBundles, ProductArrowMatrices, ProductArrowMatrixList,
+  SumArrowMatrices, DeltaPath, Negative, DeltaPath,
+  QuiverRelations0, QuiverRelations, BundleProduct, PrintQuiver,
+  DimensionsMatrix, VerifyQuiver );
 
 AUTO( ReadPkg( "zigzag", "lib", "iterator" ),
   IteratorSet, Iterator, IteratorRange );
 
 AUTO( ReadPkg( "zigzag", "lib", "methods" ),
-  Call, ApplyMethod );
+  Call, ApplyMethod, PartitionOps, Partition );
 
 AUTO( ReadPkg( "zigzag", "lib", "shapes" ),
   ShapeOps, Shape, IsShape, NormalizerComplement, ShapesRank,
@@ -51,10 +54,7 @@ AUTO( ReadPkg( "zigzag", "lib", "shapes" ),
   CollapsedIncMatShapes, IncMatShapes, FusMatShapes1, FusMatShapes,
   CollapsedFusMatShapes, XCharacters, ParabolicTom, YCharacters,
   ZCharacters, InvolutionShapes, Involutions, SpecialInvolutions,
-  OrlikSolomonCharacter, PrimeShapes, NamesShapes, PointedShapeOps,
-  PointedShape, IsPointedShape, PointedShapes, ArrowEnds,
-  PathsShapes, MatrixPath, DoublyPointedShapeOps, DoublyPointedShape,
-  IsDoublyPointedShape, DoubleArrowEnds );
+  OrlikSolomonCharacter, PrimeShapes, NamesShapes, MatrixPath );
 
 AUTO( ReadPkg( "zigzag", "lib", "subsets" ),
   PrefixesOps, Prefixes, IsPrefixes, WeakIntervalOps, WeakInterval,
@@ -66,8 +66,9 @@ AUTO( ReadPkg( "zigzag", "lib", "subsets" ),
   PDTransversalOps, PDTransversal, XJKLOps, XJKL, IsXJKL );
 
 AUTO( ReadPkg( "zigzag", "lib", "walker" ),
-  BreadthFirst, PreOrder, PostOrder, NrPreOrder, PreOrderProperty,
-  PostOrderProperty, NrPreOrderProperty );
+  BreadthFirst, PreOrder, NrPreOrder, PreOrderProperty,
+  NrPreOrderProperty, PostOrder, PostOrderProperty,
+  NrPostOrderProperty, BinomialTreeOps, BinomialTree );
 
 AUTO( ReadPkg( "zigzag", "lib", "zigzag" ),
   DescentAlgebraOps, DescentAlgebra, IsDescentAlgebra,
@@ -82,5 +83,4 @@ AUTO( ReadPkg( "zigzag", "lib", "zigzag" ),
   MatQuiverSym, MajorIndex, RanMatDescent, SizMatDescent,
   LisMatDescent, ClosLis, OpenLis, ClosLisRank, OpenLisRank, Lat,
   RightIdeal, LeftIdeal, RightPIE, SetComposition, IsNonZero );
-
 
