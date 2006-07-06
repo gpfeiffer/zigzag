@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.31 2006/07/06 15:27:12 goetz Exp $
+#A  $Id: shapes.g,v 1.32 2006/07/06 18:19:48 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -35,8 +35,6 @@ ShapeOps:= OperationsRecord("ShapeOps", DomainOps);
 #############################################################################
 ##  
 #C  Shape( <W>, <J> ) . . . . . . . . . . . . . . . . . . . . .  constructor.
-#C  Shape( <W>, <WJ> )  . . . . . . . . . . . . . . . . . . . .  constructor.
-#C  Shape( <W>, <w> ) . . . . . . . . . . . . . . . . . . . . .  constructor.
 ##  
 ##  <#GAPDoc Label="Shape">
 ##  <ManSection>
@@ -1019,172 +1017,7 @@ NamesShapes:= function(shapes)
     return nam;
 end;
 
-#############################################################################
-##
-##  Pointed Shapes.
-##
-##  A *pointed shape* is an equivalence class of pairs (J, s) with
-##  s \in J \subseteq S, under the conjugation action of W.
-##
-##  Representatives can be obtained by choosing s as representatives
-##  of the orbits of N_L on L, for every shape representative L.
-##
 
-
-
-#############################################################################
-##  
-#O  PointedShapeOps  . . . . . . . . . . . . . . . . . . . operations record.
-##  
-PointedShapeOps:= OperationsRecord("PointedShapeOps", DomainOps);
-
-#############################################################################
-##  
-#C  Shape( <W>, <J> ) . . . . . . . . . . . . . . . . . . . . .  constructor.
-#C  Shape( <W>, <WJ> )  . . . . . . . . . . . . . . . . . . . .  constructor.
-#C  Shape( <W>, <w> ) . . . . . . . . . . . . . . . . . . . . .  constructor.
-##  
-##  <#GAPDoc Label="Shape">
-##  <ManSection>
-##  <Func Name="Shape" Arg="W, J"/>
-##  <Returns>
-##    a new shape, an object that represents the shape of <A>J</A> in 
-##    <A>W</A>. 
-##  </Returns>
-##  <Description>
-##  This is the simple constructor for the shape class.  It constructs and
-##  returns the shape of <A>J</A> in <A>W</A>.  Here <A>W</A> is a finite
-##  Coxeter group of rank <M>n</M> and <A>J</A> is a subset of
-##  <M>[1..n]</M>.
-##  <Example>
-##  gap> W:= CoxeterGroup("E", 6);; 
-##  gap> Shape(W, [1, 2, 3]);
-##  Shape( CoxeterGroup("E", 6), [ 1, 2, 3 ] )
-##  </Example>
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-##  public fields:
-##    W, the Coxeter group.
-##    J, the parabolic subset of S.
-##  
-PointedShape:= function(W, J, s)
-    return 
-      rec(
-          isDomain:= true,
-          isPointedShape:= true,
-          operations:= PointedShapeOps,
-          W:= W,
-          J:= J,
-          s:= s
-          );
-end;
-
-
-#############################################################################
-##
-#F  IsShape( <obj> )  . . . . . . . . . . . . . . . . . . . . . . type check.
-##
-##  <#GAPDoc Label="IsShape">
-##  <ManSection>
-##  <Func Name="IsShape" Arg="obj"/>
-##  <Returns>
-##    <K>true</K> if <A>obj</A> is a shape and <K>false</K> otherwise.
-##  </Returns>
-##  </ManSection>
-##  <#/GAPDoc>
-##                   
-IsPointedShape:= function(obj)
-    return IsRec(obj) and IsBound(obj.isPointedShape) 
-           and obj.isPointedShape = true;
-end;
-
-
-#############################################################################  
-##  
-#F  Print( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
-##  
-##
-PointedShapeOps.Print:= function(this)
-    Print("PointedShape( ", this.W, ", ", this.J, ", ", this.s, " )");
-end;
-
-
-#############################################################################
-##
-#F  Representative( <shape> ) . . . . . . . . . . . . . . . . representative.
-##
-##  A shape, as a class of parabolic subsets, has a representative.
-##
-##  <#GAPDoc Label="Representative(shape)">
-##  <ManSection>
-##  <Meth Name="Representative" Arg="shape" Label="for shapes"/>
-##  <Returns>a representative of the shape <A>shape</A>.</Returns>
-##  <Description>The representative of a shape constructed 
-##  as <C>Shape(W, J)</C> (see <Ref Label="Shape"/>) will be its
-##  initial element <C>J</C>.
-##  <Example>
-##  gap> W:= CoxeterGroup("A", 3);;
-##  gap> Representative(Shape(W, [2]));
-##  [ 2 ]
-##  </Example>
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##  
-PointedShapeOps.Representative:= function(this)
-    return [this.J, this.s];
-end;
-
-#############################################################################  
-##  
-#F  Elements( <shape> ) . . . . . . . . . . . . . . . . . . . . . . elements.
-##  
-##  <#GAPDoc Label="Elements(shape)">
-##  <ManSection>
-##  <Meth Name="Elements" Arg="shape" Label="for shapes"/>
-##  <Returns>
-##    the set of elements of the shape <A>shape</A>.
-##  </Returns>
-##  <Description>
-##  The shape of <M>J</M> in <M>W</M> consists of all subsets of <M>S</M>
-##  which are conjugate to <M>J</M> under <M>W</M>.
-##  The conjugates can be efficiently computed
-##  using <Cite Key="GePf2000" Where="Theorem 2.3.3"/>.
-##  This is much faster than simple conjugacy tests.
-##  <Example>
-##  gap> W:= CoxeterGroup("A", 3);;
-##  gap> Elements(Shape(W, [2]));
-##  [ [ 1 ], [ 2 ], [ 3 ] ] 
-##  </Example>
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-PointedShapeOps.Elements:= function(this)
-    local   elm,  W,  sh,  i,  el,  j,  L,  s,  o,  t,  J,  x;
-    
-    elm:= [];
-    W:= this.W;
-    
-    sh:= Shapes(W);  # carefully bring in sync with shape internals ...
-    i:= Position(sh, Shape(W, this.J));
-    el:= Elements(sh[i]);
-    j:= Position(el, this.J);
-    L:= sh[i].J;
-    s:= this.s^(sh[i].transversal[j]^-1);
-    # (delete) o:= Orbit(ShapeOps.Complement(sh[i]), s);
-    o:= Orbit(Call(sh[i], "Complement"), s);
-    for x in sh[i].transversal do
-        J:= OnSets(L, x);
-        for t in o do
-            Add(elm, [J, t^x]);
-        od;
-    od;
-    return Set(elm);
-end;
 
 #############################################################################
 ShapeOps.Points:= function(this)
@@ -1207,116 +1040,12 @@ ShapeOps.ArrowClass:= function(this)
     return ArrowClass(this.W, [this.J, []]);
 end;
 
-#############################################################################
-##
-#F  PointedShapes
-PointedShapes:= function(W)
-    local   list,  sh,  L,  points,  s;
-    
-    list:= [];
-    for sh in Shapes(W) do
-        L:= Representative(sh);
-        # (delete) points:= ShapeOps.Points(sh);
-        points:= Call(sh, "Points");
-        for s in points do
-            Add(list, PointedShape(W, L, s));
-        od;
-    od;
-    return list;
-end;
-
-#############################################################################
-PointedShapeOps.Tail:= function(this)
-    local   sh,  i;
-    sh:= Shapes(this.W);
-    i:= Position(sh, Shape(this.W, Difference(this.J, [this.s])));
-    return sh[i];
-end;
-
-#############################################################################
-PointedShapeOps.Head:= function(this)
-    local   sh,  i;
-    sh:= Shapes(this.W);
-    i:= Position(sh, Shape(this.W, this.J));
-    return sh[i];
-end;
-
-#############################################################################
-##
-##  an arrow is an element of  a PointedShape.
-##
-ArrowEnds:= function(W, arrow)
-    local   L,  WL,  wL,  s,  t;
-    L:= arrow[1];
-    WL:= ReflectionSubgroup(W, L);
-    wL:= LongestCoxeterElement(WL);
-    s:= arrow[2];  t:= (s^wL) mod W.N;
-    return [Difference(L, [s]), Difference(L, [t])];    
-end;
-
 
 ###
 ###  next:  the mu map.
 ###
 ShapeOps.Matrix:= function(this)
     return rec(tail:= this, head:= this, mat:=IdentityMat(Size(this)));
-end;
-
-PointedShapeOps.Matrix:= function(this)
-    local   W,  shapes,  shL,  shJ,  subL,  subJ,  mat,  e,  i,  ends,  j;
-    
-    shL:= Call(this, "Head");
-    shJ:= Call(this, "Tail");
-    subL:= Elements(shL);
-    subJ:= Elements(shJ);
-    mat:= NullMat(Length(subL), Length(subJ));
-    for e in Elements(this) do
-        i:= Position(subL, e[1]);
-        ends:= ArrowEnds(this.W, e);
-        j:= Position(subJ, ends[1]);
-        mat[i][j]:= mat[i][j] + 1;
-        j:= Position(subJ, ends[2]);
-        mat[i][j]:= mat[i][j] - 1;
-    od;
-    return rec(tail:= shJ, head:= shL, mat:= mat);
-end;
-
-##  How to produce a list of all paths.  A path is a (possibly empty)
-##  sequence of pointed shapes.
-PathsShapes:= function(W)
-    local   sh,  list,  ps,  shape,  mat,  i,  j,  l,  p,  a;
-    
-    # initialize.
-    sh:= Shapes(W);
-    list:= List(sh, i-> List(sh, j-> [])); # N x N array of empty lists.
-    ps:= PointedShapes(W);
-    
-    # install paths of length 1.
-    for shape in ps do
-        # (delete) mat:= PointedShapeOps.Matrix(shape);
-        mat:= Call(shape, "Matrix");
-        if mat.mat <> 0*mat.mat then    # ignore zero paths.
-            i:= Position(sh, mat.head);
-            j:= Position(sh, mat.tail);
-            Add(list[i][j], [shape]);
-        fi;
-    od;
-    
-    # form the closure.
-    for i in [1..Length(sh)] do
-        for j in [1..Length(sh)] do
-            for l in [1..Length(sh)] do
-                for a in list[i][j] do
-                    for p in list[j][l] do
-                        Add(list[i][l], Concatenation(p, a));
-                        Print(".\c");
-                    od;
-                od;
-            od;
-        od;
-    od;
-    
-    return list;
 end;
 
 # (delete) MatrixPath:= p -> Product(Reversed(p), x-> PointedShapeOps.Matrix(x).mat);
