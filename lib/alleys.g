@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.17 2006/07/06 18:59:52 goetz Exp $
+#A  $Id: alleys.g,v 1.18 2006/07/06 19:01:52 goetz Exp $
 ##
 ##  This file contains support for arrows and arrow classes.
 ##  
@@ -164,17 +164,17 @@ end;
 
 #############################################################################
 ##  
-#O  ArrowClassOps  . . . . . . . . . . . . . . . . . . . operations record.
+#O  BundleOps  . . . . . . . . . . . . . . . . . . . operations record.
 ##  
-ArrowClassOps:= OperationsRecord("ArrowClassOps", DomainOps);
+BundleOps:= OperationsRecord("BundleOps", DomainOps);
 
 #############################################################################
 ##  
-#C  ArrowClass( <W>, <arrow> )  . . . . . . . . . . . . . . . .  constructor.
+#C  Bundle( <W>, <arrow> )  . . . . . . . . . . . . . . . .  constructor.
 ##  
-##  <#GAPDoc Label="ArrowClass">
+##  <#GAPDoc Label="Bundle">
 ##  <ManSection>
-##  <Func Name="ArrowClass" Arg="W, J"/>
+##  <Func Name="Bundle" Arg="W, J"/>
 ##  <Returns>
 ##    a new arrow class, an object that represents the class of <A>arrow</A>
 ##    under <A>W</A>.
@@ -197,12 +197,12 @@ ArrowClassOps:= OperationsRecord("ArrowClassOps", DomainOps);
 ##    W, the Coxeter group.
 ##    arrow, an arrow for W.
 ##  
-ArrowClass:= function(W, arrow)
+Bundle:= function(W, arrow)
     return 
       rec(
           isDomain:= true,
-          isArrowClass:= true,
-          operations:= ArrowClassOps,
+          isBundle:= true,
+          operations:= BundleOps,
           W:= W,
           arrow:= arrow
           );
@@ -210,20 +210,20 @@ end;
 
 #############################################################################
 ##
-#F  IsArrowClass( <obj> ) . . . . . . . . . . . . . . . . . . . . type check.
+#F  IsBundle( <obj> ) . . . . . . . . . . . . . . . . . . . . type check.
 ##
-##  <#GAPDoc Label="IsArrowClass">
+##  <#GAPDoc Label="IsBundle">
 ##  <ManSection>
-##  <Func Name="IsArrowClass" Arg="obj"/>
+##  <Func Name="IsBundle" Arg="obj"/>
 ##  <Returns>
 ##    <K>true</K> if <A>obj</A> is an arrow class and <K>false</K> otherwise.
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##                   
-IsArrowClass:= function(obj)
-    return IsRec(obj) and IsBound(obj.isArrowClass) 
-           and obj.isArrowClass = true;
+IsBundle:= function(obj)
+    return IsRec(obj) and IsBound(obj.isBundle) 
+           and obj.isBundle = true;
 end;
 
 
@@ -231,14 +231,14 @@ end;
 ##  
 #F  Print( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-ArrowClassOps.Print:= function(this)
-    Print("ArrowClass( ", this.W, ", ", this.arrow, " )");
+BundleOps.Print:= function(this)
+    Print("Bundle( ", this.W, ", ", this.arrow, " )");
 end;
 
 
 #############################################################################
 ##
-#F  Representative( <arrowclass> ) . . . . . . . . . . . . . . . . representative.
+#F  Representative( <bundle> ) . . . . . . . . . . . . . . . . representative.
 ##
 ##  A shape, as a class of parabolic subsets, has a representative.
 ##
@@ -258,7 +258,7 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-ArrowClassOps.Representative:= function(this)
+BundleOps.Representative:= function(this)
     return this.arrow;
 end;
 
@@ -269,7 +269,7 @@ end;
 
 
 #############################################################################
-ArrowClassOps.Children:= function(this)
+BundleOps.Children:= function(this)
     local   stab,  children,  o,  new;
     
     if IsBound(this.stab) then
@@ -286,7 +286,7 @@ ArrowClassOps.Children:= function(this)
     for o in Orbits(stab, ApplyFunc(Difference, this.arrow)) do
         new:= [this.arrow[1], Copy(this.arrow[2])];
         Add(new[2], o[1]);
-        Add(children, ArrowClass(this.W, new));
+        Add(children, Bundle(this.W, new));
     od;
     
     for o in children do
@@ -298,9 +298,9 @@ end;
 
 #############################################################################
 ##
-#F  ArrowClasses
+#F  Bundles
 ##
-ArrowClasses0:= function(W)
+Bundles0:= function(W)
     local   list,  hhh,  sh,  new,  N;
     
     list:= [];
@@ -313,35 +313,35 @@ ArrowClasses0:= function(W)
             s:= o[1];
             new:= [arrow[1], Concatenation(arrow[2], [s])];
             Ns:= Stabilizer(N, s);
-            Add(list, ArrowClass(W, new));
+            Add(list, Bundle(W, new));
             hhh(new, Ns);
         od;
     end;
             
     for sh in Shapes(W) do
         new:= [Representative(sh), []];
-        Add(list, ArrowClass(W, new));
+        Add(list, Bundle(W, new));
         N:= Call(sh, "Complement");
         hhh(new, N);
     od;
     return list;
 end;
 
-ArrowClasses:= function(W)
+Bundles:= function(W)
     local   list,  shape;
     list:= [];
     for shape in Shapes(W) do
-        Append(list, BreadthFirst(ArrowClass(W, [shape.J, []])));
+        Append(list, BreadthFirst(Bundle(W, [shape.J, []])));
     od;
     return list;
 end;
 
-NrArrowClasses:= function(W)
-    return Sum(Shapes(W), x-> NrPreOrder(ArrowClass(W, [x.J, []])));
+NrBundles:= function(W)
+    return Sum(Shapes(W), x-> NrPreOrder(Bundle(W, [x.J, []])));
 end;
     
 
-EssentialArrowClasses:= function(W)
+EssentialBundles:= function(W)
     local   list,  hhh,  sh,  new,  N;
     
     list:= [];
@@ -355,7 +355,7 @@ EssentialArrowClasses:= function(W)
             new:= [arrow[1], Concatenation(arrow[2], [s])];
             m:= DeltaArrow(W, new);
             if m <> 0*m then
-                c:= ArrowClass(W, new);
+                c:= Bundle(W, new);
                 m:= Call(c, "Matrix").mat;
                 if m <> 0*m then 
                     Add(list, c);
@@ -369,7 +369,7 @@ EssentialArrowClasses:= function(W)
             
     for sh in Shapes(W) do
         new:= [Representative(sh), []];
-        Add(list, ArrowClass(W, new));
+        Add(list, Bundle(W, new));
         N:= Call(sh, "Complement");
         hhh(new, N);
     od;
@@ -401,7 +401,7 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-ArrowClassOps.Elements:= function(this)
+BundleOps.Elements:= function(this)
     local   elm,  W,  sh,  i,  j,  L,  list,  o,  x,  J,  t;
     
     elm:= [];
@@ -423,13 +423,13 @@ ArrowClassOps.Elements:= function(this)
 end;
 
 #############################################################################
-ArrowClassOps.Tail:= function(this)
+BundleOps.Tail:= function(this)
     return PositionProperty(Shapes(this.W), 
                    x-> ApplyFunc(Difference, this.arrow) in x);
 end;
 
 #############################################################################
-ArrowClassOps.Head:= function(this)
+BundleOps.Head:= function(this)
     return PositionProperty(Shapes(this.W), x-> this.arrow[1] in x);
 end;
 
@@ -437,7 +437,7 @@ end;
 ###
 ###  next:  the mu map.
 ###
-ArrowClassOps.Matrix:= function(this)
+BundleOps.Matrix:= function(this)
     local   sh,  L,  J,  subL,  mat,  e,  i;
 
     sh:= Shapes(this.W);
@@ -485,7 +485,7 @@ SumArrowMatrices:= function(a, b)
 end;
 
 
-ArrowClassOps.Delta:= function(this)
+BundleOps.Delta:= function(this)
     local   sh,  J,  mat,  e;
 
     sh:= Shapes(this.W);
@@ -505,7 +505,7 @@ DeltaPath:= function(path)
     return rec(support:= p.tail, mat:= Sum(p.mat));
 end;
 
-ArrowClassOps.BigMatrix:= function(this)
+BundleOps.BigMatrix:= function(this)
     local   sh,  m,  l,  mat;
     
     sh:= Shapes(this.W); 
@@ -532,13 +532,13 @@ end;
 ##
 ##  how to do this efficiently ?
 ##
-ArrowClassOps.\*:= function(l, r)
+BundleOps.\*:= function(l, r)
     local   W,  res,  all,  a,  b,  c;
     
     res:= [];
     
     #  arrow * arrow class.
-    if not IsArrowClass(l) then
+    if not IsBundle(l) then
         for b in Elements(r) do
             c:= ProductArrows(l, b);
             if c <> 0 then
@@ -549,7 +549,7 @@ ArrowClassOps.\*:= function(l, r)
     fi;
     
     # arrow class * arrow
-    if not IsArrowClass(r) then
+    if not IsBundle(r) then
         for a in Elements(l) do
             c:= ProductArrows(a, r);
             if c <> 0 then
@@ -594,7 +594,7 @@ ArrowClassOps.\*:= function(l, r)
     
     # split into classes
     while all <> [] do
-        c:= ArrowClass(W, all[1]);
+        c:= Bundle(W, all[1]);
         Add(res, c);
         a:= Length(all);
         all:= Difference(all, Elements(c));
@@ -607,7 +607,7 @@ ArrowClassOps.\*:= function(l, r)
 end;
 
 #############################################################################
-ArrowClassOps.Length:= function(this)
+BundleOps.Length:= function(this)
     return Length(this.arrow[2]);
 end;
 
@@ -621,12 +621,12 @@ end;
 ##  arrow classes of larger depth tend to map to 0.
 ##
 ##
-ArrowClassOps.Depth:= function(this)
+BundleOps.Depth:= function(this)
     return Index(StabilizerArrow(this.W, [this.arrow[1], []]),
                  StabilizerArrow(this.W, this.arrow));
 end;
 
-ArrowClassOps.Width:= function(this)
+BundleOps.Width:= function(this)
     return Size(Shapes(this.W)[Call(this, "Head")]);
 end;
 
@@ -635,7 +635,7 @@ end;
 ##  Find the last irreducible factor (actually the first when you read
 ##  left to right ...)
 ##
-ArrowClassOps.Suffix:= function(this)
+BundleOps.Suffix:= function(this)
     local   fff,  i,  lft,  rgt,  pro;
     
     # idempotent case first.
@@ -650,8 +650,8 @@ ArrowClassOps.Suffix:= function(this)
     
     fff:= FactorsArrow(this.arrow);
     for i in [1..Length(fff)-1] do
-        lft:= ArrowClass(this.W, ProductArrowList(fff{[1..i]}));
-        rgt:= ArrowClass(this.W, ProductArrowList(fff{[i+1..Length(fff)]}));
+        lft:= Bundle(this.W, ProductArrowList(fff{[1..i]}));
+        rgt:= Bundle(this.W, ProductArrowList(fff{[i+1..Length(fff)]}));
         pro:= lft * rgt;
         if Length(pro) = 1 and pro[1] = this then
             return lft;
@@ -677,7 +677,7 @@ QuiverRelations0:= function(W)
             line,  pos,  i,  b;
     
     # start with a reasonably small set of arrow classes.
-    aaa:= Filtered(ArrowClasses(W), x-> IsNonZero(Call(x, "Delta").mat));
+    aaa:= Filtered(Bundles(W), x-> IsNonZero(Call(x, "Delta").mat));
     aaa:= Filtered(aaa, x-> x = Call(x, "Suffix"));
     InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
     
@@ -762,11 +762,11 @@ QuiverRelations:= function(W)
     # start with a reasonably small set of arrow classes.
     aaa:= [];
     for a in Shapes(W) do
-        Append(aaa, PreOrderProperty(ArrowClass(W, [a.J, []]), x-> IsNonZero(Call(x, "Delta").mat)));
+        Append(aaa, PreOrderProperty(Bundle(W, [a.J, []]), x-> IsNonZero(Call(x, "Delta").mat)));
         InfoZigzag1("\n");
     od;
 
-#    aaa:= Filtered(ArrowClasses(W), x-> IsNonZero(Call(x, "Delta").mat));
+#    aaa:= Filtered(Bundles(W), x-> IsNonZero(Call(x, "Delta").mat));
     aaa:= Filtered(aaa, x-> x = Call(x, "Suffix"));
     InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
     
@@ -847,7 +847,7 @@ end;
 ##
 ##  a product for arrow classes forming a path ...
 ##
-ArrowClassProduct:= function ( abc )
+BundleProduct:= function ( abc )
     local  pro, i;
     pro := abc[1];
     for i  in [ 2 .. Length( abc ) ]  do
