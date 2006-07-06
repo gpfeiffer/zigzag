@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.15 2006/07/05 18:46:53 goetz Exp $
+#A  $Id: alleys.g,v 1.16 2006/07/06 18:20:39 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Arrows">
 ##  This file contains support for arrows and arrow classes.
@@ -674,7 +674,7 @@ DeltaPath:= function(path)
 end;
 
 
-QuiverRelations:= function(W)
+QuiverRelations0:= function(W)
     local   aaa,  path,  path0,  more,  a,  relations,  sss,  l,  
             null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
             line,  pos,  i,  b;
@@ -757,7 +757,7 @@ QuiverRelations:= function(W)
     return rec(path0:= path0, path:= path, relations:= relations);
 end;
 
-QuiverRelations1:= function(W)
+QuiverRelations:= function(W)
     local   aaa,  path,  path0,  more,  a,  relations,  sss,  l,  
             null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
             line,  pos,  i,  b;
