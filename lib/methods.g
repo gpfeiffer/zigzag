@@ -7,24 +7,16 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: methods.g,v 1.2 2006/05/29 12:55:35 goetz Exp $
+#A  $Id: methods.g,v 1.3 2006/07/06 18:18:02 goetz Exp $
 ##
-##  <#GAPDoc Label="Intro:Methods">
 ##  This file contains support for methods.
 ##  
-##  A <E>method</E> <Index>Method</Index> is a GAP function that is
+##  <#GAPDoc Label="Intro:Methods">
+##  A <E>method</E> <Index>method</Index> is a \GAP\ function that is
 ##  defined in the operations record of an object and is usually
 ##  applied to this object (and possibly further arguments).
 ##
-##  Typical usage:
-##  <Example>
-##  ShapeOps.Matrix:= function(this)
-##  ...
-##  end;
-##  sh:= Shape(W, [1]);
-##  m:= Dot(sh, Matrix);
-##  </Example>
-##
+##  The functions described here are in the file <F>methods.g</F>.
 ##  <#/GAPDoc>
 ##
 
@@ -39,8 +31,15 @@
 ##    the result of <A>object.operations.(method)(object)</A>.
 ##  </Returns>
 ##  <Description>
-##    Calls the method <A>method</A> on behalf of the object <A>object</A>.
-##    The method must return a value!
+##    This function calls the method <A>method</A> on behalf of the
+##    object <A>object</A>.  Only methods that return a value can be used.
+##  <Example>
+##  gap> Call(Partition([4, 3, 3, 1]), "Length");
+##  4
+##  </Example>
+##    In other object oriented programming languages the construct
+##	<C>Call(p, "Length")</C> might more briefly be expressed as
+##	<C>p.Length()</C>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -55,14 +54,22 @@ end;
 ##
 ##  <#GAPDoc Label="ApplyMethod">
 ##  <ManSection>
-##  <Func Name="ApplyMethod" Arg="object, method, args"/>
+##  <Func Name="ApplyMethod" Arg="object, method, arg1, arg2, ..."/>
 ##  <Returns>
-##    the result of <A>object.operations.(method)(object)</A>.
+##    the result of <A>object.operations.(method)(object, arg1,
+##    arg2, ...)</A>.
 ##  </Returns>
 ##  <Description>
-##    Calls the method <A>method</A> on behalf of the object <A>object</A>
-##    with further arguments <A>args</A>
-##    The method must return a value!
+##    This function calls the method <A>method</A> on behalf of the
+##    object <A>object</A> with further arguments <A>arg1, arg2, ...</A>.  Only
+##    methods that return a value can be used.
+##  <Example>
+##  gap> ApplyMethod(Partition([4, 3, 3, 1]), "At", 2);
+##  3
+##  </Example>
+##    In other object oriented programming languages the construct <C>Call(p,
+##    "At", 2)</C> might more briefly be expressed as <C>p.At(2)</C>, or
+##    even, if the square brackets are overloaded, as <C>p[2]</C>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -78,6 +85,29 @@ ApplyMethod:= function(arg)
     list:= [object];
     Append(list, arg{[3..Length(arg)]});
     return ApplyFunc(method, list);
+end;
+
+
+#############################################################################
+##
+##  For example: a rudimentary partitions class.
+##
+PartitionOps:= rec();
+
+Partition:= function(parts)
+    return rec(parts:= parts, operations:= PartitionOps);
+end;
+
+PartitionOps.Print:= function(this)
+    Print("Partition( ", this.parts, " )");
+end;
+
+PartitionOps.Length:= function(this)
+    return Length(this.parts);
+end;
+
+PartitionOps.At:= function(this, i)
+    return this.parts[i];
 end;
 
 #############################################################################
