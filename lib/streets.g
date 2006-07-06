@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.1 2006/07/06 19:07:13 goetz Exp $
+#A  $Id: streets.g,v 1.2 2006/07/06 19:27:54 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -128,12 +128,6 @@ end;
 BundleOps.Representative:= function(this)
     return this.arrow;
 end;
-
-#############################################################################
-StabilizerArrow:= function(W, arrow)
-    return Stabilizer(NormalizerComplement(W, arrow[1]), arrow[2], OnTuples);
-end;
-
 
 #############################################################################
 BundleOps.Children:= function(this)
@@ -538,7 +532,7 @@ DeltaPath:= function(path)
 end;
 
 
-QuiverRelations0:= function(W)
+QuiverRelations:= function(W)
     local   aaa,  path,  path0,  more,  a,  relations,  sss,  l,  
             null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
             line,  pos,  i,  b;
@@ -621,7 +615,7 @@ QuiverRelations0:= function(W)
     return rec(path0:= path0, path:= path, relations:= relations);
 end;
 
-QuiverRelations:= function(W)
+QuiverRelations0:= function(W)
     local   aaa,  path,  path0,  more,  a,  relations,  sss,  l,  
             null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
             line,  pos,  i,  b;
@@ -755,8 +749,8 @@ PrintQuiver:= function(qr)
         return text;
     end;
     
-    name:= NamesShapes(Shapes(W));
     vertex:= qr.path0;
+    name:= NamesShapes(Shapes(vertex[1].W));
     PrintDynkinDiagram(vertex[1].W);
     
     Print("\nVertices:\n");
