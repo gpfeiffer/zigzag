@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.10 2006/07/05 18:49:33 goetz Exp $
+     $Id: zigzag.xml,v 1.11 2006/07/06 18:23:25 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -9,7 +9,7 @@
 <Book Name="zigzag">
   <TitlePage>
     <Title><Package>ZigZag</Package></Title>
-    <Version>Version 0.18</Version>
+    <Version>Version 0.66</Version>
     <Author>
 Götz Pfeiffer
 <Email>goetz.pfeiffer@nuigalway.ie</Email>
@@ -32,6 +32,62 @@ Department of Mathematics, NUI, Galway, Ireland
 <#Include Label="Intro:Methods">
 
 <Section>
+<Heading>More about Methods.</Heading>
+
+For many methods, \GAP\ provides a <E>global</E> function with the same
+name, which will eventually calls the method in the operations record.
+If such a global function does not exist, I can always write one myself.
+But this might get in the way of other packages which might want to use
+this global function fro a different purpose.  And if such a global
+function does already exist, its use of parameters might not fit my
+purpose.  Here we provide an alternative way of accessing an installed
+method without the help of a corresponding global function.  Instead we
+define a single function <C>Call</C> which takes an object and a method
+as arguments and then applies the method to the object.
+
+For example, the global function <C>Length</C> is defined in such a
+way that it does not search for a method <C>Length</C> when applied to
+an object.  To install and use such a method, one can proceed as
+follows.  First we define <C>Partition</C> objects and install a
+<C>Length</C> method for them.  Moreover, we install a method
+	<C>At</C> to access the part of a <C>Partition</C> at a given position.
+
+<Listing Type="From methods.g"><![CDATA[
+PartitionOps:= rec();
+
+Partition:= function(parts)
+    return rec(parts:= parts, operations:= PartitionOps);
+end;
+
+PartitionOps.Print:= function(this)
+    Print("Partition( ", this.parts, " )");
+end;
+
+PartitionOps.Length:= function(this)
+    return Length(this.parts);
+end;
+
+PartitionOps.At:= function(this, i)
+    return this.parts[i];
+end;]]>
+</Listing>
+	When a  <C>Partition</C> object  has been created,  the global
+	<C>Length</C>  function  cannot  be  applied to  it, 
+and positional selection with square brackets does not work.  But  the
+	mechanism implemented here is available, see below.
+
+<Example>
+gap> p:= Partition([4, 3, 3, 1]);
+Partition( [ 4, 3, 3, 1 ] )
+gap> Length(p);
+Error, Length: &lt;list&gt; must be a list
+gap> p[2];
+Error, List Element: &lt;list&gt; must be a list
+</Example>
+</Section>
+
+
+<Section>
 <Heading>Method Calls.</Heading>
 
 <#Include Label="Call">
@@ -48,6 +104,79 @@ Department of Mathematics, NUI, Galway, Ireland
 <#Include Label="Intro:Walker">
 
 <Section>
+<Heading>Binomial Trees, for Example.</Heading>
+
+	The     <E>binomial    tree</E><Index>binomial    tree</Index>
+	<M>T_n</M> is defined recursively as a single vertex if <M>n =
+	0</M>,  and as  a  root vertex  with  children <M>T_0,  \dots,
+	T_{n-1}</M>, if <M>n > 0</M>.  For the purpose of illustrating
+	the  functions  in this  file,  we  can  define binomial  tree
+	objects as follows.
+<Listing Type="From walker.g"><![CDATA[
+BinomialTreeOps:= rec();
+
+BinomialTree:= n -> rec(n:= n, operations:= BinomialTreeOps);
+
+BinomialTreeOps.Children:= function(this)
+    return List([0..this.n-1], BinomialTree);
+end;
+
+BinomialTreeOps.Print:= function(this)
+    Print(this.n);
+end;]]>
+</Listing>
+	In this way, the binomial tree <M>T_n</M> prints itself simply
+	as the integer <M>n</M>.
+<Example>
+gap> BinomialTree(5);
+5
+gap> Call(last, "Children");
+[ 0, 1, 2, 3, 4 ]
+</Example>
+
+	With a suitable <C>Display</C> operation, a binomial tree can be 
+displayed in a tree-like fashion.
+<Listing Type="From walker.g"><![CDATA[
+BinomialTreeOps.indent:= 0;
+
+BinomialTreeOps.Display:= function(this, dummy)   
+    local  c;
+    
+    if this.n > 0 then
+        for c in [1..BinomialTreeOps.indent] do
+            Print(" ");
+        od;
+    fi;
+    Print("-", this.n);
+    if this.n = 0 then
+        Print("\n");
+    fi;
+    
+    BinomialTreeOps.indent:= BinomialTreeOps.indent + 2;
+    for c in Call(this, "Children") do
+        Display(c);
+    od;
+    BinomialTreeOps.indent:= BinomialTreeOps.indent - 2;
+end;]]>
+</Listing>
+	Given such a recursive <C>Display</C> routine, the
+	binomial tree <M>T_4</M> is displayed as follows.
+<Example>
+gap> Display(BinomialTree(4));
+-4-0
+  -1-0
+  -2-0
+    -1-0
+  -3-0
+    -1-0
+    -2-0
+      -1-0
+</Example>
+We will use this tree in the examples of the following sections.
+
+</Section>
+
+<Section>
 <Heading>Breadth First Serach.</Heading>
 
 <#Include Label="BreadthFirst">
@@ -55,7 +184,7 @@ Department of Mathematics, NUI, Galway, Ireland
 </Section>
 
 <Section>
-<Heading>Depth First Serach.</Heading>
+<Heading>Depth First Search.</Heading>
 
 <#Include Label="BreadthFirst">
 
@@ -68,6 +197,10 @@ Department of Mathematics, NUI, Galway, Ireland
 <#Include Label="NrPreOrderProperty">
 
 <#Include Label="PostOrder">
+
+<#Include Label="PostOrderProperty">
+
+<#Include Label="NrPostOrderProperty">
 
 </Section>
 </Chapter>
@@ -173,8 +306,9 @@ IteratorRange:= function(range)
     return itr;
 end;]]>
 </Listing>
-There is probably no need for such a type of iterator, since the <K>for</K> loop
-does a perfect job of looping over ranges.  However, this is how I would write it.
+There  is probably  no need  for such  a type  of iterator,  since the
+<K>for</K> loop does  a perfect job of looping  over ranges.  However,
+this is how I would write it.
 
 <Subsection>
 <Heading>Exercise.</Heading>
@@ -189,7 +323,8 @@ Write a function that produces iterators for permutation groups.
 <Chapter>
 <Heading>Shapes.</Heading>
 
-Let <M>(W, S)</M>  be a finite Coxeter system.   The <E>shape</E> of a
+Let <M>(W, S)</M>  be a finite Coxeter system.   The <E>shape</E> 
+      <Index>shape</Index> of a
 subset <M>J \subseteq S</M> is the set of all conjugates <M>J^w</M> of
 <M>J</M> under elements <M>w \in W</M> such that <M>J^w</M> is again a
 subset of  <M>S</M>.  The  name was chosen  because this concept  is a
