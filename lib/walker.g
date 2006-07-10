@@ -7,11 +7,11 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: walker.g,v 1.2 2006/07/06 18:22:03 goetz Exp $
+#A  $Id: walker.g,v 1.3 2006/07/10 12:08:38 goetz Exp $
 ##
-##  <#GAPDoc Label="Intro:Walker">
 ##  This file contains some tree walking and counting functions.
 ##  
+##  <#GAPDoc Label="Intro:Walker">
 ##  An <E>tree</E> <Index>tree</Index>, or more precisely an ordered
 ##  rooted tree, is an object that implements the 'Children' method,
 ##  such that it returns a (possibly empty) list of trees.
@@ -53,6 +53,88 @@ BreadthFirst:= function(tree)
     od;
     return list;
 end;
+
+#############################################################################
+##
+#F  IteratorBreadthFirst( <tree> ) . . . . . . . . . .  breadth first search.
+##
+##  <#GAPDoc Label="IteratorBreadthFirst">
+##  <ManSection>
+##  <Func Name="IteratorBreadthFirst" Arg="tree"/>
+##  <Returns>
+##    an iterator for the vertices of the tree <A>tree</A>.
+##  </Returns>
+##  <Description>
+##    The tree <A>tree</A> is expanded breadth first, and vertices are
+##    counted when they are encountered for the first time.
+##  <Example>
+##  gap> itr:= IteratorBreadthFirst(BinomialTree(4));;
+##  gap> itr.hasNext();
+##  true
+##  gap> a:= itr.next();
+##  4
+##  gap> Print(a);  while itr.hasNext() do Print(", ", itr.next()); od;  Print("\n");
+##  4, 0, 1, 2, 3, 0, 0, 1, 0, 1, 2, 0, 0, 0, 1, 0
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+
+##
+##  A breadth first iterator for trees.
+##  it consists of a queue (linked list) of elements to be processed,
+##  pointers to the back (next element to be expanded),
+##  the focus (next element to be returned) and the head
+##  where the next prefix is to be put in the queue.
+##
+##  initially:
+##
+##    f
+##    v
+##    w -> .
+##    ^    ^
+##    b    h
+##
+IteratorBreadthFirst:= function(tree)
+    local   head,  focus,  back,  itr;
+    
+    head:= rec();
+    focus:= rec(w:= tree, next:= head);
+    back:= focus; 
+
+    itr:= rec();
+
+##  hasNext() simply checks whether 'focus' is lookin' at an element.
+    itr.hasNext:= function()
+        return IsBound(focus.w);
+    end;
+    
+##  next() simply returns the element 'focus' is lookin at.  But before it
+##  does that it needs to advance 'focus' to the next element in the queue,
+##  and to fill the queue up with the children of the elements between 'back
+##  and 'focus'.
+    itr.next:= function()
+        local   w,  x,  c;
+        w:=  focus.w;
+        focus:= focus.next;   
+        
+        # expand back.w to focus.w
+        while not IsIdentical(back, focus) do
+            x:= back.w;
+            for c in Call(x, "Children") do
+                head.w:= c;
+                head.next:= rec();
+                head:= head.next;
+            od;
+            back:= back.next;
+        od;
+        return w;
+    end;
+
+    return itr;
+end;
+
 
 #############################################################################
 ##
@@ -109,6 +191,69 @@ end;
 NrPreOrder:= function(tree)
     return 1 + Sum(Call(tree, "Children"), NrPreOrder);
 end;
+
+
+#############################################################################
+##
+#F  IteratorPreOrder( <tree> ) . . . . . . . . . . . . .  depth first search.
+##
+##  <#GAPDoc Label="IteratorPreOrder">
+##  <ManSection>
+##  <Func Name="IteratorPreOrder" Arg="tree"/>
+##  <Returns>
+##    an iterator for the vertices of the tree <A>tree</A>.
+##  </Returns>
+##  <Description>
+##    The tree <A>tree</A> is expanded depth first, and vertices are
+##    counted when they are encountered for the first time.
+##  <Example>
+##  gap> itr:= IteratorPreOrder(BinomialTree(4));;
+##  gap> itr.hasNext();
+##  true
+##  gap> a:= itr.next();
+##  4
+##  gap> Print(a);  while itr.hasNext() do Print(", ", itr.next()); od;  Print("\n");
+##  4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+IteratorPreOrder:= function(tree)
+    local   stack,  len,  push,  pop,  itr;
+    
+    stack:= [];  len:= 0;
+    push:= function(obj)
+        len:= len + 1;
+        stack[len]:= obj;
+    end;
+    
+    pop:= function()
+        len:= len - 1;
+        return stack[len+1];
+    end;
+    
+    push(tree);
+    
+    itr:= rec();
+    
+    itr.next:= function()
+        local   a,  c;
+        
+        a:= pop();
+        for c in Reversed(Call(a, "Children")) do
+            push(c);
+        od;
+        return a;
+    end;
+    
+    itr.hasNext:= function()
+        return len > 0;
+    end;
+    
+    return itr;
+end;
+
 
 #############################################################################
 ##
@@ -208,6 +353,7 @@ PostOrder:= function(tree)
     Add(list, tree);
     return list;
 end;
+
 
 #############################################################################
 ##
