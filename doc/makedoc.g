@@ -1,7 +1,10 @@
 path:= Directory("/home/goetz/text/descent/zigzag/doc");
 main:= "zigzag.xml";
 lib:= "../lib/";
-files:= [ "methods.g", "walker.g", "iterator.g", "shapes.g" ];
+files:= [ 
+          "methods.g", "iterator.g", "walker.g",
+          "subsets.g", "shapes.g", "arrows.g", "bundles.g",
+        ];
 files:= List(files, x-> Concatenation(lib, x));
 bookname:= "zigzag";
 str:= ComposedXMLString(path, main, files);
