@@ -1,13 +1,13 @@
 #############################################################################
 ##
-#A  arrows.g                     Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  bundles.g                     Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
 ##
 ##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
 ##  package for descent algebras of finite Coxeter groups.
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.2 2006/07/06 19:27:54 goetz Exp $
+#A  $Id: streets.g,v 1.3 2006/07/10 12:09:46 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -43,11 +43,11 @@ BundleOps:= OperationsRecord("BundleOps", DomainOps);
 ##  <ManSection>
 ##  <Func Name="Bundle" Arg="W, J"/>
 ##  <Returns>
-##    a new arrow class, an object that represents the class of <A>arrow</A>
-##    under <A>W</A>.
+##    a new arrow class, an object that represents the class of the arrow
+##    <A>arrow</A> under <A>W</A>.
 ##  </Returns>
 ##  <Description>
-##  This is the simple constructor for an arrow class.  It constructs and
+##    This is the simple constructor for an arrow class.  It constructs and
 ##  returns the class  of <A>arrow</A> in <A>W</A>.  Here <A>W</A> is a finite
 ##  Coxeter group of rank <M>n</M> and <A>J</A> is a subset of
 ##  <M>[1..n]</M>.
