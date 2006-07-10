@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.19 2006/07/06 19:28:57 goetz Exp $
+#A  $Id: alleys.g,v 1.20 2006/07/10 12:09:11 goetz Exp $
 ##
 ##  This file contains support for arrows and arrow classes.
 ##  
@@ -19,6 +19,26 @@
 ##
 
 #############################################################################
+##
+#F  HeadArrow( <W>, <arrow> )  . . . . . . . . . . . . . . . . . . . .  head.
+##
+##  <#GAPDoc Label="HeadArrow">
+##  <ManSection>
+##  <Func Name="HeadArrow" Arg="tree"/>
+##  <Returns>
+##    the shape of the head of the arrow <A>arrow</A>.
+##  </Returns>
+##  <Description>
+##    The <E>head</E> of an arrow <M>a = (L; s, t, ...)</M> is the subset
+##    <M>L</M> of <M>S</M>.
+##  <Example>
+##  gap> HeadArrow(W, [[1, 2, 3, 5], [5, 2]]);
+##  Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 5 ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 HeadArrow:= function(W, arrow)
     local   sh;
     sh:= Shapes(W);
