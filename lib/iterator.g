@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: iterator.g,v 1.5 2006/05/29 11:53:46 goetz Exp $
+#A  $Id: iterator.g,v 1.6 2006/07/10 12:00:06 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Iterators">
 ##  This file contains a dispatcher for iterators on domains.
@@ -137,6 +137,9 @@ DomainOps.Iterator:= function(D)
 end;
 
 #############################################################################
+##
+#F  IteratorRange( <range> ) . . . . . . . . . . . . . . . . . . .  iterator.
+##
 IteratorRange:= function(range)
     local   itr,  len,  more,  lo,  hi,  inc,  val;
     
