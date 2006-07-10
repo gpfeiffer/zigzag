@@ -1,7 +1,8 @@
 .SUFFIXES: .tex .pdf
 
 LIB = ../lib
-GAPFILES = $(LIB)/methods.g $(LIB)/walker.g $(LIB)/iterator.g $(LIB)/methods.g $(LIB)/shapes.g $(LIB)/arrows.g
+GAPFILES = $(LIB)/methods.g $(LIB)/iterator.g $(LIB)/walker.g\
+	   $(LIB)/subsets.g $(LIB)/shapes.g $(LIB)/arrows.g $(LIB)/bundles.g
 
 .tex.pdf:
 	pdflatex $*
