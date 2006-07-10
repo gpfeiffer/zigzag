@@ -7,20 +7,19 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.11 2006/05/29 12:00:36 goetz Exp $
+#A  $Id: subsets.g,v 1.12 2006/07/10 12:07:56 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
+##
+##  <#GAPDoc Label="Intro:Subsets">
+##    A finite Coxeter group <M>W</M> has various important subsets, which
+##    are neither groups nor cosets.  In this chapter we collect some common
+##    functionality for prefix sets of elements of <M>W</M>, minimal length
+##    transversals of cosets and double cosets of parabolic subgroups, and
+##    other sets related to these.
+##  <#/GAPDoc>
 ##  
-RequirePackage("chevie");
-RequirePackage("monoid");
-
-#############################################################################
-##
-#F  InfoZigzag? . . . . . . . . . . . . . . . . . . . . . . . info functions.
-##
-if not IsBound(InfoZigzag1) then InfoZigzag1:= Ignore; fi;
-if not IsBound(InfoZigzag2) then InfoZigzag2:= Ignore; fi;
 
 #############################################################################
 ##
