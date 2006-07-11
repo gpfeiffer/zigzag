@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.12 2006/07/10 12:12:09 goetz Exp $
+     $Id: zigzag.xml,v 1.13 2006/07/11 13:37:07 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -528,9 +528,13 @@ gap> SubsetsShapes(Shapes(CoxeterGroup("B", 3)));
 <#Include Label="Intro:Arrows">
 
 <Section>
-<Heading>Arrow Attributes.</Heading>
+<Heading>Arrow Operations.</Heading>
 
-<#Include Label="HeadArrow">
+<#Include Label="ProductArrows">
+
+<#Include Label="ProductArrowList">
+
+<#Include Label="FactorsArrow">
 
 </Section>
 
