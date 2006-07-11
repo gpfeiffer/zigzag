@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.21 2006/07/11 13:37:17 goetz Exp $
+#A  $Id: alleys.g,v 1.22 2006/07/11 14:36:13 goetz Exp $
 ##
 ##  This file contains support for arrows and arrow classes.
 ##  
@@ -130,12 +130,6 @@ end;
 
 
 #############################################################################
-StabilizerArrow:= function(W, arrow)
-    return Stabilizer(NormalizerComplement(W, arrow[1]), arrow[2], OnTuples);
-end;
-
-
-#############################################################################
 ##
 #F  HeadArrow( <W>, <arrow> )  . . . . . . . . . . . . . . . . . . . .  head.
 ##
@@ -197,11 +191,64 @@ OnArrows:= function(arrow, d)
     return [OnSets(arrow[1], d), OnTuples(arrow[2], d)];
 end;
                    
+
 #############################################################################
 ##
-#F  LittleDeltaArrow( <W>, <arrow> )
+#F  StabilizerArrow( <W>, <arrow> ) . . . . . . . . . . . . . . . stabilizer.
 ##
-##  
+##  <#GAPDoc Label="StabilizerArrow">
+##  <ManSection>
+##  <Func Name="StabilizerArrow" Arg="W, arrow"/>
+##  <Returns>
+##    the stabilizer in <A>W</A> of the arrow <A>arrow</A>.
+##  </Returns>
+##  <Description>
+##    The stabilizer of the arrow <A>arrow</A> is a subgroup of the
+##    stabilizer of its head.
+##  <Example>
+##  gap> L:= [1, 3, 5];;
+##  gap> st:= StabilizerArrow(CoxeterGroup("A", 5), [L, []]);;
+##  gap> List(Generators(st), x-> RestrictedPerm(x, L));
+##  [ (3,5), (1,3) ]
+##  gap> st:= StabilizerArrow(CoxeterGroup("A", 5), [L, [3]]);;
+##  gap> List(Generators(st), x-> RestrictedPerm(x, L));
+##  [ (1,5) ]
+##  gap> st:= StabilizerArrow(CoxeterGroup("A", 5), [L, [3,5]]);
+##  Subgroup( CoxeterGroup("A", 5), [  ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+StabilizerArrow:= function(W, arrow)
+    return Stabilizer(NormalizerComplement(W, arrow[1]), arrow[2], OnTuples);
+end;
+
+
+#############################################################################
+##
+#F  LittleDeltaArrow( <W>, <arrow> ) . . . . . . . . . . . . . .  difference.
+##
+##  <#GAPDoc Label="LittleDeltaArrow">
+##  <ManSection>
+##  <Func Name="LittleDeltaArrow" Arg="W, arrow"/>
+##  <Returns>
+##    <M>\delta(a) = a - b</M> as the pair <M>(a, b)</M>, where <M>a</M> is
+##    the arrow <A>arrow</A>.
+##  </Returns>
+##  <Description>
+##  <Example>
+##  gap> L:= [1, 2, 3, 5];;
+##  gap> LittleDeltaArrow(CoxeterGroup("A", 5), [L, [3]]);
+##  [ [ [ 1, 2, 5 ], [  ] ], [ [ 2, 3, 5 ], [  ] ] ]
+##  gap> LittleDeltaArrow(CoxeterGroup("A", 5), [L, [3,1]]);
+##  [ [ [ 1, 2, 5 ], [ 1 ] ], [ [ 2, 3, 5 ], [ 2 ] ] ]
+##  gap> LittleDeltaArrow(CoxeterGroup("A", 5), [L, [5]]);
+##  [ [ [ 1, 2, 3 ], [  ] ], [ [ 1, 2, 3 ], [  ] ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 LittleDeltaArrow:= function(W, arrow)
     local   L,  list,  K,  d,  lft,  rgt;
@@ -222,7 +269,28 @@ end;
 
 #############################################################################
 ##
-#F  DeltaArrow( <W>, <arrow> )
+#F  DeltaArrow( <W>, <arrow> ) . . . . . . . . . . . . . .  difference.
+##
+##  <#GAPDoc Label="DeltaArrow">
+##  <ManSection>
+##  <Func Name="DeltaArrow" Arg="W, arrow"/>
+##  <Returns>
+##    the coefficients of <M>\Delta(a)</M> in terms of the shape of its tail,
+##    where <M>a</M> is the arrow <A>arrow</A>.
+##  </Returns>
+##  <Description>
+##  <Example>
+##  gap> L:= [1, 2, 3, 5];;
+##  gap> DeltaArrow(CoxeterGroup("A", 5), [L, [3]]);
+##  [ 0, 1, 0, 0, -1, 0 ]
+##  gap> DeltaArrow(CoxeterGroup("A", 5), [L, [3,1]]);
+##  [ 0, 0, -1, 0, 2, -1 ]
+##  gap> DeltaArrow(CoxeterGroup("A", 5), [L, [5]]);
+##  [ 0, 0, 0 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 DeltaArrow:= function(W, arrow)
     local   L,  list,  head,  res,  K,  d,  lft,  rgt;
@@ -248,6 +316,7 @@ DeltaArrow:= function(W, arrow)
     return res;
 end;
 
+
 #############################################################################
 #
 #  Deprecate:
@@ -264,7 +333,6 @@ BigMatrixArrow:= function(W, arrow)
     mat[i]{l[j]}:= DeltaArrow(W, arrow);    
     return mat;
 end;
-
 
 
 #############################################################################
