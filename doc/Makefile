@@ -15,3 +15,6 @@ all: zigzag.pdf
 
 zigzag.tex: zigzag.xml $(GAPFILES)
 	gap4 -b -r < makedoc.g
+
+install: zigzag.pdf
+	scp $< schmidt:www/zigzag
