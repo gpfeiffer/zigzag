@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.14 2006/07/12 15:19:17 goetz Exp $
+#A  $Id: subsets.g,v 1.15 2006/07/12 15:20:07 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -923,69 +923,6 @@ DoubleParabolicTransversalOps.Elements:= function(this)
         
 #    return Filtered(Elements(ParabolicTransversal(this.W, this.J)),
 #                   w-> w in LeftParabolicTransversal(this.W, this.K));
-end;
-
-
-#############################################################################
-PDTransversalOps:= 
-  OperationsRecord("PDTransversalOps", DomainOps);
-
-
-#############################################################################
-PDTransversal:= function(W, J, K)
-    return 
-      rec(
-          isDomain:= true,
-          isPDTransversal:= true,
-          operations:= PDTransversalOps,
-          W:= W,
-          J:= J,
-          K:= K
-          );
-end;
-
-
-#############################################################################
-PDTransversalOps.Print:= function(this)
-    Print("PDTransversal( ", this.W, ", ", this.J, ", ", 
-          this.K, " )");
-end;
-
-
-#############################################################################
-##
-##  see Algorithm E (p.51).
-##
-##  Scheisse: funktioniert nicht!
-##
-PDTransversalOps.Elements:= function(this)
-    local   W,  J,  K,  WJ,  WK,  S,  X,  Z,  w,  x,  i;
-
-    W:= this.W;  J:= this.J;  K:= this.K;
-    WJ:= ReflectionSubgroup(W, J);
-    WK:= ReflectionSubgroup(W, K);
-    S:= W.rootInclusion{[1..W.semisimpleRank]};
-    X:= [];
-    Z:= [LongestCoxeterElement(WJ) * LongestCoxeterElement(W)];
-    for w in Z do
-        InfoZigzag1("lookin at ", CoxeterWord(W, w), ":\n");
-        x:= ReducedInCoxeterCoset(WK, w^-1)^-1;
-        InfoZigzag1("reduced to ", CoxeterWord(W, x), ".\n");
-        if not x in X then
-            InfoZigzag1("NEW!!!\n");
-            Add(X, x);
-            for i in Difference(LeftDescentSet(W, w^-1), K) do
-                InfoZigzag1("Adding ", CoxeterWord(W, w * W.(W.rootRestriction[i])), "...\n");
-                Add(Z, w * W.(W.rootRestriction[i]));
-            od;
-            for i in LeftDescentSet(W, x^-1) do
-                InfoZigzag1("Adding ", CoxeterWord(W, x * W.(W.rootRestriction[i])), "...\n");
-                Add(Z, x * W.(W.rootRestriction[i]));
-            od;
-        fi;
-    od;
-    
-    return Set(X);
 end;
 
 
