@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.34 2006/07/12 15:56:50 goetz Exp $
+#A  $Id: shapes.g,v 1.35 2006/07/12 17:22:42 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -125,6 +125,21 @@ end;
 ##
 ##  The rank of a shape is the size of its elements.
 ##
+##  <#GAPDoc Label="Rank(shape)">
+##  <ManSection>
+##  <Meth Name="Rank" Arg="shape" Label="for shapes"/>
+##  <Returns>the rank  of the shape <A>shape</A>.</Returns>
+##  <Description>
+##    The rank of a shape is the common size of its elements.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> List(Shapes(W), Rank);
+##  [ 0, 1, 2, 2, 3 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
 ShapeOps.Rank:= function(this)
     return Size(this.J);
 end;
@@ -572,12 +587,51 @@ end;
 ##
 #F  SubsetsShapes( <shapes> ) . . . . . . . . . . . . . . . . .  subsets.
 ##
+##  <#GAPDoc Label="SubsetsShapes">
+##  <ManSection>
+##  <Func Name="SubsetsShapes" Arg="shapes"/>
+##  <Returns>
+##    the list of subsets of <M>S</M> in shape order.
+##  </Returns>
+##  <Description>
+##  Shape order means ...
+##  <Example>
+##  gap> SubsetsShapes(Shapes(CoxeterGroup("A", 3)));
+##  [ [  ], [ 1 ], [ 2 ], [ 3 ], [ 1, 3 ], [ 1, 2 ], [ 2, 3 ], [ 1, 2, 3 ] ]
+##  gap> SubsetsShapes(Shapes(CoxeterGroup("B", 3)));
+##  [ [  ], [ 1 ], [ 2 ], [ 3 ], [ 1, 3 ], [ 2, 3 ], [ 1, 2 ], [ 1, 2, 3 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 SubsetsShapes:= function(shapes)
     return Concatenation(List(shapes, Elements));
 end;
 
 
 #############################################################################
+##
+#F  ComplementsShapes( <shapes> ) . . . . . . . . . . . . . . .  complements.
+##
+##  <#GAPDoc Label="ComplementsShapes">
+##  <ManSection>
+##  <Func Name="ComplementsShapes" Arg="shapes"/>
+##  <Returns>
+##    the permutation induced by the complementation operation on the list of
+##    subsets of <M>S</M> in shape order.
+##  </Returns>
+##  <Description>
+##  <Example>
+##  gap> ComplementsShapes(Shapes(CoxeterGroup("A", 3)));
+##  (1,8)(2,7)(3,5)(4,6)
+##  gap> ComplementsShapes(Shapes(CoxeterGroup("B", 3)));
+##  (1,8)(2,6)(3,5)(4,7)
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 ComplementsShapes:= function(shapes)
     local   subsets,  S;
     subsets:= SubsetsShapes(shapes);  S:= subsets[Length(subsets)];
@@ -785,6 +839,43 @@ XCharacters:= function(W)
 end;
 
 #############################################################################
+##
+#F  ParabolicTom( <W> ) . . . . . . . . . . . . . . parabolic table of marks.
+##
+##  <#GAPDoc Label="ParabolicTom">
+##  <ManSection>
+##  <Func Name="ParabolicTom" Arg="W"/>
+##  <Returns>
+##    the list of parabolic table of marks of <A>W</A>.
+##  </Returns>
+##  <Description>
+##  <Example>
+##  gap> W:= CoxeterGroup("D", 4);;
+##  gap> tom:= ParabolicTom(W);                
+##  gap> tom:= ParabolicTom(W);
+##  [ [ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 96, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+##    [ 48, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 48, 8, 0, 8, 0, 0, 0, 0, 0, 0, 0 ],
+##    [ 48, 8, 0, 0, 8, 0, 0, 0, 0, 0, 0 ], [ 32, 8, 0, 0, 0, 2, 0, 0, 0, 0, 0 ],
+##    [ 24, 6, 4, 4, 4, 0, 2, 0, 0, 0, 0 ], [ 8, 4, 4, 0, 0, 2, 0, 2, 0, 0, 0 ],
+##    [ 8, 4, 0, 4, 0, 2, 0, 0, 2, 0, 0 ], [ 8, 4, 0, 0, 4, 2, 0, 0, 0, 2, 0 ],
+##    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ] ]
+##  gap> PrintArray(tom);
+##  [ [  192,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 ],
+##    [   96,    8,    0,    0,    0,    0,    0,    0,    0,    0,    0 ],
+##    [   48,    8,    8,    0,    0,    0,    0,    0,    0,    0,    0 ],
+##    [   48,    8,    0,    8,    0,    0,    0,    0,    0,    0,    0 ],
+##    [   48,    8,    0,    0,    8,    0,    0,    0,    0,    0,    0 ],
+##    [   32,    8,    0,    0,    0,    2,    0,    0,    0,    0,    0 ],
+##    [   24,    6,    4,    4,    4,    0,    2,    0,    0,    0,    0 ],
+##    [    8,    4,    4,    0,    0,    2,    0,    2,    0,    0,    0 ],
+##    [    8,    4,    0,    4,    0,    2,    0,    0,    2,    0,    0 ],
+##    [    8,    4,    0,    0,    4,    2,    0,    0,    0,    2,    0 ],
+##    [    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 ParabolicTom:= function(W)
     local   c;
     c:= List(Shapes(W), x-> ConjugacyClasses(x)[1]);

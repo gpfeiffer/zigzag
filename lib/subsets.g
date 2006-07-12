@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.15 2006/07/12 15:20:07 goetz Exp $
+#A  $Id: subsets.g,v 1.16 2006/07/12 17:23:27 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -273,6 +273,31 @@ end;
 ##
 #F  PrefixesOps.Edges( <prefixes> ) . . . . . . . . . . . . . . . . .  edges.
 ##
+##  <#GAPDoc Label="Edges(prefixes)">
+##  <ManSection>
+##  <Meth Name="PrefixesOps.Edges" Arg="prefixes"/>
+##  <Returns>
+##    the list of edges of the graph formed by the elements of the prefixes 
+##    <A>prefixes</A>.
+##  </Returns>
+##  <Description>
+##    <C>PrefixesOps.Edges(prefixes)</C> returns a list of lists <C>l</C>
+##    with <C>l[i][k]</C> containing the address <C>a</C> if vertex <C>i</C> is
+##    the initial vertex of a directed edge with label <C>k</C> to vertex
+##    <C>a</C>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> w:= PermCoxeterWord(W, [1,2,3,2,1]);;
+##  gap> pre:= Prefixes(W, w);
+##  Prefixes( CoxeterGroup("A", 3), ( 1,11)( 3,10)( 4, 9)( 5, 7)( 6,12) )
+##  gap> Call(pre, "Edges");
+##  [ [  ], [ ,, 1 ], [ 4 ], [ , 2 ], [ 1 ], [ 2,, 5 ], [ 9, 3 ], [ , 5 ],
+##    [ , 6 ], [ 12,, 7 ], [ ,, 8 ], [ , 11, 9 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
 PrefixesOps.Edges:= function(this)
     Call(this, "Elements");  # expand the prefixes.
     return this.edges;
@@ -283,6 +308,32 @@ end;
 ##
 #F  PrefixesOps.Relation( <prefixes> ) . . . . . . . . . . . . . .  relation.
 ##
+##  <#GAPDoc Label="Relation(prefixes)">
+##  <ManSection>
+##  <Meth Name="PrefixesOps.Relation" Arg="prefixes"/>
+##  <Returns>
+##    the graph formed by the elements of the prefixes 
+##    <A>prefixes</A> as a <C>Relation</C> in the sense of MONOiD
+##    <Cite Key="monoid"/>.
+##  </Returns>
+##  <Description>
+##    <C>PrefixesOps.Relation(prefixes)</C> returns a list of lists <C>l</C>
+##    with <C>l[i][k]</C> containing the address <C>a</C> if vertex <C>i</C> is
+##    the initial vertex of a directed edge with label <C>k</C> to vertex
+##    <C>a</C>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> w:= PermCoxeterWord(W, [1,2,3,2,1]);;
+##  gap> pre:= Prefixes(W, w);
+##  Prefixes( CoxeterGroup("A", 3), ( 1,11)( 3,10)( 4, 9)( 5, 7)( 6,12) )
+##  gap> Call(pre, "Relation");
+##  Relation( [ [  ], [ 1 ], [ 4 ], [ 2 ], [ 1 ], [ 2, 5 ], [ 3, 9 ], [ 5 ],
+##  [ 6 ], [ 7, 12 ], [ 8 ], [ 9, 11 ] ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
 PrefixesOps.Relation:= function(this)
     return Relation(List(Call(this, "Edges"), Set));
 end;
@@ -545,19 +596,21 @@ end;
 ##
 DescentClassOps:= OperationsRecord("DescentClassOps", WeakIntervalOps);
 
+
 #############################################################################
 ##
-#C  DescentClass( <W>, <J> ) . . . . . . . . . . . . . . . . . . constructor.
+#C  DescentClass( <W>, <K> ) . . . . . . . . . . . . . . . . . . constructor.
 ##
 ##  <#GAPDoc Label="DescentClass">
 ##  <ManSection>
-##  <Func Name="DescentClass" Arg="W, J"/>
+##  <Func Name="DescentClass" Arg="W, K"/>
 ##  <Returns>
-##    an object that represents the descent class  of <A>J</A> in 
+##    an object that represents the descent class  of <A>K</A> in 
 ##    <A>W</A>. 
 ##  </Returns>
 ##  <Description>
-##  This is the constructor for ...
+##    This is the constructor for the descent class <M>Y_K</M> in <M>W</M>.
+##    It is represented as the weak interval <M>[w_{\hat{K}}, w_K w_0]</M>.
 ##  <Example>
 ##  gap> ...
 ##  </Example>
@@ -665,8 +718,26 @@ end;
 ##
 #F  DescentClasses( <W> ) . . . . . . . . . . . . . . . . .  descent classes.
 ##
-##  list all of them in shapes order.
-##
+##  <#GAPDoc Label="DescentClasses">
+##  <ManSection>
+##  <Func Name="DescentClasses" Arg="W"/>
+##  <Returns>
+##    the list of descent classes of the Coxeter group <A>W</A> in shape
+##    order (see <Ref Func="SubsetsShapes"/>).
+##  </Returns>
+##  <Description>
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;  W.name:= "W";;
+##  gap> DescentClasses(W);
+##  [ DescentClass( W, [  ] ), DescentClass( W, [ 1 ] ), DescentClass( W, [ 2 ] ),
+##    DescentClass( W, [ 3 ] ), DescentClass( W, [ 1, 3 ] ),
+##    DescentClass( W, [ 1, 2 ] ), DescentClass( W, [ 2, 3 ] ),
+##    DescentClass( W, [ 1, 2, 3 ] ) ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
 DescentClasses:= function(W)
     return List(SubsetsShapes(Shapes(W)), x-> DescentClass(W, x));
 end;
@@ -764,7 +835,7 @@ end;
 
 #############################################################################
 ##
-#F  Elements( < transversal> )  . . . . . . . . . . . . . . . . . . iterator.
+#F  Elements( < transversal> )  . . . . . . . . . . . . . . . . . . elements.
 ##
 LeftParabolicTransversalOps.Elements:= function(this)
     return Set(List(Elements(this.right), x-> x^-1));
@@ -876,35 +947,10 @@ end;
 
 #############################################################################
 ##
-##  see Algorithm E (p.51).
+#F  Elements( <transversal> ) . . . . . . . . . . . . . . . . . . . elements.
 ##
-##  Scheisse: funktioniert nicht!
-##
-#DoubleParabolicTransversalOps.Elements:= function(this)
-#    local   W,  J,  K,  WJ,  WK,  S,  X,  Z,  w,  x,  i;
-#
-#    W:= this.W;  J:= this.J;  K:= this.K;
-#    WJ:= ReflectionSubgroup(W, J);
-#    WK:= ReflectionSubgroup(W, K);
-#    S:= W.rootInclusion{[1..W.semisimpleRank]};
-#    X:= [];
-#    Z:= [LongestCoxeterElement(WJ) * LongestCoxeterElement(W)];
-#    for w in Z do
-#        InfoZigzag1("lookin at ", CoxeterWord(W, w), ":\n");
-#        x:= ReducedInCoxeterCoset(WK, w^-1)^-1;
-#        InfoZigzag1("reduced to ", CoxeterWord(W, x), ".\n");
-#        if not x in X then
-#            InfoZigzag1("NEW!!!\n");
-#            Add(X, x);
-#            for i in LeftDescentSet(W, x^-1) do
-#                InfoZigzag1("Adding ", CoxeterWord(W, x * W.(W.rootRestriction[i])), "...\n");
-#                Add(Z, x * W.(W.rootRestriction[i]));
-#            od;
-#        fi;
-#    od;
-#    
-#    return Set(X);
-#end;
+##  The algorithm used here is different from  Algorithm E (p.51), because
+##  that one doesn't actually find all double cosets :-(
 ##
 DoubleParabolicTransversalOps.Elements:= function(this)
     local   left,  itr,  list,  w;
