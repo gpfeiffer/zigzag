@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.13 2006/07/11 13:37:07 goetz Exp $
+     $Id: zigzag.xml,v 1.14 2006/07/12 17:20:14 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -9,7 +9,11 @@
 <Book Name="zigzag">
   <TitlePage>
     <Title><Package>ZigZag</Package></Title>
-    <Version>Version 0.66</Version>
+    <Subtitle>A &GAP;3 package for Descent Algebras 
+of Finite Coxeter Groups</Subtitle>
+    <Version>
+Version 0.67
+    </Version>
     <Author>
 Götz Pfeiffer
 <Email>goetz.pfeiffer@nuigalway.ie</Email>
@@ -24,6 +28,8 @@ Department of Mathematics, NUI, Galway, Ireland
   <TableOfContents/>
 
   <Body>
+
+<#Include SYSTEM "introduc.xml">
 
 <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 <Chapter>
@@ -339,6 +345,74 @@ We will use this tree in the examples of the following sections.
 <Section>
 <Heading>Prefix Sets.</Heading>
 
+<#Include Label="Prefixes">
+
+<#Include Label="IsPrefixes">
+
+<#Include Label="Elements(prefixes)">
+
+<#Include Label="Iterator(prefixes)">
+
+<#Include Label="Edges(prefixes)">
+
+<#Include Label="Relation(prefixes)">
+
+</Section>
+
+<Section>
+<Heading>Weak Intervals.</Heading>
+
+<#Include Label="WeakInterval">
+
+<#Include Label="IsWeakInterval">
+
+</Section>
+
+<Section>
+<Heading>Parabolic Transversals.</Heading>
+
+<#Include Label="ParabolicTransversal">
+
+<#Include Label="IsParabolicTransversal">
+
+</Section>
+
+<Section>
+<Heading>Descent Classes.</Heading>
+
+<#Include Label="DescentClass">
+
+<#Include Label="IsDescentClass">
+
+<#Include Label="DescentClasses">
+
+</Section>
+
+<Section>
+<Heading>Left Parabolic Transversals.</Heading>
+
+<#Include Label="LeftParabolicTransversal">
+
+<#Include Label="IsLeftParabolicTransversal">
+
+</Section>
+
+<Section>
+<Heading>Double Parabolic Transversals.</Heading>
+
+<#Include Label="DoubleParabolicTransversal">
+
+<#Include Label="IsDoubleParabolicTransversal">
+
+</Section>
+
+<Section>
+<Heading>XJKLs.</Heading>
+
+<#Include Label="XJKL">
+
+<#Include Label="IsXJKL">
+
 </Section>
 
 </Chapter>
@@ -382,6 +456,8 @@ and work on shapes.
 <#Include Label="Shape">
 
 <#Include Label="IsShape">
+
+<#Include Label="Rank(shape)">
 
 </Section>
 
@@ -497,23 +573,13 @@ that use shapes.
 
 <#Include Label="Shapes">
 
-<ManSection>
-<Func Name="SubsetsShapes" Arg="shapes"/>
-<Returns>
-  the list of subsets of <M>S</M> in shape order.
-</Returns>
-<Description>
-Shape order means ...
-<Example>
-gap> SubsetsShapes(Shapes(CoxeterGroup("A", 3)));
-[ [  ], [ 1 ], [ 2 ], [ 3 ], [ 1, 3 ], [ 1, 2 ], [ 2, 3 ], [ 1, 2, 3 ] ]
-gap> SubsetsShapes(Shapes(CoxeterGroup("B", 3)));
-[ [  ], [ 1 ], [ 2 ], [ 3 ], [ 1, 3 ], [ 2, 3 ], [ 1, 2 ], [ 1, 2, 3 ] ]
-</Example>
-</Description>
-</ManSection>
+<#Include Label="SubsetsShapes">
+
+<#Include Label="ComplementsShapes">
 
 <#Include Label="XCharacters">
+
+<#Include Label="ParabolicTom">
 
 <#Include Label="YCharacters">
 
@@ -528,7 +594,7 @@ gap> SubsetsShapes(Shapes(CoxeterGroup("B", 3)));
 <#Include Label="Intro:Arrows">
 
 <Section>
-<Heading>Arrow Operations.</Heading>
+<Heading>Arrow Multiplication.</Heading>
 
 <#Include Label="ProductArrows">
 
@@ -539,7 +605,20 @@ gap> SubsetsShapes(Shapes(CoxeterGroup("B", 3)));
 </Section>
 
 <Section>
-<Heading>Arrow Attributes.</Heading>
+<Heading>Operation on Arrows.</Heading>
+
+<#Include Label="OnArrows">
+
+<#Include Label="StabilizerArrow">
+
+</Section>
+
+<Section>
+<Heading>Difference Operators.</Heading>
+
+<#Include Label="LittleDeltaArrow">
+
+<#Include Label="DeltaArrow">
 
 </Section>
 
