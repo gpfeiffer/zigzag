@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--  ZigZag Documentation
+     $Id: introduc.xml,v 1.1 2006/07/12 17:10:15 goetz Exp $
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:intro"><Heading>Introduction.</Heading>
+  <Section Label="sec:descent">
+    <Heading>The Descent Algebra.</Heading>
+</Section>
+</Chapter>
