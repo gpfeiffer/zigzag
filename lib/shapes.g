@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.33 2006/07/06 19:29:34 goetz Exp $
+#A  $Id: shapes.g,v 1.34 2006/07/12 15:56:50 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -16,21 +16,13 @@
 ##  in  $W$.  Shapes  thus parameterize  the conjugacy  classes  of parabolic
 ##  subgroups of $W$.
 ##
-RequirePackage("chevie");
-RequirePackage("monoid");
-
-#############################################################################
-##
-#F  InfoZigzag? . . . . . . . . . . . . . . . . . . . . . . . info functions.
-##
-if not IsBound(InfoZigzag1) then InfoZigzag1:= Ignore; fi;
-if not IsBound(InfoZigzag2) then InfoZigzag2:= Ignore; fi;
 
 #############################################################################
 ##  
 #O  ShapeOps . . . . . . . . . . . . . . . . . . . . . . . operations record.
 ##  
 ShapeOps:= OperationsRecord("ShapeOps", DomainOps);
+
 
 #############################################################################
 ##  
@@ -95,8 +87,6 @@ end;
 ##  
 #F  Print( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-##  
-##
 ShapeOps.Print:= function(this)
     Print("Shape( ", this.W, ", ", this.J, " )");
 end;
