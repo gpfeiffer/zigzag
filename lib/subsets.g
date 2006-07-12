@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.13 2006/07/12 14:59:22 goetz Exp $
+#A  $Id: subsets.g,v 1.14 2006/07/12 15:19:17 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -802,6 +802,11 @@ end;
 
 
 #############################################################################
+##
+#O  DoubleParabolicTransversalOps . . . . . . . . . . . .  operations record.
+##
+##  A DoubleParabolicTransversal is a Domain.
+##
 DoubleParabolicTransversalOps:= 
   OperationsRecord("DoubleParabolicTransversalOps", DomainOps);
 
@@ -840,6 +845,9 @@ end;
 
 
 #############################################################################
+##
+#F  Print( <transversal> )  . . . . . . . . . . . . . . . . . . . . .  print.
+##
 DoubleParabolicTransversalOps.Print:= function(this)
     Print("DoubleParabolicTransversal( ", this.W, ", ", this.J, ", ", 
           this.K, " )");
@@ -848,7 +856,7 @@ end;
 
 #############################################################################
 ##
-#F  IsDoubleParabolicTransversal( <obj> ) . . . . . . . . . . . . . type check.
+#F  IsDoubleParabolicTransversal( <obj> ) . . . . . . . . . . . . type check.
 ##
 ##  <#GAPDoc Label="IsDoubleParabolicTransversal">
 ##  <ManSection>
@@ -897,7 +905,7 @@ end;
 #    
 #    return Set(X);
 #end;
-
+##
 DoubleParabolicTransversalOps.Elements:= function(this)
     local   left,  itr,  list,  w;
     
@@ -982,6 +990,16 @@ end;
 
 
 #############################################################################
+##
+##  XJKLs.
+##
+
+#############################################################################
+##
+#O  XJKLOps . . . . . . . . . . . . . . . . . . . . . . .  operations record.
+##
+##  An XJKL is a Domain.
+##
 XJKLOps:= OperationsRecord("XJKLOps", DomainOps);
 
 
@@ -1023,6 +1041,9 @@ end;
 
 
 #############################################################################
+##
+#F  Print( <xjkl> ) . . . . . . . . . . . . . . . . . . . . . . . . .  print.
+##
 XJKLOps.Print:= function(this)
     Print("XJKL( ", this.W, ", ", this.J, ", ", this.K, ", ", this.L, " )");
 end;
@@ -1030,7 +1051,7 @@ end;
 
 #############################################################################
 ##
-#F  IsXJKL( <obj> ) . . . . . . . . . . . . . type check.
+#F  IsXJKL( <obj> ) . . . . . . . . . . . . . . . . . . . . . . . type check.
 ##
 ##  <#GAPDoc Label="IsXJKL">
 ##  <ManSection>
@@ -1048,6 +1069,9 @@ end;
 
 
 #############################################################################
+##
+#F  Elements( <xjkl> ) . . . . . . . . . . . . . . . . . . . . . .  elements.
+##
 XJKLOps.Elements:= function(this)
     return 
       Filtered(Elements(DoubleParabolicTransversal(this.W, this.J, this.K)),
