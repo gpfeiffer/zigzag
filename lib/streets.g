@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.3 2006/07/10 12:09:46 goetz Exp $
+#A  $Id: streets.g,v 1.4 2006/07/13 13:54:18 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -282,6 +282,32 @@ BundleOps.Elements:= function(this)
     od;
     return Set(elm);
 end;
+
+#############################################################################
+BundleOps.Transversal:= function(this)
+    #  FIXME:
+    return 0;
+end;
+
+#############################################################################
+BundleOps.Edges:= function(this)
+    #  FIXME:
+    return 0;
+end;
+
+#############################################################################
+BundleOps.Relation:= function(this)
+    #  FIXME:
+    return 0;
+end;
+
+
+#############################################################################
+BundleOps.SpanningTree:= function(this)
+    #  FIXME:
+    return 0;
+end;
+
 
 #############################################################################
 BundleOps.Tail:= function(this)
