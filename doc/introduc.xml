@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: introduc.xml,v 1.1 2006/07/12 17:10:15 goetz Exp $
+     $Id: introduc.xml,v 1.2 2006/07/13 11:57:55 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -9,5 +9,8 @@
 <Chapter Label="ch:intro"><Heading>Introduction.</Heading>
   <Section Label="sec:descent">
     <Heading>The Descent Algebra.</Heading>
+
+    A <E>descent algebra</E> is primarily a subalgebra of the group
+algebra of a finite Coxeter group.
 </Section>
 </Chapter>

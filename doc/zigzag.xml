@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.14 2006/07/12 17:20:14 goetz Exp $
+     $Id: zigzag.xml,v 1.15 2006/07/13 11:57:55 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -485,7 +485,7 @@ more efficient implementations.
 <Heading>Shape Records.</Heading>
 Like all  other domains shapes are  represented by records.   While it is
 possible to construct  such a record by hand it is  preferable to use the
-constructor function <C>Shape</C> (see <Ref Label="Shape"/>).<P/>
+constructor function <Ref Func="Shape"/>).<P/>
 
 After such a record is created you can add more components.  But you
 should not alter the values of components which are already
@@ -568,8 +568,10 @@ In this section I describe some methods for shapes.
 <Section Label="Sect:ShapesCoxeterGroup">
 <Heading>Shapes and Coxeter Groups.</Heading>
 
-In this section I describe new functions for finite Coxeter groups
-that use shapes.
+Functions like <Ref Func="XCharacters"/> and <Ref Func="YCharacters"/>
+use the shapes of a Coxeter group <M>W</M> to provide information
+about <M>W</M>.  In this section I describe these and other functions
+for finite Coxeter groups that use shapes.
 
 <#Include Label="Shapes">
 
