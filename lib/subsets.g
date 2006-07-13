@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.16 2006/07/12 17:23:27 goetz Exp $
+#A  $Id: subsets.g,v 1.17 2006/07/13 11:59:44 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -312,9 +312,8 @@ end;
 ##  <ManSection>
 ##  <Meth Name="PrefixesOps.Relation" Arg="prefixes"/>
 ##  <Returns>
-##    the graph formed by the elements of the prefixes 
-##    <A>prefixes</A> as a <C>Relation</C> in the sense of MONOiD
-##    <Cite Key="monoid"/>.
+##    the graph formed by the elements of the prefixes <A>prefixes</A> as a
+##    binary relation in the sense of MONOiD <Cite Key="monoid"/>.
 ##  </Returns>
 ##  <Description>
 ##    <C>PrefixesOps.Relation(prefixes)</C> returns a list of lists <C>l</C>
