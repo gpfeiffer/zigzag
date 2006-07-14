@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.17 2006/07/13 11:59:44 goetz Exp $
+#A  $Id: subsets.g,v 1.18 2006/07/14 15:23:44 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -275,6 +275,7 @@ end;
 ##
 ##  <#GAPDoc Label="Edges(prefixes)">
 ##  <ManSection>
+##  <Meth Name="Edges" Arg="prefixes" Label="for prefixes"/>
 ##  <Meth Name="PrefixesOps.Edges" Arg="prefixes"/>
 ##  <Returns>
 ##    the list of edges of the graph formed by the elements of the prefixes 
@@ -310,6 +311,7 @@ end;
 ##
 ##  <#GAPDoc Label="Relation(prefixes)">
 ##  <ManSection>
+##  <Meth Name="Relation" Arg="prefixes" Label="for prefixes"/>
 ##  <Meth Name="PrefixesOps.Relation" Arg="prefixes"/>
 ##  <Returns>
 ##    the graph formed by the elements of the prefixes <A>prefixes</A> as a
