@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: methods.g,v 1.3 2006/07/06 18:18:02 goetz Exp $
+#A  $Id: methods.g,v 1.4 2006/07/26 18:14:05 goetz Exp $
 ##
 ##  This file contains support for methods.
 ##  
@@ -38,8 +38,8 @@
 ##  4
 ##  </Example>
 ##    In other object oriented programming languages the construct
-##	<C>Call(p, "Length")</C> might more briefly be expressed as
-##	<C>p.Length()</C>.
+##    <C>Call(p, "Length")</C> might more succinctly be expressed as
+##    <C>p.Length()</C>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -67,9 +67,10 @@ end;
 ##  gap> ApplyMethod(Partition([4, 3, 3, 1]), "At", 2);
 ##  3
 ##  </Example>
-##    In other object oriented programming languages the construct <C>Call(p,
-##    "At", 2)</C> might more briefly be expressed as <C>p.At(2)</C>, or
-##    even, if the square brackets are overloaded, as <C>p[2]</C>.
+##    In other object oriented programming languages the construct
+##    <C>ApplyMethod(p, "At", 2)</C> might more succinctly be
+##    expressed as <C>p.At(2)</C>, or even, if the square brackets can
+##    be overloaded, as <C>p[2]</C>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.15 2006/07/13 11:57:55 goetz Exp $
+     $Id: zigzag.xml,v 1.16 2006/07/26 18:14:13 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -44,19 +44,22 @@ For many methods, \GAP\ provides a <E>global</E> function with the same
 name, which will eventually calls the method in the operations record.
 If such a global function does not exist, I can always write one myself.
 But this might get in the way of other packages which might want to use
-this global function fro a different purpose.  And if such a global
+this global function for a different purpose.  And if such a global
 function does already exist, its use of parameters might not fit my
 purpose.  Here we provide an alternative way of accessing an installed
 method without the help of a corresponding global function.  Instead we
-define a single function <C>Call</C> which takes an object and a method
+define a single function <Ref Func="Call"/> which takes an object and a method
 as arguments and then applies the method to the object.
+Moreover, we define a function <Ref Func="ApplyMethod"/> which in addition
+takes other arguments that are passed on to the method call. <P/>
 
 For example, the global function <C>Length</C> is defined in such a
 way that it does not search for a method <C>Length</C> when applied to
 an object.  To install and use such a method, one can proceed as
-follows.  First we define <C>Partition</C> objects and install a
-<C>Length</C> method for them.  Moreover, we install a method
-	<C>At</C> to access the part of a <C>Partition</C> at a given position.
+follows.  For the purpose of illustration we define <C>Partition</C>
+objects and install a <C>Length</C> method for them.  Moreover, we
+install a method <C>At</C> to access the part of a <C>Partition</C> at
+a given position.
 
 <Listing Type="From methods.g"><![CDATA[
 PartitionOps:= rec();
@@ -77,10 +80,16 @@ PartitionOps.At:= function(this, i)
     return this.parts[i];
 end;]]>
 </Listing>
+As a convention the parameter  name <A>this</A> is used for the object
+on behalf of which the method is invoked. The same name is used in the
+Java programming language, where it  needs not be listed explicitly as
+a parameter.<P/>
+
+
 	When a  <C>Partition</C> object  has been created,  the global
 	<C>Length</C>  function  cannot  be  applied to  it, 
 and positional selection with square brackets does not work.  But  the
-	mechanism implemented here is available, see below.
+	mechanism implemented here is available, see the examples below.
 
 <Example>
 gap> p:= Partition([4, 3, 3, 1]);
