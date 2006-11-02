@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.5 2006/07/14 15:22:40 goetz Exp $
+#A  $Id: streets.g,v 1.6 2006/11/02 14:48:18 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -291,19 +291,22 @@ end;
 
 #############################################################################
 BundleOps.Edges:= function(this)
-    local   W,  S,  head,  eee,  all,  edges,  a,  new,  l,  s;
+    local   W,  S,  head,  hhh,  eee,  all,  edges,  a,  new,  l,  s;
     
     W:= this.W;
     S:= [1..W.semisimpleRank];
     head:= Shapes(W)[Call(this, "Head")];
+    hhh:= Elements(head);
     eee:= Call(head, "Edges");
     all:= Elements(this);
     edges:= [];
     for a in all do
         new:= [];
-        l:= Position(Elements(head), a[1]);
-        for s in Difference(S, a[1]) do
-            new[s]:= Position(all, OnArrows(a, eee[l][s].d));
+        l:= Position(hhh, a[1]);
+        for s in S do
+            if not s in a[1] then
+                new[s]:= Position(all, OnArrows(a, eee[l][s].d));
+            fi;
         od;
         Add(edges, new);
     od;
