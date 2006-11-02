@@ -20,5 +20,8 @@ all: zigzag.pdf
 zigzag.tex: $(XMLFILES) $(GAPFILES) zigzag.bib
 	gap4 -b -r < makedoc.g
 
+clean:
+	rm -fv *.{bbl,brf,ind,pnr}
+
 install: zigzag.pdf
 	scp $< schmidt:www/zigzag
