@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.22 2006/07/11 14:36:13 goetz Exp $
+#A  $Id: alleys.g,v 1.23 2006/11/02 14:47:27 goetz Exp $
 ##
 ##  This file contains support for arrows and arrow classes.
 ##  
@@ -80,7 +80,7 @@ ProductArrowList:= function(list)
     for i in [2..Length(list)] do
         if product = 0 then
             return 0;
-        end;
+        fi;
         product:= ProductArrows(product, list[i]);
     od;
     
