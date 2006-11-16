@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.23 2006/11/02 14:47:27 goetz Exp $
+#A  $Id: alleys.g,v 1.24 2006/11/16 13:48:41 goetz Exp $
 ##
 ##  This file contains support for arrows and arrow classes.
 ##  
@@ -332,6 +332,30 @@ BigMatrixArrow:= function(W, arrow)
     j:= PositionProperty(sh, x-> Difference(arrow[1], arrow[2]) in x);
     mat[i]{l[j]}:= DeltaArrow(W, arrow);    
     return mat;
+end;
+
+#############################################################################
+##
+##  ReversedArrow(W, arrow)
+##
+ReversedArrow:= function(W, arrow)
+
+    local   L,  list,  s,  K,  wL,  d,  rev;
+    
+    L:= arrow[1];
+    list:= arrow[2];
+    if list = [] then
+        Error("arrow must have length > 0");
+    fi;
+    
+    s:= list[1];
+    wL:= LongestCoxeterElement(ReflectionSubgroup(W, L));
+    K:= Difference(L, [s]);
+    d:= LongestCoxeterElement(ReflectionSubgroup(W, K)) * wL;
+    rev:= [s^wL - W.N];
+    Append(rev, OnTuples(list{[2..Length(list)]}, d));
+
+    return [L, rev];
 end;
 
 
