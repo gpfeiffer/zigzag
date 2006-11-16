@@ -7,8 +7,11 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: init.g,v 1.12 2006/07/06 19:29:58 goetz Exp $
+#A  $Id: init.g,v 1.13 2006/11/16 13:47:33 goetz Exp $
 ##
+
+#############################################################################
+ZIGZAG:= rec( Version:= "0.68", Date:= "13/11/2007" );
 
 #############################################################################
 ##
@@ -84,3 +87,7 @@ AUTO( ReadPkg( "zigzag", "lib", "zigzag" ),
   LisMatDescent, ClosLis, OpenLis, ClosLisRank, OpenLisRank, Lat,
   RightIdeal, LeftIdeal, RightPIE, SetComposition, IsNonZero );
 
+# print welcome message.
+if BANNER then
+    Print("ZigZag Version ", ZIGZAG.Version, " (", ZIGZAG.Date, ").\n");
+fi;
