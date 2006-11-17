@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.6 2006/11/02 14:48:18 goetz Exp $
+#A  $Id: streets.g,v 1.7 2006/11/17 15:17:01 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -48,13 +48,11 @@ BundleOps:= OperationsRecord("BundleOps", DomainOps);
 ##  </Returns>
 ##  <Description>
 ##    This is the simple constructor for an arrow class.  It constructs and
-##  returns the class  of <A>arrow</A> in <A>W</A>.  Here <A>W</A> is a finite
-##  Coxeter group of rank <M>n</M> and <A>J</A> is a subset of
-##  <M>[1..n]</M>.
+##  returns the class  of <A>arrow</A> in <A>W</A>.
 ##  <Example>
-##  gap> W:= CoxeterGroup("E", 6);; 
-##  gap> Shape(W, [1, 2, 3]);
-##  Shape( CoxeterGroup("E", 6), [ 1, 2, 3 ] )
+##  gap> W:= CoxeterGroup("A", 5);; 
+##  gap> Bundle(W, [[1,2,3], [3]]);
+##  Bundle( CoxeterGroup("A", 5), [ [ 1, 2, 3 ], [ 3 ] ] )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -107,18 +105,18 @@ end;
 ##
 #F  Representative( <bundle> ) . . . . . . . . . . . . . . . . representative.
 ##
-##  A shape, as a class of parabolic subsets, has a representative.
+##  A bundle, as a class of parabolic subsets, has a representative.
 ##
-##  <#GAPDoc Label="Representative(shape)">
+##  <#GAPDoc Label="Representative(bundle)">
 ##  <ManSection>
-##  <Meth Name="Representative" Arg="shape" Label="for shapes"/>
-##  <Returns>a representative of the shape <A>shape</A>.</Returns>
-##  <Description>The representative of a shape constructed 
-##  as <C>Shape(W, J)</C> (see <Ref Label="Shape"/>) will be its
+##  <Meth Name="Representative" Arg="bundle" Label="for bundles"/>
+##  <Returns>a representative of the bundle <A>bundle</A>.</Returns>
+##  <Description>The representative of a bundle constructed 
+##  as <C>Bundle(W, J)</C> (see <Ref Label="Bundle"/>) will be its
 ##  initial element <C>J</C>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
-##  gap> Representative(Shape(W, [2]));
+##  gap> Representative(Bundle(W, [2]));
 ##  [ 2 ]
 ##  </Example>
 ##  </Description>
@@ -239,13 +237,13 @@ end;
 
 #############################################################################  
 ##  
-#F  Elements( <shape> ) . . . . . . . . . . . . . . . . . . . . . . elements.
+#F  Elements( <bundle> )  . . . . . . . . . . . . . . . . . . . . . elements.
 ##  
-##  <#GAPDoc Label="Elements(shape)">
+##  <#GAPDoc Label="Elements(bundle)">
 ##  <ManSection>
-##  <Meth Name="Elements" Arg="shape" Label="for shapes"/>
+##  <Meth Name="Elements" Arg="bundle" Label="for bundles"/>
 ##  <Returns>
-##    the set of elements of the shape <A>shape</A>.
+##    the set of elements of the bundle <A>bundle</A>.
 ##  </Returns>
 ##  <Description>
 ##  The shape of <M>J</M> in <M>W</M> consists of all subsets of <M>S</M>
