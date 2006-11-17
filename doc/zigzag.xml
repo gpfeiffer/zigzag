@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.16 2006/07/26 18:14:13 goetz Exp $
+     $Id: zigzag.xml,v 1.17 2006/11/17 15:15:23 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -12,7 +12,7 @@
     <Subtitle>A &GAP;3 package for Descent Algebras 
 of Finite Coxeter Groups</Subtitle>
     <Version>
-Version 0.67
+Version 0.68
     </Version>
     <Author>
 Götz Pfeiffer
@@ -631,6 +631,8 @@ for finite Coxeter groups that use shapes.
 
 <#Include Label="DeltaArrow">
 
+<#Include Label="ReversedArrow">
+
 </Section>
 
 </Chapter>
@@ -642,9 +644,35 @@ for finite Coxeter groups that use shapes.
 <#Include Label="Intro:Bundles">
 
 <Section>
-<Heading>Prefix Sets.</Heading>
+<Heading>Bundle Objects.</Heading>
+
+<#Include Label="Bundle">
+
+<#Include Label="IsBundle">
 
 </Section>
+
+<Section Label="Sect:BundlesAsSets">
+<Heading>Set Methods for Bundles.</Heading>
+
+Bundles are domains and therefore all set theoretic functions described
+in  chapter "Domains"  are also  applicable to  bundles.   This section
+describes  which  functions  are  implemented  specially  for  bundles.
+Functions  not  mentioned here  are  handled  by  the default  methods
+described in the respective sections of chapter "Domains".
+
+More precisely, every bundle has as its operations record
+<C>BundleOps</C> which inherits from <C>DomainOps</C>
+and overrides the methods below to make it work or to provide 
+more efficient implementations.
+
+<#Include Label="Elements(bundle)">
+
+<#Include Label="Representative(bundle)">
+
+</Section>
+
+
 
 </Chapter>
 
