@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.7 2006/11/17 15:17:01 goetz Exp $
+#A  $Id: streets.g,v 1.8 2006/11/24 17:42:47 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -190,13 +190,13 @@ Bundles:= function(W)
     local   list,  shape;
     list:= [];
     for shape in Shapes(W) do
-        Append(list, BreadthFirst(Bundle(W, [shape.J, []])));
+        Append(list, BreadthFirst(Call(shape, "Bundle")));
     od;
     return list;
 end;
 
 NrBundles:= function(W)
-    return Sum(Shapes(W), x-> NrPreOrder(Bundle(W, [x.J, []])));
+    return Sum(Shapes(W), x-> NrPreOrder(Call(x, "Bundle")));
 end;
     
 
@@ -572,7 +572,52 @@ DeltaPath:= function(path)
     return rec(support:= p.tail, mat:= Sum(p.mat));
 end;
 
+#############################################################################
+BundleOps.Movers:= function(this)
+    local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  count,  new;
+    
+    n:= this.W.semisimpleRank;
+    movers:= [];
+    for a in Elements(this) do
+        for i in [1..n] do
+            if not i in a[1] then
+                b:= [Union(a[1], [i]), Concatenation([i], a[2])];
+                K:= a[1];  L:= b[1];
+                d:= LongestCoxeterElement(ReflectionSubgroup(W, K))
+                    * LongestCoxeterElement(ReflectionSubgroup(W, L));
+                c:= OnArrows(a, d);
+                
+                if c <> a then
+                    AddSet(movers, b);
+                fi;
+            fi;
+        od;
+    od;
+    count:= Size(movers);
+    
+    new:= [];
+    while movers <> [] do
+        a:= Bundle(this.W, movers[1]);
+        Add(new, a);
+        movers:= Difference(movers, Elements(a));
+    od;
+    
+    return new;
+end;
 
+#############################################################################
+##
+##  A procedure to represent an arrow as a sum of (iterated delta images)
+##  of bundles.
+##
+BundlesArrow:= function(W, arrow)
+    
+    # FIXME:
+    return true;
+end;
+
+
+#############################################################################
 QuiverRelations:= function(W)
     local   aaa,  path,  path0,  more,  a,  relations,  sss,  l,  
             null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
