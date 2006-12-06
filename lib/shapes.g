@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.37 2006/07/14 15:23:24 goetz Exp $
+#A  $Id: shapes.g,v 1.38 2006/12/06 13:13:53 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -297,7 +297,6 @@ end;
 ##  <#/GAPDoc>
 ##  
 ShapeOps.Edges:= function(this)
-    # (delete) this.operations.Elements(this);  # expand the shape.
     Call(this, "Elements");  # expand the shape.
     return this.edges;
 end;
@@ -410,9 +409,7 @@ end;
 ShapeOps.Complement:= function(this)
     local   edges,  t,  eyes,  ears,  i,  e,  j,  nor;
 
-    # (delete) edges:= this.operations.Edges(this);  
     edges:= Call(this, "Edges");  
-    # (delete) t:= this.operations.Transversal(this);
     t:= Call(this, "Transversal");
     eyes:= [];  ears:= [];  i:= 0;
     for e in edges do
@@ -725,13 +722,18 @@ CollapsedIncMatShapes:= function(shapes)
 end;
 
 
+#############################################################################
+##
+##  IncMatShapes
+##
+##  returns the number of orbits of pairs J < K
+##
 IncMatShapes:= function(shapes)
     local   mat,  a,  row,  nor,  b;
 
     mat:= [];
     for a in shapes do
         row:= [];
-        # (delete) nor:= a.operations.Complement(a);
         nor:= Call(a, "Complement");
         for b in shapes do
             Add(row, Length(Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets)));
@@ -748,7 +750,6 @@ FusMatShapes1:= function(shapes)
     mat:= [];
     for a in shapes do
         row:= [];
-        # (delete) nor:= Closure(ReflectionSubgroup(a.W, a.J), a.operations.Complement(a));
         nor:= Closure(ReflectionSubgroup(a.W, a.J), Call(a, "Complement"));
         for b in shapes do
             Add(row, Length(Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets)));
@@ -1046,7 +1047,6 @@ SpecialInvolutions:= function(W)
     for s in invo do
         J:= s.J;
         WJ:= ReflectionSubgroup(W, J);
-        # (delete) NJ:= ShapeOps.Complement(s);
         NJ:= Call(s, "Complement");
         if Size(CommutatorSubgroup(WJ, NJ)) = 1 then
             Add(spec, LongestCoxeterElement(ReflectionSubgroup(W, Representative(s))));
@@ -1143,7 +1143,6 @@ ShapeOps.Points:= function(this)
     local   points,  o;
     
     points:= [];
-# (delete) for o in Orbits(ShapeOps.Complement(this), this.J) do
     for o in Orbits(Call(this, "Complement"), this.J) do
         Add(points, o[1]);
     od;
@@ -1167,7 +1166,7 @@ ShapeOps.Matrix:= function(this)
     return rec(tail:= this, head:= this, mat:=IdentityMat(Size(this)));
 end;
 
-# (delete) MatrixPath:= p -> Product(Reversed(p), x-> PointedShapeOps.Matrix(x).mat);
+
 MatrixPath:= p -> Product(Reversed(p), x-> Call(x, "Matrix").mat);
 
 
