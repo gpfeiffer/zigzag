@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.8 2006/11/24 17:42:47 goetz Exp $
+#A  $Id: streets.g,v 1.9 2006/12/06 13:13:02 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -619,12 +619,17 @@ end;
 
 #############################################################################
 QuiverRelations:= function(W)
-    local   aaa,  path,  path0,  more,  a,  relations,  sss,  l,  
+    local   aaa,  bbb,  path,  path0,  more,  a,  relations,  sss,  l,  
             null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
             line,  pos,  i,  b;
     
     # start with a reasonably small set of arrow classes.
-    aaa:= Filtered(Bundles(W), x-> IsNonZero(Call(x, "Delta").mat));
+    bbb:= List(Shapes(W), x-> Call(x, "Bundle"));
+    for a in bbb do 
+        Append(bbb, Call(a, "Movers"));
+    od;
+
+    aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
     aaa:= Filtered(aaa, x-> x = Call(x, "Suffix"));
     InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
     
