@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.25 2006/11/17 15:16:25 goetz Exp $
+#A  $Id: alleys.g,v 1.26 2006/12/06 13:12:15 goetz Exp $
 ##
 ##  This file contains support for arrows and arrow classes.
 ##  
@@ -381,6 +381,15 @@ ReversedArrow:= function(W, arrow)
 
     return [L, rev];
 end;
+
+LittleDeltaBarArrow:= function(W, arrow)
+    local   delta;
+    
+    delta:= LittleDeltaArrow(W, arrow);
+    delta[2]:= ReversedArrow(W, delta[2]);
+    return delta;
+end;
+
 
 
 #############################################################################
