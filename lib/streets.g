@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.9 2006/12/06 13:13:02 goetz Exp $
+#A  $Id: streets.g,v 1.10 2006/12/13 15:15:24 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -572,9 +572,10 @@ DeltaPath:= function(path)
     return rec(support:= p.tail, mat:= Sum(p.mat));
 end;
 
+
 #############################################################################
 BundleOps.Movers:= function(this)
-    local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  count,  new;
+    local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  new;
     
     n:= this.W.semisimpleRank;
     movers:= [];
@@ -583,8 +584,8 @@ BundleOps.Movers:= function(this)
             if not i in a[1] then
                 b:= [Union(a[1], [i]), Concatenation([i], a[2])];
                 K:= a[1];  L:= b[1];
-                d:= LongestCoxeterElement(ReflectionSubgroup(W, K))
-                    * LongestCoxeterElement(ReflectionSubgroup(W, L));
+                d:= LongestCoxeterElement(ReflectionSubgroup(this.W, K))
+                    * LongestCoxeterElement(ReflectionSubgroup(this.W, L));
                 c:= OnArrows(a, d);
                 
                 if c <> a then
@@ -593,13 +594,45 @@ BundleOps.Movers:= function(this)
             fi;
         od;
     od;
-    count:= Size(movers);
     
     new:= [];
     while movers <> [] do
         a:= Bundle(this.W, movers[1]);
         Add(new, a);
         movers:= Difference(movers, Elements(a));
+    od;
+    
+    return new;
+end;
+
+
+#############################################################################
+BundleOps.Shakers:= function(this)
+    local   n,  shakers,  a,  i,  b,  K,  L,  d,  c,  new;
+    
+    n:= this.W.semisimpleRank;
+    shakers:= [];
+    for a in Elements(this) do
+        for i in [1..n] do
+            if not i in a[1] then
+                b:= [Union(a[1], [i]), Concatenation([i], a[2])];
+                K:= a[1];  L:= b[1];
+                d:= LongestCoxeterElement(ReflectionSubgroup(this.W, K))
+                    * LongestCoxeterElement(ReflectionSubgroup(this.W, L));
+                c:= OnArrows(a, d);
+                
+                if c = a then
+                    AddSet(shakers, b);
+                fi;
+            fi;
+        od;
+    od;
+    
+    new:= [];
+    while shakers <> [] do
+        a:= Bundle(this.W, shakers[1]);
+        Add(new, a);
+        shakers:= Difference(shakers, Elements(a));
     od;
     
     return new;
