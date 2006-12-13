@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.28 2006/07/05 18:53:07 goetz Exp $
+#A  $Id: descent.g,v 1.29 2006/12/13 15:27:35 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -74,13 +74,13 @@ end;
 
 #############################################################################
 ##  
-#F  DescentAlgebraOps.MuNu( <D> )
+#F  DescentAlgebraOps.Mu( <D> )
 ##  
 ##  The idempotents from BBHT.  
 ##  the rows of nu express the quasi-idempotents e_J in terms of the x_J.
 ##  <init> could be any list of 2^n entries > 0.
 ##    
-DescentAlgebraOps.MuNu:= function(D)
+DescentAlgebraOps.Mu:= function(D)
     local   lll,  mu,  j0,  a,  j,  k0,  b,  k,  l;
     
     lll:= List(Shapes(D.W), Size);
@@ -101,7 +101,7 @@ DescentAlgebraOps.MuNu:= function(D)
         j0:= j0 + a;
     od;
 
-    return rec(mu:= mu, nu:= mu^-1);
+    return mu;
 end;
     
 #############################################################################
@@ -463,7 +463,7 @@ end;
 #  deprecate:
 LeftRegularE:= function(D)
     local   nu;
-    nu:= Call(D, "MuNu").nu;    
+    nu:= Call(D, "Mu")^-1;    
     return List(nu, l-> l * LeftRegularX(D));
 end;
 
@@ -555,8 +555,7 @@ ECharacters:= function(W)
     local   sec,  nu,  ee,  a,  lll,  l,  dia;
     
     sec:= SizesDescentConjugacyClasses(W);
-    # (delete) nu:= DescentAlgebraOps.MuNu(DescentAlgebra(W)).nu;
-    nu:= Call(DescentAlgebra(W), "MuNu").nu;
+    nu:= Call(DescentAlgebra(W), "Mu")^-1;
     ee:= [];  a:= 0;  lll:= List(Shapes(W), Size);
     for l in lll do
         Add(ee, Sum(nu{a+[1..l]}));
@@ -564,7 +563,6 @@ ECharacters:= function(W)
     od;
 
     dia:= DiagonalMat(List(ConjugacyClasses(W), x-> Size(W)/Size(x)));
-#    Error();
     return ee * IncidenceMatShapes(Shapes(W)) * sec * dia;
 end;
 
@@ -686,7 +684,7 @@ PrimitiveIdempotents:= function(D)
     fi;
 
     lll:= List(Shapes(D.W), Size);
-    nu:= Call(D, "MuNu").nu;
+    nu:= Call(D, "Mu")^-1;
     xxx:= LeftRegularX(D);
     
     EEE:= [];  a:= 0;
@@ -1173,7 +1171,7 @@ RightPIE:= function(D)
     
     EEE:= List(PrimitiveIdempotents(D), x-> x[Dimension(D)]);
     r:= List(RightRegularX(D), MatCompressedAJKL);
-    mat:= Call(D, "MuNu").nu;
+    mat:= Call(D, "Mu")^-1;
     return List(EEE, e-> mat*Sum([1..Length(e)], i-> e[i]*r[i])/mat);
 end;
 

@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.10 2006/12/13 15:15:24 goetz Exp $
+#A  $Id: streets.g,v 1.11 2006/12/13 15:27:40 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -953,7 +953,7 @@ VerifyQuiver:= function(qr)
         
     W:= qr.path0[1].W;
     D:= DescentAlgebra(W);
-    mu:= Call(D, "MuNu").mu;
+    mu:= Call(D, "Mu");
     eee:= List(LeftRegularE(D), x-> x^mu);
     l:= SetComposition(List(Shapes(W), Size));
     
