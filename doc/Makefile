@@ -1,4 +1,4 @@
-.SUFFIXES: .tex .pdf
+.SUFFIXES: .tex .pdf .dvi
 
 LIB = ../lib
 DOC = .
@@ -15,13 +15,21 @@ XMLFILES = $(DOC)/zigzag.xml $(DOC)/introduc.xml
 	makeindex $*
 	pdflatex $*
 
-all: zigzag.pdf
+.tex.dvi:
+	latex $*
+	bibtex $*
+	latex $*
+	makeindex $*
+	latex $*
+
+all: zigzag.dvi zigzag.pdf
 
 zigzag.tex: $(XMLFILES) $(GAPFILES) zigzag.bib
 	gap4 -b -r < makedoc.g
 
 clean:
-	rm -fv *.{bbl,brf,ind,pnr}
+	rm -fv *.{aux,log,blg,ilg}
+	rm -fv *.{bbl,brf,ind,pnr,toc,out}
 	rm -fv zigzag.tex
 
 install: zigzag.pdf
