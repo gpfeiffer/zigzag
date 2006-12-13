@@ -29,8 +29,7 @@ zigzag.tex: $(XMLFILES) $(GAPFILES) zigzag.bib
 
 clean:
 	rm -fv *.{aux,log,blg,ilg}
-	rm -fv *.{bbl,brf,ind,pnr,toc,out}
-	rm -fv zigzag.tex
+	rm -fv *.{bbl,brf,ind,pnr,toc,out,idx}
 
 install: zigzag.pdf
 	scp $< schmidt:www/zigzag
