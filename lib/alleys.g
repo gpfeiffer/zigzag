@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.26 2006/12/06 13:12:15 goetz Exp $
+#A  $Id: alleys.g,v 1.27 2006/12/13 13:12:20 goetz Exp $
 ##
 ##  This file contains support for arrows and arrow classes.
 ##  
@@ -343,7 +343,7 @@ end;
 ##
 ##  <#GAPDoc Label="ReversedArrow">
 ##  <ManSection>
-##  <Func Name="DeltaArrow" Arg="W, arrow"/>
+##  <Func Name="ReversedArrow" Arg="W, arrow"/>
 ##  <Returns>
 ##    the reversed arrow of <A>arrow</A>.
 ##  </Returns>
