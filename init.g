@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: init.g,v 1.15 2006/12/18 09:41:38 goetz Exp $
+#A  $Id: init.g,v 1.16 2006/12/18 09:43:42 goetz Exp $
 ##
 
 #############################################################################
@@ -38,7 +38,7 @@ if not IsBound(InfoZigzag2) then InfoZigzag2:= Ignore; fi;
 AUTO( ReadPkg( "zigzag", "lib", "arrows" ),
   HeadArrow, TailArrow, OnArrows, DeltaArrow, LittleDeltaArrow,
   BigMatrixArrow, ProductArrows, ProductArrowList, FactorsArrow,
-  StabilizerArrow );
+  StabilizerArrow, ReversedArrow );
 
 AUTO( ReadPkg( "zigzag", "lib", "bundles" ),
   BundleOps, Bundle, IsBundle, Bundles0, Bundles, NrBundles,
