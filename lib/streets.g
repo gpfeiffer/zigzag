@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.11 2006/12/13 15:27:40 goetz Exp $
+#A  $Id: streets.g,v 1.12 2006/12/18 09:41:15 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -606,6 +606,40 @@ BundleOps.Movers:= function(this)
 end;
 
 
+BundleOps.MoversPlus:= function(this)
+    local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  new;
+    
+    n:= this.W.semisimpleRank;
+    movers:= [];
+    for a in Elements(this) do
+        for i in [1..n] do
+            if not i in a[1] then
+                b:= [Union(a[1], [i]), Concatenation([i], a[2])];
+                K:= a[1];  L:= b[1];
+                d:= LongestCoxeterElement(ReflectionSubgroup(this.W, K))
+                    * LongestCoxeterElement(ReflectionSubgroup(this.W, L));
+                c:= OnArrows(a, d);
+                
+                if c <> a then
+                    AddSet(movers, b);
+                fi;
+            fi;
+        od;
+    od;
+    
+    new:= [];
+    while movers <> [] do
+        a:= Bundle(this.W, movers[1]);
+        b:= Bundle(this.W, ReversedArrow(W, movers[1]));
+        Add(new, a);
+        movers:= Difference(movers, Elements(a));
+        movers:= Difference(movers, Elements(b));
+    od;
+    
+    return new;
+end;
+
+
 #############################################################################
 BundleOps.Shakers:= function(this)
     local   n,  shakers,  a,  i,  b,  K,  L,  d,  c,  new;
@@ -652,6 +686,95 @@ end;
 
 #############################################################################
 QuiverRelations:= function(W)
+    local   aaa,  bbb,  path,  path0,  more,  a,  relations,  sss,  l,  
+            null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
+            line,  pos,  i,  b;
+    
+    # start with a reasonably small set of arrow classes.
+    bbb:= List(Shapes(W), x-> Call(x, "Bundle"));
+    for a in bbb do 
+        Append(bbb, Call(a, "MoversPlus"));
+    od;
+
+    aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
+    aaa:= Filtered(aaa, x-> x = Call(x, "Suffix"));
+    InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
+    
+    # split idempotents from nilpotents.
+    path:= [];  path0:= [];  more:= [];
+    for a in aaa do
+        if a.arrow[2] = [] then
+            Add(path0, a);
+        else
+            Add(more, [a]);
+        fi;
+    od;
+    InfoZigzag1("Of which ", Length(path0), " have length 0.\n");
+    
+    relations:= [];
+    
+    sss:= SubsetsShapes(Shapes(W));
+    l:= SetComposition(List(Shapes(W), Size));
+    null:= List(sss, x-> 0);
+    
+    while more <> [] do
+        
+        Add(path, more);
+        InfoZigzag1("Added ", Length(more), " paths of length ", Length(path), ".\n");
+        
+        # consider all paths at once.
+        all:= Concatenation(path);
+        
+        mat:= [];
+        for a in all do
+            delta:= DeltaPath(a);
+            new:= Copy(null);
+            new{l[delta.support]}:= delta.mat;
+            Add(mat, new);
+        od;
+        
+        kern:= NullspaceMat(mat);
+        InfoZigzag1("Found ", Length(kern), " relations.\n");
+        
+        
+        # FIXME:
+        # suppose adr is a list of back references such that 
+        #   all[i] = path[adr[i][1]][adr[i][2]] ...
+        adr:= Concatenation(List([1..Length(path)], i-> TransposedMat([List(path[i], x-> i), [1..Length(path[i])]])));
+
+        
+        # find all relations.
+        delete:= List(path, x-> []);
+        for line in kern do
+            pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
+            Add(relations, rec(paths:= all{pos}, coeffs:= line{pos}));
+            Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
+        od;
+        
+        # remove obsoletes.
+        for i in [1..Length(path)] do
+            path[i]:= path[i]{Difference([1..Length(path[i])], delete[i])};
+        od;
+        
+        InfoZigzag1("Deleted: ", List(delete, Length), "\n");
+        InfoZigzag1("Length: ", List(path, Length), ": ", Length(path0) + Sum(path, Length), ".\n");
+        
+        # extend paths.
+        more:= [];
+        for a in path[Length(path)] do
+            for b in path[1] do
+                if a[Length(a)] * b[1] <> [] then
+                    Add(more, Concatenation(a, b));
+                fi; 
+            od;
+        od;
+        
+    od;
+    
+    return rec(path0:= path0, path:= path, relations:= relations);
+end;
+
+QuiverRelations1:= function(W)
     local   aaa,  bbb,  path,  path0,  more,  a,  relations,  sss,  l,  
             null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
             line,  pos,  i,  b;
@@ -940,6 +1063,12 @@ DimensionsMatrix:= function(qr)
     return dim;
 end;
 
+CartanMatQuiver:= function(qr)
+    local car;
+    
+    car:= Sum(DimensionsMatrix(qr));
+    return car + car^0;
+end;
 
 
 #############################################################################
