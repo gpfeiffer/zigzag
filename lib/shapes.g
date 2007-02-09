@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.38 2006/12/06 13:13:53 goetz Exp $
+#A  $Id: shapes.g,v 1.39 2007/02/09 15:35:44 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -1136,6 +1136,27 @@ NamesShapes:= function(shapes)
     return nam;
 end;
 
+
+## FIXME: works only for type A.
+ShapeOps.Label:= function(this)
+    local   type,  n,  cmp,  par,  i;
+    
+    type:= CartanType(this.W);
+    if Length(type) > 1 then
+        Error("not yet implemented");
+    elif type[1][1] <> "A" then
+        Error("not yet implemented");
+    fi; 
+    
+    n:= this.W.semisimpleRank + 1;
+    cmp:= Difference([1..n], this.J);
+    par:= [cmp[1]];
+    for i in [2..Length(cmp)] do
+        Add(par, cmp[i] - cmp[i-1]);
+    od;
+    Sort(par, function(a, b) return a > b; end);
+    return par;
+end;
 
 
 #############################################################################
