@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.12 2006/12/18 09:41:15 goetz Exp $
+#A  $Id: streets.g,v 1.13 2007/02/09 15:35:10 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -630,7 +630,7 @@ BundleOps.MoversPlus:= function(this)
     new:= [];
     while movers <> [] do
         a:= Bundle(this.W, movers[1]);
-        b:= Bundle(this.W, ReversedArrow(W, movers[1]));
+        b:= Bundle(this.W, ReversedArrow(this.W, movers[1]));
         Add(new, a);
         movers:= Difference(movers, Elements(a));
         movers:= Difference(movers, Elements(b));
