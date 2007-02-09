@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.18 2006/07/14 15:23:44 goetz Exp $
+#A  $Id: subsets.g,v 1.19 2007/02/09 15:36:43 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -1048,7 +1048,7 @@ end;
 ##  <#/GAPDoc>
 ##
 IsXJKL:= function(obj)
-    return IsRec(obj) and IsBound(obj.isXJKL) and obj.XJKL = true;
+    return IsRec(obj) and IsBound(obj.isXJKL) and obj.isXJKL = true;
 end;
 
 
@@ -1062,6 +1062,26 @@ XJKLOps.Elements:= function(this)
               d -> Intersection(
                       List(OnSets(this.J, d), x-> (x-1) mod this.W.parentN + 1),
                       this.K) = this.L);
+end;
+
+
+#############################################################################
+XJKLOps.\*:= function(l, r)
+    if IsXJKL(r) then
+        if l in r.W then
+            return Set(List(Elements(r), x-> l * x));
+        else
+            Error("don't know how to multiply <l> and XJKL");
+        fi;
+    elif IsXJKL(l) then
+        if r in l.W then
+            return Set(List(Elements(l), x-> x * r));
+        else
+            Error("don't know how to multiply XJKL and <r>");
+        fi;
+    else
+        Error("Panic: neither <l> nor <r> is XJKL!");
+    fi;
 end;
 
 
