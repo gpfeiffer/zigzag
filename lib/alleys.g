@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.27 2006/12/13 13:12:20 goetz Exp $
+#A  $Id: alleys.g,v 1.28 2007/03/29 14:05:13 goetz Exp $
 ##
 ##  This file contains support for arrows and arrow classes.
 ##  
@@ -390,6 +390,28 @@ LittleDeltaBarArrow:= function(W, arrow)
     return delta;
 end;
 
+#############################################################################
+PrefixArrow:= function(arrow)
+    local   list;
+    list:= arrow[2];
+    if list = [] then
+        Error("arrow must have length > 0");
+    fi;
+    return [arrow[1], list{[1..Length(list)-1]}];
+end;
+
+
+#############################################################################
+SuffixArrow:= function(arrow)
+    local   list,  s,  K;
+    list:= arrow[2];
+    if list = [] then
+        Error("arrow must have length > 0");
+    fi;
+    s:= list[1];
+    K:= Difference(arrow[1], [s]);
+    return [K, list{[2..Length(list)]}];
+end;
 
 
 #############################################################################
