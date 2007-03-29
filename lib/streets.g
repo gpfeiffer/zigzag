@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.14 2007/03/22 12:35:16 goetz Exp $
+#A  $Id: streets.g,v 1.15 2007/03/29 14:06:15 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -664,7 +664,7 @@ end;
 ##  Find the last irreducible factor (actually the first when you read
 ##  left to right ...)
 ##
-BundleOps.Suffix:= function(this)
+BundleOps.LongestSuffix:= function(this)
     local   fff,  i,  lft,  rgt,  pro;
     
     # idempotent case first.
@@ -725,7 +725,7 @@ QuiverRelations:= function(W)
     od;
 
     aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
-    aaa:= Filtered(aaa, x-> x = Call(x, "Suffix"));
+    aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
     InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
     
     # split idempotents from nilpotents.
@@ -814,7 +814,7 @@ QuiverRelations1:= function(W)
     od;
 
     aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
-    aaa:= Filtered(aaa, x-> x = Call(x, "Suffix"));
+    aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
     InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
     
     # split idempotents from nilpotents.
@@ -903,7 +903,7 @@ QuiverRelations0:= function(W)
     od;
 
 #    aaa:= Filtered(Bundles(W), x-> IsNonZero(Call(x, "Delta").mat));
-    aaa:= Filtered(aaa, x-> x = Call(x, "Suffix"));
+    aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
     InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
     
     # split idempotents from nilpotents.
