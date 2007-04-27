@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.29 2006/12/13 15:27:35 goetz Exp $
+#A  $Id: descent.g,v 1.30 2007/04/27 09:23:24 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -802,9 +802,9 @@ end;
 
 #############################################################################
 ##  
+##  deprecated, new version in bundles.g
 ##  
-##  
-ProjectiveModule:= function(D, i)
+ProjectiveModule1:= function(D, i)
     local   ser,  zero,  hom,  j,  lis,  s;
 
     ser:= List(RadicalSeriesDescent(D), x-> VectorSpace(x, Rationals));
@@ -829,7 +829,7 @@ ProjectiveModule:= function(D, i)
     return lis;
 end;
 
-LaTeXProjectiveModule:= function(D, nam, i)
+LaTeXProjectiveModule1:= function(D, nam, i)
     local   lis,  text,  j,  comma,  k;
     lis:= ProjectiveModule(D, i);
     text:= "$\\begin{array}[b]{|c|}\\hline\n";

@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.15 2007/03/29 14:06:15 goetz Exp $
+#A  $Id: streets.g,v 1.16 2007/04/27 09:23:00 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -1136,6 +1136,57 @@ VerifyQuiver:= function(qr)
     
     return true;
 end;
+
+#############################################################################
+#
+#  dim is the result of DimensionsMatrix
+#
+ProjectiveModule:= function(dim, i)
+    local   lis,  j;
+    
+    lis:= [0 * dim[1][1]];
+    lis[1][i]:= 1;
+    
+    for j in [1..Length(dim)] do
+        if IsNonZero(dim[j][i]) then
+            Add(lis, dim[j][i]);
+        fi;
+    od;
+            
+    return lis;
+end;
+
+LaTeXProjectiveModule:= function(dim, nam, i)
+    local   lis,  text,  j,  comma,  k;
+    
+    lis:= ProjectiveModule(dim, i);
+    text:= "$\\begin{array}[b]{|c|}\\hline\n";
+    for j in [1..Length(lis)] do
+        comma:= false;
+        for k in [1..Length(nam)] do
+            if lis[j][k] > 0 then
+                if comma then
+                    Append(text, "\\, \c");
+                fi;
+                if lis[j][k] = 1 then
+                    Append(text, nam[k]);
+                else 
+                    Append(text, "(");
+                    Append(text, nam[k]);
+                    Append(text, ")^{");
+                    Append(text, String(lis[j][k]));
+                    Append(text, "}");
+                fi;
+                comma:= true;
+            fi;
+        od;
+        Append(text, "\\\\\\hline\n");
+    od;
+    Append(text, "\\end{array}$");
+    
+    return text;
+end;
+
 
 
 #############################################################################
