@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2007, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: groupoid.g,v 1.1 2007/03/29 14:03:36 goetz Exp $
+#A  $Id: groupoid.g,v 1.2 2007/04/27 09:24:32 goetz Exp $
 ##
 ##  This file contains support for the groupoid of shapes and its elements.
 ##  
@@ -142,6 +142,29 @@ GroupoidEltOps.\*:= function(l, r)
         return false;
     fi;
 end;
+
+#############################################################################
+##
+##  find a reduced expression and turn into category element.
+##
+GroupoidEltOps.CategoryElt:= function(this)
+    local   seq,  J,  d,  des,  L,  a;
+    
+    seq:= [];
+    J:= this.elt[1];
+    d:= this.elt[2];
+    while d <> () do
+        des:= LeftDescentSet(this.W, d);
+        Add(seq, des[1]);
+        L:= Union(J, des{[1]});
+        a:= LongestCoxeterElement(ReflectionSubgroup(W, J)) *
+            LongestCoxeterElement(ReflectionSubgroup(W, L));
+        J:= OnSets(J, a);
+        d:= a^-1 * d;
+    od;
+    return CategoryElt(this.W, [this.elt[1], seq]);
+end;
+
 
 #############################################################################
 ##
