@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: init.g,v 1.16 2006/12/18 09:43:42 goetz Exp $
+#A  $Id: init.g,v 1.17 2007/04/27 09:25:17 goetz Exp $
 ##
 
 #############################################################################
@@ -59,7 +59,13 @@ AUTO( ReadPkg( "zigzag", "lib", "shapes" ),
   CollapsedIncMatShapes, IncMatShapes, FusMatShapes1, FusMatShapes,
   CollapsedFusMatShapes, XCharacters, ParabolicTom, YCharacters,
   ZCharacters, InvolutionShapes, Involutions, SpecialInvolutions,
-  OrlikSolomonCharacter, PrimeShapes, NamesShapes, MatrixPath );
+      OrlikSolomonCharacter, PrimeShapes, NamesShapes, MatrixPath );
+
+AUTO( ReadPkg( "zigzag", "lib", "category" ),
+      CategoryOps, Category, CategoryEltOps, CategoryElt );
+
+AUTO( ReadPkg( "zigzag", "lib", "groupoid" ),
+      GroupoidOps, Groupoid, GroupoidEltOps, GroupoidElt );
 
 AUTO( ReadPkg( "zigzag", "lib", "subsets" ),
   PrefixesOps, Prefixes, IsPrefixes, WeakIntervalOps, WeakInterval,
