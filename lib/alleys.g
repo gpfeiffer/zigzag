@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.28 2007/03/29 14:05:13 goetz Exp $
+#A  $Id: alleys.g,v 1.29 2007/04/27 09:22:19 goetz Exp $
 ##
 ##  This file contains support for arrows and arrow classes.
 ##  
@@ -411,6 +411,47 @@ SuffixArrow:= function(arrow)
     s:= list[1];
     K:= Difference(arrow[1], [s]);
     return [K, list{[2..Length(list)]}];
+end;
+
+
+#############################################################################
+##
+##  Associate (a reduced expression for) w_{L'} w_L to an arrow (L; ...)
+##
+ReducedWordArrow:= function(W, arrow)
+    local   z,  K,  Kz,  c;
+    
+    if arrow[2] = [] then
+        return CategoryElt(W, arrow);
+    fi;
+    
+    z:= arrow[2]{[Length(arrow[2])]};
+    K:= Difference(arrow[1], arrow[2]);
+    
+    Kz:= Call(CategoryElt(W, [K, z]), "Target");
+    c:= ApplyMethod(ReducedWordArrow(W, PrefixArrow(arrow)), "Restricted", Kz);
+    Append(z, c.elt[2]);
+    
+    return CategoryElt(W, [K, z]);
+end;
+
+
+#  Given W, d = w_L w_M and J such that |L - J| = 1
+#  write d as a sequence of longest coset reps for J
+helper:= function(W, J, d)
+    local   seq,  des,  L,  a;
+    seq:= [];
+    while d <> () do
+        des:= LeftDescentSet(W, d);
+        if Size(des) <> 1 then Print("...ahemm...\n"); fi;
+        Add(seq, des[1]);
+        L:= Union(J, des);
+        a:= LongestCoxeterElement(ReflectionSubgroup(W, J)) *
+            LongestCoxeterElement(ReflectionSubgroup(W, L));
+        J:= OnSets(J, a);
+        d:= a^-1 * d;
+    od;
+    return seq;
 end;
 
 
