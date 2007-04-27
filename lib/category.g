@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2007, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: category.g,v 1.1 2007/03/29 14:03:46 goetz Exp $
+#A  $Id: category.g,v 1.2 2007/04/27 09:24:00 goetz Exp $
 ##
 ##  This file contains support for the category of shapes and its elements.
 ##  
@@ -163,6 +163,32 @@ CategoryEltOps.\*:= function(l, r)
         return false;
     fi;
 end;
+
+#############################################################################
+##
+##  restrict (L; s, t, ...) to J \subset L
+##
+CategoryEltOps.Restricted:= function(this, J)
+    local   L,  seq,  K,  s,  c,  d;
+    L:= this.elt[1];
+    if not IsSubset(L, J) then
+        Error("<J> must be a subset");
+    fi;
+    
+    seq:= [];  K:= J;
+    for s in this.elt[2] do
+        c:= CategoryElt(W, [L, [s]]);
+        c:= Call(c, "GroupoidElt");
+        d:= c.elt[2];
+        c:= GroupoidElt(W, [K, d]);
+        K:= OnSets(K, d);  L:= OnSets(L, d);
+        c:= Call(c, "CategoryElt");
+        Append(seq, c.elt[2]);
+    od;
+    
+    return CategoryElt(W, [J, seq]);
+end;
+ 
 
 #############################################################################
 ##
