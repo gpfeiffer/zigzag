@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.39 2007/02/09 15:35:44 goetz Exp $
+#A  $Id: shapes.g,v 1.40 2007/04/27 09:10:24 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -737,6 +737,21 @@ IncMatShapes:= function(shapes)
         nor:= Call(a, "Complement");
         for b in shapes do
             Add(row, Length(Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets)));
+        od;
+        Add(mat, row);
+    od;
+    return mat;
+end;
+
+
+InxMatShapes:= function(shapes)
+    local   mat,  a,  row,  b;
+
+    mat:= [];
+    for a in shapes do
+        row:= [];
+        for b in shapes do
+            Add(row, Number(Elements(b), x-> IsSubset(a.J, x)));
         od;
         Add(mat, row);
     od;
