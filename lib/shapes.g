@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.40 2007/04/27 09:10:24 goetz Exp $
+#A  $Id: shapes.g,v 1.41 2007/05/01 11:43:10 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -1152,26 +1152,66 @@ NamesShapes:= function(shapes)
 end;
 
 
-## FIXME: works only for type A.
+## FIXME: works only for type A, B.
 ShapeOps.Label:= function(this)
-    local   type,  n,  cmp,  par,  i;
+    local   type,  n,  cmp,  par,  i,  sgn;
     
     type:= CartanType(this.W);
     if Length(type) > 1 then
         Error("not yet implemented");
-    elif type[1][1] <> "A" then
+    fi;
+    
+    if type[1][1] = "A" then
+        n:= this.W.semisimpleRank;
+        cmp:= Difference([0..n+1], this.J);
+        par:= [];
+        for i in [2..Length(cmp)] do
+            Add(par, cmp[i] - cmp[i-1]);
+        od;
+        Sort(par, function(a, b) return a > b; end);
+        return par;
+        
+    elif type[1][1] = "B" then
+        n:= this.W.semisimpleRank;
+        cmp:= Difference([0..n], this.J - 1);
+        par:= [];
+        for i in [2..Length(cmp)] do
+            Add(par, cmp[i] - cmp[i-1]);
+        od;
+        Sort(par, function(a, b) return a > b; end);
+        return par;
+        
+    elif type[1][1] = "D" then
+        n:= this.W.semisimpleRank;
+        cmp:= Difference([0..n], this.J - 1);
+        sgn:= '+';
+        if cmp[1] = 1 then
+            cmp[1]:= 0;
+            sgn:= '-';
+        fi;
+        par:= [];
+        for i in [2..Length(cmp)] do
+            Add(par, cmp[i] - cmp[i-1]);
+        od;
+        Sort(par, function(a, b) return a > b; end);
+        
+        # certain labels occur twice.
+        if Sum(par) = n and ForAll(par, x-> x mod 2 = 0) then
+            return [par, sgn];
+        else
+            return par;
+        fi;
+    else
         Error("not yet implemented");
     fi; 
     
-    n:= this.W.semisimpleRank + 1;
-    cmp:= Difference([1..n], this.J);
-    par:= [cmp[1]];
-    for i in [2..Length(cmp)] do
-        Add(par, cmp[i] - cmp[i-1]);
-    od;
-    Sort(par, function(a, b) return a > b; end);
-    return par;
 end;
+
+LabelsShapes:= function(shapes)
+    return List(shapes, x-> Call(x, "Label"));
+end;
+
+    
 
 
 #############################################################################
