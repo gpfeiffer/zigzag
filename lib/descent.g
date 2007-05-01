@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.30 2007/04/27 09:23:24 goetz Exp $
+#A  $Id: descent.g,v 1.31 2007/05/01 11:43:45 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -1185,6 +1185,250 @@ end;
 ##  Helper.  Test for not 0.
 IsNonZero:= m -> m <> 0*m;
 ##  
+
+#############################################################################
+##  
+##  
+##  
+QuiverB:= function(n)
+    local   lab,  m,  edg,  p,  l,  i,  a,  j,  b,  k,  c,  e,  q;
+
+    lab:= [];
+    for m in [0..n] do 
+        Append(lab, Partitions(m));
+    od;
+    
+    edg:= [];
+
+    # loop over the vertices.
+    for p in lab do
+        l:= Length(p);
+        for i in [1..l] do
+            a:= p[i];
+            for j in [i+1..l] do
+                b:= p[j];
+
+                # drop two parts a, b.
+                e:= Size(Set([a, b])) - 1;
+                if e > 0 then
+                    q:= p{Difference([1..l], [i,j])};
+                    AddSet(edg, [q, p, e]);
+                fi;
+            
+                # join three parts a, b, c.
+                for k in [j+1..l] do
+                    c:= p[k];
+                    e:= Size(Set([a, b, c])) - 1;
+                    if e > 0 then
+                        q:= p{Difference([1..l], [i,j,k])};
+                        Add(q, a+b+c);
+                        Sort(q, function(a, b) return a > b; end);
+                        AddSet(edg, [p, q, e]);
+                    fi;
+                od;
+                
+            od;
+        od;
+    od;
+    
+    return edg;    
+end;
+
+
+##  
+##  FIXME.  The following is incorrect.
+##  
+##  in D4:   [ [  ], [ 3, 1 ], 1 ]  should be [ [  ], [ 3, 1 ], 2 ]
+##  
+##  
+##  in D6:  [ [  ], [ 5, 1 ], 1 ]  should be [ [  ], [ 5, 1 ], 2 ]
+##          [ [ 2 ], [ 3, 2, 1 ], 1 ]  should be [ [ 2 ], [ 3, 2, 1 ], 2 ]
+##          [ [ 3 ], [ 3, 2, 1 ], 1 ]  should be [ [ 3 ], [ 3, 2, 1 ], 2 ]
+##          missing:  [ [  ], [ 3, 3 ], 1 ]
+##          missing:  [ [ 3, 3 ], [ 2, 2, 1, 1 ], 1 ]
+##  
+##  in D8: [ [  ], [ 5, 3 ], 1 ]  should be [ [  ], [ 5, 3 ], 3 ] !?!
+##         [ [  ], [ 7, 1 ], 1 ]  should be [ [  ], [ 7, 1 ], 2 ]
+##         [ [ 2 ], [ 5, 2, 1 ], 1 ]  should be [ [ 2 ], [ 5, 2, 1 ], 2 ]
+##         [ [ 2, 2 ], [ 3, 2, 2, 1 ], 1 ]  should be [ [ 2, 2 ], [ 3, 2, 2, 1 ], 2 ]
+##         [ [ 3, 2 ], [ 3, 2, 2, 1 ], 1 ]  should be [ [ 3, 2 ], [ 3, 2, 2, 1 ], 2 ]
+##         [ [ 4 ], [ 4, 3, 1 ], 1 ]  should be [ [ 4 ], [ 4, 3, 1 ], 2 ]
+##         [ [ 5, 3 ], [ 3, 2, 2, 1 ], 1 ]  should be [ [ 5, 3 ], [ 3, 2, 2, 1 ], 2 ]
+##         missing: [ [  ], [ 3, 3, 1, 1 ], 1 ] !?!
+##         missing: [ [ 2 ], [ 3, 3, 2 ], 1 ]
+##         missing: [ [ 3 ], [ 5, 2, 1 ], 1 ] !?!
+##         missing: [ [ 3, 3, 2 ], [ 2, 2, 2, 1, 1 ], 1 ]
+##         missing: [ [ 5 ], [ 3, 3, 2 ], 1 ] !?!
+##         missing: [ [ 5 ], [ 4, 3, 1 ], 1 ] !?!
+##         missing: [ [ 5, 3 ], [ 4, 2, 1, 1 ], 1 ]
+##  
+##  in D5:   [ [  ], [ 3, 2 ], 1 ]  is not an edge
+##           [ [  ], [ 4, 1 ], 1 ]  is not an edge
+##           [ [ 2 ], [ 2, 2, 1 ], 1 ]  is not an edge
+##           [ [ 5 ], [ 2, 2, 1 ], 1 ]  is not an edge
+##           missing:  [ [ 3, 2 ], [ 2, 2, 1 ], 1 ]
+##           missing:  [ [ 2 ], [ 3, 2 ], 1 ]
+##           missing:  [ [ 5 ], [ 3, 2 ], 1 ]
+##           missing:  [ [ 5 ], [ 4, 1 ], 1 ]
+##           missing:  [ [  ], [ 5 ], 1 ]
+##           but [ [ 5 ], [ 3, 1, 1 ], 1 ] is correct.
+
+
+QuiverD:= function(n)
+    local   edg,  m,  p,  l,  i,  a,  j,  b,  e,  q,  k,  c;
+
+    # initialize results list.
+    edg:= [];
+    
+    # deal with partitions of m < n-1 first.
+    for m in [0..n-2] do 
+        for p in Partitions(m) do
+            l:= Length(p);
+            for i in [1..l] do
+                a:= p[i];
+                for j in [i+1..l] do
+                    b:= p[j];
+                    
+                    # drop two parts a, b.
+                    e:= Size(Set([a, b])) - 1;
+                    if e > 0 then
+                        q:= p{Difference([1..l], [i,j])};
+                        AddSet(edg, [q, p, e]);
+                    fi;
+                    
+                    # join three parts a, b, c.
+                    for k in [j+1..l] do
+                        c:= p[k];
+                        e:= Size(Set([a, b, c])) - 1;
+                        if e > 0 then
+                            q:= p{Difference([1..l], [i,j,k])};
+                            Add(q, a+b+c);
+                            Sort(q, function(a, b) return a > b; end);
+                            AddSet(edg, [q, p, e]);     
+                        fi;
+                    od;
+                    
+                od;
+            od;
+        od;
+    od;
+    
+    # partitions of n need some extra care.
+    for p in Partitions(n) do
+        l:= Length(p);
+        if ForAll(p, x-> x mod 2 = 0) then
+            for i in [1..l] do
+                a:= p[i];
+                for j in [i+1..l] do
+                    b:= p[j];
+
+                    # drop two parts a, b.
+                    e:= Size(Set([a, b])) - 1;
+                    if e > 0 then
+                        q:= p{Difference([1..l], [i,j])};
+                        AddSet(edg, [q, [p, '-'], e]);
+                        AddSet(edg, [q, [p, '+'], e]);
+                    fi;
+            
+                    # join three parts a, b, c.
+                    for k in [j+1..l] do
+                        c:= p[k];
+                        e:= Size(Set([a, b, c])) - 1;
+                        if e > 0 then
+                            q:= p{Difference([1..l], [i,j,k])};
+                            Add(q, a+b+c);
+                            Sort(q, function(a, b) return a > b; end);
+                            AddSet(edg, [[q, '-'], [p, '-'], e]);     
+                            AddSet(edg, [[q, '+'], [p, '+'], e]);     
+                        fi;
+                    od;
+                    
+                od;
+            od;
+            
+        elif n mod 2 = 0 then
+            for i in [1..l] do
+                a:= p[i];
+                for j in [i+1..l] do
+                    b:= p[j];
+                    
+                    # join two parts a, b and drop.
+                    q:= p{Difference([1..l], [i,j])};
+                    e:= Size(Set([a, b]));
+                    if q <> [] then 
+                        e:= e - 1; 
+                    fi;
+                    if e > 0 then
+                        AddSet(edg, [q, p, e]);
+                    fi;
+                    
+                    # join three parts a, b, c.
+                    for k in [j+1..l] do
+                        c:= p[k];
+                        e:= Size(Set([a, b, c])) - 1;
+                        if e > 0 then
+                            q:= p{Difference([1..l], [i,j,k])};
+                            Add(q, a+b+c);
+                            Sort(q, function(a, b) return a > b; end);
+                            if Sum(q) = n and ForAll(q, x-> x mod 2 = 0) then
+                                AddSet(edg, [[q, '-'], p, e]);
+                                AddSet(edg, [[q, '+'], p, e]);
+                            else
+                                AddSet(edg, [q, p, e]);     
+                            fi;
+                        fi;
+                    od;
+                    
+                    # join a, b, drop c.
+                    for k in Difference([1..l], [i,j]) do
+                        c:= p[k];
+                        e:= Size(Set([a, b, c])) - 2;
+#                        if c > 1 and e > 0 then
+                        if e > 0 then
+                            q:= p{Difference([1..l], [i,j,k])};
+                            Add(q, a+b);
+                            Sort(q, function(a, b) return a > b; end);
+                            AddSet(edg, [q, p, e]);     
+                        fi;
+                    od;
+                    
+                od;
+            od;
+            
+        else
+            for i in [1..l] do
+                a:= p[i];
+                for j in [i+1..l] do
+                    b:= p[j];
+                    
+                    # drop two parts a, b.
+                    e:= Size(Set([a, b])) - 1;
+                    if e > 0 then
+                        q:= p{Difference([1..l], [i,j])};
+                        AddSet(edg, [q, p, e]);
+                    fi;
+                    
+                    # join three parts a, b, c.
+                    for k in [j+1..l] do
+                        c:= p[k];
+                        e:= Size(Set([a, b, c])) - 1;
+                        if e > 0 then
+                            q:= p{Difference([1..l], [i,j,k])};
+                            Add(q, a+b+c);
+                            Sort(q, function(a, b) return a > b; end);
+                            AddSet(edg, [q, p, e]);     
+                        fi;
+                    od;
+                    
+                od;
+            od;
+        fi;
+    od;
+
+    return edg;    
+end;
+
+
 
 
 #############################################################################
