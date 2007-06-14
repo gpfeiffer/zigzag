@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.16 2007/04/27 09:23:00 goetz Exp $
+#A  $Id: streets.g,v 1.17 2007/06/14 10:57:44 goetz Exp $
 ##
 ##  This file contains support for bundles aka arrow classes.
 ##  
@@ -1186,6 +1186,32 @@ LaTeXProjectiveModule:= function(dim, nam, i)
     
     return text;
 end;
+
+
+#############################################################################
+##
+##  The bundles form a path algebra.
+##
+CartanMatBundles:= function(W)
+    local   l,  mat,  b,  i,  j;
+    
+    l:= Length(Shapes(W));
+    mat:= NullMat(l, l);
+    for b in Bundles(W) do
+        i:= Call(b, "Head");
+        j:= Call(b, "Tail");
+        mat[i][j]:= mat[i][j] + 1;
+    od;
+    
+    return mat;
+end;
+
+QuiverMatBundles:= function(W)
+    local   c;
+    c:= CartanMatBundles(W);
+    return c^0 - c^-1; # c = d^0 + d^1 + d2 + ... => d = 1 - 1/c.
+end;
+
 
 
 
