@@ -4,7 +4,7 @@ LIB = ../lib
 DOC = .
 
 GAPFILES = $(LIB)/methods.g $(LIB)/iterator.g $(LIB)/walker.g\
-	   $(LIB)/subsets.g $(LIB)/shapes.g $(LIB)/arrows.g $(LIB)/bundles.g
+	   $(LIB)/subsets.g $(LIB)/shapes.g $(LIB)/alleys.g $(LIB)/streets.g
 
 XMLFILES = $(DOC)/zigzag.xml $(DOC)/introduc.xml
 

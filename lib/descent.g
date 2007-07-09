@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.31 2007/05/01 11:43:45 goetz Exp $
+#A  $Id: descent.g,v 1.32 2007/07/09 14:17:02 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -802,7 +802,7 @@ end;
 
 #############################################################################
 ##  
-##  deprecated, new version in bundles.g
+##  deprecated, new version in streets.g
 ##  
 ProjectiveModule1:= function(D, i)
     local   ser,  zero,  hom,  j,  lis,  s;

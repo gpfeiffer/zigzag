@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.41 2007/05/01 11:43:10 goetz Exp $
+#A  $Id: shapes.g,v 1.42 2007/07/09 14:17:02 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -1228,10 +1228,10 @@ end;
 
 #############################################################################
 ##
-##  How to turn a shape into an arrow class.
+##  How to turn a shape into an alley class.
 ##
-ShapeOps.Bundle:= function(this)
-    return Bundle(this.W, [this.J, []]);
+ShapeOps.Street:= function(this)
+    return Street(this.W, [this.J, []]);
 end;
 
 

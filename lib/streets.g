@@ -1,26 +1,26 @@
 #############################################################################
 ##
-#A  bundles.g                     Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  streets.g                     Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
 ##
 ##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
 ##  package for descent algebras of finite Coxeter groups.
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.17 2007/06/14 10:57:44 goetz Exp $
+#A  $Id: streets.g,v 1.18 2007/07/09 14:17:02 goetz Exp $
 ##
-##  This file contains support for bundles aka arrow classes.
+##  This file contains support for streets aka alley classes.
 ##  
-##  <#GAPDoc Label="Intro:Bundles">
-##    An <E>bundle</E> <Index>bundle</Index> is a class of arrows.
+##  <#GAPDoc Label="Intro:Streets">
+##    An <E>street</E> <Index>street</Index> is a class of alleys.
 ##  <#/GAPDoc>
 ##
 
 #############################################################################
 ##
-##  Bundles aka Arrow Classes.
+##  Streets aka Alley Classes.
 ##
-##  An *arrow class* is an equivalence class of arrows
+##  An *alley class* is an equivalence class of alleys
 ##  under the conjugation action of W.
 ##
 ##  Representatives can be obtained by choosing s as representatives
@@ -31,28 +31,28 @@
 
 #############################################################################
 ##  
-#O  BundleOps  . . . . . . . . . . . . . . . . . . . operations record.
+#O  StreetOps  . . . . . . . . . . . . . . . . . . . operations record.
 ##  
-BundleOps:= OperationsRecord("BundleOps", DomainOps);
+StreetOps:= OperationsRecord("StreetOps", DomainOps);
 
 #############################################################################
 ##  
-#C  Bundle( <W>, <arrow> )  . . . . . . . . . . . . . . . .  constructor.
+#C  Street( <W>, <alley> )  . . . . . . . . . . . . . . . .  constructor.
 ##  
-##  <#GAPDoc Label="Bundle">
+##  <#GAPDoc Label="Street">
 ##  <ManSection>
-##  <Func Name="Bundle" Arg="W, J"/>
+##  <Func Name="Street" Arg="W, J"/>
 ##  <Returns>
-##    a new arrow class, an object that represents the class of the arrow
-##    <A>arrow</A> under <A>W</A>.
+##    a new alley class, an object that represents the class of the alley
+##    <A>alley</A> under <A>W</A>.
 ##  </Returns>
 ##  <Description>
-##    This is the simple constructor for an arrow class.  It constructs and
-##  returns the class  of <A>arrow</A> in <A>W</A>.
+##    This is the simple constructor for an alley class.  It constructs and
+##  returns the class  of <A>alley</A> in <A>W</A>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);; 
-##  gap> Bundle(W, [[1,2,3], [3]]);
-##  Bundle( CoxeterGroup("A", 5), [ [ 1, 2, 3 ], [ 3 ] ] )
+##  gap> Street(W, [[1,2,3], [3]]);
+##  Street( CoxeterGroup("A", 5), [ [ 1, 2, 3 ], [ 3 ] ] )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -60,35 +60,35 @@ BundleOps:= OperationsRecord("BundleOps", DomainOps);
 ##
 ##  public fields:
 ##    W, the Coxeter group.
-##    arrow, an arrow for W.
+##    alley, an alley for W.
 ##  
-Bundle:= function(W, arrow)
+Street:= function(W, alley)
     return 
       rec(
           isDomain:= true,
-          isBundle:= true,
-          operations:= BundleOps,
+          isStreet:= true,
+          operations:= StreetOps,
           W:= W,
-          arrow:= arrow
+          alley:= alley
           );
 end;
 
 #############################################################################
 ##
-#F  IsBundle( <obj> ) . . . . . . . . . . . . . . . . . . . . type check.
+#F  IsStreet( <obj> ) . . . . . . . . . . . . . . . . . . . . type check.
 ##
-##  <#GAPDoc Label="IsBundle">
+##  <#GAPDoc Label="IsStreet">
 ##  <ManSection>
-##  <Func Name="IsBundle" Arg="obj"/>
+##  <Func Name="IsStreet" Arg="obj"/>
 ##  <Returns>
-##    <K>true</K> if <A>obj</A> is an arrow class and <K>false</K> otherwise.
+##    <K>true</K> if <A>obj</A> is an alley class and <K>false</K> otherwise.
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##                   
-IsBundle:= function(obj)
-    return IsRec(obj) and IsBound(obj.isBundle) 
-           and obj.isBundle = true;
+IsStreet:= function(obj)
+    return IsRec(obj) and IsBound(obj.isStreet) 
+           and obj.isStreet = true;
 end;
 
 
@@ -96,39 +96,39 @@ end;
 ##  
 #F  Print( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-BundleOps.Print:= function(this)
-    Print("Bundle( ", this.W, ", ", this.arrow, " )");
+StreetOps.Print:= function(this)
+    Print("Street( ", this.W, ", ", this.alley, " )");
 end;
 
 
 #############################################################################
 ##
-#F  Representative( <bundle> ) . . . . . . . . . . . . . . . . representative.
+#F  Representative( <street> ) . . . . . . . . . . . . . . . . representative.
 ##
-##  A bundle, as a class of parabolic subsets, has a representative.
+##  A street, as a class of parabolic subsets, has a representative.
 ##
-##  <#GAPDoc Label="Representative(bundle)">
+##  <#GAPDoc Label="Representative(street)">
 ##  <ManSection>
-##  <Meth Name="Representative" Arg="bundle" Label="for bundles"/>
-##  <Returns>a representative of the bundle <A>bundle</A>.</Returns>
-##  <Description>The representative of a bundle constructed 
-##  as <C>Bundle(W, J)</C> (see <Ref Label="Bundle"/>) will be its
+##  <Meth Name="Representative" Arg="street" Label="for streets"/>
+##  <Returns>a representative of the street <A>street</A>.</Returns>
+##  <Description>The representative of a street constructed 
+##  as <C>Street(W, J)</C> (see <Ref Label="Street"/>) will be its
 ##  initial element <C>J</C>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
-##  gap> Representative(Bundle(W, [2]));
+##  gap> Representative(Street(W, [2]));
 ##  [ 2 ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-BundleOps.Representative:= function(this)
-    return this.arrow;
+StreetOps.Representative:= function(this)
+    return this.alley;
 end;
 
 #############################################################################
-BundleOps.Movers:= function(this)
+StreetOps.Movers:= function(this)
     local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  new;
     
     n:= this.W.semisimpleRank;
@@ -140,7 +140,7 @@ BundleOps.Movers:= function(this)
                 K:= a[1];  L:= b[1];
                 d:= LongestCoxeterElement(ReflectionSubgroup(this.W, K))
                     * LongestCoxeterElement(ReflectionSubgroup(this.W, L));
-                c:= OnArrows(a, d);
+                c:= OnAlleys(a, d);
                 
                 if c <> a then
                     AddSet(movers, b);
@@ -151,7 +151,7 @@ BundleOps.Movers:= function(this)
     
     new:= [];
     while movers <> [] do
-        a:= Bundle(this.W, movers[1]);
+        a:= Street(this.W, movers[1]);
         Add(new, a);
         movers:= Difference(movers, Elements(a));
     od;
@@ -160,7 +160,7 @@ BundleOps.Movers:= function(this)
 end;
 
 
-BundleOps.MoversPlus:= function(this)
+StreetOps.MoversPlus:= function(this)
     local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  new;
     
     n:= this.W.semisimpleRank;
@@ -172,7 +172,7 @@ BundleOps.MoversPlus:= function(this)
                 K:= a[1];  L:= b[1];
                 d:= LongestCoxeterElement(ReflectionSubgroup(this.W, K))
                     * LongestCoxeterElement(ReflectionSubgroup(this.W, L));
-                c:= OnArrows(a, d);
+                c:= OnAlleys(a, d);
                 
                 if c <> a then
                     AddSet(movers, b);
@@ -183,8 +183,8 @@ BundleOps.MoversPlus:= function(this)
     
     new:= [];
     while movers <> [] do
-        a:= Bundle(this.W, movers[1]);
-        b:= Bundle(this.W, ReversedArrow(this.W, movers[1]));
+        a:= Street(this.W, movers[1]);
+        b:= Street(this.W, ReversedAlley(this.W, movers[1]));
         Add(new, a);
         movers:= Difference(movers, Elements(a));
         movers:= Difference(movers, Elements(b));
@@ -195,7 +195,7 @@ end;
 
 
 #############################################################################
-BundleOps.Shakers:= function(this)
+StreetOps.Shakers:= function(this)
     local   n,  shakers,  a,  i,  b,  K,  L,  d,  c,  new;
     
     n:= this.W.semisimpleRank;
@@ -207,7 +207,7 @@ BundleOps.Shakers:= function(this)
                 K:= a[1];  L:= b[1];
                 d:= LongestCoxeterElement(ReflectionSubgroup(this.W, K))
                     * LongestCoxeterElement(ReflectionSubgroup(this.W, L));
-                c:= OnArrows(a, d);
+                c:= OnAlleys(a, d);
                 
                 if c = a then
                     AddSet(shakers, b);
@@ -218,7 +218,7 @@ BundleOps.Shakers:= function(this)
     
     new:= [];
     while shakers <> [] do
-        a:= Bundle(this.W, shakers[1]);
+        a:= Street(this.W, shakers[1]);
         Add(new, a);
         shakers:= Difference(shakers, Elements(a));
     od;
@@ -227,50 +227,50 @@ BundleOps.Shakers:= function(this)
 end;
 
 #############################################################################
-BundleOps.Suffix:= function(this)
+StreetOps.Suffix:= function(this)
     
-    # an arrow of length 0 has no suffix.
-    if this.arrow[2] = [] then return false; fi;
+    # an alley of length 0 has no suffix.
+    if this.alley[2] = [] then return false; fi;
     
     # otherwise, form the longest nontrivial suffix.
-    return Bundle(this.W, [Difference(this.arrow[1], this.arrow[2]{[1]}),
-                   this.arrow[2]{[2..Length(this.arrow[2])]}]);
+    return Street(this.W, [Difference(this.alley[1], this.alley[2]{[1]}),
+                   this.alley[2]{[2..Length(this.alley[2])]}]);
 end;
 
 ##  TODO: find a more systematic way to list all inverse suffixes.
-BundleOps.InverseSuffix:= function(this)
+StreetOps.InverseSuffix:= function(this)
     return Concatenation(Call(this, "Movers"), Call(this, "Shakers"));
 end;
 
 
-BundleOps.Prefix:= function(this)
+StreetOps.Prefix:= function(this)
     
-    # an arrow of length 0 has no prefix.
-    if this.arrow[2] = [] then return false; fi;
+    # an alley of length 0 has no prefix.
+    if this.alley[2] = [] then return false; fi;
     
     # otherwise, form the longest nontrivial prefix.
-    return Bundle(this.W, [this.arrow[1], 
-                   this.arrow[2]{[1..Length(this.arrow[2])-1]}]);
+    return Street(this.W, [this.alley[1], 
+                   this.alley[2]{[1..Length(this.alley[2])-1]}]);
 end;
 
-BundleOps.InversePrefix:= function(this)
+StreetOps.InversePrefix:= function(this)
     local   stab,  children,  o,  new;
     
     if IsBound(this.stab) then
         stab:= this.stab;
     elif IsBound(this.parent) then
         stab:= this.parent.stab;
-        stab:= Stabilizer(stab, this.arrow[2][Length(this.arrow[2])]);
+        stab:= Stabilizer(stab, this.alley[2][Length(this.alley[2])]);
     else
-        stab:= StabilizerArrow(this.W, this.arrow);
+        stab:= StabilizerAlley(this.W, this.alley);
     fi;
     this.stab:= stab;
     
     children:= [];
-    for o in Orbits(stab, ApplyFunc(Difference, this.arrow)) do
-        new:= [this.arrow[1], Copy(this.arrow[2])];
+    for o in Orbits(stab, ApplyFunc(Difference, this.alley)) do
+        new:= [this.alley[1], Copy(this.alley[2])];
         Add(new[2], o[1]);
-        Add(children, Bundle(this.W, new));
+        Add(children, Street(this.W, new));
     od;
     
     for o in children do
@@ -280,68 +280,68 @@ BundleOps.InversePrefix:= function(this)
     return children;
 end;
 
-BundleOps.Children:= BundleOps.InversePrefix;
+StreetOps.Children:= StreetOps.InversePrefix;
 
 #############################################################################
 ##
-#F  Bundles
+#F  Streets
 ##
-Bundles0:= function(W)
+Streets0:= function(W)
     local   list,  hhh,  sh,  new,  N;
     
     list:= [];
     
-    hhh:= function(arrow, N)
+    hhh:= function(alley, N)
         local   L,  o,  s,  new,  Ns;
         
-        L:= Difference(arrow[1], arrow[2]);
+        L:= Difference(alley[1], alley[2]);
         for o in Orbits(N, L) do
             s:= o[1];
-            new:= [arrow[1], Concatenation(arrow[2], [s])];
+            new:= [alley[1], Concatenation(alley[2], [s])];
             Ns:= Stabilizer(N, s);
-            Add(list, Bundle(W, new));
+            Add(list, Street(W, new));
             hhh(new, Ns);
         od;
     end;
             
     for sh in Shapes(W) do
         new:= [Representative(sh), []];
-        Add(list, Bundle(W, new));
+        Add(list, Street(W, new));
         N:= Call(sh, "Complement");
         hhh(new, N);
     od;
     return list;
 end;
 
-Bundles:= function(W)
+Streets:= function(W)
     local   list,  shape;
     list:= [];
     for shape in Shapes(W) do
-        Append(list, BreadthFirst(Call(shape, "Bundle")));
+        Append(list, BreadthFirst(Call(shape, "Street")));
     od;
     return list;
 end;
 
-NrBundles:= function(W)
-    return Sum(Shapes(W), x-> NrPreOrder(Call(x, "Bundle")));
+NrStreets:= function(W)
+    return Sum(Shapes(W), x-> NrPreOrder(Call(x, "Street")));
 end;
     
 
-EssentialBundles:= function(W)
+EssentialStreets:= function(W)
     local   list,  hhh,  sh,  new,  N;
     
     list:= [];
     
-    hhh:= function(arrow, N)
+    hhh:= function(alley, N)
         local   L,  o,  s,  new,  Ns,  m,  c;
         
-        L:= Difference(arrow[1], arrow[2]);
+        L:= Difference(alley[1], alley[2]);
         for o in Orbits(N, L) do
             s:= o[1];
-            new:= [arrow[1], Concatenation(arrow[2], [s])];
-            m:= DeltaArrow(W, new);
+            new:= [alley[1], Concatenation(alley[2], [s])];
+            m:= DeltaAlley(W, new);
             if m <> 0*m then
-                c:= Bundle(W, new);
+                c:= Street(W, new);
                 m:= Call(c, "Matrix").mat;
                 if m <> 0*m then 
                     Add(list, c);
@@ -355,7 +355,7 @@ EssentialBundles:= function(W)
             
     for sh in Shapes(W) do
         new:= [Representative(sh), []];
-        Add(list, Bundle(W, new));
+        Add(list, Street(W, new));
         N:= Call(sh, "Complement");
         hhh(new, N);
     od;
@@ -364,13 +364,13 @@ end;
 
 #############################################################################  
 ##  
-#F  Elements( <bundle> )  . . . . . . . . . . . . . . . . . . . . . elements.
+#F  Elements( <street> )  . . . . . . . . . . . . . . . . . . . . . elements.
 ##  
-##  <#GAPDoc Label="Elements(bundle)">
+##  <#GAPDoc Label="Elements(street)">
 ##  <ManSection>
-##  <Meth Name="Elements" Arg="bundle" Label="for bundles"/>
+##  <Meth Name="Elements" Arg="street" Label="for streets"/>
 ##  <Returns>
-##    the set of elements of the bundle <A>bundle</A>.
+##    the set of elements of the street <A>street</A>.
 ##  </Returns>
 ##  <Description>
 ##  The shape of <M>J</M> in <M>W</M> consists of all subsets of <M>S</M>
@@ -387,17 +387,17 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-BundleOps.Elements:= function(this)
+StreetOps.Elements:= function(this)
     local   elm,  W,  sh,  i,  j,  L,  list,  o,  x,  J,  t;
     
     elm:= [];
     W:= this.W;
     
     sh:= Shapes(W);  # carefully bring in sync with shape internals ...
-    i:= PositionProperty(sh, x-> this.arrow[1] in x);
-    j:= Position(Elements(sh[i]), this.arrow[1]);
+    i:= PositionProperty(sh, x-> this.alley[1] in x);
+    j:= Position(Elements(sh[i]), this.alley[1]);
     L:= sh[i].J;
-    list:= OnTuples(this.arrow[2], sh[i].transversal[j]^-1);
+    list:= OnTuples(this.alley[2], sh[i].transversal[j]^-1);
     o:= Orbit(Call(sh[i], "Complement"), list, OnTuples);
     for x in sh[i].transversal do
         J:= OnSets(L, x);
@@ -409,13 +409,13 @@ BundleOps.Elements:= function(this)
 end;
 
 #############################################################################
-BundleOps.Transversal:= function(this)
+StreetOps.Transversal:= function(this)
     #  FIXME:
     return 0;
 end;
 
 #############################################################################
-BundleOps.Edges:= function(this)
+StreetOps.Edges:= function(this)
     local   W,  S,  head,  hhh,  eee,  all,  edges,  a,  new,  l,  s;
     
     W:= this.W;
@@ -430,7 +430,7 @@ BundleOps.Edges:= function(this)
         l:= Position(hhh, a[1]);
         for s in S do
             if not s in a[1] then
-                new[s]:= Position(all, OnArrows(a, eee[l][s].d));
+                new[s]:= Position(all, OnAlleys(a, eee[l][s].d));
             fi;
         od;
         Add(edges, new);
@@ -439,34 +439,34 @@ BundleOps.Edges:= function(this)
 end;
 
 #############################################################################
-BundleOps.Relation:= function(this)
+StreetOps.Relation:= function(this)
     return Relation(List(Call(this, "Edges"), Set));
 end;
 
 
 #############################################################################
-BundleOps.SpanningTree:= function(this)
+StreetOps.SpanningTree:= function(this)
     #  FIXME:
     return 0;
 end;
 
 
 #############################################################################
-BundleOps.Tail:= function(this)
+StreetOps.Tail:= function(this)
     return PositionProperty(Shapes(this.W), 
-                   x-> ApplyFunc(Difference, this.arrow) in x);
+                   x-> ApplyFunc(Difference, this.alley) in x);
 end;
 
 #############################################################################
-BundleOps.Head:= function(this)
-    return PositionProperty(Shapes(this.W), x-> this.arrow[1] in x);
+StreetOps.Head:= function(this)
+    return PositionProperty(Shapes(this.W), x-> this.alley[1] in x);
 end;
 
 
 ###
 ###  next:  the mu map.
 ###
-BundleOps.Matrix:= function(this)
+StreetOps.Matrix:= function(this)
     local   sh,  L,  J,  subL,  mat,  e,  i;
 
     sh:= Shapes(this.W);
@@ -476,21 +476,21 @@ BundleOps.Matrix:= function(this)
     mat:= NullMat(Size(sh[L]), Size(sh[J]));
     for e in Elements(this) do
         i:= Position(subL, e[1]);
-        mat[i]:= mat[i] + DeltaArrow(this.W, e);
+        mat[i]:= mat[i] + DeltaAlley(this.W, e);
     od;
     return rec(tail:= J, head:= L, mat:= mat);
 end;
 
 #  how to multiply two such matrices.  checked!  Turn into proper objects?
-ProductArrowMatrices:= function(a, b)
+ProductAlleyMatrices:= function(a, b)
     if a.tail = b.head then
         return rec(tail:= b.tail, head:= a.head, mat:= a.mat * b.mat);
     fi;
     return 0;
 end;
 
-##  the product of a list of arrows.
-ProductArrowMatrixList:= function(list)
+##  the product of a list of alleys.
+ProductAlleyMatrixList:= function(list)
     local   product,  i;
     
     # trivial case: the empty product.
@@ -498,7 +498,7 @@ ProductArrowMatrixList:= function(list)
     
     product:= list[1];
     for i in [2..Length(list)] do
-        product:= ProductArrowMatrices(product, list[i]);
+        product:= ProductAlleyMatrices(product, list[i]);
     od;
     
     return product;
@@ -506,7 +506,7 @@ end;
 
 
 
-SumArrowMatrices:= function(a, b)
+SumAlleyMatrices:= function(a, b)
     if a.tail = b.tail and a.head = b.head then
         return rec(tail:= b.tail, head:= a.head, mat:= a.mat + b.mat);
     fi;
@@ -514,27 +514,27 @@ SumArrowMatrices:= function(a, b)
 end;
 
 
-BundleOps.Delta:= function(this)
+StreetOps.Delta:= function(this)
     local   sh,  J,  mat,  e;
 
     sh:= Shapes(this.W);
     J:= Call(this, "Tail");
     mat:= List(Elements(sh[J]), x-> 0);
     for e in Elements(this) do
-        mat:= mat + DeltaArrow(this.W, e);
+        mat:= mat + DeltaAlley(this.W, e);
     od;
     return rec(support:= J, mat:= mat);
 end;
 
-# a path is a sequence of arrows, with adjacent ones multiplyable.
+# a path is a sequence of alleys, with adjacent ones multiplyable.
 DeltaPath:= function(path)
     local   p;
     
-    p:= ProductArrowMatrixList(List(path, x-> Call(x, "Matrix")));
+    p:= ProductAlleyMatrixList(List(path, x-> Call(x, "Matrix")));
     return rec(support:= p.tail, mat:= Sum(p.mat));
 end;
 
-BundleOps.BigMatrix:= function(this)
+StreetOps.BigMatrix:= function(this)
     local   sh,  m,  l,  mat;
     
     sh:= Shapes(this.W); 
@@ -557,19 +557,19 @@ Negative:= function(matrix)
 end;
 
 ##
-##  Arrow classes can be multiplied. 
+##  Alley classes can be multiplied. 
 ##
 ##  how to do this efficiently ?
 ##
-BundleOps.\*:= function(l, r)
+StreetOps.\*:= function(l, r)
     local   W,  res,  all,  a,  b,  c;
     
     res:= [];
     
-    #  arrow * arrow class.
-    if not IsBundle(l) then
+    #  alley * alley class.
+    if not IsStreet(l) then
         for b in Elements(r) do
-            c:= ProductArrows(l, b);
+            c:= ProductAlleys(l, b);
             if c <> 0 then
                 Add(res, c);
             fi;
@@ -577,10 +577,10 @@ BundleOps.\*:= function(l, r)
         return res;
     fi;
     
-    # arrow class * arrow
-    if not IsBundle(r) then
+    # alley class * alley
+    if not IsStreet(r) then
         for a in Elements(l) do
-            c:= ProductArrows(a, r);
+            c:= ProductAlleys(a, r);
             if c <> 0 then
                 Add(res, c);
             fi;
@@ -588,7 +588,7 @@ BundleOps.\*:= function(l, r)
         return res;
     fi;
     
-    # arrow class * arrow class.
+    # alley class * alley class.
     if l.W <> r.W then
         Error("factors must have same W component");
     fi;
@@ -604,7 +604,7 @@ BundleOps.\*:= function(l, r)
     all:= [];
     for a in Elements(l) do
         for b in Elements(r) do
-            c:= ProductArrows(a, b);
+            c:= ProductAlleys(a, b);
             if c <> 0 then
                 Add(all, c);
             fi;
@@ -623,12 +623,12 @@ BundleOps.\*:= function(l, r)
     
     # split into classes
     while all <> [] do
-        c:= Bundle(W, all[1]);
+        c:= Street(W, all[1]);
         Add(res, c);
         a:= Length(all);
         all:= Difference(all, Elements(c));
         if a <> Size(all) + Size(c) then
-            Error("Panic:  problem with arrow class products!");
+            Error("Panic:  problem with alley class products!");
         fi;
     od;
     
@@ -636,26 +636,26 @@ BundleOps.\*:= function(l, r)
 end;
 
 #############################################################################
-BundleOps.Length:= function(this)
-    return Length(this.arrow[2]);
+StreetOps.Length:= function(this)
+    return Length(this.alley[2]);
 end;
 
 #############################################################################
 ##
-##  the *depth* of an arrow class alpha is the Size of alpha(L),
-##  the number of arrows in the class with the same head L.
-##  the *width of an arrow class is the size of the shape of its head.
+##  the *depth* of an alley class alpha is the Size of alpha(L),
+##  the number of alleys in the class with the same head L.
+##  the *width of an alley class is the size of the shape of its head.
 ##  Thus the size of the class is its width
 ##  times its depth.  In most cases, the depth is 1.  Also,
-##  arrow classes of larger depth tend to map to 0.
+##  alley classes of larger depth tend to map to 0.
 ##
 ##
-BundleOps.Depth:= function(this)
-    return Index(StabilizerArrow(this.W, [this.arrow[1], []]),
-                 StabilizerArrow(this.W, this.arrow));
+StreetOps.Depth:= function(this)
+    return Index(StabilizerAlley(this.W, [this.alley[1], []]),
+                 StabilizerAlley(this.W, this.alley));
 end;
 
-BundleOps.Width:= function(this)
+StreetOps.Width:= function(this)
     return Size(Shapes(this.W)[Call(this, "Head")]);
 end;
 
@@ -664,23 +664,23 @@ end;
 ##  Find the last irreducible factor (actually the first when you read
 ##  left to right ...)
 ##
-BundleOps.LongestSuffix:= function(this)
+StreetOps.LongestSuffix:= function(this)
     local   fff,  i,  lft,  rgt,  pro;
     
     # idempotent case first.
-    if this.arrow[2] = [] then
+    if this.alley[2] = [] then
         return this;
     fi;
     
     # short case next.
-    if Length(this.arrow[2]) = 1 then
+    if Length(this.alley[2]) = 1 then
         return this;
     fi;
     
-    fff:= FactorsArrow(this.arrow);
+    fff:= FactorsAlley(this.alley);
     for i in [1..Length(fff)-1] do
-        lft:= Bundle(this.W, ProductArrowList(fff{[1..i]}));
-        rgt:= Bundle(this.W, ProductArrowList(fff{[i+1..Length(fff)]}));
+        lft:= Street(this.W, ProductAlleyList(fff{[1..i]}));
+        rgt:= Street(this.W, ProductAlleyList(fff{[i+1..Length(fff)]}));
         pro:= lft * rgt;
         if Length(pro) = 1 and pro[1] = this then
             return lft;
@@ -691,21 +691,21 @@ BundleOps.LongestSuffix:= function(this)
           
 end;
 
-# a path is a sequence of arrows, with adjacent ones multiplyable.
+# a path is a sequence of alleys, with adjacent ones multiplyable.
 DeltaPath:= function(path)
     local   p;
     
-    p:= ProductArrowMatrixList(List(path, x-> Call(x, "Matrix")));
+    p:= ProductAlleyMatrixList(List(path, x-> Call(x, "Matrix")));
     return rec(support:= p.tail, mat:= Sum(p.mat));
 end;
 
 
 #############################################################################
 ##
-##  A procedure to represent an arrow as a sum of (iterated delta images)
-##  of bundles.
+##  A procedure to represent an alley as a sum of (iterated delta images)
+##  of streets.
 ##
-BundlesArrow:= function(W, arrow)
+StreetsAlley:= function(W, alley)
     
     # FIXME:
     return true;
@@ -718,20 +718,20 @@ QuiverRelations:= function(W)
             null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
             line,  pos,  i,  b;
     
-    # start with a reasonably small set of arrow classes.
-    bbb:= List(Shapes(W), x-> Call(x, "Bundle"));
+    # start with a reasonably small set of alley classes.
+    bbb:= List(Shapes(W), x-> Call(x, "Street"));
     for a in bbb do 
         Append(bbb, Call(a, "MoversPlus"));
     od;
 
     aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
     aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
-    InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
+    InfoZigzag1("Starting with ", Length(aaa), " alley classes.\n");
     
     # split idempotents from nilpotents.
     path:= [];  path0:= [];  more:= [];
     for a in aaa do
-        if a.arrow[2] = [] then
+        if a.alley[2] = [] then
             Add(path0, a);
         else
             Add(more, [a]);
@@ -807,20 +807,20 @@ QuiverRelations1:= function(W)
             null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
             line,  pos,  i,  b;
     
-    # start with a reasonably small set of arrow classes.
-    bbb:= List(Shapes(W), x-> Call(x, "Bundle"));
+    # start with a reasonably small set of alley classes.
+    bbb:= List(Shapes(W), x-> Call(x, "Street"));
     for a in bbb do 
         Append(bbb, Call(a, "Movers"));
     od;
 
     aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
     aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
-    InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
+    InfoZigzag1("Starting with ", Length(aaa), " alley classes.\n");
     
     # split idempotents from nilpotents.
     path:= [];  path0:= [];  more:= [];
     for a in aaa do
-        if a.arrow[2] = [] then
+        if a.alley[2] = [] then
             Add(path0, a);
         else
             Add(more, [a]);
@@ -895,21 +895,21 @@ QuiverRelations0:= function(W)
             null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
             line,  pos,  i,  b;
     
-    # start with a reasonably small set of arrow classes.
+    # start with a reasonably small set of alley classes.
     aaa:= [];
     for a in Shapes(W) do
-        Append(aaa, PreOrderProperty(Bundle(W, [a.J, []]), x-> IsNonZero(Call(x, "Delta").mat)));
+        Append(aaa, PreOrderProperty(Street(W, [a.J, []]), x-> IsNonZero(Call(x, "Delta").mat)));
         InfoZigzag1("\n");
     od;
 
-#    aaa:= Filtered(Bundles(W), x-> IsNonZero(Call(x, "Delta").mat));
+#    aaa:= Filtered(Streets(W), x-> IsNonZero(Call(x, "Delta").mat));
     aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
-    InfoZigzag1("Starting with ", Length(aaa), " arrow classes.\n");
+    InfoZigzag1("Starting with ", Length(aaa), " alley classes.\n");
     
     # split idempotents from nilpotents.
     path:= [];  path0:= [];  more:= [];
     for a in aaa do
-        if a.arrow[2] = [] then
+        if a.alley[2] = [] then
             Add(path0, a);
         else
             Add(more, [a]);
@@ -981,9 +981,9 @@ end;
 
 #############################################################################
 ##
-##  a product for arrow classes forming a path ...
+##  a product for alley classes forming a path ...
 ##
-BundleProduct:= function ( abc )
+StreetProduct:= function ( abc )
     local  pro, i;
     pro := abc[1];
     for i  in [ 2 .. Length( abc ) ]  do
@@ -1000,7 +1000,7 @@ end;
 
 #############################################################################
 PrintQuiver:= function(qr)
-    local   short,  shortarrow,  name,  vertex,  i,  gens,  e,  mat,  
+    local   short,  shortalley,  name,  vertex,  i,  gens,  e,  mat,  
             r,  p;
     
     short:= function(set)
@@ -1014,7 +1014,7 @@ PrintQuiver:= function(qr)
         return text;
     end;
     
-    shortarrow:= function(a)
+    shortalley:= function(a)
         local   text;
         text:= "[";
         Append(text, short(a[1]));
@@ -1030,7 +1030,7 @@ PrintQuiver:= function(qr)
     
     Print("\nVertices:\n");
     for i in [1..Length(vertex)] do
-        Print(i, ". ", name[i], " [", short(vertex[i].arrow[1]), "]\n");
+        Print(i, ". ", name[i], " [", short(vertex[i].alley[1]), "]\n");
     od;
     
     if qr.path = [] then return; fi;
@@ -1040,7 +1040,7 @@ PrintQuiver:= function(qr)
     for e in gens do
         mat:= Call(e, "Matrix");
         Print(mat.tail, " --> ", mat.head, ". ", 
-              shortarrow(e.arrow), "\n");
+              shortalley(e.alley), "\n");
     od;
     
     Print("\nRelations:\n");
@@ -1058,7 +1058,7 @@ PrintQuiver:= function(qr)
             od;
             for p in r.paths do
                 for e in p do
-                    Print(shortarrow(e.arrow), "\c");
+                    Print(shortalley(e.alley), "\c");
                 od;
                 Print(", ");
             od;
@@ -1190,14 +1190,14 @@ end;
 
 #############################################################################
 ##
-##  The bundles form a path algebra.
+##  The streets form a path algebra.
 ##
-CartanMatBundles:= function(W)
+CartanMatStreets:= function(W)
     local   l,  mat,  b,  i,  j;
     
     l:= Length(Shapes(W));
     mat:= NullMat(l, l);
-    for b in Bundles(W) do
+    for b in Streets(W) do
         i:= Call(b, "Head");
         j:= Call(b, "Tail");
         mat[i][j]:= mat[i][j] + 1;
@@ -1206,9 +1206,9 @@ CartanMatBundles:= function(W)
     return mat;
 end;
 
-QuiverMatBundles:= function(W)
+QuiverMatStreets:= function(W)
     local   c;
-    c:= CartanMatBundles(W);
+    c:= CartanMatStreets(W);
     return c^0 - c^-1; # c = d^0 + d^1 + d2 + ... => d = 1 - 1/c.
 end;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.18 2006/12/18 09:41:29 goetz Exp $
+     $Id: zigzag.xml,v 1.19 2007/07/09 14:17:02 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -20,7 +20,7 @@ Götz Pfeiffer
 <Homepage>http://schmidt.nuigalway.ie/zigzag</Homepage>
 </Author>
     <Copyright>
-&copyright; 2006 Götz Pfeiffer, 
+&copyright; 2007 Götz Pfeiffer, 
 Department of Mathematics, NUI, Galway, Ireland
 </Copyright>
   </TitlePage>
@@ -600,38 +600,38 @@ for finite Coxeter groups that use shapes.
 
 <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 <Chapter>
-<Heading>Arrows.</Heading>
+<Heading>Alleys.</Heading>
 
-<#Include Label="Intro:Arrows">
+<#Include Label="Intro:Alleys">
 
 <Section>
-<Heading>Arrow Multiplication.</Heading>
+<Heading>Alley Multiplication.</Heading>
 
-<#Include Label="ProductArrows">
+<#Include Label="ProductAlleys">
 
-<#Include Label="ProductArrowList">
+<#Include Label="ProductAlleyList">
 
-<#Include Label="FactorsArrow">
+<#Include Label="FactorsAlley">
 
 </Section>
 
 <Section>
-<Heading>Operation on Arrows.</Heading>
+<Heading>Operation on Alleys.</Heading>
 
-<#Include Label="OnArrows">
+<#Include Label="OnAlleys">
 
-<#Include Label="StabilizerArrow">
+<#Include Label="StabilizerAlley">
 
 </Section>
 
 <Section>
 <Heading>Difference Operators.</Heading>
 
-<#Include Label="LittleDeltaArrow">
+<#Include Label="LittleDeltaAlley">
 
-<#Include Label="DeltaArrow">
+<#Include Label="DeltaAlley">
 
-<#Include Label="ReversedArrow">
+<#Include Label="ReversedAlley">
 
 </Section>
 
@@ -639,36 +639,36 @@ for finite Coxeter groups that use shapes.
 
 <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 <Chapter>
-<Heading>Bundles aka Arrow Classes.</Heading>
+<Heading>Streets aka Alley Classes.</Heading>
 
-<#Include Label="Intro:Bundles">
+<#Include Label="Intro:Streets">
 
 <Section>
-<Heading>Bundle Objects.</Heading>
+<Heading>Street Objects.</Heading>
 
-<#Include Label="Bundle">
+<#Include Label="Street">
 
-<#Include Label="IsBundle">
+<#Include Label="IsStreet">
 
 </Section>
 
-<Section Label="Sect:BundlesAsSets">
-<Heading>Set Methods for Bundles.</Heading>
+<Section Label="Sect:StreetsAsSets">
+<Heading>Set Methods for Streets.</Heading>
 
-Bundles are domains and therefore all set theoretic functions described
-in  chapter "Domains"  are also  applicable to  bundles.   This section
-describes  which  functions  are  implemented  specially  for  bundles.
+Streets are domains and therefore all set theoretic functions described
+in  chapter "Domains"  are also  applicable to  streets.   This section
+describes  which  functions  are  implemented  specially  for  streets.
 Functions  not  mentioned here  are  handled  by  the default  methods
 described in the respective sections of chapter "Domains".
 
-More precisely, every bundle has as its operations record
-<C>BundleOps</C> which inherits from <C>DomainOps</C>
+More precisely, every street has as its operations record
+<C>StreetOps</C> which inherits from <C>DomainOps</C>
 and overrides the methods below to make it work or to provide 
 more efficient implementations.
 
-<#Include Label="Elements(bundle)">
+<#Include Label="Elements(street)">
 
-<#Include Label="Representative(bundle)">
+<#Include Label="Representative(street)">
 
 </Section>
 

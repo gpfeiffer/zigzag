@@ -3,7 +3,7 @@ main:= "zigzag.xml";
 lib:= "../lib/";
 files:= [ 
           "methods.g", "iterator.g", "walker.g",
-          "subsets.g", "shapes.g", "arrows.g", "bundles.g",
+          "subsets.g", "shapes.g", "alleys.g", "streets.g",
         ];
 files:= List(files, x-> Concatenation(lib, x));
 bookname:= "zigzag";

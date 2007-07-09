@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: init.g,v 1.17 2007/04/27 09:25:17 goetz Exp $
+#A  $Id: init.g,v 1.18 2007/07/09 14:17:02 goetz Exp $
 ##
 
 #############################################################################
@@ -35,16 +35,16 @@ if not IsBound(InfoZigzag2) then InfoZigzag2:= Ignore; fi;
 ##
 #A  AUTO . . . . . . . . . . . . . . . . . . . . . . . . . . . .  auto reads.  
 ##
-AUTO( ReadPkg( "zigzag", "lib", "arrows" ),
-  HeadArrow, TailArrow, OnArrows, DeltaArrow, LittleDeltaArrow,
-  BigMatrixArrow, ProductArrows, ProductArrowList, FactorsArrow,
-  StabilizerArrow, ReversedArrow );
+AUTO( ReadPkg( "zigzag", "lib", "alleys" ),
+  HeadAlley, TailAlley, OnAlleys, DeltaAlley, LittleDeltaAlley,
+  BigMatrixAlley, ProductAlleys, ProductAlleyList, FactorsAlley,
+  StabilizerAlley, ReversedAlley );
 
-AUTO( ReadPkg( "zigzag", "lib", "bundles" ),
-  BundleOps, Bundle, IsBundle, Bundles0, Bundles, NrBundles,
-  EssentialBundles, ProductArrowMatrices, ProductArrowMatrixList,
-  SumArrowMatrices, DeltaPath, Negative, DeltaPath,
-  QuiverRelations0, QuiverRelations, BundleProduct, PrintQuiver,
+AUTO( ReadPkg( "zigzag", "lib", "streets" ),
+  StreetOps, Street, IsStreet, Streets0, Streets, NrStreets,
+  EssentialStreets, ProductAlleyMatrices, ProductAlleyMatrixList,
+  SumAlleyMatrices, DeltaPath, Negative, DeltaPath,
+  QuiverRelations0, QuiverRelations, StreetProduct, PrintQuiver,
   DimensionsMatrix, VerifyQuiver );
 
 AUTO( ReadPkg( "zigzag", "lib", "iterator" ),

@@ -1,18 +1,18 @@
 #############################################################################
 ##
-#A  arrows.g                     Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  alleys.g                     Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
 ##
 ##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
 ##  package for descent algebras of finite Coxeter groups.
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.29 2007/04/27 09:22:19 goetz Exp $
+#A  $Id: alleys.g,v 1.30 2007/07/09 14:17:02 goetz Exp $
 ##
-##  This file contains support for arrows and arrow classes.
+##  This file contains support for alleys and alley classes.
 ##  
-##  <#GAPDoc Label="Intro:Arrows">
-##    An <E>arrow</E> <Index>arrow</Index> is a pair <M>(L; s_1, \dots,
+##  <#GAPDoc Label="Intro:Alleys">
+##    An <E>alley</E> <Index>alley</Index> is a pair <M>(L; s_1, \dots,
 ##    s_l)</M> consisting of a subset <M>L</M> of <M>S</M> and a list
 ##    <M>(s_1, \dots, s_l)</M> of pairwise different elements of
 ##    <M>L</M>.
@@ -21,30 +21,30 @@
 
 #############################################################################
 ##
-#F  ProductArrows( <a>, <b> )  . . . . . . . . . . . . . . . . . . . product.
+#F  ProductAlleys( <a>, <b> )  . . . . . . . . . . . . . . . . . . . product.
 ##
-##  <#GAPDoc Label="ProductArrows">
+##  <#GAPDoc Label="ProductAlleys">
 ##  <ManSection>
-##  <Func Name="ProductArrows" Arg="a, b"/>
+##  <Func Name="ProductAlleys" Arg="a, b"/>
 ##  <Returns>
-##    the product of the arrows <A>a</A> and <A>b</A>, if the tail of
+##    the product of the alleys <A>a</A> and <A>b</A>, if the tail of
 ##    <A>a</A> is the head of <A>b</A>, and <M>0</M> otherwise.
 ##  </Returns>
 ##  <Description>
-##    The product of arrow <M>a = (L; s, t, \dots)</M> and arrow <M>b = (L';
+##    The product of alley <M>a = (L; s, t, \dots)</M> and alley <M>b = (L';
 ##    s', t', \dots)</M> is <M>a \circ b = (L; s, t, \dots, s', t', \dots)</M>
 ##    provided <M>L \setminus \{s, t, \dots\} = L'</M>.
 ##  <Example>
-##  gap> ProductArrows([[1,3,4,5], [4]], [[1,3,5], [1]]);
+##  gap> ProductAlleys([[1,3,4,5], [4]], [[1,3,5], [1]]);
 ##  [ [ 1, 3, 4, 5 ], [ 4, 1 ] ]
-##  gap> ProductArrows([[1,3,4,5], [4]], [[1,3,4], [1]]);
+##  gap> ProductAlleys([[1,3,4,5], [4]], [[1,3,4], [1]]);
 ##  0
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-ProductArrows:= function(a, b)
+ProductAlleys:= function(a, b)
     if Difference(a[1], a[2]) = b[1] then
         return [a[1], Concatenation(a[2], b[2])];
     fi;
@@ -54,24 +54,24 @@ end;
 
 #############################################################################
 ##
-#F  ProductArrowList( <list> ) . . . . . . . . . . . . . . . . . . . product.
+#F  ProductAlleyList( <list> ) . . . . . . . . . . . . . . . . . . . product.
 ##
-##  <#GAPDoc Label="ProductArrowList">
+##  <#GAPDoc Label="ProductAlleyList">
 ##  <ManSection>
-##  <Func Name="ProductArrowList" Arg="list"/>
+##  <Func Name="ProductAlleyList" Arg="list"/>
 ##  <Returns>
-##    the product of a list <A>list</A> of arrows.
+##    the product of a list <A>list</A> of alleys.
 ##  </Returns>
 ##  <Description>
 ##  <Example>
-##  gap> ProductArrowList([[[1, 2, 3, 5], [5]], [[1, 2, 3], [2]], [[1, 3], [3]]]);
+##  gap> ProductAlleyList([[[1, 2, 3, 5], [5]], [[1, 2, 3], [2]], [[1, 3], [3]]]);
 ##  [ [ 1, 2, 3, 5 ], [ 5, 2, 3 ] ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-ProductArrowList:= function(list)
+ProductAlleyList:= function(list)
     local   product,  i;
     
     # trivial case: the empty product.
@@ -82,7 +82,7 @@ ProductArrowList:= function(list)
         if product = 0 then
             return 0;
         fi;
-        product:= ProductArrows(product, list[i]);
+        product:= ProductAlleys(product, list[i]);
     od;
     
     return product;
@@ -91,26 +91,26 @@ end;
 
 #############################################################################
 ##
-#F  FactorsArrow( <arrow> ) . . . . . . . . . . . . . . . . . . . .  factors.
+#F  FactorsAlley( <alley> ) . . . . . . . . . . . . . . . . . . . .  factors.
 ##
-##  <#GAPDoc Label="FactorsArrow">
+##  <#GAPDoc Label="FactorsAlley">
 ##  <ManSection>
-##  <Func Name="FactorsArrow" Arg="arrow"/>
+##  <Func Name="FactorsAlley" Arg="alley"/>
 ##  <Returns>
-##    the list of factors of the arrow <A>arrow</A>.
+##    the list of factors of the alley <A>alley</A>.
 ##  </Returns>
 ##  <Description>
-##    Every arrow <M>a</M> of length <M>l(a) > 0</M> has a unique
-##    factorization into arrows of length 1.
+##    Every alley <M>a</M> of length <M>l(a) > 0</M> has a unique
+##    factorization into alleys of length 1.
 ##  <Example>
-##  gap> FactorsArrow([[1, 2, 3, 5], [5, 2, 3]]);
+##  gap> FactorsAlley([[1, 2, 3, 5], [5, 2, 3]]);
 ##  [ [ [ 1, 2, 3, 5 ], [ 5 ] ], [ [ 1, 2, 3 ], [ 2 ] ], [ [ 1, 3 ], [ 3 ] ] ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-FactorsArrow:= function(a)
+FactorsAlley:= function(a)
     local   factors,  b;
     
     # protect a against accidental corruption.
@@ -132,43 +132,43 @@ end;
 
 #############################################################################
 ##
-#F  HeadArrow( <W>, <arrow> )  . . . . . . . . . . . . . . . . . . . .  head.
+#F  HeadAlley( <W>, <alley> )  . . . . . . . . . . . . . . . . . . . .  head.
 ##
-##  returns a reference to the shape of the head of <arrow>.
+##  returns a reference to the shape of the head of <alley>.
 ##
-HeadArrow:= function(W, arrow)
+HeadAlley:= function(W, alley)
     local   sh, head;
     sh:= Shapes(W);
-    head:= arrow[1];
+    head:= alley[1];
     return sh[PositionProperty(sh, x-> head in x)];
 end;
 
 #############################################################################
 ##
-#F  TailArrow( <W>, <arrow> )  . . . . . . . . . . . . . . . . . . . .  head.
+#F  TailAlley( <W>, <alley> )  . . . . . . . . . . . . . . . . . . . .  head.
 ##
-##  returns a reference to the shape of the tail of <arrow>.
+##  returns a reference to the shape of the tail of <alley>.
 ##
-TailArrow:= function(W, arrow)
+TailAlley:= function(W, alley)
     local   sh, tail;
     sh:= Shapes(W);
-    tail:= Difference(arrow[1], arrow[2]);
+    tail:= Difference(alley[1], alley[2]);
     return sh[PositionProperty(sh, x-> tail in x)];
 end;
 
 #############################################################################
 ##
-#F  OnArrows( <arrow>, <d> )  . . . . . . . . . . . . . . . . . .  operation.
+#F  OnAlleys( <alley>, <d> )  . . . . . . . . . . . . . . . . . .  operation.
 ##
-##  <#GAPDoc Label="OnArrows">
+##  <#GAPDoc Label="OnAlleys">
 ##  <ManSection>
-##  <Func Name="OnArrows" Arg="arrow, d"/>
+##  <Func Name="OnAlleys" Arg="alley, d"/>
 ##  <Returns>
-##    the image of the arrow <A>arrow</A> under the permutation <A>d</A>.
+##    the image of the alley <A>alley</A> under the permutation <A>d</A>.
 ##  </Returns>
 ##  <Description>
-##    The Coxeter group <M>W</M> acts on its arrows by conjugation.  However,
-##    in order to map an arrow <M>(L; s, t, \dots)</M> to another arrow, the
+##    The Coxeter group <M>W</M> acts on its alleys by conjugation.  However,
+##    in order to map an alley <M>(L; s, t, \dots)</M> to another alley, the
 ##    element <M>d</M> must be such that it maps <M>L</M> to a subset of
 ##    <M>S</M>.  This is always the case if <M>d</M> is a longest coset
 ##    representative of the parabolic subgroup <M>W_L</M> in a parabolic
@@ -180,128 +180,128 @@ end;
 ##  > LongestCoxeterElement(W);
 ##  ( 1, 3, 5)( 2, 4,30)( 6, 8,28)( 7, 9,29)(10,12,26)(11,25,27)(13,21,23)
 ##  (14,22,24)(15,17,19)(16,18,20)
-##  gap> OnArrows([L, [5, 2]], d);
+##  gap> OnAlleys([L, [5, 2]], d);
 ##  [ [ 1, 3, 4, 5 ], [ 1, 4 ] ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-OnArrows:= function(arrow, d)
-    return [OnSets(arrow[1], d), OnTuples(arrow[2], d)];
+OnAlleys:= function(alley, d)
+    return [OnSets(alley[1], d), OnTuples(alley[2], d)];
 end;
                    
 
 #############################################################################
 ##
-#F  StabilizerArrow( <W>, <arrow> ) . . . . . . . . . . . . . . . stabilizer.
+#F  StabilizerAlley( <W>, <alley> ) . . . . . . . . . . . . . . . stabilizer.
 ##
-##  <#GAPDoc Label="StabilizerArrow">
+##  <#GAPDoc Label="StabilizerAlley">
 ##  <ManSection>
-##  <Func Name="StabilizerArrow" Arg="W, arrow"/>
+##  <Func Name="StabilizerAlley" Arg="W, alley"/>
 ##  <Returns>
-##    the stabilizer in <A>W</A> of the arrow <A>arrow</A>.
+##    the stabilizer in <A>W</A> of the alley <A>alley</A>.
 ##  </Returns>
 ##  <Description>
-##    The stabilizer of the arrow <A>arrow</A> is a subgroup of the
+##    The stabilizer of the alley <A>alley</A> is a subgroup of the
 ##    stabilizer of its head.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> L:= [1, 3, 5];;
-##  gap> st:= StabilizerArrow(W, [L, []]);;
+##  gap> st:= StabilizerAlley(W, [L, []]);;
 ##  gap> List(Generators(st), x-> RestrictedPerm(x, L));
 ##  [ (3,5), (1,3) ]
-##  gap> st:= StabilizerArrow(W, [L, [3]]);;
+##  gap> st:= StabilizerAlley(W, [L, [3]]);;
 ##  gap> List(Generators(st), x-> RestrictedPerm(x, L));
 ##  [ (1,5) ]
-##  gap> st:= StabilizerArrow(W, [L, [3,5]]);
+##  gap> st:= StabilizerAlley(W, [L, [3,5]]);
 ##  Subgroup( CoxeterGroup("A", 5), [  ] )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-StabilizerArrow:= function(W, arrow)
-    return Stabilizer(NormalizerComplement(W, arrow[1]), arrow[2], OnTuples);
+StabilizerAlley:= function(W, alley)
+    return Stabilizer(NormalizerComplement(W, alley[1]), alley[2], OnTuples);
 end;
 
 
 #############################################################################
 ##
-#F  LittleDeltaArrow( <W>, <arrow> ) . . . . . . . . . . . . . .  difference.
+#F  LittleDeltaAlley( <W>, <alley> ) . . . . . . . . . . . . . .  difference.
 ##
-##  <#GAPDoc Label="LittleDeltaArrow">
+##  <#GAPDoc Label="LittleDeltaAlley">
 ##  <ManSection>
-##  <Func Name="LittleDeltaArrow" Arg="W, arrow"/>
+##  <Func Name="LittleDeltaAlley" Arg="W, alley"/>
 ##  <Returns>
 ##    <M>\delta(a) = a - b</M> as the pair <M>(a, b)</M>, where <M>a</M> is
-##    the arrow <A>arrow</A>.
+##    the alley <A>alley</A>.
 ##  </Returns>
 ##  <Description>
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> L:= [1, 2, 3, 5];;
-##  gap> LittleDeltaArrow(W, [L, [3]]);
+##  gap> LittleDeltaAlley(W, [L, [3]]);
 ##  [ [ [ 1, 2, 5 ], [  ] ], [ [ 2, 3, 5 ], [  ] ] ]
-##  gap> LittleDeltaArrow(W, [L, [3,1]]);
+##  gap> LittleDeltaAlley(W, [L, [3,1]]);
 ##  [ [ [ 1, 2, 5 ], [ 1 ] ], [ [ 2, 3, 5 ], [ 2 ] ] ]
-##  gap> LittleDeltaArrow(W, [L, [5]]);
+##  gap> LittleDeltaAlley(W, [L, [5]]);
 ##  [ [ [ 1, 2, 3 ], [  ] ], [ [ 1, 2, 3 ], [  ] ] ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-LittleDeltaArrow:= function(W, arrow)
+LittleDeltaAlley:= function(W, alley)
     local   L,  list,  K,  d,  lft,  rgt;
     
-    L:= arrow[1];
-    list:= arrow[2];
+    L:= alley[1];
+    list:= alley[2];
     if list = [] then
-        Error("arrow must have length > 0");
+        Error("alley must have length > 0");
     else
         K:= Difference(L, list{[1]});
         d:= LongestCoxeterElement(ReflectionSubgroup(W, K))
             * LongestCoxeterElement(ReflectionSubgroup(W, L));
         lft:= [K, list{[2..Length(list)]}];
-        rgt:= OnArrows(lft, d);
+        rgt:= OnAlleys(lft, d);
     fi;
     return [lft, rgt];
 end;
 
 #############################################################################
 ##
-#F  DeltaArrow( <W>, <arrow> ) . . . . . . . . . . . . . .  difference.
+#F  DeltaAlley( <W>, <alley> ) . . . . . . . . . . . . . .  difference.
 ##
-##  <#GAPDoc Label="DeltaArrow">
+##  <#GAPDoc Label="DeltaAlley">
 ##  <ManSection>
-##  <Func Name="DeltaArrow" Arg="W, arrow"/>
+##  <Func Name="DeltaAlley" Arg="W, alley"/>
 ##  <Returns>
 ##    the coefficients of <M>\Delta(a)</M> in terms of the shape of its tail,
-##    where <M>a</M> is the arrow <A>arrow</A>.
+##    where <M>a</M> is the alley <A>alley</A>.
 ##  </Returns>
 ##  <Description>
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> L:= [1, 2, 3, 5];;
-##  gap> DeltaArrow(W, [L, [3]]);
+##  gap> DeltaAlley(W, [L, [3]]);
 ##  [ 0, 1, 0, 0, -1, 0 ]
-##  gap> DeltaArrow(W, [L, [3,1]]);
+##  gap> DeltaAlley(W, [L, [3,1]]);
 ##  [ 0, 0, -1, 0, 2, -1 ]
-##  gap> DeltaArrow(W, [L, [5]]);
+##  gap> DeltaAlley(W, [L, [5]]);
 ##  [ 0, 0, 0 ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeltaArrow:= function(W, arrow)
+DeltaAlley:= function(W, alley)
     local   L,  list,  head,  res,  K,  d,  lft,  rgt;
     
-    L:= arrow[1];
-    list:= arrow[2];
+    L:= alley[1];
+    list:= alley[2];
     if list = [] then
-        head:= Elements(HeadArrow(W, arrow));
+        head:= Elements(HeadAlley(W, alley));
         res:= List(head, x-> 0);
         res[Position(head, L)]:= 1;
     else
@@ -309,11 +309,11 @@ DeltaArrow:= function(W, arrow)
         d:= LongestCoxeterElement(ReflectionSubgroup(W, K))
             * LongestCoxeterElement(ReflectionSubgroup(W, L));
         lft:= [K, list{[2..Length(list)]}];
-        rgt:= OnArrows(lft, d);
+        rgt:= OnAlleys(lft, d);
         if lft = rgt then # early 0 detection
-            res:= List(Elements(TailArrow(W, arrow)), x-> 0);
+            res:= List(Elements(TailAlley(W, alley)), x-> 0);
         else
-            res:= DeltaArrow(W, lft) - DeltaArrow(W, rgt);
+            res:= DeltaAlley(W, lft) - DeltaAlley(W, rgt);
         fi;
     fi;
     return res;
@@ -324,52 +324,52 @@ end;
 #
 #  Deprecate:
 #
-BigMatrixArrow:= function(W, arrow)
+BigMatrixAlley:= function(W, alley)
     local   sub,  mat,  sh,  l,  i,  j;
     
     sub:= SubsetsShapes(Shapes(W));
     mat:= NullMat(Length(sub), Length(sub));
     sh:= Shapes(W);
     l:= SetComposition(List(sh, Size));
-    i:= Position(sub, arrow[1]);
-    j:= PositionProperty(sh, x-> Difference(arrow[1], arrow[2]) in x);
-    mat[i]{l[j]}:= DeltaArrow(W, arrow);    
+    i:= Position(sub, alley[1]);
+    j:= PositionProperty(sh, x-> Difference(alley[1], alley[2]) in x);
+    mat[i]{l[j]}:= DeltaAlley(W, alley);    
     return mat;
 end;
 
 #############################################################################
 ##
-##  ReversedArrow(W, arrow)
+##  ReversedAlley(W, alley)
 ##
-##  <#GAPDoc Label="ReversedArrow">
+##  <#GAPDoc Label="ReversedAlley">
 ##  <ManSection>
-##  <Func Name="ReversedArrow" Arg="W, arrow"/>
+##  <Func Name="ReversedAlley" Arg="W, alley"/>
 ##  <Returns>
-##    the reversed arrow of <A>arrow</A>.
+##    the reversed alley of <A>alley</A>.
 ##  </Returns>
 ##  <Description>
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> L:= [1, 2, 3, 5];;
-##  gap> ReversedArrow(W, [L, [3]]);
+##  gap> ReversedAlley(W, [L, [3]]);
 ##  [ [ 1, 2, 3, 5 ], [ 1 ] ]
-##  gap> ReversedArrow(W, [L, [3,1]]);
+##  gap> ReversedAlley(W, [L, [3,1]]);
 ##  [ [ 1, 2, 3, 5 ], [ 1, 2 ] ]
-##  gap> ReversedArrow(W, [L, [5]]);
+##  gap> ReversedAlley(W, [L, [5]]);
 ##  [ [ 1, 2, 3, 5 ], [ 5 ] ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-ReversedArrow:= function(W, arrow)
+ReversedAlley:= function(W, alley)
 
     local   L,  list,  s,  K,  wL,  d,  rev;
     
-    L:= arrow[1];
-    list:= arrow[2];
+    L:= alley[1];
+    list:= alley[2];
     if list = [] then
-        Error("arrow must have length > 0");
+        Error("alley must have length > 0");
     fi;
     
     s:= list[1];
@@ -382,54 +382,54 @@ ReversedArrow:= function(W, arrow)
     return [L, rev];
 end;
 
-LittleDeltaBarArrow:= function(W, arrow)
+LittleDeltaBarAlley:= function(W, alley)
     local   delta;
     
-    delta:= LittleDeltaArrow(W, arrow);
-    delta[2]:= ReversedArrow(W, delta[2]);
+    delta:= LittleDeltaAlley(W, alley);
+    delta[2]:= ReversedAlley(W, delta[2]);
     return delta;
 end;
 
 #############################################################################
-PrefixArrow:= function(arrow)
+PrefixAlley:= function(alley)
     local   list;
-    list:= arrow[2];
+    list:= alley[2];
     if list = [] then
-        Error("arrow must have length > 0");
+        Error("alley must have length > 0");
     fi;
-    return [arrow[1], list{[1..Length(list)-1]}];
+    return [alley[1], list{[1..Length(list)-1]}];
 end;
 
 
 #############################################################################
-SuffixArrow:= function(arrow)
+SuffixAlley:= function(alley)
     local   list,  s,  K;
-    list:= arrow[2];
+    list:= alley[2];
     if list = [] then
-        Error("arrow must have length > 0");
+        Error("alley must have length > 0");
     fi;
     s:= list[1];
-    K:= Difference(arrow[1], [s]);
+    K:= Difference(alley[1], [s]);
     return [K, list{[2..Length(list)]}];
 end;
 
 
 #############################################################################
 ##
-##  Associate (a reduced expression for) w_{L'} w_L to an arrow (L; ...)
+##  Associate (a reduced expression for) w_J w_L to an alley (L; ...)
 ##
-ReducedWordArrow:= function(W, arrow)
+ReducedWordAlley:= function(W, alley)
     local   z,  K,  Kz,  c;
     
-    if arrow[2] = [] then
-        return CategoryElt(W, arrow);
+    if alley[2] = [] then
+        return CategoryElt(W, alley);
     fi;
     
-    z:= arrow[2]{[Length(arrow[2])]};
-    K:= Difference(arrow[1], arrow[2]);
+    z:= alley[2]{[Length(alley[2])]};
+    K:= Difference(alley[1], alley[2]);
     
     Kz:= Call(CategoryElt(W, [K, z]), "Target");
-    c:= ApplyMethod(ReducedWordArrow(W, PrefixArrow(arrow)), "Restricted", Kz);
+    c:= ApplyMethod(ReducedWordAlley(W, PrefixAlley(alley)), "Restricted", Kz);
     Append(z, c.elt[2]);
     
     return CategoryElt(W, [K, z]);
