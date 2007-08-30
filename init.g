@@ -7,13 +7,13 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: init.g,v 1.18 2007/07/09 14:17:02 goetz Exp $
+#A  $Id: init.g,v 1.19 2007/08/30 12:57:22 goetz Exp $
 ##
 
 #############################################################################
 ZIGZAG:= rec();
-ZIGZAG.Version:= "0.70";
-ZIGZAG.Date:= "13-12-2006";
+ZIGZAG.Version:= "0.71";
+ZIGZAG.Date:= "09-07-2007";
 
 #############################################################################
 ##
