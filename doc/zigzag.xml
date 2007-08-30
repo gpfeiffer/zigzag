@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+<?LaTeX ExtraPreamble="\usepackage{parskip}
+"?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.19 2007/07/09 14:17:02 goetz Exp $
+     $Id: zigzag.xml,v 1.20 2007/08/30 13:02:48 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -12,7 +14,7 @@
     <Subtitle>A &GAP;3 package for Descent Algebras 
 of Finite Coxeter Groups</Subtitle>
     <Version>
-Version 0.70
+Version 0.71
     </Version>
     <Author>
 Götz Pfeiffer
@@ -162,8 +164,8 @@ This way of data hiding prevents the state variables from being accidentally
 corrupted.<P/>
 
 Alternatively, the state can be stored in form of fields of the iterator record.
-<Listing><![CDATA[
-IteratorSet:= function(set)
+<Listing Type="Example"><![CDATA[
+IteratorSet1:= function(set)
     local itr;
     
     # initialize.

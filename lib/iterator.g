@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: iterator.g,v 1.6 2006/07/10 12:00:06 goetz Exp $
+#A  $Id: iterator.g,v 1.7 2007/08/30 12:59:14 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Iterators">
 ##  This file contains a dispatcher for iterators on domains.
@@ -33,7 +33,7 @@
 ##
 ##  Iterators are disposable.
 ##  After the loop, the iterator object 
-##  that was used is garbage and should be discarded.
+##  is exhausted and should be discarded.
 ##
 ##  <#/GAPDoc>
 ##

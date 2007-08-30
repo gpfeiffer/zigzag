@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.18 2007/07/09 14:17:02 goetz Exp $
+#A  $Id: streets.g,v 1.19 2007/08/30 13:01:24 goetz Exp $
 ##
 ##  This file contains support for streets aka alley classes.
 ##  
@@ -726,7 +726,7 @@ QuiverRelations:= function(W)
 
     aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
     aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
-    InfoZigzag1("Starting with ", Length(aaa), " alley classes.\n");
+    InfoZigzag1("Starting with ", Length(aaa), " streets\n");
     
     # split idempotents from nilpotents.
     path:= [];  path0:= [];  more:= [];
@@ -737,7 +737,7 @@ QuiverRelations:= function(W)
             Add(more, [a]);
         fi;
     od;
-    InfoZigzag1("Of which ", Length(path0), " have length 0.\n");
+    InfoZigzag1("of which ", Length(path0), " have length 0.\n");
     
     relations:= [];
     

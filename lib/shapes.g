@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.42 2007/07/09 14:17:02 goetz Exp $
+#A  $Id: shapes.g,v 1.43 2007/08/30 13:00:47 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -1210,8 +1210,6 @@ end;
 LabelsShapes:= function(shapes)
     return List(shapes, x-> Call(x, "Label"));
 end;
-
-    
 
 
 #############################################################################
