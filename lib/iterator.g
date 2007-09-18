@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: iterator.g,v 1.7 2007/08/30 12:59:14 goetz Exp $
+#A  $Id: iterator.g,v 1.8 2007/09/18 08:38:35 goetz Exp $
 ##
 ##  <#GAPDoc Label="Intro:Iterators">
 ##  This file contains a dispatcher for iterators on domains.
@@ -173,7 +173,6 @@ end;
 ##
 ##  Local Variables:
 ##  mode:               gap
-##  minor-mode:         outline
 ##  outline-regexp:     "#F\\|#V\\|#E\\|#A"
 ##  fill-column:        77
 ##  End:

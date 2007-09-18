@@ -5,9 +5,9 @@
 ##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
 ##  package for descent algebras of finite Coxeter groups.
 ##
-#Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
+#Y  Copyright (C) 2001-2007, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.32 2007/07/09 14:17:02 goetz Exp $
+#A  $Id: descent.g,v 1.33 2007/09/18 08:42:30 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -1398,21 +1398,45 @@ QuiverD:= function(n)
         else
             for i in [1..l] do
                 a:= p[i];
+                
+                # drop one part a
+                q:= p{Difference([1..l], [i])};
+                if a > 1 and ForAll(q, x-> x mod 2 = 0) then
+                    AddSet(edg, [q, p, 1]);
+                fi;
+                
                 for j in [i+1..l] do
                     b:= p[j];
                     
-                    # drop two parts a, b.
+                    # join two parts a, b.
                     e:= Size(Set([a, b])) - 1;
-                    if e > 0 then
-                        q:= p{Difference([1..l], [i,j])};
+                    q:= p{Difference([1..l], [i,j])};
+#                    if e > 0 and not 1 in q and (a + b) mod 2 = 1 then
+                    if e > 0 and ForAll(q, x-> x mod 2 = 0) and (a + b) mod 2 = 1 then
+                        Add(q, a + b);
+                        Sort(q, function(a, b) return a > b; end);
                         AddSet(edg, [q, p, e]);
                     fi;
                     
-                    # join three parts a, b, c.
+                    # drop two parts a, b.
+                    e:= Size(Set([a, b])) - 1;
+                    q:= p{Difference([1..l], [i,j])};
+                    if e > 0 and not (Sum(p) = n and ForAll(q, x-> x mod 2 = 0)) then
+                        AddSet(edg, [q, p, e]);
+                    fi;
+                    
                     for k in [j+1..l] do
                         c:= p[k];
                         e:= Size(Set([a, b, c])) - 1;
-                        if e > 0 then
+                        
+#                        # drop three parts a, b, c.
+#                        if e > 0 then
+#                            q:= p{Difference([1..l], [i,j,k])};
+#                            AddSet(edg, [q, p, e]);
+#                        fi;
+
+                        # join three parts a, b, c.
+                        if e > 0 and Number(p, x-> x mod 2 = 1) > 1 then
                             q:= p{Difference([1..l], [i,j,k])};
                             Add(q, a+b+c);
                             Sort(q, function(a, b) return a > b; end);
@@ -1437,7 +1461,6 @@ end;
 ##
 ##  Local Variables:
 ##  mode:               gap
-##  minor-mode:         outline
 ##  outline-regexp:     "#F\\|#V\\|#E\\|#A"
 ##  fill-column:        77
 ##  fill-prefix:        "##  "

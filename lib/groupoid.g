@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2007, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: groupoid.g,v 1.2 2007/04/27 09:24:32 goetz Exp $
+#A  $Id: groupoid.g,v 1.3 2007/09/18 08:38:12 goetz Exp $
 ##
 ##  This file contains support for the groupoid of shapes and its elements.
 ##  
@@ -172,7 +172,6 @@ end;
 ##
 ##  Local Variables:
 ##  mode:               gap
-##  minor-mode:         outline
 ##  outline-regexp:     "#F\\|#V\\|#E\\|#A"
 ##  fill-column:        77
 ##  End:
