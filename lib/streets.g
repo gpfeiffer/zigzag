@@ -5,29 +5,17 @@
 ##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
 ##  package for descent algebras of finite Coxeter groups.
 ##
-#Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
+#Y  Copyright (C) 2001-2007, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.19 2007/08/30 13:01:24 goetz Exp $
+#A  $Id: streets.g,v 1.20 2007/09/18 08:40:57 goetz Exp $
 ##
 ##  This file contains support for streets aka alley classes.
 ##  
 ##  <#GAPDoc Label="Intro:Streets">
-##    An <E>street</E> <Index>street</Index> is a class of alleys.
+##    An <E>street</E> <Index>street</Index> is an orbit of alleys under the
+##    conjugation action of W.
 ##  <#/GAPDoc>
 ##
-
-#############################################################################
-##
-##  Streets aka Alley Classes.
-##
-##  An *alley class* is an equivalence class of alleys
-##  under the conjugation action of W.
-##
-##  Representatives can be obtained by choosing s as representatives
-##  of the orbits of N_L on L, for every shape representative L, ...
-##
-
-
 
 #############################################################################
 ##  
@@ -75,7 +63,7 @@ end;
 
 #############################################################################
 ##
-#F  IsStreet( <obj> ) . . . . . . . . . . . . . . . . . . . . type check.
+#F  IsStreet( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
 ##
 ##  <#GAPDoc Label="IsStreet">
 ##  <ManSection>
@@ -94,7 +82,7 @@ end;
 
 #############################################################################  
 ##  
-#F  Print( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
+#F  Print( <street> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
 StreetOps.Print:= function(this)
     Print("Street( ", this.W, ", ", this.alley, " )");
@@ -103,7 +91,7 @@ end;
 
 #############################################################################
 ##
-#F  Representative( <street> ) . . . . . . . . . . . . . . . . representative.
+#F  Representative( <street> ) . . . . . . . . . . . . . . .  representative.
 ##
 ##  A street, as a class of parabolic subsets, has a representative.
 ##
@@ -116,8 +104,8 @@ end;
 ##  initial element <C>J</C>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
-##  gap> Representative(Street(W, [2]));
-##  [ 2 ]
+##  gap> Representative(Street(W, [[1,2,3], [3]]));
+##  [ [ 1, 2, 3 ], [ 3 ] ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -127,7 +115,81 @@ StreetOps.Representative:= function(this)
     return this.alley;
 end;
 
+#############################################################################  
+##  
+#F  Elements( <street> )  . . . . . . . . . . . . . . . . . . . . . elements.
+##  
+##  <#GAPDoc Label="Elements(street)">
+##  <ManSection>
+##  <Meth Name="Elements" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the set of elements of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The street of the alley <M>(L; s, t, \dots)</M> is its orbit under the
+##    action of <M>A^*</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;                
+##  gap> Elements(Street(W, [[1,2,3], [3]]));      
+##  [ [ [ 1, 2, 3 ], [ 3 ] ], [ [ 2, 3, 4 ], [ 4 ] ], [ [ 3, 4, 5 ], [ 5 ] ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+StreetOps.Elements:= function(this)
+    local   elm,  W,  sh,  i,  j,  L,  list,  o,  x,  J,  t;
+    
+    elm:= [];
+    W:= this.W;
+    
+    sh:= Shapes(W);  # carefully bring in sync with shape internals ...
+    i:= PositionProperty(sh, x-> this.alley[1] in x);
+    j:= Position(Elements(sh[i]), this.alley[1]);
+    L:= sh[i].J;
+    list:= OnTuples(this.alley[2], sh[i].transversal[j]^-1);
+    o:= Orbit(Call(sh[i], "Complement"), list, OnTuples);
+    for x in sh[i].transversal do
+        J:= OnSets(L, x);
+        for t in o do
+            Add(elm, [J, OnTuples(t, x)]);
+        od;
+    od;
+    return Set(elm);
+end;
+
 #############################################################################
+##
+#F  Movers( <street> ) . . . . . . . . . . . . . . . . . . . . . . . movers.
+##
+##  The edges of the graph of a street are either movers or shakers.
+##  
+##  <#GAPDoc Label="Movers(street)">
+##  <ManSection>
+##  <Meth Name="Movers" Arg="street" Label="for streets"/>
+##  <Returns>
+##    a list of streets comprising the movers in the action graph of the
+##    street <A>street</A>
+##  </Returns>
+##  <Description>
+##    The edges of the action graph are either movers or shakers, following
+##    Brink and Howlett~\cite{BriHow99}.  A mover is an edge with two
+##    distinct vertices.  The movers of a street form a collection of
+##    streets.  Given a street <A>street</A>, this method constructs and
+##    returns the list of streets comprising the movers of <A>street</A>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> Call(Street(W, [[1,2,3], [3]]), "Movers"); 
+##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 1, 4 ] ] ), 
+##    Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 4, 3 ] ] ) ]
+##  gap> Union(last);
+##  [ [ [ 1, 2, 3, 4 ], [ 1, 4 ] ], [ [ 1, 2, 3, 4 ], [ 4, 3 ] ], 
+##    [ [ 2, 3, 4, 5 ], [ 2, 5 ] ], [ [ 2, 3, 4, 5 ], [ 5, 4 ] ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 StreetOps.Movers:= function(this)
     local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  new;
     
@@ -195,6 +257,36 @@ end;
 
 
 #############################################################################
+##
+#F  Shakers( <street> ) . . . . . . . . . . . . . . . . . . . . . . . shakers.
+##
+##  The edges of the graph of a street are either movers or shakers.
+##  
+##  <#GAPDoc Label="Shakers(street)">
+##  <ManSection>
+##  <Meth Name="Shakers" Arg="street" Label="for streets"/>
+##  <Returns>
+##    a list of streets comprising the shakers in the action graph of the
+##    street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The edges of the action graph are either movers or shakers, following
+##    Brink and Howlett~\cite{BriHow99}.  A shaker is an edge whose initial
+##    and terminal vertex coincide.  The shakers of a street form a
+##    collection of streets.  Given a street <A>street</A>, this method
+##    constructs and returns the list of streets comprising the shakers of
+##    <A>street</A>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> Call(Street(W, [[1,2,3], [3]]), "Shakers"); 
+##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 5 ], [ 5, 3 ] ] ) ]
+##  gap> Elements(last[1]);
+##  [ [ [ 1, 2, 3, 5 ], [ 5, 3 ] ], [ [ 1, 3, 4, 5 ], [ 1, 5 ] ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 StreetOps.Shakers:= function(this)
     local   n,  shakers,  a,  i,  b,  K,  L,  d,  c,  new;
     
@@ -284,7 +376,7 @@ StreetOps.Children:= StreetOps.InversePrefix;
 
 #############################################################################
 ##
-#F  Streets
+#F  Streets( <W> )
 ##
 Streets0:= function(W)
     local   list,  hhh,  sh,  new,  N;
@@ -360,52 +452,6 @@ EssentialStreets:= function(W)
         hhh(new, N);
     od;
     return list;
-end;
-
-#############################################################################  
-##  
-#F  Elements( <street> )  . . . . . . . . . . . . . . . . . . . . . elements.
-##  
-##  <#GAPDoc Label="Elements(street)">
-##  <ManSection>
-##  <Meth Name="Elements" Arg="street" Label="for streets"/>
-##  <Returns>
-##    the set of elements of the street <A>street</A>.
-##  </Returns>
-##  <Description>
-##  The shape of <M>J</M> in <M>W</M> consists of all subsets of <M>S</M>
-##  which are conjugate to <M>J</M> under <M>W</M>.
-##  The conjugates can be efficiently computed
-##  using <Cite Key="GePf2000" Where="Theorem 2.3.3"/>.
-##  This is much faster than simple conjugacy tests.
-##  <Example>
-##  gap> W:= CoxeterGroup("A", 3);;
-##  gap> Elements(Shape(W, [2]));
-##  [ [ 1 ], [ 2 ], [ 3 ] ] 
-##  </Example>
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-StreetOps.Elements:= function(this)
-    local   elm,  W,  sh,  i,  j,  L,  list,  o,  x,  J,  t;
-    
-    elm:= [];
-    W:= this.W;
-    
-    sh:= Shapes(W);  # carefully bring in sync with shape internals ...
-    i:= PositionProperty(sh, x-> this.alley[1] in x);
-    j:= Position(Elements(sh[i]), this.alley[1]);
-    L:= sh[i].J;
-    list:= OnTuples(this.alley[2], sh[i].transversal[j]^-1);
-    o:= Orbit(Call(sh[i], "Complement"), list, OnTuples);
-    for x in sh[i].transversal do
-        J:= OnSets(L, x);
-        for t in o do
-            Add(elm, [J, OnTuples(t, x)]);
-        od;
-    od;
-    return Set(elm);
 end;
 
 #############################################################################
@@ -723,10 +769,108 @@ QuiverRelations:= function(W)
     for a in bbb do 
         Append(bbb, Call(a, "MoversPlus"));
     od;
+    InfoZigzag1("Generated ", Length(bbb), " streets\n");
 
     aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
+    InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
+    
     aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
-    InfoZigzag1("Starting with ", Length(aaa), " streets\n");
+    InfoZigzag1("Starting with ", Length(aaa), " irreducible streets\n");
+    
+    # split idempotents from nilpotents.
+    path:= [];  path0:= [];  more:= [];
+    for a in aaa do
+        if a.alley[2] = [] then
+            Add(path0, a);
+        else
+            Add(more, [a]);
+        fi;
+    od;
+    InfoZigzag1("of which ", Length(path0), " have length 0.\n");
+    
+    relations:= [];
+    
+    sss:= SubsetsShapes(Shapes(W));
+    l:= SetComposition(List(Shapes(W), Size));
+    null:= List(sss, x-> 0);
+    
+    while more <> [] do
+        
+        Add(path, more);
+        InfoZigzag1("Added ", Length(more), " paths of length ", Length(path), ".\n");
+        
+        # consider all paths at once.
+        all:= Concatenation(path);
+        
+        mat:= [];
+        for a in all do
+            delta:= DeltaPath(a);
+            new:= Copy(null);
+            new{l[delta.support]}:= delta.mat;
+            Add(mat, new);
+        od;
+        
+        kern:= NullspaceMat(mat);
+        InfoZigzag1("Found ", Length(kern), " relations.\n");
+        
+        
+        # FIXME:
+        # suppose adr is a list of back references such that 
+        #   all[i] = path[adr[i][1]][adr[i][2]] ...
+        adr:= Concatenation(List([1..Length(path)], i-> TransposedMat([List(path[i], x-> i), [1..Length(path[i])]])));
+
+        
+        # find all relations.
+        delete:= List(path, x-> []);
+        for line in kern do
+            pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
+            Add(relations, rec(paths:= all{pos}, coeffs:= line{pos}));
+            Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
+        od;
+        
+        # remove obsoletes.
+        for i in [1..Length(path)] do
+            path[i]:= path[i]{Difference([1..Length(path[i])], delete[i])};
+        od;
+        
+        InfoZigzag1("Deleted: ", List(delete, Length), "\n");
+        InfoZigzag1("Length: ", List(path, Length), ": ", Length(path0) + Sum(path, Length), ".\n");
+        
+        # extend paths.
+        more:= [];
+        for a in path[Length(path)] do
+            for b in path[1] do
+                if a[Length(a)] * b[1] <> [] then
+                    Add(more, Concatenation(a, b));
+                fi; 
+            od;
+        od;
+        
+    od;
+    
+    return rec(path0:= path0, path:= path, relations:= relations);
+end;
+
+
+QuiverRelations5:= function(W)
+    local   aaa,  bbb,  path,  path0,  more,  a,  relations,  sss,  l,  
+            null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
+            line,  pos,  i,  b;
+    
+    # start with a reasonably small set of alley classes.
+    bbb:= List(Shapes(W), x-> Call(x, "Street"));
+    for a in bbb do 
+        aaa:= Call(a, "MoversPlus");
+        aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
+        Append(bbb, aaa);
+    od;
+    InfoZigzag1("Generated ", Length(bbb), " streets\n");
+
+    aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
+    InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
+    
+    aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
+    InfoZigzag1("Starting with ", Length(aaa), " irreducible streets\n");
     
     # split idempotents from nilpotents.
     path:= [];  path0:= [];  more:= [];
@@ -812,10 +956,13 @@ QuiverRelations1:= function(W)
     for a in bbb do 
         Append(bbb, Call(a, "Movers"));
     od;
+    InfoZigzag1("Generated ", Length(bbb), " streets\n");
 
     aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
+    InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
+    
     aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
-    InfoZigzag1("Starting with ", Length(aaa), " alley classes.\n");
+    InfoZigzag1("Starting with ", Length(aaa), " irreducible streets\n");
     
     # split idempotents from nilpotents.
     path:= [];  path0:= [];  more:= [];
@@ -1098,6 +1245,24 @@ CartanMatQuiver:= function(qr)
     return car + car^0;
 end;
 
+SpelledOutQuiver:= function(W)
+    local   edg,  m,  lab,  ran,  i,  j;
+    
+    edg:= [];
+    m:= DimensionsMatrix(QuiverRelations(W))[1];
+    lab:= List(Shapes(W), s-> Call(s, "Label"));
+    ran:= [1..Length(lab)];
+    for i in ran do
+        for j in ran do
+            if m[i][j] > 0 then
+                Add(edg, [lab[i], lab[j], m[i][j]]);
+            fi;
+        od;
+    od;
+    
+    return edg;
+end;
+
 
 #############################################################################
 VerifyQuiver:= function(qr)
@@ -1213,6 +1378,99 @@ QuiverMatStreets:= function(W)
 end;
 
 
+#############################################################################
+##
+##  Movers as well
+##
+CartanMatMovers:= function(W)
+    local   bbb,  a,  l,  mat,  b,  i,  j;
+    
+    bbb:= List(Shapes(W), x-> Call(x, "Street"));
+    for a in bbb do 
+        Append(bbb, Call(a, "Movers"));
+    od;
+    InfoZigzag1("Generated ", Length(bbb), " streets\n");
+    
+    l:= Length(Shapes(W));
+    mat:= NullMat(l, l);
+    for b in bbb do
+        i:= Call(b, "Head");
+        j:= Call(b, "Tail");
+        mat[i][j]:= mat[i][j] + 1;
+    od;
+    
+    return mat;
+end;
+
+QuiverMatMovers:= function(W)
+    local   c;
+    c:= CartanMatMovers(W);
+    return c^0 - c^-1; # c = d^0 + d^1 + d2 + ... => d = 1 - 1/c.
+end;
+
+
+#############################################################################
+##
+##  Movers Plus as well
+##
+CartanMatMoversPlus:= function(W)
+    local   bbb,  a,  l,  mat,  b,  i,  j;
+    
+    bbb:= List(Shapes(W), x-> Call(x, "Street"));
+    for a in bbb do 
+        Append(bbb, Call(a, "MoversPlus"));
+    od;
+    InfoZigzag1("Generated ", Length(bbb), " streets\n");
+    
+    l:= Length(Shapes(W));
+    mat:= NullMat(l, l);
+    for b in bbb do
+        i:= Call(b, "Head");
+        j:= Call(b, "Tail");
+        mat[i][j]:= mat[i][j] + 1;
+    od;
+    
+    return mat;
+end;
+
+QuiverMatMoversPlus:= function(W)
+    local   c;
+    c:= CartanMatMoversPlus(W);
+    return c^0 - c^-1; # c = d^0 + d^1 + d2 + ... => d = 1 - 1/c.
+end;
+
+
+#############################################################################
+##
+##  Movers Plus NonZero is not!!!  At least not for type A_n, n > 4; E_6.
+##
+CartanMatMoversPlusNZ:= function(W)
+    local   bbb,  a,  l,  mat,  b,  i,  j;
+    
+    bbb:= List(Shapes(W), x-> Call(x, "Street"));
+    for a in bbb do 
+        Append(bbb, Call(a, "MoversPlus"));
+    od;
+    InfoZigzag1("Generated ", Length(bbb), " streets\n");
+    bbb:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
+    InfoZigzag1("Of which ", Length(bbb), " are nonzero streets\n");
+    
+    l:= Length(Shapes(W));
+    mat:= NullMat(l, l);
+    for b in bbb do
+        i:= Call(b, "Head");
+        j:= Call(b, "Tail");
+        mat[i][j]:= mat[i][j] + 1;
+    od;
+    
+    return mat;
+end;
+
+QuiverMatMoversPlusNZ:= function(W)
+    local   c;
+    c:= CartanMatMoversPlusNZ(W);
+    return c^0 - c^-1; # c = d^0 + d^1 + d2 + ... => d = 1 - 1/c.
+end;
 
 
 #############################################################################
@@ -1221,8 +1479,7 @@ end;
 ##
 ##  Local Variables:
 ##  mode:               gap
-##  minor-mode:         outline
-##  outline-regexp:     "#F\\|#V\\|#E\\|#A"
+##  outline-regexp:     "#F\\|#V\\|#E\\|#A\\|#O\\|#C"
 ##  fill-column:        77
 ##  End:
 ##

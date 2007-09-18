@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: methods.g,v 1.4 2006/07/26 18:14:05 goetz Exp $
+#A  $Id: methods.g,v 1.5 2007/09/18 08:38:59 goetz Exp $
 ##
 ##  This file contains support for methods.
 ##  
@@ -117,7 +117,6 @@ end;
 ##
 ##  Local Variables:
 ##  mode:               gap
-##  minor-mode:         outline
 ##  outline-regexp:     "#F\\|#V\\|#E\\|#A"
 ##  fill-column:        77
 ##  End:

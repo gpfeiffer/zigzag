@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.43 2007/08/30 13:00:47 goetz Exp $
+#A  $Id: shapes.g,v 1.44 2007/09/18 08:39:50 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -69,7 +69,7 @@ end;
 
 #############################################################################
 ##
-#F  IsShape( <obj> )  . . . . . . . . . . . . . . . . . . . . . . type check.
+#F  IsShape( <obj> ) . . . . . . . . . . . . . . . . . . . . . .  type check.
 ##
 ##  <#GAPDoc Label="IsShape">
 ##  <ManSection>
@@ -96,7 +96,7 @@ end;
 
 #############################################################################
 ##
-#F  Representative( <shape> ) . . . . . . . . . . . . . . . . representative.
+#F  Representative( <shape> )  . . . . . . . . . . . . . . .  representative.
 ##
 ##  A shape, as a class of parabolic subsets, has a representative.
 ##
@@ -123,7 +123,7 @@ end;
 
 #############################################################################
 ##
-#F  Rank( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . . rank.
+#F  Rank( <shape> )  . . . . . . . . . . . . . . . . . . . . . . . . .  rank.
 ##
 ##  The rank of a shape is the size of its elements.
 ##
@@ -149,7 +149,7 @@ end;
 
 #############################################################################  
 ##  
-#F  Elements( <shape> ) . . . . . . . . . . . . . . . . . . . . . . elements.
+#F  Elements( <shape> )  . . . . . . . . . . . . . . . . . . . . .  elements.
 ##  
 ##  <#GAPDoc Label="Elements(shape)">
 ##  <ManSection>
@@ -245,7 +245,7 @@ end;
 
 #############################################################################
 ##
-#F  ShapeOps.Edges( <shape> ) . . . . . . . . . . . . . . . . . . . .  edges.
+#F  ShapeOps.Edges( <shape> )  . . . . . . . . . . . . . . . . . . . . edges.
 ##
 ##  <#GAPDoc Label="Edges(shape)">
 ##  <ManSection>
@@ -361,7 +361,7 @@ end;
 
 #############################################################################
 ##
-#F  ShapeOps.Complement( <shape> )  . . . . . . . . . . . . . . . complement.
+#F  ShapeOps.Complement( <shape> ) . . . . . . . . . . . . . . .  complement.
 ##
 ##  <#GAPDoc Label="Complement(shape)">
 ##  <ManSection>
@@ -456,7 +456,7 @@ end;
 
 #############################################################################
 ##
-#F  ShapeOps.Relation( <shape> )  . . . . . . . . . . . . . . . . . relation.
+#F  ShapeOps.Relation( <shape> ) . . . . . . . . . . . . . . . . .  relation.
 ##
 ##  <#GAPDoc Label="Relation(shape)">
 ##  <ManSection>
@@ -620,7 +620,7 @@ end;
 
 #############################################################################
 ##
-#F  SubsetsShapes( <shapes> ) . . . . . . . . . . . . . . . . .  subsets.
+#F  SubsetsShapes( <shapes> )  . . . . . . . . . . . . . . . . . . . subsets.
 ##
 ##  <#GAPDoc Label="SubsetsShapes">
 ##  <ManSection>
@@ -647,7 +647,7 @@ end;
 
 #############################################################################
 ##
-#F  ComplementsShapes( <shapes> ) . . . . . . . . . . . . . . .  complements.
+#F  ComplementsShapes( <shapes> )  . . . . . . . . . . . . . .   complements.
 ##
 ##  <#GAPDoc Label="ComplementsShapes">
 ##  <ManSection>
@@ -676,7 +676,7 @@ end;
 
 #############################################################################
 ##
-#F  IncidenceMatShapes( <shapes> ) . . . . . . . . . . .  incidence matrix.
+#F  IncidenceMatShapes( <shapes> ) . . . . . . . . . . . .  incidence matrix.
 ##
 ##  returns a $2^n \times 2^n$ matrix of $0$s and $1$s describing the
 ##  containment of subsets in each other wrt to the list returned by
@@ -894,7 +894,7 @@ end;
 
 #############################################################################
 ##
-#F  ParabolicTom( <W> ) . . . . . . . . . . . . . . parabolic table of marks.
+#F  ParabolicTom( <W> )  . . . . . . . . . . . . .  parabolic table of marks.
 ##
 ##  <#GAPDoc Label="ParabolicTom">
 ##  <ManSection>

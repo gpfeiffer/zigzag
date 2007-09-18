@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: alleys.g,v 1.30 2007/07/09 14:17:02 goetz Exp $
+#A  $Id: alleys.g,v 1.31 2007/09/18 08:36:47 goetz Exp $
 ##
 ##  This file contains support for alleys and alley classes.
 ##  
@@ -348,6 +348,11 @@ end;
 ##    the reversed alley of <A>alley</A>.
 ##  </Returns>
 ##  <Description>
+##    An alley <M>a = (L; s, t, \dots)</M> of length <M>l(a) > 0</M>
+##    has a reverse <M>\overline{a} = (L; s^{w_L}, t^d, \dots)</M>,
+##    where <M>d = \omega(L_s, s)</M>.  When <M>a</M> is regarded as
+##    an edge, then <M>\overline{a}</M> is the reversed edge going in
+##    the opposite direction.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> L:= [1, 2, 3, 5];;
@@ -461,7 +466,6 @@ end;
 ##
 ##  Local Variables:
 ##  mode:               gap
-##  minor-mode:         outline
 ##  outline-regexp:     "#F\\|#V\\|#E\\|#A"
 ##  fill-column:        77
 ##  End:
