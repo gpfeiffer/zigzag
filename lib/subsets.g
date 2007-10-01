@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2007, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: subsets.g,v 1.20 2007/09/18 08:41:38 goetz Exp $
+#A  $Id: subsets.g,v 1.21 2007/10/01 08:41:24 goetz Exp $
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -96,8 +96,8 @@ end;
 ##
 #F  Print( <prefixes> ) . . . . . . . . . . . . . . . . . . . . . . .  print.
 ##
-PrefixesOps.Print:= function(this)
-    Print("Prefixes( ", this.W, ", ", this.w, " )");
+PrefixesOps.Print:= function(self)
+    Print("Prefixes( ", self.W, ", ", self.w, " )");
 end;
 
 
@@ -125,12 +125,12 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-PrefixesOps.Elements:= function(this)
+PrefixesOps.Elements:= function(self)
     local W, X, Y, Z, S, i, x, y, k, edges, perm;
 
-    W:= this.W;
+    W:= self.W;
     S:= W.rootInclusion{[1 .. W.semisimpleRank]};
-    Y:= [this.w];  X:= [];  edges:= [];  k:= 0;
+    Y:= [self.w];  X:= [];  edges:= [];  k:= 0;
     while Y <> [] do
         Append(X, Y);
         Z:= [];
@@ -156,7 +156,7 @@ PrefixesOps.Elements:= function(this)
             fi;
         od;
     od;
-    this.edges:= edges;
+    self.edges:= edges;
     
     return X;
 end;
@@ -212,15 +212,15 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-PrefixesOps.Iterator:= function(this)
+PrefixesOps.Iterator:= function(self)
 
     local   W,  S,  head,  focus,  back,  itr;
 
-    W:= this.W;
+    W:= self.W;
     S:= W.rootInclusion{[1 .. W.semisimpleRank]};
 
     head:= rec();
-    focus:= rec(w:= this.w, next:= head);
+    focus:= rec(w:= self.w, next:= head);
     back:= focus; 
 
     itr:= rec();
@@ -299,9 +299,9 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-PrefixesOps.Edges:= function(this)
-    Call(this, "Elements");  # expand the prefixes.
-    return this.edges;
+PrefixesOps.Edges:= function(self)
+    Call(self, "Elements");  # expand the prefixes.
+    return self.edges;
 end;
 
 
@@ -335,8 +335,8 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-PrefixesOps.Relation:= function(this)
-    return Relation(List(Call(this, "Edges"), Set));
+PrefixesOps.Relation:= function(self)
+    return Relation(List(Call(self, "Edges"), Set));
 end;
 
 
@@ -416,8 +416,8 @@ end;
 ##
 #F  Print( <interval> )  . . . . . . . . . . . . . . . . . . . . . . . print.
 ##
-WeakIntervalOps.Print:= function(this)
-    Print("WeakInterval( ", this.W, ", ", this.bot, ", ", this.top, " )");
+WeakIntervalOps.Print:= function(self)
+    Print("WeakInterval( ", self.W, ", ", self.bot, ", ", self.top, " )");
 end;
 
 
@@ -427,10 +427,10 @@ end;
 ##
 ##  the interval [bot, top] is isomorphic to the interval [1, bot^-1 * top].
 ##
-WeakIntervalOps.Elements:= function(this)
+WeakIntervalOps.Elements:= function(self)
     local   list;
-    list:= this.bot * Elements(this.pre);
-    this.perm:= Sortex(list);
+    list:= self.bot * Elements(self.pre);
+    self.perm:= Sortex(list);
     return list;
 end;
 
@@ -439,12 +439,12 @@ end;
 ##
 #F  Iterator( <interval> ) . . . . . . . . . . . . . . . . . . . .  iterator.
 ##
-WeakIntervalOps.Iterator:= function(this)
+WeakIntervalOps.Iterator:= function(self)
     local   preitr,  itr;
-    preitr:= Iterator(this.pre);
+    preitr:= Iterator(self.pre);
     itr:= rec(hasNext:= preitr.hasNext);
     itr.next:= function()
-        return this.bot * preitr.next();
+        return self.bot * preitr.next();
     end;
     return itr;
 end;
@@ -454,8 +454,8 @@ end;
 ##
 #F  Size( <interval> ) . . . . . . . . . . . . . . . . . . . . . . . .  size.
 ##
-WeakIntervalOps.Size:= function(this)
-    return Size(this.pre);
+WeakIntervalOps.Size:= function(self)
+    return Size(self.pre);
 end;
 
 
@@ -463,8 +463,8 @@ end;
 ##
 #F  WeakIntervalOps.Relation( <interval> ) . . . . . . . . . . . .  relation.
 ##
-WeakIntervalOps.Relation:= function(this)
-    return Call(this.pre, "Relation")^this.perm;
+WeakIntervalOps.Relation:= function(self)
+    return Call(self.pre, "Relation")^self.perm;
 end;
 
 
@@ -507,13 +507,13 @@ ParabolicTransversalOps:=
 ##
 ParabolicTransversal:= function(W, J)
     ##??? need to check the arguments?
-    local this;
-    this:= Prefixes(W, LongestCoxeterElement(ReflectionSubgroup(W, J))
+    local self;
+    self:= Prefixes(W, LongestCoxeterElement(ReflectionSubgroup(W, J))
                    * LongestCoxeterElement(W));
-    this.isParabolicTransversal:= true;
-    this.operations:= ParabolicTransversalOps;
-    this.J:= J;
-    return this;
+    self.isParabolicTransversal:= true;
+    self.operations:= ParabolicTransversalOps;
+    self.J:= J;
+    return self;
 end;
 
 
@@ -541,8 +541,8 @@ end;
 ##
 #F  Print( <transversal> )  . . . . . . . . . . . . . . . . . . . . .  print.
 ##
-ParabolicTransversalOps.Print:= function(this)
-    Print("ParabolicTransversal( ", this.W, ", ", this.J, " )");
+ParabolicTransversalOps.Print:= function(self)
+    Print("ParabolicTransversal( ", self.W, ", ", self.J, " )");
 end;
 
 
@@ -550,8 +550,8 @@ end;
 ##
 #F  Size( <transversal> ) . . . . . . . . . . . . . . . . . . . . . . . size.
 ##
-ParabolicTransversalOps.Size:= function(this)
-    return Index(this.W, ReflectionSubgroup(this.W, this.J));
+ParabolicTransversalOps.Size:= function(self)
+    return Index(self.W, ReflectionSubgroup(self.W, self.J));
 end;
 
 
@@ -562,11 +562,11 @@ end;
 ##  <w> is in the parabolic transversal <transversal> if and only if its 
 ##  LeftDescentSet  is disjoint from J.
 ##
-ParabolicTransversalOps.\in:= function(w, this)
+ParabolicTransversalOps.\in:= function(w, self)
     local W, res, j;
-    W:= this.W;  res:= [];
+    W:= self.W;  res:= [];
     for j in W.rootInclusion{[1 .. W.semisimpleRank]} do
-        if j in this.J and j^w > W.parentN then
+        if j in self.J and j^w > W.parentN then
             return false;
         fi;
     od;
@@ -622,18 +622,18 @@ DescentClassOps:= OperationsRecord("DescentClassOps", WeakIntervalOps);
 ##??? ReflectionSubgroup safe?
 ##
 DescentClass:= function(W, K)
-    local   n,  w1,  w2,  this;
+    local   n,  w1,  w2,  self;
     ##??? need to check the arguments?
     
     n:= W.semisimpleRank;   
     w1:= LongestCoxeterElement(ReflectionSubgroup(W, Difference([1..n], K)));
     w2:= LongestCoxeterElement(ReflectionSubgroup(W, K)) 
          * LongestCoxeterElement(W);
-    this:= WeakInterval(W, w1, w2);   
-    this.operations:= DescentClassOps;
-    this.isDescentClass:= true;
-    this.K:= K;
-    return this;
+    self:= WeakInterval(W, w1, w2);   
+    self.operations:= DescentClassOps;
+    self.isDescentClass:= true;
+    self.K:= K;
+    return self;
 end;
 
 
@@ -661,8 +661,8 @@ end;
 ##
 #F  Print( <class> )  . . . . . . . . . . . . . . . . . . . . . . . .  print.
 ##
-DescentClassOps.Print:= function(this)
-    Print("DescentClass( ", this.W, ", ", this.K, " )");
+DescentClassOps.Print:= function(self)
+    Print("DescentClass( ", self.W, ", ", self.K, " )");
 end;
 
 
@@ -673,15 +673,15 @@ end;
 ##  <w> is in the descent class <class> if and only if its LeftDescentSet
 ##  is the complement of K in S.
 ##
-DescentClassOps.\in:= function(w, this)
+DescentClassOps.\in:= function(w, self)
     local W, res, j;
-    W:= this.W;  res:= [];
+    W:= self.W;  res:= [];
     for j in W.rootInclusion{[1 .. W.semisimpleRank]} do
         if j^w <= W.parentN then
             Add(res, j);
         fi;
     od;
-    return res = this.K;
+    return res = self.K;
 end;
 
 
@@ -689,8 +689,8 @@ end;
 ##
 #F  Representative( <class> ) . . . . . . . . . . . . . . . . representative.
 ##
-DescentClassOps.Representative:= function(this)
-    return this.bot;  # which is $w_{\bar{K}}$.
+DescentClassOps.Representative:= function(self)
+    return self.bot;  # which is $w_{\bar{K}}$.
 end;
 
 
@@ -703,13 +703,13 @@ end;
 ##  Yes:
 ##  |Y_K| = \sum_{J contains K} (-1)^{|J - K|} |X_J|
 ##
-DescentClassOps.Size:= function(this)
+DescentClassOps.Size:= function(self)
     local   sum,  L;
 
     sum:= 0;    # loop over all J above K.
-    for L in Combinations(Difference([1..this.W.semisimpleRank], this.K)) do
+    for L in Combinations(Difference([1..self.W.semisimpleRank], self.K)) do
         sum:= sum + (-1)^Size(L) 
-              * Size(ParabolicTransversal(this.W, Union(this.K, L)));
+              * Size(ParabolicTransversal(self.W, Union(self.K, L)));
     od;
     return sum;
 end;
@@ -800,8 +800,8 @@ end;
 ##
 #F  Print( <transversal> )  . . . . . . . . . . . . . . . . . . . . .  print.
 ##
-LeftParabolicTransversalOps.Print:= function(this)
-    Print("LeftParabolicTransversal( ", this.W, ", ", this.J, " )");
+LeftParabolicTransversalOps.Print:= function(self)
+    Print("LeftParabolicTransversal( ", self.W, ", ", self.J, " )");
 end;
 
 
@@ -829,8 +829,8 @@ end;
 ##
 #F  Size( <transversal> ) . . . . . . . . . . . . . . . . . . . . . . . size.
 ##
-LeftParabolicTransversalOps.Size:= function(this)
-    return Size(this.right);
+LeftParabolicTransversalOps.Size:= function(self)
+    return Size(self.right);
 end;
 
 
@@ -838,8 +838,8 @@ end;
 ##
 #F  Elements( < transversal> )  . . . . . . . . . . . . . . . . . . elements.
 ##
-LeftParabolicTransversalOps.Elements:= function(this)
-    return Set(List(Elements(this.right), x-> x^-1));
+LeftParabolicTransversalOps.Elements:= function(self)
+    return Set(List(Elements(self.right), x-> x^-1));
 end;
 
 
@@ -847,9 +847,9 @@ end;
 ##
 #F  Iterator( < transversal> )  . . . . . . . . . . . . . . . . . . iterator.
 ##
-LeftParabolicTransversalOps.Iterator:= function(this)
+LeftParabolicTransversalOps.Iterator:= function(self)
     local   right,  itr;
-    right:= Iterator(this.right);
+    right:= Iterator(self.right);
     itr:= rec(hasNext:= right.hasNext());
     itr.next:= function()
         return right.next()^-1;
@@ -862,8 +862,8 @@ end;
 ##
 #F  <w> in <transversal> . . . . . . . . . . . . . . . . . . . .  membership.
 ## 
-LeftParabolicTransversalOps.\in:= function(w, this)
-    return w^-1 in this.right;
+LeftParabolicTransversalOps.\in:= function(w, self)
+    return w^-1 in self.right;
 end;
 
 
@@ -920,9 +920,9 @@ end;
 ##
 #F  Print( <transversal> )  . . . . . . . . . . . . . . . . . . . . .  print.
 ##
-DoubleParabolicTransversalOps.Print:= function(this)
-    Print("DoubleParabolicTransversal( ", this.W, ", ", this.J, ", ", 
-          this.K, " )");
+DoubleParabolicTransversalOps.Print:= function(self)
+    Print("DoubleParabolicTransversal( ", self.W, ", ", self.J, ", ", 
+          self.K, " )");
 end;
 
 
@@ -953,11 +953,11 @@ end;
 ##  The algorithm used here is different from  Algorithm E (p.51), because
 ##  that one doesn't actually find all double cosets :-(
 ##
-DoubleParabolicTransversalOps.Elements:= function(this)
+DoubleParabolicTransversalOps.Elements:= function(self)
     local   left,  itr,  list,  w;
     
-    left:= LeftParabolicTransversal(this.W, this.K);
-    itr:= Iterator(ParabolicTransversal(this.W, this.J));
+    left:= LeftParabolicTransversal(self.W, self.K);
+    itr:= Iterator(ParabolicTransversal(self.W, self.J));
     list:= [];
     while itr.hasNext() do
         w:= itr.next();
@@ -968,8 +968,8 @@ DoubleParabolicTransversalOps.Elements:= function(this)
     
     return Set(list);
         
-#    return Filtered(Elements(ParabolicTransversal(this.W, this.J)),
-#                   w-> w in LeftParabolicTransversal(this.W, this.K));
+#    return Filtered(Elements(ParabolicTransversal(self.W, self.J)),
+#                   w-> w in LeftParabolicTransversal(self.W, self.K));
 end;
 
 
@@ -1028,8 +1028,8 @@ end;
 ##
 #F  Print( <xjkl> ) . . . . . . . . . . . . . . . . . . . . . . . . .  print.
 ##
-XJKLOps.Print:= function(this)
-    Print("XJKL( ", this.W, ", ", this.J, ", ", this.K, ", ", this.L, " )");
+XJKLOps.Print:= function(self)
+    Print("XJKL( ", self.W, ", ", self.J, ", ", self.K, ", ", self.L, " )");
 end;
 
 
@@ -1056,12 +1056,12 @@ end;
 ##
 #F  Elements( <xjkl> ) . . . . . . . . . . . . . . . . . . . . . .  elements.
 ##
-XJKLOps.Elements:= function(this)
+XJKLOps.Elements:= function(self)
     return 
-      Filtered(Elements(DoubleParabolicTransversal(this.W, this.J, this.K)),
+      Filtered(Elements(DoubleParabolicTransversal(self.W, self.J, self.K)),
               d -> Intersection(
-                      List(OnSets(this.J, d), x-> (x-1) mod this.W.parentN + 1),
-                      this.K) = this.L);
+                      List(OnSets(self.J, d), x-> (x-1) mod self.W.parentN + 1),
+                      self.K) = self.L);
 end;
 
 

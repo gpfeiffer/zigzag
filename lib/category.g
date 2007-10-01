@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2007, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: category.g,v 1.3 2007/09/18 08:37:24 goetz Exp $
+#A  $Id: category.g,v 1.4 2007/10/01 08:47:52 goetz Exp $
 ##
 ##  This file contains support for the category of shapes and its elements.
 ##  
@@ -63,8 +63,8 @@ end;
 ##  
 #F  Print( <category> )  . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-CategoryOps.Print:= function(this)
-    Print("Category( ", this.W, " )");
+CategoryOps.Print:= function(self)
+    Print("Category( ", self.W, " )");
 end;
 
 
@@ -115,38 +115,38 @@ end;
 ##  
 #F  Print( <categoryelt> ) . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-CategoryEltOps.Print:= function(this)
-    Print("CategoryElt( ", this.W, ", ", this.elt, " )");
+CategoryEltOps.Print:= function(self)
+    Print("CategoryElt( ", self.W, ", ", self.elt, " )");
 end;
 
 #############################################################################
-CategoryEltOps.Source:= function(this)
-    return this.elt[1];
+CategoryEltOps.Source:= function(self)
+    return self.elt[1];
 end;
 
 #############################################################################
-CategoryEltOps.Target:= function(this)
-    return Call(Call(this, "GroupoidElt"), "Target");    
+CategoryEltOps.Target:= function(self)
+    return Call(Call(self, "GroupoidElt"), "Target");    
 end;
 
 #############################################################################
-CategoryEltOps.GroupoidElt:= function(this)
+CategoryEltOps.GroupoidElt:= function(self)
     local   w,  d,  J,  s,  L,  a;
     
-    w:= this.W.identity;
+    w:= self.W.identity;
     d:= function(J, L)
-        return LongestCoxeterElement(ReflectionSubgroup(this.W, J))
-               * LongestCoxeterElement(ReflectionSubgroup(this.W, L));
+        return LongestCoxeterElement(ReflectionSubgroup(self.W, J))
+               * LongestCoxeterElement(ReflectionSubgroup(self.W, L));
     end;
-    J:= this.elt[1];
-    for s in this.elt[2] do
+    J:= self.elt[1];
+    for s in self.elt[2] do
         L:= Union(J, [s]);
         a:= d(J, L);
         w:= w * a;
         J:= OnSets(J, a);
     od;
     
-    return GroupoidElt(this.W, [this.elt[1], w]);
+    return GroupoidElt(self.W, [self.elt[1], w]);
 end;    
         
 
@@ -168,15 +168,15 @@ end;
 ##
 ##  restrict (L; s, t, ...) to J \subset L
 ##
-CategoryEltOps.Restricted:= function(this, J)
+CategoryEltOps.Restricted:= function(self, J)
     local   L,  seq,  K,  s,  c,  d;
-    L:= this.elt[1];
+    L:= self.elt[1];
     if not IsSubset(L, J) then
         Error("<J> must be a subset");
     fi;
     
     seq:= [];  K:= J;
-    for s in this.elt[2] do
+    for s in self.elt[2] do
         c:= CategoryElt(W, [L, [s]]);
         c:= Call(c, "GroupoidElt");
         d:= c.elt[2];

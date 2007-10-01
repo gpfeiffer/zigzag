@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2007, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: streets.g,v 1.21 2007/09/28 15:42:32 goetz Exp $
+#A  $Id: streets.g,v 1.22 2007/10/01 08:43:26 goetz Exp $
 ##
 ##  This file contains support for streets aka alley classes.
 ##  
@@ -84,8 +84,8 @@ end;
 ##  
 #F  Print( <street> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-StreetOps.Print:= function(this)
-    Print("Street( ", this.W, ", ", this.alley, " )");
+StreetOps.Print:= function(self)
+    Print("Street( ", self.W, ", ", self.alley, " )");
 end;
 
 
@@ -111,8 +111,8 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-StreetOps.Representative:= function(this)
-    return this.alley;
+StreetOps.Representative:= function(self)
+    return self.alley;
 end;
 
 #############################################################################  
@@ -137,17 +137,17 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-StreetOps.Elements:= function(this)
+StreetOps.Elements:= function(self)
     local   elm,  W,  sh,  i,  j,  L,  list,  o,  x,  J,  t;
     
     elm:= [];
-    W:= this.W;
+    W:= self.W;
     
     sh:= Shapes(W);  # carefully bring in sync with shape internals ...
-    i:= PositionProperty(sh, x-> this.alley[1] in x);
-    j:= Position(Elements(sh[i]), this.alley[1]);
+    i:= PositionProperty(sh, x-> self.alley[1] in x);
+    j:= Position(Elements(sh[i]), self.alley[1]);
     L:= sh[i].J;
-    list:= OnTuples(this.alley[2], sh[i].transversal[j]^-1);
+    list:= OnTuples(self.alley[2], sh[i].transversal[j]^-1);
     o:= Orbit(Call(sh[i], "Complement"), list, OnTuples);
     for x in sh[i].transversal do
         J:= OnSets(L, x);
@@ -190,18 +190,18 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-StreetOps.Movers:= function(this)
+StreetOps.Movers:= function(self)
     local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  new;
     
-    n:= this.W.semisimpleRank;
+    n:= self.W.semisimpleRank;
     movers:= [];
-    for a in Elements(this) do
+    for a in Elements(self) do
         for i in [1..n] do
             if not i in a[1] then
                 b:= [Union(a[1], [i]), Concatenation([i], a[2])];
                 K:= a[1];  L:= b[1];
-                d:= LongestCoxeterElement(ReflectionSubgroup(this.W, K))
-                    * LongestCoxeterElement(ReflectionSubgroup(this.W, L));
+                d:= LongestCoxeterElement(ReflectionSubgroup(self.W, K))
+                    * LongestCoxeterElement(ReflectionSubgroup(self.W, L));
                 c:= OnAlleys(a, d);
                 
                 if c <> a then
@@ -213,7 +213,7 @@ StreetOps.Movers:= function(this)
     
     new:= [];
     while movers <> [] do
-        a:= Street(this.W, movers[1]);
+        a:= Street(self.W, movers[1]);
         Add(new, a);
         movers:= Difference(movers, Elements(a));
     od;
@@ -222,18 +222,18 @@ StreetOps.Movers:= function(this)
 end;
 
 
-StreetOps.MoversPlus:= function(this)
+StreetOps.MoversPlus:= function(self)
     local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  new;
     
-    n:= this.W.semisimpleRank;
+    n:= self.W.semisimpleRank;
     movers:= [];
-    for a in Elements(this) do
+    for a in Elements(self) do
         for i in [1..n] do
             if not i in a[1] then
                 b:= [Union(a[1], [i]), Concatenation([i], a[2])];
                 K:= a[1];  L:= b[1];
-                d:= LongestCoxeterElement(ReflectionSubgroup(this.W, K))
-                    * LongestCoxeterElement(ReflectionSubgroup(this.W, L));
+                d:= LongestCoxeterElement(ReflectionSubgroup(self.W, K))
+                    * LongestCoxeterElement(ReflectionSubgroup(self.W, L));
                 c:= OnAlleys(a, d);
                 
                 if c <> a then
@@ -245,8 +245,8 @@ StreetOps.MoversPlus:= function(this)
     
     new:= [];
     while movers <> [] do
-        a:= Street(this.W, movers[1]);
-        b:= Street(this.W, ReversedAlley(this.W, movers[1]));
+        a:= Street(self.W, movers[1]);
+        b:= Street(self.W, ReversedAlley(self.W, movers[1]));
         Add(new, a);
         movers:= Difference(movers, Elements(a));
         movers:= Difference(movers, Elements(b));
@@ -287,18 +287,18 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-StreetOps.Shakers:= function(this)
+StreetOps.Shakers:= function(self)
     local   n,  shakers,  a,  i,  b,  K,  L,  d,  c,  new;
     
-    n:= this.W.semisimpleRank;
+    n:= self.W.semisimpleRank;
     shakers:= [];
-    for a in Elements(this) do
+    for a in Elements(self) do
         for i in [1..n] do
             if not i in a[1] then
                 b:= [Union(a[1], [i]), Concatenation([i], a[2])];
                 K:= a[1];  L:= b[1];
-                d:= LongestCoxeterElement(ReflectionSubgroup(this.W, K))
-                    * LongestCoxeterElement(ReflectionSubgroup(this.W, L));
+                d:= LongestCoxeterElement(ReflectionSubgroup(self.W, K))
+                    * LongestCoxeterElement(ReflectionSubgroup(self.W, L));
                 c:= OnAlleys(a, d);
                 
                 if c = a then
@@ -310,7 +310,7 @@ StreetOps.Shakers:= function(this)
     
     new:= [];
     while shakers <> [] do
-        a:= Street(this.W, shakers[1]);
+        a:= Street(self.W, shakers[1]);
         Add(new, a);
         shakers:= Difference(shakers, Elements(a));
     od;
@@ -319,54 +319,54 @@ StreetOps.Shakers:= function(this)
 end;
 
 #############################################################################
-StreetOps.Suffix:= function(this)
+StreetOps.Suffix:= function(self)
     
     # an alley of length 0 has no suffix.
-    if this.alley[2] = [] then return false; fi;
+    if self.alley[2] = [] then return false; fi;
     
     # otherwise, form the longest nontrivial suffix.
-    return Street(this.W, [Difference(this.alley[1], this.alley[2]{[1]}),
-                   this.alley[2]{[2..Length(this.alley[2])]}]);
+    return Street(self.W, [Difference(self.alley[1], self.alley[2]{[1]}),
+                   self.alley[2]{[2..Length(self.alley[2])]}]);
 end;
 
 ##  TODO: find a more systematic way to list all inverse suffixes.
-StreetOps.InverseSuffix:= function(this)
-    return Concatenation(Call(this, "Movers"), Call(this, "Shakers"));
+StreetOps.InverseSuffix:= function(self)
+    return Concatenation(Call(self, "Movers"), Call(self, "Shakers"));
 end;
 
 
-StreetOps.Prefix:= function(this)
+StreetOps.Prefix:= function(self)
     
     # an alley of length 0 has no prefix.
-    if this.alley[2] = [] then return false; fi;
+    if self.alley[2] = [] then return false; fi;
     
     # otherwise, form the longest nontrivial prefix.
-    return Street(this.W, [this.alley[1], 
-                   this.alley[2]{[1..Length(this.alley[2])-1]}]);
+    return Street(self.W, [self.alley[1], 
+                   self.alley[2]{[1..Length(self.alley[2])-1]}]);
 end;
 
-StreetOps.InversePrefix:= function(this)
+StreetOps.InversePrefix:= function(self)
     local   stab,  children,  o,  new;
     
-    if IsBound(this.stab) then
-        stab:= this.stab;
-    elif IsBound(this.parent) then
-        stab:= this.parent.stab;
-        stab:= Stabilizer(stab, this.alley[2][Length(this.alley[2])]);
+    if IsBound(self.stab) then
+        stab:= self.stab;
+    elif IsBound(self.parent) then
+        stab:= self.parent.stab;
+        stab:= Stabilizer(stab, self.alley[2][Length(self.alley[2])]);
     else
-        stab:= StabilizerAlley(this.W, this.alley);
+        stab:= StabilizerAlley(self.W, self.alley);
     fi;
-    this.stab:= stab;
+    self.stab:= stab;
     
     children:= [];
-    for o in Orbits(stab, ApplyFunc(Difference, this.alley)) do
-        new:= [this.alley[1], Copy(this.alley[2])];
+    for o in Orbits(stab, ApplyFunc(Difference, self.alley)) do
+        new:= [self.alley[1], Copy(self.alley[2])];
         Add(new[2], o[1]);
-        Add(children, Street(this.W, new));
+        Add(children, Street(self.W, new));
     od;
     
     for o in children do
-        o.parent:= this;
+        o.parent:= self;
     od;
     
     return children;
@@ -455,21 +455,21 @@ EssentialStreets:= function(W)
 end;
 
 #############################################################################
-StreetOps.Transversal:= function(this)
+StreetOps.Transversal:= function(self)
     #  FIXME:
     return 0;
 end;
 
 #############################################################################
-StreetOps.Edges:= function(this)
+StreetOps.Edges:= function(self)
     local   W,  S,  head,  hhh,  eee,  all,  edges,  a,  new,  l,  s;
     
-    W:= this.W;
+    W:= self.W;
     S:= [1..W.semisimpleRank];
-    head:= Shapes(W)[Call(this, "Head")];
+    head:= Shapes(W)[Call(self, "Head")];
     hhh:= Elements(head);
     eee:= Call(head, "Edges");
-    all:= Elements(this);
+    all:= Elements(self);
     edges:= [];
     for a in all do
         new:= [];
@@ -485,44 +485,44 @@ StreetOps.Edges:= function(this)
 end;
 
 #############################################################################
-StreetOps.Relation:= function(this)
-    return Relation(List(Call(this, "Edges"), Set));
+StreetOps.Relation:= function(self)
+    return Relation(List(Call(self, "Edges"), Set));
 end;
 
 
 #############################################################################
-StreetOps.SpanningTree:= function(this)
+StreetOps.SpanningTree:= function(self)
     #  FIXME:
     return 0;
 end;
 
 
 #############################################################################
-StreetOps.Tail:= function(this)
-    return PositionProperty(Shapes(this.W), 
-                   x-> ApplyFunc(Difference, this.alley) in x);
+StreetOps.Tail:= function(self)
+    return PositionProperty(Shapes(self.W), 
+                   x-> ApplyFunc(Difference, self.alley) in x);
 end;
 
 #############################################################################
-StreetOps.Head:= function(this)
-    return PositionProperty(Shapes(this.W), x-> this.alley[1] in x);
+StreetOps.Head:= function(self)
+    return PositionProperty(Shapes(self.W), x-> self.alley[1] in x);
 end;
 
 
 ###
 ###  next:  the mu map.
 ###
-StreetOps.Matrix:= function(this)
+StreetOps.Matrix:= function(self)
     local   sh,  L,  J,  subL,  mat,  e,  i;
 
-    sh:= Shapes(this.W);
-    L:= Call(this, "Head");
-    J:= Call(this, "Tail");
+    sh:= Shapes(self.W);
+    L:= Call(self, "Head");
+    J:= Call(self, "Tail");
     subL:= Elements(sh[L]);
     mat:= NullMat(Size(sh[L]), Size(sh[J]));
-    for e in Elements(this) do
+    for e in Elements(self) do
         i:= Position(subL, e[1]);
-        mat[i]:= mat[i] + DeltaAlley(this.W, e);
+        mat[i]:= mat[i] + DeltaAlley(self.W, e);
     od;
     return rec(tail:= J, head:= L, mat:= mat);
 end;
@@ -560,14 +560,14 @@ SumAlleyMatrices:= function(a, b)
 end;
 
 
-StreetOps.Delta:= function(this)
+StreetOps.Delta:= function(self)
     local   sh,  J,  mat,  e;
 
-    sh:= Shapes(this.W);
-    J:= Call(this, "Tail");
+    sh:= Shapes(self.W);
+    J:= Call(self, "Tail");
     mat:= List(Elements(sh[J]), x-> 0);
-    for e in Elements(this) do
-        mat:= mat + DeltaAlley(this.W, e);
+    for e in Elements(self) do
+        mat:= mat + DeltaAlley(self.W, e);
     od;
     return rec(support:= J, mat:= mat);
 end;
@@ -580,14 +580,14 @@ DeltaPath:= function(path)
     return rec(support:= p.tail, mat:= Sum(p.mat));
 end;
 
-StreetOps.BigMatrix:= function(this)
+StreetOps.BigMatrix:= function(self)
     local   sh,  m,  l,  mat;
     
-    sh:= Shapes(this.W); 
+    sh:= Shapes(self.W); 
     m:= Sum(sh, Size);
     l:= SetComposition(List(sh, Size));
     mat:= NullMat(m, m);
-    m:= Call(this, "Matrix");
+    m:= Call(self, "Matrix");
     mat{l[m.head]}{l[m.tail]}:= m.mat;
     return mat;
 end;
@@ -682,8 +682,8 @@ StreetOps.\*:= function(l, r)
 end;
 
 #############################################################################
-StreetOps.Length:= function(this)
-    return Length(this.alley[2]);
+StreetOps.Length:= function(self)
+    return Length(self.alley[2]);
 end;
 
 #############################################################################
@@ -696,13 +696,13 @@ end;
 ##  alley classes of larger depth tend to map to 0.
 ##
 ##
-StreetOps.Depth:= function(this)
-    return Index(StabilizerAlley(this.W, [this.alley[1], []]),
-                 StabilizerAlley(this.W, this.alley));
+StreetOps.Depth:= function(self)
+    return Index(StabilizerAlley(self.W, [self.alley[1], []]),
+                 StabilizerAlley(self.W, self.alley));
 end;
 
-StreetOps.Width:= function(this)
-    return Size(Shapes(this.W)[Call(this, "Head")]);
+StreetOps.Width:= function(self)
+    return Size(Shapes(self.W)[Call(self, "Head")]);
 end;
 
 #############################################################################
@@ -710,30 +710,30 @@ end;
 ##  Find the last irreducible factor (actually the first when you read
 ##  left to right ...)
 ##
-StreetOps.LongestSuffix:= function(this)
+StreetOps.LongestSuffix:= function(self)
     local   fff,  i,  lft,  rgt,  pro;
     
     # idempotent case first.
-    if this.alley[2] = [] then
-        return this;
+    if self.alley[2] = [] then
+        return self;
     fi;
     
     # short case next.
-    if Length(this.alley[2]) = 1 then
-        return this;
+    if Length(self.alley[2]) = 1 then
+        return self;
     fi;
     
-    fff:= FactorsAlley(this.alley);
+    fff:= FactorsAlley(self.alley);
     for i in [1..Length(fff)-1] do
-        lft:= Street(this.W, ProductAlleyList(fff{[1..i]}));
-        rgt:= Street(this.W, ProductAlleyList(fff{[i+1..Length(fff)]}));
+        lft:= Street(self.W, ProductAlleyList(fff{[1..i]}));
+        rgt:= Street(self.W, ProductAlleyList(fff{[i+1..Length(fff)]}));
         pro:= lft * rgt;
-        if Length(pro) = 1 and pro[1] = this then
+        if Length(pro) = 1 and pro[1] = self then
             return lft;
         fi;
     od;
     
-    return this;
+    return self;
           
 end;
 

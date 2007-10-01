@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: shapes.g,v 1.44 2007/09/18 08:39:50 goetz Exp $
+#A  $Id: shapes.g,v 1.45 2007/10/01 08:45:53 goetz Exp $
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -89,8 +89,8 @@ end;
 ##  
 #F  Print( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-ShapeOps.Print:= function(this)
-    Print("Shape( ", this.W, ", ", this.J, " )");
+ShapeOps.Print:= function(self)
+    Print("Shape( ", self.W, ", ", self.J, " )");
 end;
 
 
@@ -116,8 +116,8 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-ShapeOps.Representative:= function(this)
-    return this.J;
+ShapeOps.Representative:= function(self)
+    return self.J;
 end;
 
 
@@ -142,8 +142,8 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-ShapeOps.Rank:= function(this)
-    return Size(this.J);
+ShapeOps.Rank:= function(self)
+    return Size(self.J);
 end;
 
 
@@ -172,12 +172,12 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-ShapeOps.Elements:= function(this)
+ShapeOps.Elements:= function(self)
     local   W,  S,  K,  L, onParabolics,  orbit,  transversal,  edges,  k,  
             l,  i,  pos,  perm, d, e;
 
     # get the Coxeter System (W, S) to work in.
-    W:= this.W;  S:= W.rootInclusion{[1..W.semisimpleRank]};
+    W:= self.W;  S:= W.rootInclusion{[1..W.semisimpleRank]};
 
     # how to determine the image of $J \subseteq S$ under a generator.
     # Given $J \subseteq S$ and $i \in S \setminus J$, determine
@@ -195,7 +195,7 @@ ShapeOps.Elements:= function(this)
     end;
 
     # extended orbit algorithm.
-    orbit:= [this.J];  transversal:= [()];  edges:= [];  k:= 0;  l:= 1;
+    orbit:= [self.J];  transversal:= [()];  edges:= [];  k:= 0;  l:= 1;
     for K in orbit do
         k:= k+1;  edges[k]:= [];
         for i in Difference(S, K) do 
@@ -211,15 +211,15 @@ ShapeOps.Elements:= function(this)
 
     # sort orbit lexicographically and keep transversal, edges in sync.
     perm:= Sortex(orbit);
-    this.transversal:= Permuted(transversal, perm);
+    self.transversal:= Permuted(transversal, perm);
     edges:= Permuted(edges, perm);
     for e in edges do
         for i in [1..Length(e)] do
             if IsBound(e[i]) then e[i].v:= e[i].v^perm; fi;
         od;
     od;
-    this.edges:= edges;
-    this.root:= 1^perm;  ##  the position of J in the list.
+    self.edges:= edges;
+    self.root:= 1^perm;  ##  the position of J in the list.
 
     return orbit;
 end;
@@ -296,9 +296,9 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-ShapeOps.Edges:= function(this)
-    Call(this, "Elements");  # expand the shape.
-    return this.edges;
+ShapeOps.Edges:= function(self)
+    Call(self, "Elements");  # expand the shape.
+    return self.edges;
 end;
 
 
@@ -337,9 +337,9 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##    
-ShapeOps.Transversal:= function(this)
-    Call(this, "Elements");  # expand the shape.
-    return this.transversal;
+ShapeOps.Transversal:= function(self)
+    Call(self, "Elements");  # expand the shape.
+    return self.transversal;
 end;
 
 
@@ -347,15 +347,15 @@ end;
 ##  
 #F  Display( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . display.
 ##  
-ShapeOps.Display:= function(this, options)
+ShapeOps.Display:= function(self, options)
 
     # determine name, if necessary.
-    if not IsBound(this.name) then
-        this.name:= CartanName(ReflectionSubgroup(this.W, this.J));
-        if this.name = "" then this.name:= "1"; fi;  # trivial subgroup.
+    if not IsBound(self.name) then
+        self.name:= CartanName(ReflectionSubgroup(self.W, self.J));
+        if self.name = "" then self.name:= "1"; fi;  # trivial subgroup.
     fi;
 
-    Print(this.name, " [", Size(this), "]");
+    Print(self.name, " [", Size(self), "]");
 end;
 
 
@@ -406,11 +406,11 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-ShapeOps.Complement:= function(this)
+ShapeOps.Complement:= function(self)
     local   edges,  t,  eyes,  ears,  i,  e,  j,  nor;
 
-    edges:= Call(this, "Edges");  
-    t:= Call(this, "Transversal");
+    edges:= Call(self, "Edges");  
+    t:= Call(self, "Transversal");
     eyes:= [];  ears:= [];  i:= 0;
     for e in edges do
         i:= i+1;
@@ -425,7 +425,7 @@ ShapeOps.Complement:= function(this)
         od;
     od;
 
-    nor:= Subgroup(this.W, Union(ears, eyes));
+    nor:= Subgroup(self.W, Union(ears, eyes));
     nor.ears:= ears;  nor.eyes:= eyes;
     return nor;
 end;
@@ -480,9 +480,9 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-ShapeOps.Relation:= function(this)
+ShapeOps.Relation:= function(self)
     local  list;
-    list:= List(Call(this, "Edges"), Set);
+    list:= List(Call(self, "Edges"), Set);
     return Relation(List(list, x-> List(x, y-> y.v)));
 end;
 
@@ -518,14 +518,14 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-ShapeOps.ConjugacyClasses:= function(this)
+ShapeOps.ConjugacyClasses:= function(self)
     local   W,  cc;
 
-    W:= this.W;  cc:= ConjugacyClasses(W);
+    W:= self.W;  cc:= ConjugacyClasses(W);
 
     # this relies on the representative of c to be of minimal length!
     return Filtered([1..Length(cc)], 
-                   i-> Set(CoxeterWord(W, Representative(cc[i]))) in this);
+                   i-> Set(CoxeterWord(W, Representative(cc[i]))) in self);
 end;
 
 
@@ -1153,17 +1153,17 @@ end;
 
 
 ## FIXME: works only for type A, B.
-ShapeOps.Label:= function(this)
+ShapeOps.Label:= function(self)
     local   type,  n,  cmp,  par,  i,  sgn;
     
-    type:= CartanType(this.W);
+    type:= CartanType(self.W);
     if Length(type) > 1 then
         Error("not yet implemented");
     fi;
     
     if type[1][1] = "A" then
-        n:= this.W.semisimpleRank;
-        cmp:= Difference([0..n+1], this.J);
+        n:= self.W.semisimpleRank;
+        cmp:= Difference([0..n+1], self.J);
         par:= [];
         for i in [2..Length(cmp)] do
             Add(par, cmp[i] - cmp[i-1]);
@@ -1172,8 +1172,8 @@ ShapeOps.Label:= function(this)
         return par;
         
     elif type[1][1] = "B" then
-        n:= this.W.semisimpleRank;
-        cmp:= Difference([0..n], this.J - 1);
+        n:= self.W.semisimpleRank;
+        cmp:= Difference([0..n], self.J - 1);
         par:= [];
         for i in [2..Length(cmp)] do
             Add(par, cmp[i] - cmp[i-1]);
@@ -1182,8 +1182,8 @@ ShapeOps.Label:= function(this)
         return par;
         
     elif type[1][1] = "D" then
-        n:= this.W.semisimpleRank;
-        cmp:= Difference([0..n], this.J - 1);
+        n:= self.W.semisimpleRank;
+        cmp:= Difference([0..n], self.J - 1);
         sgn:= '+';
         if cmp[1] = 1 then
             cmp[1]:= 0;
@@ -1213,11 +1213,11 @@ end;
 
 
 #############################################################################
-ShapeOps.Points:= function(this)
+ShapeOps.Points:= function(self)
     local   points,  o;
     
     points:= [];
-    for o in Orbits(Call(this, "Complement"), this.J) do
+    for o in Orbits(Call(self, "Complement"), self.J) do
         Add(points, o[1]);
     od;
     return points;
@@ -1228,16 +1228,16 @@ end;
 ##
 ##  How to turn a shape into an alley class.
 ##
-ShapeOps.Street:= function(this)
-    return Street(this.W, [this.J, []]);
+ShapeOps.Street:= function(self)
+    return Street(self.W, [self.J, []]);
 end;
 
 
 ###
 ###  next:  the mu map.
 ###
-ShapeOps.Matrix:= function(this)
-    return rec(tail:= this, head:= this, mat:=IdentityMat(Size(this)));
+ShapeOps.Matrix:= function(self)
+    return rec(tail:= self, head:= self, mat:=IdentityMat(Size(self)));
 end;
 
 

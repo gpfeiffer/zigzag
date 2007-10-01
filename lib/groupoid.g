@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2007, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: groupoid.g,v 1.3 2007/09/18 08:38:12 goetz Exp $
+#A  $Id: groupoid.g,v 1.4 2007/10/01 08:47:13 goetz Exp $
 ##
 ##  This file contains support for the groupoid of shapes and its elements.
 ##  
@@ -63,8 +63,8 @@ end;
 ##  
 #F  Print( <groupoid> )  . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-GroupoidOps.Print:= function(this)
-    Print("Groupoid( ", this.W, " )");
+GroupoidOps.Print:= function(self)
+    Print("Groupoid( ", self.W, " )");
 end;
 
 
@@ -115,18 +115,18 @@ end;
 ##  
 #F  Print( <groupoidelt> ) . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-GroupoidEltOps.Print:= function(this)
-    Print("GroupoidElt( ", this.W, ", ", this.elt, " )");
+GroupoidEltOps.Print:= function(self)
+    Print("GroupoidElt( ", self.W, ", ", self.elt, " )");
 end;
 
 #############################################################################
-GroupoidEltOps.Source:= function(this)
-    return this.elt[1];
+GroupoidEltOps.Source:= function(self)
+    return self.elt[1];
 end;
 
 #############################################################################
-GroupoidEltOps.Target:= function(this)
-    return ApplyFunc(OnSets, this.elt);
+GroupoidEltOps.Target:= function(self)
+    return ApplyFunc(OnSets, self.elt);
 end;
 
 #############################################################################
@@ -147,14 +147,14 @@ end;
 ##
 ##  find a reduced expression and turn into category element.
 ##
-GroupoidEltOps.CategoryElt:= function(this)
+GroupoidEltOps.CategoryElt:= function(self)
     local   seq,  J,  d,  des,  L,  a;
     
     seq:= [];
-    J:= this.elt[1];
-    d:= this.elt[2];
+    J:= self.elt[1];
+    d:= self.elt[2];
     while d <> () do
-        des:= LeftDescentSet(this.W, d);
+        des:= LeftDescentSet(self.W, d);
         Add(seq, des[1]);
         L:= Union(J, des{[1]});
         a:= LongestCoxeterElement(ReflectionSubgroup(W, J)) *
@@ -162,7 +162,7 @@ GroupoidEltOps.CategoryElt:= function(this)
         J:= OnSets(J, a);
         d:= a^-1 * d;
     od;
-    return CategoryElt(this.W, [this.elt[1], seq]);
+    return CategoryElt(self.W, [self.elt[1], seq]);
 end;
 
 

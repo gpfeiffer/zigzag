@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: methods.g,v 1.5 2007/09/18 08:38:59 goetz Exp $
+#A  $Id: methods.g,v 1.6 2007/10/01 08:46:16 goetz Exp $
 ##
 ##  This file contains support for methods.
 ##  
@@ -99,16 +99,16 @@ Partition:= function(parts)
     return rec(parts:= parts, operations:= PartitionOps);
 end;
 
-PartitionOps.Print:= function(this)
-    Print("Partition( ", this.parts, " )");
+PartitionOps.Print:= function(self)
+    Print("Partition( ", self.parts, " )");
 end;
 
-PartitionOps.Length:= function(this)
-    return Length(this.parts);
+PartitionOps.Length:= function(self)
+    return Length(self.parts);
 end;
 
-PartitionOps.At:= function(this, i)
-    return this.parts[i];
+PartitionOps.At:= function(self, i)
+    return self.parts[i];
 end;
 
 #############################################################################
