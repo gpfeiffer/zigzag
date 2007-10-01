@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2007, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: descent.g,v 1.33 2007/09/18 08:42:30 goetz Exp $
+#A  $Id: descent.g,v 1.34 2007/10/01 08:35:49 goetz Exp $
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
@@ -34,19 +34,19 @@ DescentAlgebraOps:= OperationsRecord("DescentAlgebraOps", AlgebraOps);
 ##  <W>.
 ##  
 DescentAlgebra:= function(W)
-    local   this;
-    this:= rec(W:= W, operations:= DescentAlgebraOps, isDescentAlgebra:= true);
+    local   self;
+    self:= rec(W:= W, operations:= DescentAlgebraOps, isDescentAlgebra:= true);
     
-    this.GetAJKL:= function(J, K, L)
+    self.GetAJKL:= function(J, K, L)
         local   xxx,  l;
         if L > K then return 0; fi;
-        xxx:= RightRegularX(this);
+        xxx:= RightRegularX(self);
         l:= Position(xxx[K].pos[J], L);
         if l = false then return 0; fi;
         return xxx[K].val[J][l];
     end;
 
-    return this;
+    return self;
 end;
 
 #############################################################################
@@ -59,16 +59,16 @@ end;
 ##  
 #F  Print( <descalg> )  
 ##  
-DescentAlgebraOps.Print:= function(this)
-    Print("DescentAlgebra( ", this.W, " )");
+DescentAlgebraOps.Print:= function(self)
+    Print("DescentAlgebra( ", self.W, " )");
 end;
 
 #############################################################################
 ##  
 ##  
 ##  
-DescentAlgebraOps.Dimension:= function(this)
-    return 2^this.W.semisimpleRank;
+DescentAlgebraOps.Dimension:= function(self)
+    return 2^self.W.semisimpleRank;
 end;
 
 
