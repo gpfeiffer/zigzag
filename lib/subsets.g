@@ -1,13 +1,10 @@
 #############################################################################
 ##
-#A  subsets.g                    Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  $Id: subsets.g,v 1.22 2007/10/04 15:28:52 goetz Exp $
 ##
-##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
-##  package for descent algebras of finite Coxeter groups.
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Department of Mathematics, NUI, Galway, Ireland.
-##
-#A  $Id: subsets.g,v 1.21 2007/10/01 08:41:24 goetz Exp $
+#Y  Copyright (C) 2001-2007, GÃ¶tz Pfeiffer
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -17,7 +14,10 @@
 ##    are neither groups nor cosets.  In this chapter we collect some common
 ##    functionality for prefix sets of elements of <M>W</M>, minimal length
 ##    transversals of cosets and double cosets of parabolic subgroups, and
-##    other sets related to these.
+##    other sets related to these.<P/>
+##
+##    The functions described in this chapter are implemented in the file
+##    <F>subsets.g</F>.  
 ##  <#/GAPDoc>
 ##  
 
