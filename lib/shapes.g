@@ -1,21 +1,18 @@
 #############################################################################
 ##
-#A  shapes.g                      Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  $Id: shapes.g,v 1.46 2007/10/04 09:25:32 goetz Exp $
 ##
-##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
-##  package for descent algebras of finite Coxeter groups.
+##  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2004, Department of Mathematics, NUI, Galway, Ireland.
-##
-#A  $Id: shapes.g,v 1.45 2007/10/01 08:45:53 goetz Exp $
+#Y  Copyright (C) 2001-2007, Götz Pfeiffer
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
 ##  <#GAPDoc Label="Intro:Shapes">
-##    Let </M>(W, S)</M> be a Coxeter system.  A <E>shape</E> of </M>W</M> is
-##    an equivalence class of subsets of </M>S</M> where the equivalence is
-##    defined via conjugation in </M>W</M>.  Shapes thus parameterize the
-##    conjugacy classes of parabolic subgroups of </M>W</M>.
+##    Let <M>(W, S)</M> be a Coxeter system.  A <E>shape</E> of <M>W</M> is
+##    an equivalence class of subsets of <M>S</M> where the equivalence is
+##    defined via conjugation in <M>W</M>.  Shapes thus parameterize the
+##    conjugacy classes of parabolic subgroups of <M>W</M>.
 ##  <#/GAPDoc>
 ##
 
