@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: methods.g,v 1.6 2007/10/01 08:46:16 goetz Exp $
+#A  $Id: methods.g,v 1.7 2007/10/04 09:27:44 goetz Exp $
 ##
 ##  This file contains support for methods.
 ##  
@@ -110,6 +110,18 @@ end;
 PartitionOps.At:= function(self, i)
     return self.parts[i];
 end;
+
+PartitionOps.Transposed:= function(self)
+    local   tran,  p;
+    
+    if self.parts = [] then return Partition([]); fi;
+    tran:= 0 * [1..self.parts[1]];
+    for p in self.parts do
+        tran{[1..p]}:= tran{[1..p]} + 1;
+    od;
+    return Partition(tran);
+end;          
+    
 
 #############################################################################
 ##
