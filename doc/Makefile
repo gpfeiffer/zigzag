@@ -22,7 +22,7 @@ XMLFILES = $(DOC)/zigzag.xml $(DOC)/introduc.xml
 	makeindex $*
 	latex $*
 
-all: zigzag.dvi zigzag.pdf
+all: zigzag.pdf
 
 zigzag.tex: $(XMLFILES) $(GAPFILES) zigzag.bib
 	gap4 -b -r < makedoc.g
