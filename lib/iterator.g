@@ -1,14 +1,14 @@
 #############################################################################
 ##
-#A  $Id: iterator.g,v 1.10 2007/10/04 09:39:54 goetz Exp $
+#A  $Id: iterator.g,v 1.9 2007/10/04 09:39:18 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
 #Y  Copyright (C) 2001-2007, Götz Pfeiffer
 ##
+##  <#GAPDoc Label="Intro:Iterators">
 ##  This file contains a dispatcher for iterators on domains.
 ##  
-##  <#GAPDoc Label="Intro:Iterators">
 ##  An <E>iterator</E> <Index>Iterator</Index>
 ##  is a record that provides two functions <C>hasNext()</C>
 ##  and <C>next()</C>  that can be used to loop over the elements of a
