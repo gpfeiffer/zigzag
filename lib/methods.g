@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: methods.g,v 1.8 2007/10/04 09:53:47 goetz Exp $
+#A  $Id: methods.g,v 1.9 2007/10/04 13:47:27 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -9,9 +9,9 @@
 ##  This file contains support for methods.
 ##  
 ##  <#GAPDoc Label="Intro:Methods">
-##    A <E>method</E> <Index>method</Index> is a \GAP\ function that is
+##    A <E>method</E> <Index>method</Index> is a &GAP; function that is
 ##    defined in the operations record of an object and is usually
-##    applied to this object (and possibly further arguments).
+##    applied to this object (and possibly further arguments).<P/>
 ##
 ##    The functions described in this chapter are implemented in the file
 ##    <F>methods.g</F>.  
@@ -89,7 +89,7 @@ end;
 
 #############################################################################
 ##
-##  For example: a rudimentary partitions class.
+##  For example: a rudimentary Partition class.
 ##
 PartitionOps:= rec();
 
