@@ -1,13 +1,10 @@
 #############################################################################
 ##
-#A  walker.g                     Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  $Id: walker.g,v 1.5 2007/10/04 09:58:34 goetz Exp $
 ##
-##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
-##  package for descent algebras of finite Coxeter groups.
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
-##
-#A  $Id: walker.g,v 1.4 2007/10/04 09:27:02 goetz Exp $
+#Y  Copyright (C) 2001-2007, Götz Pfeiffer
 ##
 ##  This file contains some tree walking and counting functions.
 ##  
@@ -18,6 +15,8 @@
 ##
 ##  Introduce a suitable small example ...
 ##
+##    The functions described in this chapter are implemented in the file
+##    <F>walker.g</F>.  
 ##  <#/GAPDoc>
 ##
 

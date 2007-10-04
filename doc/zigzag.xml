@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?LaTeX ExtraPreamble="\usepackage{parskip}
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.21 2007/09/18 08:43:15 goetz Exp $
+     $Id: zigzag.xml,v 1.22 2007/10/04 10:02:41 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -17,12 +17,12 @@ of Finite Coxeter Groups</Subtitle>
 Version 0.71
     </Version>
     <Author>
-Götz Pfeiffer
+GÃ¶tz Pfeiffer
 <Email>goetz.pfeiffer@nuigalway.ie</Email>
 <Homepage>http://schmidt.nuigalway.ie/zigzag</Homepage>
 </Author>
     <Copyright>
-&copyright; 2007 Götz Pfeiffer, 
+&copyright; 2007 GÃ¶tz Pfeiffer, 
 Department of Mathematics, NUI, Galway, Ireland
 </Copyright>
   </TitlePage>

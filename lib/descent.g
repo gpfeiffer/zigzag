@@ -1,13 +1,10 @@
 #############################################################################
 ##
-#A  zigzag.g                      Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  $Id: descent.g,v 1.35 2007/10/04 10:01:27 goetz Exp $
 ##
-##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
-##  package for descent algebras of finite Coxeter groups.
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Department of Mathematics, NUI, Galway, Ireland.
-##
-#A  $Id: descent.g,v 1.34 2007/10/01 08:35:49 goetz Exp $
+#Y  Copyright (C) 2001-2007, GÃ¶tz Pfeiffer
 ##
 ##  This file contains the basic routines for descent algebras.
 ##
