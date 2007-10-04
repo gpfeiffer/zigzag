@@ -7,7 +7,7 @@
 ##
 #Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
 ##
-#A  $Id: walker.g,v 1.3 2006/07/10 12:08:38 goetz Exp $
+#A  $Id: walker.g,v 1.4 2007/10/04 09:27:02 goetz Exp $
 ##
 ##  This file contains some tree walking and counting functions.
 ##  
@@ -441,31 +441,31 @@ BinomialTreeOps:= rec();
 
 BinomialTree:= n -> rec(n:= n, operations:= BinomialTreeOps);
 
-BinomialTreeOps.Children:= function(this)
-    return List([0..this.n-1], BinomialTree);
+BinomialTreeOps.Children:= function(self)
+    return List([0..self.n-1], BinomialTree);
 end;
 
-BinomialTreeOps.Print:= function(this)
-    Print(this.n);
+BinomialTreeOps.Print:= function(self)
+    Print(self.n);
 end;
 
 BinomialTreeOps.indent:= 0;
 
-BinomialTreeOps.Display:= function(this, dummy)   
+BinomialTreeOps.Display:= function(self, dummy)   
     local  c;
     
-    if this.n > 0 then
+    if self.n > 0 then
         for c in [1..BinomialTreeOps.indent] do
             Print(" ");
         od;
     fi;
-    Print("-", this.n);
-    if this.n = 0 then
+    Print("-", self.n);
+    if self.n = 0 then
         Print("\n");
     fi;
     
     BinomialTreeOps.indent:= BinomialTreeOps.indent + 2;
-    for c in Call(this, "Children") do
+    for c in Call(self, "Children") do
         Display(c);
     od;
     BinomialTreeOps.indent:= BinomialTreeOps.indent - 2;
