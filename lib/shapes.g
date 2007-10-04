@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.48 2007/10/04 09:43:39 goetz Exp $
+#A  $Id: shapes.g,v 1.51 2007/10/04 09:53:25 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -15,7 +15,7 @@
 ##    conjugacy classes of parabolic subgroups of <M>W</M>.
 ##
 ##    The functions described in this chapter are implemented in the file
-##    <F>$Name</F>.  
+##    <F>shapes.g</F>.  
 ##  <#/GAPDoc>
 ##
 

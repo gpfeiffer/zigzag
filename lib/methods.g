@@ -1,22 +1,20 @@
 #############################################################################
 ##
-#A  methods.g                     Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  $Id: methods.g,v 1.8 2007/10/04 09:53:47 goetz Exp $
 ##
-##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
-##  package for descent algebras of finite Coxeter groups.
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
-##
-#A  $Id: methods.g,v 1.7 2007/10/04 09:27:44 goetz Exp $
+#Y  Copyright (C) 2001-2007, GÃ¶tz Pfeiffer
 ##
 ##  This file contains support for methods.
 ##  
 ##  <#GAPDoc Label="Intro:Methods">
-##  A <E>method</E> <Index>method</Index> is a \GAP\ function that is
-##  defined in the operations record of an object and is usually
-##  applied to this object (and possibly further arguments).
+##    A <E>method</E> <Index>method</Index> is a \GAP\ function that is
+##    defined in the operations record of an object and is usually
+##    applied to this object (and possibly further arguments).
 ##
-##  The functions described here are in the file <F>methods.g</F>.
+##    The functions described in this chapter are implemented in the file
+##    <F>methods.g</F>.  
 ##  <#/GAPDoc>
 ##
 

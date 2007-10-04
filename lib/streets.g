@@ -1,19 +1,19 @@
 #############################################################################
 ##
-#A  streets.g                     Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  $Id: streets.g,v 1.23 2007/10/04 09:55:18 goetz Exp $
 ##
-##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
-##  package for descent algebras of finite Coxeter groups.
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Department of Mathematics, NUI, Galway, Ireland.
-##
-#A  $Id: streets.g,v 1.22 2007/10/01 08:43:26 goetz Exp $
+#Y  Copyright (C) 2001-2007, GÃ¶tz Pfeiffer
 ##
 ##  This file contains support for streets aka alley classes.
 ##  
 ##  <#GAPDoc Label="Intro:Streets">
 ##    An <E>street</E> <Index>street</Index> is an orbit of alleys under the
 ##    conjugation action of W.
+##
+##    The functions described in this chapter are implemented in the file
+##    <F>streets.g</F>.  
 ##  <#/GAPDoc>
 ##
 
