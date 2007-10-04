@@ -3,7 +3,7 @@
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.22 2007/10/04 10:02:41 goetz Exp $
+     $Id: zigzag.xml,v 1.23 2007/10/04 15:26:13 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -21,10 +21,24 @@ Götz Pfeiffer
 <Email>goetz.pfeiffer@nuigalway.ie</Email>
 <Homepage>http://schmidt.nuigalway.ie/zigzag</Homepage>
 </Author>
+<Date>04-Oct-2007</Date>
+<Abstract>
+The descent algebra of a finite Coxeter group <M>W</M>
+of rank <M>n</M> is a remarkable <M>2^n</M>-dimensional subalgebra
+of the group algebra of <M>W</M>.  This package provides
+some tools to work with descent algebras and related structures
+in various ways.
+</Abstract>
     <Copyright>
 &copyright; 2007 Götz Pfeiffer, 
 Department of Mathematics, NUI, Galway, Ireland
 </Copyright>
+<Acknowledgements>
+This ...
+</Acknowledgements>
+<Colophon>
+This ...
+</Colophon>
   </TitlePage>
 
   <TableOfContents/>
@@ -42,10 +56,10 @@ Department of Mathematics, NUI, Galway, Ireland
 <Section>
 <Heading>More about Methods.</Heading>
 
-For many methods, \GAP\ provides a <E>global</E> function with the same
-name, which will eventually calls the method in the operations record.
+For many methods, &GAP; provides a <E>global</E> function with the same
+name, which eventually calls the method in the operations record.
 If such a global function does not exist, I can always write one myself.
-But this might get in the way of other packages which might want to use
+But this might get in the way of other packages which possibly use
 this global function for a different purpose.  And if such a global
 function does already exist, its use of parameters might not fit my
 purpose.  Here we provide an alternative way of accessing an installed
@@ -55,13 +69,13 @@ as arguments and then applies the method to the object.
 Moreover, we define a function <Ref Func="ApplyMethod"/> which in addition
 takes other arguments that are passed on to the method call. <P/>
 
-For example, the global function <C>Length</C> is defined in such a
-way that it does not search for a method <C>Length</C> when applied to
-an object.  To install and use such a method, one can proceed as
-follows.  For the purpose of illustration we define <C>Partition</C>
-objects and install a <C>Length</C> method for them.  Moreover, we
-install a method <C>At</C> to access the part of a <C>Partition</C> at
-a given position.
+For example, the global &GAP; function <C>Length</C> is implemented in
+such a way that it does not search for a method <C>Length</C> when
+applied to an object.  To install and use such a method, one can
+proceed as follows.  For the purpose of illustration we define
+<C>Partition</C> objects and install a <C>Length</C> method for them.
+Moreover, we install a method <C>At</C> to access the part of a
+<C>Partition</C> at a given position.
 
 <Listing Type="From methods.g"><![CDATA[
 PartitionOps:= rec();
@@ -70,39 +84,65 @@ Partition:= function(parts)
     return rec(parts:= parts, operations:= PartitionOps);
 end;
 
-PartitionOps.Print:= function(this)
-    Print("Partition( ", this.parts, " )");
+PartitionOps.Print:= function(self)
+    Print("Partition( ", self.parts, " )");
 end;
 
-PartitionOps.Length:= function(this)
-    return Length(this.parts);
+PartitionOps.Length:= function(self)
+    return Length(self.parts);
 end;
 
-PartitionOps.At:= function(this, i)
-    return this.parts[i];
+PartitionOps.At:= function(self, i)
+    return self.parts[i];
 end;]]>
 </Listing>
-As a convention the parameter  name <A>this</A> is used for the object
+As a convention the parameter  name <C>self</C> is used for the object
 on behalf of which the method is invoked. The same name is used in the
-Java programming language, where it  needs not be listed explicitly as
-a parameter.<P/>
+Python programming language for a similar purpose.<P/>
 
 
 	When a  <C>Partition</C> object  has been created,  the global
 	<C>Length</C>  function  cannot  be  applied to  it, 
-and positional selection with square brackets does not work.  But  the
+and positional selection with square brackets does not work either.  But  the
 	mechanism implemented here is available, see the examples below.
 
-<Example>
+<Example><![CDATA[
 gap> p:= Partition([4, 3, 3, 1]);
 Partition( [ 4, 3, 3, 1 ] )
 gap> Length(p);
-Error, Length: &lt;list&gt; must be a list
+Error, Length: <list> must be a list
 gap> p[2];
-Error, List Element: &lt;list&gt; must be a list
+Error, List Element: <list> must be a list]]>
+</Example>
+
+Of course, if we define a method which is compatible with the
+the parameters of the global function of the same name, 
+we can still use the global function in order to
+access the method.  The transpose of a partition <M>\lambda</M>,
+for example, is the partition  <M>\lambda'</M>
+obtained by transposing the Young diagram of <M>\lambda</M>.
+A method <C>Transposed</C> which computes and returns the
+transpose of a <C>Partition</C> object can be implemented
+as follows.
+<Listing Type="From methods.g"><![CDATA[
+PartitionOps.Transposed:= function(self)
+    local   tran,  p;
+    
+    if self.parts = [] then return Partition([]); fi;
+    tran:= 0 * [1..self.parts[1]];
+    for p in self.parts do
+        tran{[1..p]}:= tran{[1..p]} + 1;
+    od;
+    return Partition(tran);
+end;]]>
+</Listing>
+Given such a method for <C>Partition</C> objects, the global function
+<C>Transposed</C> can be used to compute the transpose of a partition.
+<Example>
+gap> Transposed(Partition([4, 2, 1]));
+Partition( [ 3, 2, 1, 1 ] )
 </Example>
 </Section>
-
 
 <Section>
 <Heading>Method Calls.</Heading>
@@ -125,6 +165,8 @@ Error, List Element: &lt;list&gt; must be a list
 
 <#Include Label="IteratorSet">
 
+<#Include Label="IteratorEmpty">
+
 <#Include Label="Iterator">
 
 <#Include Label="Iterator(domain)">
@@ -133,6 +175,10 @@ Error, List Element: &lt;list&gt; must be a list
 
 <Section>
 <Heading>Examples of Iterators.</Heading>
+
+<Subsection>
+<Heading>Set Iterators.</Heading>
+
 The iterator for sets is implemented as follows.
 <Listing Type="From iterator.g"><![CDATA[
 IteratorSet:= function(set)
@@ -163,8 +209,10 @@ the iterator methods <C>hasNext()</C> and <C>next()</C> are executed.
 This way of data hiding prevents the state variables from being accidentally
 corrupted.<P/>
 
-Alternatively, the state can be stored in form of fields of the iterator record.
-<Listing Type="Example"><![CDATA[
+Alternatively, the state could be stored in form of fields of the
+iterator record.
+
+<Example><![CDATA[
 IteratorSet1:= function(set)
     local itr;
     
@@ -184,40 +232,163 @@ IteratorSet1:= function(set)
     
     return itr;
 end;]]>
-</Listing>
-This might be considered unsafe by some.  <P/>
+</Example>
+</Subsection>
 
-As further example, here is an iterator for ranges.
-<Listing><![CDATA[
-IteratorRange:= function(range)
-    local   itr,  len,  more,  lo,  hi,  inc,  val;
-    
-    # check argument.
-    if not IsRange(range) then Error("<range> must be a range"); fi;
-    
-    # initialize.
-    itr:= rec();  len:= Length(range);  more:= len > 0;
-    if more then
-        lo:= range[1];  hi:= range[len]; 
-        if len > 1 then inc:= range[2]-lo; else inc:= 0; fi;
-    fi;
-    
-    # the hasNext() function.
-    itr.hasNext:= function() return more; end;
-    
-    # the next() function.
-    itr.next:= function() 
-        local val;
-        more:= lo <> hi;  val:= lo;  lo:= lo + inc;
-        return val; 
-    end;
-    
-    return itr;
+<Subsection>
+<Heading>Partition Iterators.</Heading>
+
+We can define objects <C>MPartitions(n, m)</C> representing the set of
+partitions of an integer <M>n \geq 0</M> into <M>m \geq 0</M> parts as
+follows.
+
+<Listing  Type="From iterator.g"><![CDATA[
+MPartitionsOps:= OperationsRecord("MPartitionsOps", DomainOps);
+
+MPartitions:= function(n, m)
+    return rec(n:= n, m:= m, isDomain:= true, operations:= MPartitionsOps);
+end;
+
+MPartitionsOps.Print:= function(self)
+    Print("MPartitions( ", self.n, ", ", self.m, " )");
 end;]]>
 </Listing>
-There  is probably  no need  for such  a type  of iterator,  since the
-<K>for</K> loop does  a perfect job of looping  over ranges.  However,
-this is how I would write it.
+
+If <M>n=0</M> and <M>m=0</M>
+then this set consists of the empty partition only.
+Otherwise, if 
+<M>m = 0</M> or <M>m > n</M>, this set is empty.
+In all remaining cases, the partitions of 
+<M>n</M> into 
+<M>m</M> parts
+can be obtained, as a disjoint 
+union, from the partitions
+of
+<M>n-1</M> into <M>m-1</M> parts
+by adding an extra part 
+<M>1</M>,
+and from the partitions of 
+<M>n-m</M> into
+<M>m</M> parts
+by adding 
+<M>1</M> to each part.
+Based on this recursive description
+of the elements of <C>MPartitions(n, m)</C>,
+an iterator for this class can be written 
+as follows.
+<Listing  Type="From iterator.g"><![CDATA[
+MPartitionsOps.Iterator:= function(self)
+    local   inner,  done,  iter;
+    
+    #  trivial cases m = 0 and m > n.
+    if self.m = 0 and self.n = 0 then
+        return IteratorSet([Partition([])]);
+    elif self.m = 0 or self.m > self.n then
+        return IteratorEmpty;
+    fi;
+    
+    done:= false;            # install iterator for first summand.
+    inner:= Iterator(MPartitions(self.n - 1, self.m - 1));
+    iter:= rec();
+    
+    iter.hasNext:= function()
+        if done then
+            return inner.hasNext();
+        elif inner.hasNext() then
+            return true;
+        elif self.n < 2 * self.m then
+            return false;
+        fi;
+        
+        done:= true;        # install iterator for second summand.
+        inner:= Iterator(MPartitions(self.n - self.m, self.m));
+        return inner.hasNext();
+    end;
+    
+    iter.next:= function()
+        local   new;
+        new:= inner.next().parts;
+        if done then
+            new:= new + 1;
+        else
+            Add(new, 1);
+        fi;
+        return Partition(new);
+    end;
+    
+    return iter;
+end;]]>
+</Listing>
+Using this iterator, the partitions in such a set can be looped
+over, one at a time.
+<Example>
+gap> itr:= Iterator(MPartitions(7, 4));;
+gap> while itr.hasNext() do Print(itr.next(), "\n"); od;
+Partition( [ 4, 1, 1, 1 ] )
+Partition( [ 3, 2, 1, 1 ] )
+Partition( [ 2, 2, 2, 1 ] )
+</Example>
+
+Moreover, we can use this iterator to loop over the partitions
+of an integer <M>n</M>, if we define objects <C>Partitions(n)</C>
+as follows.
+
+<Listing  Type="From iterator.g"><![CDATA[
+PartitionsIntOps:= OperationsRecord("PartitionsIntOps", DomainOps);
+
+PartitionsInt:= function(n)
+    return rec(n:= n, isDomain:= true, operations:= PartitionsIntOps);
+end;
+
+PartitionsIntOps.Print:= function(self)
+    Print("PartitionsInt( ", self.n, " )");
+end;]]>
+</Listing>
+
+The partitions of <M>n</M> in lexicographic order
+are obtained by listing, for <M>m = 0, \dots, n</M>
+the elements of <C>Partitions(n, m)</C>
+and transposing them.
+<Listing  Type="From iterator.g"><![CDATA[
+PartitionsIntOps.Iterator:= function(self)
+    local   m,  inner,  iter;
+    
+    m:= 0;
+    inner:= Iterator(MPartitions(self.n, m));
+    iter:= rec();
+    
+    iter.hasNext:= function()
+        while m < self.n do
+            if inner.hasNext() then
+                return true;
+            fi;
+            m:= m + 1;
+            inner:= Iterator(MPartitions(self.n, m));
+        od;
+        return inner.hasNext();
+    end;
+    
+    iter.next:= function()
+        return Transposed(inner.next());
+    end;
+    
+    return iter;
+end;]]>
+</Listing>
+Obviously, this  method of listing  all the partitions of  <M>n</M> is
+not as efficient as the &GAP; function <C>Partitions</C>.  However, it
+has the advantage that the partitions can be dealt with one at a time,
+without computing and storing the entire list beforehand.
+<Example>
+gap> itr:= Iterator(PartitionsInt(4));;                 
+gap> while itr.hasNext() do Print(itr.next(), "\n"); od;
+Partition( [ 1, 1, 1, 1 ] )
+Partition( [ 2, 1, 1 ] )
+Partition( [ 2, 2 ] )
+Partition( [ 3, 1 ] )
+Partition( [ 4 ] )
+</Example>
+</Subsection>
 
 <Subsection>
 <Heading>Exercise.</Heading>
