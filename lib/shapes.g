@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.46 2007/10/04 09:25:32 goetz Exp $
+#A  $Id: shapes.g,v 1.50 2007/10/04 09:44:30 goetz Exp $
 ##
-##  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Götz Pfeiffer
+#Y  Copyright (C) 2001-2007, GÃ¶tz Pfeiffer
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -13,6 +13,9 @@
 ##    an equivalence class of subsets of <M>S</M> where the equivalence is
 ##    defined via conjugation in <M>W</M>.  Shapes thus parameterize the
 ##    conjugacy classes of parabolic subgroups of <M>W</M>.
+##
+##    The functions described in this chapter are implemented in the file
+##    <F>$Name:  $</F>.  
 ##  <#/GAPDoc>
 ##
 

@@ -1,15 +1,12 @@
 #############################################################################
 ##
-#A  alleys.g                     Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  $Id: alleys.g,v 1.32 2007/10/04 09:35:16 goetz Exp $
 ##
-##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
-##  package for descent algebras of finite Coxeter groups.
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
+#Y  Copyright (C) 2001-2007, GÃ¶tz Pfeiffer
 ##
-#A  $Id: alleys.g,v 1.31 2007/09/18 08:36:47 goetz Exp $
-##
-##  This file contains support for alleys and alley classes.
+##  This file contains support for alleys.
 ##  
 ##  <#GAPDoc Label="Intro:Alleys">
 ##    An <E>alley</E> <Index>alley</Index> is a pair <M>(L; s_1, \dots,

@@ -1,17 +1,14 @@
 #############################################################################
 ##
-#A  iterator.g                    Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  $Id: iterator.g,v 1.10 2007/10/04 09:39:54 goetz Exp $
 ##
-##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
-##  package for descent algebras of finite Coxeter groups.
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2002, Department of Mathematics, NUI, Galway, Ireland.
+#Y  Copyright (C) 2001-2007, GÃ¶tz Pfeiffer
 ##
-#A  $Id: iterator.g,v 1.8 2007/09/18 08:38:35 goetz Exp $
-##
-##  <#GAPDoc Label="Intro:Iterators">
 ##  This file contains a dispatcher for iterators on domains.
 ##  
+##  <#GAPDoc Label="Intro:Iterators">
 ##  An <E>iterator</E> <Index>Iterator</Index>
 ##  is a record that provides two functions <C>hasNext()</C>
 ##  and <C>next()</C>  that can be used to loop over the elements of a

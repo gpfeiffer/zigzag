@@ -1,13 +1,10 @@
 #############################################################################
 ##
-#A  category.g                    Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  $Id: category.g,v 1.5 2007/10/04 09:36:48 goetz Exp $
 ##
-##  This file  is part of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a GAP
-##  package for descent algebras of finite Coxeter groups.
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2007, Department of Mathematics, NUI, Galway, Ireland.
-##
-#A  $Id: category.g,v 1.4 2007/10/01 08:47:52 goetz Exp $
+#Y  Copyright (C) 2007, GÃ¶tz Pfeiffer
 ##
 ##  This file contains support for the category of shapes and its elements.
 ##  
