@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  ZigZag Documentation
+     $Id: methods.xml,v 1.1 2007/10/05 16:34:29 goetz Exp $
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:methods">
+<Heading>Methods.</Heading>
+
+<#Include Label="Intro:Methods">
+
+<Section>
+<Heading>More about Methods.</Heading>
+
+For many methods, &GAP; provides a <E>global</E> function with the same
+name, which eventually calls the method in the operations record.
+If such a global function does not exist, I can always write one myself.
+But this might get in the way of other packages which possibly use
+this global function for a different purpose.  And if such a global
+function does already exist, its use of parameters might not fit my
+purpose.  Here we provide an alternative way of accessing an installed
+method without the help of a corresponding global function.  Instead we
+define a single function <Ref Func="Call"/> which takes an object and a method
+as arguments and then applies the method to the object.
+Moreover, we define a function <Ref Func="ApplyMethod"/> which in addition
+takes other arguments that are passed on to the method call. <P/>
+
+For example, the global &GAP; function <C>Length</C> is implemented in
+such a way that it does not search for a method <C>Length</C> when
+applied to an object.  To install and use such a method, one can
+proceed as follows.  For the purpose of illustration we define
+<C>Partition</C> objects and install a <C>Length</C> method for them.
+Moreover, we install a method <C>At</C> to access the part of a
+<C>Partition</C> at a given position.
+
+<Listing Type="From methods.g"><![CDATA[
+PartitionOps:= rec();
+
+Partition:= function(parts)
+    return rec(parts:= parts, operations:= PartitionOps);
+end;
+
+PartitionOps.Print:= function(self)
+    Print("Partition( ", self.parts, " )");
+end;
+
+PartitionOps.Length:= function(self)
+    return Length(self.parts);
+end;
+
+PartitionOps.At:= function(self, i)
+    return self.parts[i];
+end;]]>
+</Listing>
+As a convention the parameter  name <C>self</C> is used for the object
+on behalf of which the method is invoked. The same name is used in the
+Python programming language for a similar purpose.<P/>
+
+
+	When a  <C>Partition</C> object  has been created,  the global
+	<C>Length</C>  function  cannot  be  applied to  it, 
+and positional selection with square brackets does not work either.  But  the
+	mechanism implemented here is available, see the examples below.
+
+<Example><![CDATA[
+gap> p:= Partition([4, 3, 3, 1]);
+Partition( [ 4, 3, 3, 1 ] )
+gap> Length(p);
+Error, Length: <list> must be a list
+gap> p[2];
+Error, List Element: <list> must be a list]]>
+</Example>
+
+Of course, if we define a method which is compatible with the
+the parameters of the global function of the same name, 
+we can still use the global function in order to
+access the method.  The transpose of a partition <M>\lambda</M>,
+for example, is the partition  <M>\lambda'</M>
+obtained by transposing the Young diagram of <M>\lambda</M>.
+A method <C>Transposed</C> which computes and returns the
+transpose of a <C>Partition</C> object can be implemented
+as follows.
+<Listing Type="From methods.g"><![CDATA[
+PartitionOps.Transposed:= function(self)
+    local   tran,  p;
+    
+    if self.parts = [] then return Partition([]); fi;
+    tran:= 0 * [1..self.parts[1]];
+    for p in self.parts do
+        tran{[1..p]}:= tran{[1..p]} + 1;
+    od;
+    return Partition(tran);
+end;]]>
+</Listing>
+Given such a method for <C>Partition</C> objects, the global function
+<C>Transposed</C> can be used to compute the transpose of a partition.
+<Example>
+gap> Transposed(Partition([4, 2, 1]));
+Partition( [ 3, 2, 1, 1 ] )
+</Example>
+</Section>
+
+<Section>
+<Heading>Method Calls.</Heading>
+
+<#Include Label="Call">
+
+<#Include Label="ApplyMethod">
+
+</Section>
+</Chapter>
+
