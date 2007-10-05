@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  ZigZag Documentation
+     $Id: walker.xml,v 1.1 2007/10/05 17:19:41 goetz Exp $
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:walker">
+<Heading>Tree Walking.</Heading>
+
+<#Include Label="Intro:Walker">
+
+<Section>
+<Heading>Binomial Trees, for Example.</Heading>
+
+	The     <E>binomial    tree</E><Index>binomial    tree</Index>
+	<M>T_n</M> is defined recursively as a single vertex if <M>n =
+	0</M>,  and as  a  root vertex  with  children <M>T_0,  \dots,
+	T_{n-1}</M>, if <M>n > 0</M>.  For the purpose of illustrating
+	the  functions  in this  file,  we  can  define binomial  tree
+	objects as follows.
+<Listing Type="From walker.g"><![CDATA[
+BinomialTreeOps:= rec();
+
+BinomialTree:= n -> rec(n:= n, operations:= BinomialTreeOps);
+
+BinomialTreeOps.Children:= function(this)
+    return List([0..this.n-1], BinomialTree);
+end;
+
+BinomialTreeOps.Print:= function(this)
+    Print(this.n);
+end;]]>
+</Listing>
+	In this way, the binomial tree <M>T_n</M> prints itself simply
+	as the integer <M>n</M>.
+<Example>
+gap> BinomialTree(5);
+5
+gap> Call(last, "Children");
+[ 0, 1, 2, 3, 4 ]
+</Example>
+
+	With a suitable <C>Display</C> operation, a binomial tree can be 
+displayed in a tree-like fashion.
+<Listing Type="From walker.g"><![CDATA[
+BinomialTreeOps.indent:= 0;
+
+BinomialTreeOps.Display:= function(this, dummy)   
+    local  c;
+    
+    if this.n > 0 then
+        for c in [1..BinomialTreeOps.indent] do
+            Print(" ");
+        od;
+    fi;
+    Print("-", this.n);
+    if this.n = 0 then
+        Print("\n");
+    fi;
+    
+    BinomialTreeOps.indent:= BinomialTreeOps.indent + 2;
+    for c in Call(this, "Children") do
+        Display(c);
+    od;
+    BinomialTreeOps.indent:= BinomialTreeOps.indent - 2;
+end;]]>
+</Listing>
+	Given such a recursive <C>Display</C> routine, the
+	binomial tree <M>T_4</M> is displayed as follows.
+<Example>
+gap> Display(BinomialTree(4));
+-4-0
+  -1-0
+  -2-0
+    -1-0
+  -3-0
+    -1-0
+    -2-0
+      -1-0
+</Example>
+We will use this tree in the examples of the following sections.
+
+</Section>
+
+<Section>
+<Heading>Breadth First Serach.</Heading>
+
+<#Include Label="BreadthFirst">
+
+<#Include Label="IteratorBreadthFirst">
+
+</Section>
+
+<Section>
+<Heading>Depth First Search.</Heading>
+
+<#Include Label="PreOrder">
+
+<#Include Label="NrPreOrder">
+
+<#Include Label="IteratorPreOrder">
+
+<#Include Label="PreOrderProperty">
+
+<#Include Label="NrPreOrderProperty">
+
+<#Include Label="PostOrder">
+
+<#Include Label="PostOrderProperty">
+
+<#Include Label="NrPostOrderProperty">
+
+<Subsection>
+<Heading>Exercise.</Heading>
+ Write a function
+	  <C>IteratorPostOrder</C>that produces an iterator for a tree
+	  such that its <C>next()</C> method returns the vertices of
+	  the tree in post order.
+</Subsection>
+
+</Section>
+
+</Chapter>
