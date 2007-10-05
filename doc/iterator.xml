@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  ZigZag Documentation
+     $Id: iterator.xml,v 1.1 2007/10/05 17:16:04 goetz Exp $
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:iterator">
+<Heading>Iterators.</Heading>
+
+<#Include Label="Intro:Iterators">
+
+<Section>
+<Heading>Default Iterators.</Heading>
+
+<#Include Label="IteratorSet">
+
+<#Include Label="IteratorEmpty">
+
+<#Include Label="Iterator">
+
+<#Include Label="Iterator(domain)">
+
+</Section>
+
+<Section>
+<Heading>Examples of Iterators.</Heading>
+
+<Subsection>
+<Heading>Set Iterators.</Heading>
+
+The iterator for sets is implemented as follows.
+<Listing Type="From iterator.g"><![CDATA[
+IteratorSet:= function(set)
+    local itr, i;
+    
+    # initialize.
+    i:=0;  itr:= rec();
+    
+    # the hasNext() function.
+    itr.hasNext:= function() 
+        return i < Length(set);
+    end;
+    
+    # the next() function.
+    itr.next:= function() 
+        i:= i + 1;
+        return set[i]; 
+    end;
+    
+    return itr;
+end;]]>
+</Listing>
+Here the state of the iterator, i.e., the set <A>set</A>that it is looping
+over and the current position <C>i</C> in the set are parameters
+and local variables of the function <Ref Func="IteratorSet"/>.   As such they
+are not accessible (not even for debugging) from the outside when
+the iterator methods <C>hasNext()</C> and <C>next()</C> are executed.
+This way of data hiding prevents the state variables from being accidentally
+corrupted.<P/>
+
+Alternatively, the state could be stored in form of fields of the
+iterator record.
+
+<Example><![CDATA[
+IteratorSet1:= function(set)
+    local itr;
+    
+    # initialize.
+    itr:= rec(set:= set, i:= 0);
+    
+    # the hasNext() function.
+    itr.hasNext:= function() 
+        return itr.i < Length(itr.set);
+    end;
+    
+    # the next() function.
+    itr.next:= function() 
+        itr.i:= itr.i + 1;
+        return itr.set[itr.i]; 
+    end;
+    
+    return itr;
+end;]]>
+</Example>
+</Subsection>
+
+<Subsection>
+<Heading>Partition Iterators.</Heading>
+
+We can define objects <C>MPartitions(n, m)</C> representing the set of
+partitions of an integer <M>n \geq 0</M> into <M>m \geq 0</M> parts as
+follows.
+
+<Listing  Type="From iterator.g"><![CDATA[
+MPartitionsOps:= OperationsRecord("MPartitionsOps", DomainOps);
+
+MPartitions:= function(n, m)
+    return rec(n:= n, m:= m, isDomain:= true, operations:= MPartitionsOps);
+end;
+
+MPartitionsOps.Print:= function(self)
+    Print("MPartitions( ", self.n, ", ", self.m, " )");
+end;]]>
+</Listing>
+
+If <M>n=0</M> and <M>m=0</M>
+then this set consists of the empty partition only.
+Otherwise, if 
+<M>m = 0</M> or <M>m > n</M>, this set is empty.
+In all remaining cases, the partitions of 
+<M>n</M> into 
+<M>m</M> parts
+can be obtained, as a disjoint 
+union, from the partitions
+of
+<M>n-1</M> into <M>m-1</M> parts
+by adding an extra part 
+<M>1</M>,
+and from the partitions of 
+<M>n-m</M> into
+<M>m</M> parts
+by adding 
+<M>1</M> to each part.
+Based on this recursive description
+of the elements of <C>MPartitions(n, m)</C>,
+an iterator for this class can be written 
+as follows.
+<Listing  Type="From iterator.g"><![CDATA[
+MPartitionsOps.Iterator:= function(self)
+    local   inner,  done,  iter;
+    
+    #  trivial cases m = 0 and m > n.
+    if self.m = 0 and self.n = 0 then
+        return IteratorSet([Partition([])]);
+    elif self.m = 0 or self.m > self.n then
+        return IteratorEmpty;
+    fi;
+    
+    done:= false;            # install iterator for first summand.
+    inner:= Iterator(MPartitions(self.n - 1, self.m - 1));
+    iter:= rec();
+    
+    iter.hasNext:= function()
+        if done then
+            return inner.hasNext();
+        elif inner.hasNext() then
+            return true;
+        elif self.n < 2 * self.m then
+            return false;
+        fi;
+        
+        done:= true;        # install iterator for second summand.
+        inner:= Iterator(MPartitions(self.n - self.m, self.m));
+        return inner.hasNext();
+    end;
+    
+    iter.next:= function()
+        local   new;
+        new:= inner.next().parts;
+        if done then
+            new:= new + 1;
+        else
+            Add(new, 1);
+        fi;
+        return Partition(new);
+    end;
+    
+    return iter;
+end;]]>
+</Listing>
+Using this iterator, the partitions in such a set can be looped
+over, one at a time.
+<Example>
+gap> itr:= Iterator(MPartitions(7, 4));;
+gap> while itr.hasNext() do Print(itr.next(), "\n"); od;
+Partition( [ 4, 1, 1, 1 ] )
+Partition( [ 3, 2, 1, 1 ] )
+Partition( [ 2, 2, 2, 1 ] )
+</Example>
+
+Moreover, we can use this iterator to loop over the partitions
+of an integer <M>n</M>, if we define objects <C>Partitions(n)</C>
+as follows.
+
+<Listing  Type="From iterator.g"><![CDATA[
+PartitionsIntOps:= OperationsRecord("PartitionsIntOps", DomainOps);
+
+PartitionsInt:= function(n)
+    return rec(n:= n, isDomain:= true, operations:= PartitionsIntOps);
+end;
+
+PartitionsIntOps.Print:= function(self)
+    Print("PartitionsInt( ", self.n, " )");
+end;]]>
+</Listing>
+
+The partitions of <M>n</M> in lexicographic order
+are obtained by listing, for <M>m = 0, \dots, n</M>
+the elements of <C>Partitions(n, m)</C>
+and transposing them.
+<Listing  Type="From iterator.g"><![CDATA[
+PartitionsIntOps.Iterator:= function(self)
+    local   m,  inner,  iter;
+    
+    m:= 0;
+    inner:= Iterator(MPartitions(self.n, m));
+    iter:= rec();
+    
+    iter.hasNext:= function()
+        while m < self.n do
+            if inner.hasNext() then
+                return true;
+            fi;
+            m:= m + 1;
+            inner:= Iterator(MPartitions(self.n, m));
+        od;
+        return inner.hasNext();
+    end;
+    
+    iter.next:= function()
+        return Transposed(inner.next());
+    end;
+    
+    return iter;
+end;]]>
+</Listing>
+Obviously, this  method of listing  all the partitions of  <M>n</M> is
+not as efficient as the &GAP; function <C>Partitions</C>.  However, it
+has the advantage that the partitions can be dealt with one at a time,
+without computing and storing the entire list beforehand.
+<Example>
+gap> itr:= Iterator(PartitionsInt(4));;                 
+gap> while itr.hasNext() do Print(itr.next(), "\n"); od;
+Partition( [ 1, 1, 1, 1 ] )
+Partition( [ 2, 1, 1 ] )
+Partition( [ 2, 2 ] )
+Partition( [ 3, 1 ] )
+Partition( [ 4 ] )
+</Example>
+</Subsection>
+
+<Subsection>
+<Heading>Exercise.</Heading>
+Write a function that produces iterators for permutation groups.
+</Subsection>
+
+</Section>
+
+</Chapter>
