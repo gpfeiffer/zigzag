@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  ZigZag Documentation
+     $Id: alleys.xml,v 1.1 2007/10/05 17:28:12 goetz Exp $
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:alleys">
+<Heading>Alleys.</Heading>
+
+<#Include Label="Intro:Alleys">
+
+<Section>
+<Heading>Alley Multiplication.</Heading>
+
+<#Include Label="ProductAlleys">
+
+<#Include Label="ProductAlleyList">
+
+<#Include Label="FactorsAlley">
+
+</Section>
+
+<Section>
+<Heading>Operation on Alleys.</Heading>
+
+<#Include Label="OnAlleys">
+
+<#Include Label="StabilizerAlley">
+
+</Section>
+
+<Section>
+<Heading>Difference Operators.</Heading>
+
+<#Include Label="LittleDeltaAlley">
+
+<#Include Label="DeltaAlley">
+
+<#Include Label="ReversedAlley">
+
+</Section>
+
+</Chapter>
