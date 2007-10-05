@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  ZigZag Documentation
+     $Id: subsets.xml,v 1.1 2007/10/05 17:21:18 goetz Exp $
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:subsets">
+<Heading>Subsets of Finite Coxeter Groups.</Heading>
+
+<#Include Label="Intro:Subsets">
+
+<Section>
+<Heading>Prefix Sets.</Heading>
+
+<#Include Label="Prefixes">
+
+<#Include Label="IsPrefixes">
+
+<#Include Label="Elements(prefixes)">
+
+<#Include Label="Iterator(prefixes)">
+
+<#Include Label="Edges(prefixes)">
+
+<#Include Label="Relation(prefixes)">
+
+</Section>
+
+<Section>
+<Heading>Weak Intervals.</Heading>
+
+<#Include Label="WeakInterval">
+
+<#Include Label="IsWeakInterval">
+
+</Section>
+
+<Section>
+<Heading>Parabolic Transversals.</Heading>
+
+<#Include Label="ParabolicTransversal">
+
+<#Include Label="IsParabolicTransversal">
+
+</Section>
+
+<Section>
+<Heading>Descent Classes.</Heading>
+
+<#Include Label="DescentClass">
+
+<#Include Label="IsDescentClass">
+
+<#Include Label="DescentClasses">
+
+</Section>
+
+<Section>
+<Heading>Left Parabolic Transversals.</Heading>
+
+<#Include Label="LeftParabolicTransversal">
+
+<#Include Label="IsLeftParabolicTransversal">
+
+</Section>
+
+<Section>
+<Heading>Double Parabolic Transversals.</Heading>
+
+<#Include Label="DoubleParabolicTransversal">
+
+<#Include Label="IsDoubleParabolicTransversal">
+
+</Section>
+
+<Section>
+<Heading>XJKLs.</Heading>
+
+<#Include Label="XJKL">
+
+<#Include Label="IsXJKL">
+
+</Section>
+
+</Chapter>
