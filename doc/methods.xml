@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: methods.xml,v 1.1 2007/10/05 16:34:29 goetz Exp $
+     $Id: methods.xml,v 1.2 2007/10/05 17:29:54 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -14,13 +14,31 @@
 <Section>
 <Heading>More about Methods.</Heading>
 
-For many methods, &GAP; provides a <E>global</E> function with the same
-name, which eventually calls the method in the operations record.
-If such a global function does not exist, I can always write one myself.
-But this might get in the way of other packages which possibly use
-this global function for a different purpose.  And if such a global
-function does already exist, its use of parameters might not fit my
-purpose.  Here we provide an alternative way of accessing an installed
+A method is a function that is
+invoked on behalf of an object, and
+whose implementation depends
+on the type of this object.
+In &GAP;, a method is usually invoked through
+a <E>global</E> function, which looks up
+the implementation
+in the operations record of the object,
+and then executes whatever is found there.
+Unfortunately, each such global function
+associates with its name
+a particular pattern of parameters.
+Other global functions
+are implemented in such a way that
+operations records are not taken into account at all.
+Such constraints prohibit
+the use of methods named like
+existing global functions in future packages.
+If the name of a method
+is not yet in use, a package author
+can provide a suitable global function.
+But then this new global function might interfere with
+the intentions of the authors of other packages.<P/>
+
+Here we provide an alternative way of accessing an installed
 method without the help of a corresponding global function.  Instead we
 define a single function <Ref Func="Call"/> which takes an object and a method
 as arguments and then applies the method to the object.
@@ -56,13 +74,14 @@ end;]]>
 </Listing>
 As a convention the parameter  name <C>self</C> is used for the object
 on behalf of which the method is invoked. The same name is used in the
-Python programming language for a similar purpose.<P/>
+Python programming language (<URL>http://www.python.org</URL>) for a similar purpose.<P/>
 
 
 	When a  <C>Partition</C> object  has been created,  the global
 	<C>Length</C>  function  cannot  be  applied to  it, 
-and positional selection with square brackets does not work either.  But  the
-	mechanism implemented here is available, see the examples below.
+and positional selection with square brackets does not work either.
+In  the examples below it is shown, how the 
+mechanism provided here can be used in such a situation.
 
 <Example><![CDATA[
 gap> p:= Partition([4, 3, 3, 1]);
