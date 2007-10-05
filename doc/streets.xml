@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  ZigZag Documentation
+     $Id: streets.xml,v 1.1 2007/10/05 17:31:17 goetz Exp $
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:streets">
+<Heading>Streets aka Alley Classes.</Heading>
+
+<#Include Label="Intro:Streets">
+
+<Section>
+<Heading>Street Objects.</Heading>
+
+<#Include Label="Street">
+
+<#Include Label="IsStreet">
+
+</Section>
+
+<Section Label="Sect:StreetsAsSets">
+<Heading>Set Methods for Streets.</Heading>
+
+Streets are domains and therefore all set theoretic functions described
+in  chapter "Domains"  are also  applicable to  streets.   This section
+describes  which  functions  are  implemented  specially  for  streets.
+Functions  not  mentioned here  are  handled  by  the default  methods
+described in the respective sections of chapter "Domains".
+
+More precisely, every street has as its operations record
+<C>StreetOps</C> which inherits from <C>DomainOps</C>
+and overrides the methods below to make it work or to provide 
+more efficient implementations.
+
+<#Include Label="Elements(street)">
+
+<#Include Label="Representative(street)">
+
+</Section>
+
+<Section Label="Sect:StreetMethods">
+<Heading>Street Methods.</Heading>
+
+Various methods can be applied to streets.
+
+<#Include Label="Movers(street)">
+
+<#Include Label="Shakers(street)">
+
+</Section>
+
+</Chapter>
