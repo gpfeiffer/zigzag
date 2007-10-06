@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: iterator.g,v 1.11 2007/10/04 15:31:04 goetz Exp $
+#A  $Id: iterator.g,v 1.12 2007/10/06 10:58:15 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -8,19 +8,22 @@
 ##
 ##  This file contains a dispatcher for iterators on domains.
 ##  
-##  <#GAPDoc Label="Intro:Iterators">
-##  An <E>iterator</E> <Index>Iterator</Index>
-##  is a record that provides two functions <C>hasNext()</C>
-##  and <C>next()</C>  that can be used to loop over the elements of a
-##  (finite) domain.
+##  <#GAPDoc Label="Intro:Iterators"> 
+##    An <E>iterator</E> <Index>Iterator</Index> is a tool that facilitates a
+##    loop over the elements of a (finite) domain without computing a
+##    complete list of elements beforehand.  He we provide an implementation
+##    of an iterator as a record with two components <C>hasNext()</C> and
+##    <C>next()</C>.
 ##  
-##  <C>hasNext()</C> returns <K>true</K> if there are still elements to
-##  be looped over.<Index Key="hasNext"><C>hasNext()</C></Index>
+##    The function <C>hasNext()</C> returns <K>true</K> as long as there are
+##    still elements to be looped over, and <K>false</K> otherwise.<Index
+##    Key="hasNext"><C>hasNext()</C></Index>
 ##  
-##  <C>next()</C> returns the next element from the domain.
-##  <Index Key="next"><C>next()</C></Index>
+##    The function <C>next()</C> returns the next element from the domain
+##    <Index Key="next"><C>next()</C></Index> and should only be called after 
+##    <C>hasNext()</C> has returned <K>true</K>.
 ##
-##  Typical usage:
+##    Typical usage:
 ##  <Example>
 ##  itr:= Iterator(domain);
 ##  while itr.hasNext() do
@@ -28,42 +31,41 @@
 ##  od;
 ##  </Example>
 ##
-##  Iterators are disposable.
-##  After the loop, the iterator object 
-##  is exhausted and should be discarded.
+##    Iterators are disposable objects.
+##    After the loop, the iterator object 
+##    is exhausted and should be discarded.<P/>
 ##
+##    The functions described in this chapter are implemented in the file
+##    <F>iterator.g</F>.  
 ##  <#/GAPDoc>
 ##
 
 #############################################################################
 ##  
-#F  IteratorSet( <set> ) . . . . . . . . . . . . . . . . . . . . .  iterator.
+#F  IteratorList( <list> ) . . . . . . . . . . . . . . . . . . . . .  iterator.
 ##
-##  <#GAPDoc Label="IteratorSet">
+##  <#GAPDoc Label="IteratorList">
 ##  <ManSection>
-##  <Func Name="IteratorSet" Arg="set"/>
+##  <Func Name="IteratorList" Arg="list"/>
 ##  <Returns>
-##    an iterator for the set <A>set</A>
+##    an iterator for the list <A>list</A>.
 ##  </Returns>
 ##  <Description>
 ##  <Example>
-##  gap> X:= [2, 3, 5, 7, 11];
-##  [ 2, 3, 5, 7, 11 ]
-##  gap> itr:= IteratorSet(X);
+##  gap> itr:= IteratorList([2, 3, 5, 7, 11]);
 ##  rec(
 ##    hasNext := function (  ) ... end,
 ##    next := function (  ) ... end )
-##  gap> Print(itr.next());  while itr.hasNext() do Print(", ", itr.next()); od;
-##  2, 3, 5, 7, 11gap> Print("\n");  Unbind(itr);
-##  
+##  gap> while itr.hasNext() do Print(itr.next(), ", "); od; Print("\n");
+##  2, 3, 5, 7, 11, 
 ##  </Example>
-##    A special iterator for the empty set is provided by <Ref
+##    A special iterator for the empty list is provided by <Ref
 ##    Var="IteratorEmpty"/>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-IteratorSet:= function(set)
+IteratorList:= function(list)
     local itr, i;
     
     # initialize.
@@ -71,13 +73,13 @@ IteratorSet:= function(set)
     
     # the hasNext() function.
     itr.hasNext:= function() 
-        return i < Length(set);
+        return i < Length(list);
     end;
     
     # the next() function.
     itr.next:= function() 
         i:= i + 1;
-        return set[i]; 
+        return list[i]; 
     end;
     
     return itr;
@@ -89,9 +91,9 @@ end;
 ##
 ##  <#GAPDoc Label="IteratorEmpty">
 ##  <ManSection>
-##  <Var Name="IteratorEmpty" Comm="an iterator for the empty set"/>
+##  <Var Name="IteratorEmpty" Comm="an iterator for the empty list"/>
 ##  <Description>
-##     The <C>hasNext</C> function of an iterator for the empty set will
+##     The <C>hasNext</C> function of an iterator for the empty list will
 ##     always return <C>false</C>.  Therefore, this iterator does not even
 ##     have a <C>next</C> function, since it should never be called anyway.
 ##  </Description>
@@ -121,7 +123,7 @@ IteratorEmpty:= rec(hasNext:= function() return false; end);
 Iterator:= function(D)
     local  itr;
     if IsSet(D)  then
-        itr:= IteratorSet(D);
+        itr:= IteratorList(D);
     elif IsDomain(D)  then
         # (delete) itr:= D.operations.Iterator(D);
         itr:= Call(D, "Iterator");
@@ -142,14 +144,14 @@ end;
 ##  <Returns>an iterator for the domain <A>domain</A>.</Returns>
 ##  <Description>
 ##  The default iterator for a domain is the iterator returned by 
-##  <Ref Func="IteratorSet"/> for its set of elements.
+##  <Ref Func="IteratorList"/> for its list of elements.
 ##  Particular domains can implement their own more space efficient versions.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
 DomainOps.Iterator:= function(D)
-    return IteratorSet(Elements(D));
+    return IteratorList(Elements(D));
 end;
 
 #############################################################################
@@ -220,7 +222,7 @@ MPartitionsOps.Iterator:= function(self)
     
     #  trivial cases m = 0 and m > n.
     if self.m = 0 and self.n = 0 then
-        return IteratorSet([Partition([])]);
+        return IteratorList([Partition([])]);
     elif self.m = 0 or self.m > self.n then
         return IteratorEmpty;
     fi;
