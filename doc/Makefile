@@ -11,7 +11,7 @@ GAPFILES = $(LIB)/zigzag.g $(LIB)/methods.g $(LIB)/iterator.g\
 XMLFILES = $(DOC)/zigzag.xml $(DOC)/methods.xml $(DOC)/iterator.xml\
            $(DOC)/walker.xml $(DOC)/subsets.xml $(DOC)/shapes.xml\
            $(DOC)/alleys.xml $(DOC)/streets.xml $(DOC)/category.xml\
-	   $(DOC)/groupoid.xml
+	   $(DOC)/groupoid.xml $(DOC)/introduc.xml
 
 .tex.pdf:
 	pdflatex $*
