@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: introduc.xml,v 1.4 2007/10/05 17:29:16 goetz Exp $
+     $Id: introduc.xml,v 1.5 2007/10/07 19:51:40 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -10,6 +10,41 @@
 <Heading>Introduction.</Heading>
   <Section Label="sec:descent">
     <Heading>The Descent Algebra.</Heading>
+
+Let <M>W</M> be the group of permutations of the <M>n+1</M> points
+<M>\{1, 2, \dots, n+1\}</M>.  To each permutation <M>\pi \in W</M> you
+can associate a <E>zigzag pattern</E><Index>zigzag pattern</Index> of
+<M>n</M> ups (<M>\nearrow</M>) and downs (<M>\searrow</M>) depending
+on whether <M>i^{\pi} &lt; (i+1)^{\pi}</M> or <M>i^{\pi} >
+(i+1)^{\pi}</M> for <M>i \in I = \{1, 2, \dots, n\}</M>.  For example,
+the permutation <Display><![CDATA[\left( \begin{array}{ccccccccc}
+1&2&3&4&5&6&7&8&9 \\ 3&2&8&9&4&6&1&7&5 \end{array}\right)]]></Display>
+has the sequence
+<Display>
+\searrow\ \ \nearrow\ \ \nearrow\ \ \searrow\ \ \nearrow\ \ \searrow\ \ \nearrow\ \ \searrow
+</Display>
+as its zigzag pattern.  Obviously, there are <M>2^n</M> such
+sequences, and every sequence occurs as a zizag pattern of some
+permutation.  <P/>
+
+Alternatively, (the list of images of) a permutation <M>\pi</M> can be
+broken into longest possible descending subsequences.  The lengths of
+these subsequences form a <E>composition</E> of <M>n+1</M>, which also
+describes the zigzag pattern of <M>\pi</M>.  For example, the
+descending subsequences of the permutation <M>\pi =
+[3,2,8,9,4,6,1,7,5]</M> are <M>3,2;8;9,4;6,1;7,5</M> of lengths
+<M>2,1,2,2,2</M>.  For a composition <M>q</M> of <M>n+1</M>, let
+<M>Y_q</M> be the set of all permutations whose descending
+subsequences have lengths <M>q</M> and let <M>y_q</M> be the sum of
+the elements of <M>Y_q</M> in the (rational) group algebra of
+<M>W</M>.  It is an amazing property of the elements <M>y_q</M>, where
+<M>q</M> ranges over all the <M>2^n</M> compositions of <M>n+1</M>,
+that they span a <E>subalgebra</E> of the group algebra.  In other
+words, the product of <M>y_q</M> and <M>y_r</M>, formed inside the
+group algebra of <M>W</M>, is a linear combination of elemenst
+<M>y_s</M> for certain compositions <M>s</M> of <M>n+1</M>.  Atkinson
+<Cite Key="Atkinson1986"/> describes the product <M>y_q y_r</M> in terms of
+<M>0</M>-<M>1</M> matrices with prescribed row and column sums.  <P/>
 
     A <E>descent algebra</E> is primarily a subalgebra of the group
 algebra of a finite Coxeter group.

@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: methods.g,v 1.9 2007/10/04 13:47:27 goetz Exp $
+#A  $Id: methods.g,v 1.10 2007/10/07 19:55:20 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -10,8 +10,11 @@
 ##  
 ##  <#GAPDoc Label="Intro:Methods">
 ##    A <E>method</E> <Index>method</Index> is a &GAP; function that is
-##    defined in the operations record of an object and is usually
-##    applied to this object (and possibly further arguments).<P/>
+##    defined in the operations record of an object and is usually applied to
+##    this object (and possibly further arguments).  &GAP; uses dispatchers
+##    in the form of global functions to invoke methods.  This chapter
+##    describes an alternative way to carry out method calls in &GAP;, with
+##    or without further arguments.<P/>
 ##
 ##    The functions described in this chapter are implemented in the file
 ##    <F>methods.g</F>.  
