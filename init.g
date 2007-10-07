@@ -1,13 +1,12 @@
 #############################################################################
 ##
-#A  init.g                        Götz Pfeiffer <goetz.pfeiffer@nuigalway.ie>
+#A  $Id: init.g,v 1.20 2007/10/07 23:20:06 goetz Exp $
 ##
-##  This is the init file of ZigZag  <http://schmidt.nuigalway.ie/zigzag>, a
-##  GAP package for descent algebras of finite Coxeter groups.
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2006, Department of Mathematics, NUI, Galway, Ireland.
+#Y  Copyright (C) 2001-2007, GÃ¶tz Pfeiffer
 ##
-#A  $Id: init.g,v 1.19 2007/08/30 12:57:22 goetz Exp $
+##  This is the init file of the ZigZag package.
 ##
 
 #############################################################################
