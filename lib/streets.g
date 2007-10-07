@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.23 2007/10/04 09:55:18 goetz Exp $
+#A  $Id: streets.g,v 1.24 2007/10/07 19:54:49 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -173,9 +173,9 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The edges of the action graph are either movers or shakers, following
-##    Brink and Howlett~\cite{BriHow99}.  A mover is an edge with two
-##    distinct vertices.  The movers of a street form a collection of
-##    streets.  Given a street <A>street</A>, this method constructs and
+##    Brink and Howlett <Cite Key="BrinkHowlett1999"/>.  A mover is an edge
+##    with two distinct vertices.  The movers of a street form a collection
+##    of streets.  Given a street <A>street</A>, this method constructs and
 ##    returns the list of streets comprising the movers of <A>street</A>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
@@ -271,11 +271,11 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The edges of the action graph are either movers or shakers, following
-##    Brink and Howlett~\cite{BriHow99}.  A shaker is an edge whose initial
-##    and terminal vertex coincide.  The shakers of a street form a
-##    collection of streets.  Given a street <A>street</A>, this method
-##    constructs and returns the list of streets comprising the shakers of
-##    <A>street</A>.
+##    Brink and Howlett <Cite Key="BrinkHowlett1999"/>.  A shaker is an edge
+##    whose initial and terminal vertex coincide.  The shakers of a street
+##    form a collection of streets.  Given a street <A>street</A>, this
+##    method constructs and returns the list of streets comprising the
+##    shakers of <A>street</A>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> Call(Street(W, [[1,2,3], [3]]), "Shakers"); 

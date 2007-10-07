@@ -29,7 +29,7 @@ XMLFILES = $(DOC)/zigzag.xml $(DOC)/methods.xml $(DOC)/iterator.xml\
 
 all: zigzag.pdf
 
-zigzag.tex: $(XMLFILES) $(GAPFILES) zigzag.bib
+zigzag.tex: $(XMLFILES) $(GAPFILES) descent.bib
 	gap4 -b -r < makedoc.g
 
 clean:
