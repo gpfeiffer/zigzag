@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.20 2007/10/07 23:20:06 goetz Exp $
+#A  $Id: init.g,v 1.21 2007/10/07 23:20:46 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Götz Pfeiffer
+#Y  Copyright (C) 2001-2007 Götz Pfeiffer
 ##
 ##  This is the init file of the ZigZag package.
 ##
