@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?LaTeX ExtraPreamble="\usepackage{parskip}
+\usepackage[euler-digits]{eulervm}
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.24 2007/10/05 17:33:12 goetz Exp $
+     $Id: zigzag.xml,v 1.25 2007/10/07 19:51:28 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -55,7 +56,7 @@ This ...
 <#Include SYSTEM "streets.xml">
 </Body>
 
-<Bibliography Databases="zigzag"/>
+<Bibliography Databases="descent" Style="amsplain"/>
 
 <TheIndex/>
 

@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.51 2007/10/04 09:53:25 goetz Exp $
+#A  $Id: shapes.g,v 1.52 2007/10/07 19:54:04 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -377,7 +377,8 @@ end;
 ##    <M>N(W_J)</M> in <M>W</M>.<P/>
 ##
 ##    The normalizer of $W_J$ in $W$ is the semidirect product of $W_J$ and
-##    $X_{JJJ}$; see <Cite Key="Howlett80"/> and <Cite Key="BriHow99"/>. <P/>
+##    $X_{JJJ}$; see <Cite Key="Howlett1980"/> and <Cite
+##    Key="BrinkHowlett1999"/>. <P/>
 ##  
 ##    The group returned has extra fields <C>ears</C> and <C>eyes</C> that
 ##    contain these lists of generators.  The 'ears' alone generate a Coxeter
