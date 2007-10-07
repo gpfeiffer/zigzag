@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: iterator.xml,v 1.1 2007/10/05 17:16:04 goetz Exp $
+     $Id: iterator.xml,v 1.2 2007/10/07 19:52:40 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -14,7 +14,7 @@
 <Section>
 <Heading>Default Iterators.</Heading>
 
-<#Include Label="IteratorSet">
+<#Include Label="IteratorList">
 
 <#Include Label="IteratorEmpty">
 
@@ -28,11 +28,11 @@
 <Heading>Examples of Iterators.</Heading>
 
 <Subsection>
-<Heading>Set Iterators.</Heading>
+<Heading>List Iterators.</Heading>
 
-The iterator for sets is implemented as follows.
+The iterator for lists is implemented as follows.
 <Listing Type="From iterator.g"><![CDATA[
-IteratorSet:= function(set)
+IteratorList:= function(list)
     local itr, i;
     
     # initialize.
@@ -40,21 +40,21 @@ IteratorSet:= function(set)
     
     # the hasNext() function.
     itr.hasNext:= function() 
-        return i < Length(set);
+        return i < Length(list);
     end;
     
     # the next() function.
     itr.next:= function() 
         i:= i + 1;
-        return set[i]; 
+        return list[i]; 
     end;
     
     return itr;
 end;]]>
 </Listing>
-Here the state of the iterator, i.e., the set <A>set</A>that it is looping
-over and the current position <C>i</C> in the set are parameters
-and local variables of the function <Ref Func="IteratorSet"/>.   As such they
+Here the state of the iterator, i.e., the list <A>list</A>that it is looping
+over and the current position <C>i</C> in the list are parameters
+and local variables of the function <Ref Func="IteratorList"/>.   As such they
 are not accessible (not even for debugging) from the outside when
 the iterator methods <C>hasNext()</C> and <C>next()</C> are executed.
 This way of data hiding prevents the state variables from being accidentally
@@ -64,21 +64,21 @@ Alternatively, the state could be stored in form of fields of the
 iterator record.
 
 <Example><![CDATA[
-IteratorSet1:= function(set)
+IteratorList1:= function(list)
     local itr;
     
     # initialize.
-    itr:= rec(set:= set, i:= 0);
+    itr:= rec(list:= list, i:= 0);
     
     # the hasNext() function.
     itr.hasNext:= function() 
-        return itr.i < Length(itr.set);
+        return itr.i < Length(itr.list);
     end;
     
     # the next() function.
     itr.next:= function() 
         itr.i:= itr.i + 1;
-        return itr.set[itr.i]; 
+        return itr.list[itr.i]; 
     end;
     
     return itr;
@@ -133,7 +133,7 @@ MPartitionsOps.Iterator:= function(self)
     
     #  trivial cases m = 0 and m > n.
     if self.m = 0 and self.n = 0 then
-        return IteratorSet([Partition([])]);
+        return IteratorList([Partition([])]);
     elif self.m = 0 or self.m > self.n then
         return IteratorEmpty;
     fi;

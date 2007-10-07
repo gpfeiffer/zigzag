@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: iterator.g,v 1.12 2007/10/06 10:58:15 goetz Exp $
+#A  $Id: iterator.g,v 1.13 2007/10/07 19:53:32 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -59,7 +59,11 @@
 ##  gap> while itr.hasNext() do Print(itr.next(), ", "); od; Print("\n");
 ##  2, 3, 5, 7, 11, 
 ##  </Example>
-##    A special iterator for the empty list is provided by <Ref
+##    Of course, the &GAP; <K>for</K> loop does a perfect job of looping over
+##    the elements of any list.  The iterator here is mainly provided as a
+##    domain <Ref Oper="Iterator"/> for domains which are lists.<P/>
+##
+##    A special purpose iterator for the empty list is provided by <Ref
 ##    Var="IteratorEmpty"/>.
 ##  </Description>
 ##  </ManSection>
@@ -125,7 +129,6 @@ Iterator:= function(D)
     if IsSet(D)  then
         itr:= IteratorList(D);
     elif IsDomain(D)  then
-        # (delete) itr:= D.operations.Iterator(D);
         itr:= Call(D, "Iterator");
     else
         Error( "<D> must be a domain or a set" );
@@ -141,7 +144,7 @@ end;
 ##  <#GAPDoc Label="Iterator(domain)">
 ##  <ManSection>
 ##  <Meth Name="Iterator" Label="for domains" Arg="domain"/>
-##  <Returns>an iterator for the domain <A>domain</A>.</Returns>
+##  <Returns>the default iterator for the domain <A>domain</A>.</Returns>
 ##  <Description>
 ##  The default iterator for a domain is the iterator returned by 
 ##  <Ref Func="IteratorList"/> for its list of elements.
