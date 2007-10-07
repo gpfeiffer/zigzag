@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.22 2007/10/04 15:28:52 goetz Exp $
+#A  $Id: subsets.g,v 1.23 2007/10/07 23:19:17 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -370,9 +370,15 @@ WeakIntervalOps:= OperationsRecord("WeakIntervalOps", DomainOps);
 ##    <A>top</A> in <A>W</A>.
 ##  </Returns>
 ##  <Description>
-##  This is the constructor for ...
+##  This is the constructor for weak intervals.
 ##  <Example>
-##  gap> ...
+##  gap> W:= CoxeterGroup("A", 5);;                                     
+##  gap> w:= PermCoxeterWord(W, [ 1, 2, 3, 4, 5, 4 ]);;                   
+##  gap> v:= PermCoxeterWord(W, [ 3, 4, 5, 4 ]);;                   
+##  gap> weak:= WeakInterval(W, v, w);
+##  WeakInterval( CoxeterGroup("A", 5), ( 2,14, 7)( 3,27, 9)( 4, 8,20)( 5,19,23)
+##  ( 6,15,10)(12,24,18)(17,29,22)(21,30,25), ( 1,30, 9, 3, 2)( 4, 8,11,13,20)
+##  ( 5,19,23,26,28)( 6,29,25,12, 7)(10,27,22,21,14)(15,24,18,17,16) )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -427,6 +433,27 @@ end;
 ##
 ##  the interval [bot, top] is isomorphic to the interval [1, bot^-1 * top].
 ##
+##  <#GAPDoc Label="Elements(interval)">
+##  <ManSection>
+##  <Meth Name="Elements" Arg="interval" Label="for weak intervals"/>
+##  <Returns>
+##    the set of elements of the weak interval <A>interval</A>.
+##  </Returns>
+##  <Description>
+##    The interval from <M>v</M> to <M>w</M> in <M>W</M> ...
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> w:= PermCoxeterWord(W, [ 1, 2, 3, 4, 5, 4 ]);;
+##  gap> v:= PermCoxeterWord(W, [ 1, 2]);;       
+##  gap> interval:= WeakInterval(W, v, w);;
+##  gap> List(Elements(interval), x-> CoxeterWord(W, x));
+##  [ [ 1, 2 ], [ 1, 2, 5 ], [ 1, 2, 3 ], [ 1, 2, 3, 5 ], [ 1, 2, 3, 4 ], 
+##    [ 1, 2, 3, 5, 4 ], [ 1, 2, 3, 4, 5 ], [ 1, 2, 3, 4, 5, 4 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 WeakIntervalOps.Elements:= function(self)
     local   list;
     list:= self.bot * Elements(self.pre);
@@ -438,6 +465,33 @@ end;
 #############################################################################
 ##
 #F  Iterator( <interval> ) . . . . . . . . . . . . . . . . . . . .  iterator.
+##
+##  <#GAPDoc Label="Iterator(interval)">
+##  <ManSection>
+##  <Meth Name="Iterator" Arg="interval" Label="for weak intervals"/>
+##  <Returns>
+##    an iterator for the elements of the weak interval <A>interval</A>.
+##  </Returns>
+##  <Description>
+##    The weak interval from <M>v</M> to <M>w</M> in <M>W</M> ...
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> w:= PermCoxeterWord(W, [ 1, 2, 3, 4, 5, 4 ]);;
+##  gap> v:= PermCoxeterWord(W, [ 1, 2]);;
+##  gap> itr:= Iterator(WeakInterval(W, v, w));;
+##  gap> while itr.hasNext() do Print(CoxeterWord(W, itr.next()), "\n"); od;
+##  [ 1, 2, 3, 4, 5, 4 ]
+##  [ 1, 2, 3, 4, 5 ]
+##  [ 1, 2, 3, 5, 4 ]
+##  [ 1, 2, 3, 4 ]
+##  [ 1, 2, 3, 5 ]
+##  [ 1, 2, 3 ]
+##  [ 1, 2, 5 ]
+##  [ 1, 2 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 WeakIntervalOps.Iterator:= function(self)
     local   preitr,  itr;
