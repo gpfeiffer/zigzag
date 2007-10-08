@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.35 2007/10/04 10:01:27 goetz Exp $
+#A  $Id: descent.g,v 1.36 2007/10/08 19:04:12 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -100,12 +100,156 @@ DescentAlgebraOps.Mu:= function(D)
 
     return mu;
 end;
+
+
+
+#############################################################################
+##  
+##  A DescentElt is an element of a DescentAlgebra
+##  
+
+
+#############################################################################
+##  
+#O  DescentEltOps  
+##  
+DescentEltOps:= OperationsRecord("DescentEltOps", AlgebraElementOps);
+
+#############################################################################
+##  
+##  DescentElt
+## 
+DescentElt:= function(D, basis, coeff, elm)
+    return rec(D:= D,
+               basis:= basis,
+               coeff:= coeff,
+               elm:= elm,
+               isDescentElt:= true,
+               operations:= DescentEltOps);
+end;
+
+#############################################################################
+##  
+##  IsDescentElt
+##  
+IsDescentElt:= function(obj)
+    return IsRec(obj) and IsBound(obj.isDescentElt) 
+           and obj.isDescentElt = true;
+end;
+
+
+#############################################################################
+DescentEltOps.String:= function(self)
+    local   bracketless,  str,  i;
     
+    # helper: how to print a list without brackets
+    bracketless:= function(list)
+        local   str,  i;
+        if list = [] then return ""; fi;
+        str:= String(list[1]);
+        for i in [2..Length(list)] do
+            Add(str, ',');
+            Append(str, String(list[i]));
+        od;
+        return str;
+    end;
+    
+    #  trivial case first.  
+    if self.elm = [] then  return "0";  fi;
+    
+    str:= "";
+    Add(str, '(');
+    Append(str, String(self.coeff[1]));
+    Append(str, Concatenation(") * ", self.basis, "("));
+    Append(str, bracketless(self.elm[1]));
+    Add(str, ')');
+    
+    for i in [2..Length(self.elm)] do
+        Append(str, " + ");
+        Add(str, '(');
+        Append(str, String(self.coeff[i]));
+        Append(str, Concatenation(") * ", self.basis, "("));
+        Append(str, bracketless(self.elm[i]));
+        Add(str, ')');
+    od;
+    
+    return str;
+end;
+        
+DescentEltOps.Print:= function(self)
+    Print(String(self));
+end;
+
+DescentEltOps.Normalize:= function(a)
+    local   elm,  coeff,  i,  pos;
+
+    if a.elm = [] then return; fi;
+    SortParallel(a.elm, a.coeff);
+    elm:= a.elm{[1]};  coeff:= a.coeff{[1]};
+    for i in [2..Length(a.elm)] do
+        if a.elm[i] = a.elm[i-1] then
+            coeff[Length(coeff)]:= coeff[Length(coeff)] + a.coeff[i];
+        else
+            Add(coeff, a.coeff[i]);
+            Add(elm, a.elm[i]);
+        fi;
+    od;
+    pos:= Filtered([1..Length(coeff)], i-> coeff[i] <> 0);
+    a.coeff:= coeff{pos};
+    a.elm:= elm{pos};
+end;
+
+
+DescentEltOps.\+:= function(a, b)
+    local   sum;
+
+    if not IsIdentical(a.D, b.D) then
+        Error("summands must be elements of the same algebra");
+    fi;
+    if a.basis <> b.basis then
+        Error("not yet implemented");
+    fi;
+    sum:= DescentElt(a.D, a.basis, Concatenation(a.coeff, b.coeff),
+                  Concatenation(a.elm, b.elm));
+    DescentEltOps.Normalize(sum);
+    return sum;
+end;
+
+
+DescentEltOps.\*:= function(l, r)
+    local   pro;
+    
+    if IsDescentElt(l) then
+        if IsDescentElt(r) then
+            Error("not yet implemented");
+        else
+            pro:= DescentElt(l.D, l.basis, l.coeff * r, l.elm);
+            DescentEltOps.Normalize(pro);
+            return pro;
+        fi;
+    else
+         if IsDescentElt(r) then
+            pro:= DescentElt(r.D, r.basis, l * r.coeff, r.elm);
+            DescentEltOps.Normalize(pro);
+            return pro;
+        else
+            Error("Panic: neither <l> nor <r> is a DescentElt!");
+        fi;
+    fi;
+end;
+
+DescentEltOps.\-:= function(l, r)
+    return l + -r;
+end;
+
+
+
 #############################################################################
 #
 #  turn $a \in \Sigma(W)$ into the character $\theta(a)$.
 #
 #  elt must be a matrix in the X basis.
+##  FIXME: let elt be DescentElt.
 #
 CharacterDescentElt:= function(W, elt)
 
