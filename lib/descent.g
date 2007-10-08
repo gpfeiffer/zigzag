@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.36 2007/10/08 19:04:12 goetz Exp $
+#A  $Id: descent.g,v 1.37 2007/10/08 22:34:47 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -43,6 +43,8 @@ DescentAlgebra:= function(W)
         return xxx[K].val[J][l];
     end;
 
+    self.basis:= "x";  # default basis
+    
     return self;
 end;
 
@@ -57,8 +59,13 @@ end;
 #F  Print( <descalg> )  
 ##  
 DescentAlgebraOps.Print:= function(self)
-    Print("DescentAlgebra( ", self.W, " )");
+    if IsBound(self.name) then
+        Print(self.name);
+    else
+        Print("DescentAlgebra( ", self.W, " )");
+    fi;
 end;
+
 
 #############################################################################
 ##  
@@ -119,14 +126,33 @@ DescentEltOps:= OperationsRecord("DescentEltOps", AlgebraElementOps);
 ##  
 ##  DescentElt
 ## 
-DescentElt:= function(D, basis, coeff, elm)
+DescentElt:= function(D, basis, coeff)
     return rec(D:= D,
                basis:= basis,
                coeff:= coeff,
-               elm:= elm,
                isDescentElt:= true,
                operations:= DescentEltOps);
 end;
+
+
+DescentAlgebraOps.Basis:= function(arg)
+    local   self,  basis,  d,  i,  new;
+
+    self:= arg[1];
+    if Length(arg) = 1 then
+        basis:= [];
+        d:= Dimension(self);
+        for i in [1..d] do
+            new:=  0 * [1..d];
+            new[i]:= 1;
+            Add(basis, DescentElt(self, self.basis, new));
+        od;
+        return basis;
+    else
+        Error("not yet implemented");
+    fi;
+end;
+    
 
 #############################################################################
 ##  
@@ -140,8 +166,8 @@ end;
 
 #############################################################################
 DescentEltOps.String:= function(self)
-    local   bracketless,  str,  i;
-    
+    local   bracketless,  sss,  summand,  str,  i;
+
     # helper: how to print a list without brackets
     bracketless:= function(list)
         local   str,  i;
@@ -154,84 +180,109 @@ DescentEltOps.String:= function(self)
         return str;
     end;
     
-    #  trivial case first.  
-    if self.elm = [] then  return "0";  fi;
+    sss:= SubsetsShapes(Shapes(self.D.W));
+    more:= false;
+
+    summand:= function(i)
+        local   str;
+        if self.coeff[i] = 0 then return ""; fi;
+        if self.coeff[i] > 0 then
+            if more then
+                str:= " + ";
+            else
+                str:= "";
+            fi;
+            if self.coeff[i] <> 1 then
+                Append(str, String(self.coeff[i]));
+                Append(str, "*");
+            fi;
+        else
+            if more then
+                str:= " - ";
+            else
+                str:= "-";
+            fi;
+            if self.coeff[i] <> -1 then
+                Append(str, String(-self.coeff[i]));
+                Append(str, "*");
+            fi;
+        fi;
+            
+        Append(str, self.basis);
+        Add(str, '(');
+        Append(str, bracketless(sss[i]));
+        Add(str, ')');
+        return str;
+    end;
     
     str:= "";
-    Add(str, '(');
-    Append(str, String(self.coeff[1]));
-    Append(str, Concatenation(") * ", self.basis, "("));
-    Append(str, bracketless(self.elm[1]));
-    Add(str, ')');
-    
-    for i in [2..Length(self.elm)] do
-        Append(str, " + ");
-        Add(str, '(');
-        Append(str, String(self.coeff[i]));
-        Append(str, Concatenation(") * ", self.basis, "("));
-        Append(str, bracketless(self.elm[i]));
-        Add(str, ')');
-    od;
-    
-    return str;
-end;
-        
-DescentEltOps.Print:= function(self)
-    Print(String(self));
-end;
-
-DescentEltOps.Normalize:= function(a)
-    local   elm,  coeff,  i,  pos;
-
-    if a.elm = [] then return; fi;
-    SortParallel(a.elm, a.coeff);
-    elm:= a.elm{[1]};  coeff:= a.coeff{[1]};
-    for i in [2..Length(a.elm)] do
-        if a.elm[i] = a.elm[i-1] then
-            coeff[Length(coeff)]:= coeff[Length(coeff)] + a.coeff[i];
-        else
-            Add(coeff, a.coeff[i]);
-            Add(elm, a.elm[i]);
+    for i in [1..Length(sss)] do
+        Append(str, summand(i));
+        if str <> "" then
+            more:= true;
         fi;
     od;
-    pos:= Filtered([1..Length(coeff)], i-> coeff[i] <> 0);
-    a.coeff:= coeff{pos};
-    a.elm:= elm{pos};
+    
+    if str = "" then 
+        return "0";
+    else
+        return str;
+    fi;
+end;
+
+DescentEltOps.Print:= function(self)
+    Print("DescentElt(", self.D, ", \"", self.basis, "\", ", self.coeff);
 end;
 
 
-DescentEltOps.\+:= function(a, b)
-    local   sum;
-
-    if not IsIdentical(a.D, b.D) then
+DescentEltOps.\+:= function(l, r)
+    if not (IsDescentElt(l) and IsDescentElt(r)) then
+        Error("don't know how to add <l> and <r>");
+    fi;
+    if not IsIdentical(l.D, r.D) then
         Error("summands must be elements of the same algebra");
     fi;
-    if a.basis <> b.basis then
+    if l.basis <> r.basis then
         Error("not yet implemented");
     fi;
-    sum:= DescentElt(a.D, a.basis, Concatenation(a.coeff, b.coeff),
-                  Concatenation(a.elm, b.elm));
-    DescentEltOps.Normalize(sum);
-    return sum;
+    return DescentElt(l.D, l.basis, l.coeff + r.coeff);
+end;
+
+
+DescentEltOps.Matrix:= function(self)
+    local   d,  mat,  xxx,  i;
+    if self.basis = "x" then
+        d:= Length(self.coeff);
+        mat:= NullMat(d, d);
+        xxx:= RightRegularX(self.D);
+        for i in [1..d] do
+            if self.coeff[i] <> 0 then
+                mat:= mat + self.coeff[i] * MatCompressedAJKL(xxx[i]);
+            fi;
+        od;
+        return mat;
+    else
+        Error("not yet implemented");
+    fi;
 end;
 
 
 DescentEltOps.\*:= function(l, r)
-    local   pro;
-    
     if IsDescentElt(l) then
         if IsDescentElt(r) then
-            Error("not yet implemented");
+            if not IsIdentical(l.D, r.D) then
+                Error("summands must be elements of the same algebra");
+            fi;
+            if l.basis <> r.basis then
+                Error("not yet implemented");
+            fi;
+            return DescentElt(l.D, l.basis, l.coeff * Call(r, "Matrix"));
         else
-            pro:= DescentElt(l.D, l.basis, l.coeff * r, l.elm);
-            DescentEltOps.Normalize(pro);
-            return pro;
+            return DescentElt(l.D, l.basis, l.coeff * r);
         fi;
     else
-         if IsDescentElt(r) then
-            pro:= DescentElt(r.D, r.basis, l * r.coeff, r.elm);
-            DescentEltOps.Normalize(pro);
-            return pro;
+        if IsDescentElt(r) then
+            return DescentElt(r.D, r.basis, l * r.coeff);
         else
             Error("Panic: neither <l> nor <r> is a DescentElt!");
         fi;
