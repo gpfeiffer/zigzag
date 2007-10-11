@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.26 2007/10/11 11:49:22 goetz Exp $
+#A  $Id: subsets.g,v 1.27 2007/10/11 12:02:39 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -120,8 +120,8 @@ end;
 ##  <w> is in the prefix set  <prefixes> if and only if ...
 ##
 PrefixesOps.\in:= function(w, self)
-    return CoxeterLength(w^-1 * self.w) = 
-           CoxeterLength(self.w) - CoxeterLength(w);
+    return CoxeterLength(self.W, w^-1 * self.w) = 
+           CoxeterLength(self.W, self.w) - CoxeterLength(self.W, w);
 end;
 
 
@@ -475,7 +475,7 @@ end;
 WeakIntervalOps.\in:= function(w, self)
     return self.bot in Prefixes(self.W, w) and 
            self.bot^-1 * w in self.pre;
-    
+end;
     
 #############################################################################
 ##
