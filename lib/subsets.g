@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.29 2007/10/11 12:58:14 goetz Exp $
+#A  $Id: subsets.g,v 1.30 2007/10/11 13:27:59 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -695,15 +695,16 @@ end;
 ##
 ##  <#GAPDoc Label="Intro:DescentClass">
 ##    The (left) <E>descent set</E><Index>descent set</Index> of an element
-##    $w \in W$ is the set $\mathcal{D}(w) = \{s \in S : \ell(sw) &lt;
-##    \ell(w)\}$.  For each subnset $K \subseteq S$ the <E>descent
-##    class</E><Index>descent class</Index> $Y_K$ is the set of elements of
-##    $W$ whose descent set is the <E>complement</E> of $K$ in $S$, that is
-##    $Y_K = \{w \ in W : \mathcal{D}(w) = S \setminus K\}$.  A Coxeter group
-##    $W$ of rank $n$ is partitioned into $2^n$ desecent classes.  The
-##    parabolic transversal $X_J$ is the disjoint union of the descent
-##    classes $Y_K$ where $K \supseteq J$.  The descent class $Y_K$ is the
-##    weak interval $[w_{S \setminus K}, w_K w_0]$.
+##    <M>w \in W</M> is the set <M>\mathcal{D}(w) = \{s \in S : \ell(sw) &lt;
+##    \ell(w)\}</M>.  For each subnset <M>K \subseteq S</M> the <E>descent
+##    class</E><Index>descent class</Index> <M>Y_K</M> is the set of elements
+##    of <M>W</M> whose descent set is the <E>complement</E> of <M>K</M> in
+##    <M>S</M>, that is <M>Y_K = \{w \ in W : \mathcal{D}(w) = S \setminus
+##    K\}</M>.  A Coxeter group <M>W</M> of rank <M>n</M> is partitioned into
+##    <M>2^n</M> desecent classes.  The parabolic transversal <M>X_J</M> is
+##    the disjoint union of the descent classes <M>Y_K</M> where <M>K
+##    \supseteq J</M>.  The descent class <M>Y_K</M> is the weak interval
+##    <M>[w_{S \setminus K}, w_K w_0]</M>.
 ##  <#/GAPDoc>
 ##
 
@@ -870,7 +871,11 @@ end;
 ##  A Left Parabolic Transversal is not a Prefixes set, so cannot
 ##  inherit. But composition works.
 ##
-
+##  <#GAPDoc Label="Intro:LeftParabolicTransversal">
+##    For each <M>J \subseteq S</M> the set <M>X_J^{-1}</M> of inverses of
+##    the elements of right transversal <M>X_J</M> is a transversal of the
+##    <E>left</E> cosets of the parabolic subgroup <M>W_J</M> in <M>W</M>.
+##  <#/GAPDoc>
 
 #############################################################################
 ##
@@ -896,7 +901,8 @@ LeftParabolicTransversalOps:=
 ##  <Description>
 ##  This is the constructor for ...
 ##  <Example>
-##  gap> ...
+##  gap> LeftParabolicTransversal(CoxeterGroup("A", 4), [1,2,4]);
+##  LeftParabolicTransversal( CoxeterGroup("A", 4), [ 1, 2, 4 ] )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -990,7 +996,11 @@ end;
 ##
 ##  Double Coset Reps.
 ##
-
+##  <#GAPDoc Label="Intro:DoubleParabolicTransversal">
+##    For subsets $J, K \subseteq S$, the set $X_{JK} = X_J \cap X_K^{-1}$ is
+##    a set of double coset representatives of the parabolic subgroups $W_J$
+##    and $W_K$ in $W$.
+##  <#/GAPDoc>
 
 #############################################################################
 ##
@@ -1016,7 +1026,8 @@ DoubleParabolicTransversalOps:=
 ##  <Description>
 ##  This is the constructor for ...
 ##  <Example>
-##  gap> ...
+##  gap> DoubleParabolicTransversal(CoxeterGroup("A", 4), [1,2,4], [2,3]);
+##  DoubleParabolicTransversal( CoxeterGroup("A", 4), [ 1, 2, 4 ], [ 2, 3 ] )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -1096,6 +1107,12 @@ end;
 ##
 ##  XJKLs.
 ##
+##  <#GAPDoc Label="Intro:XJKL">
+##    For all subsets $J, K \subseteq S$, the set $X_{JK}$ of double coset
+##    representatives is partitioned into sets $X_{JKL} = \{x \in X_{JK} :
+##    J^x \cap K = L\}$, $L \subseteq S$.
+##  <#/GAPDoc>
+
 
 #############################################################################
 ##
@@ -1120,7 +1137,8 @@ XJKLOps:= OperationsRecord("XJKLOps", DomainOps);
 ##  <Description>
 ##  This is the constructor for ...
 ##  <Example>
-##  gap> ...
+##  gap> XJKL(CoxeterGroup("A", 4), [1,2,4], [2,3], [2]);
+##  XJKL( CoxeterGroup("A", 4), [ 1, 2, 4 ], [ 2, 3 ], [ 2 ] )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
