@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.54 2007/10/11 15:19:33 goetz Exp $
+#A  $Id: shapes.g,v 1.55 2007/10/11 16:15:39 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -699,10 +699,43 @@ end;
 ##
 #F  IncidenceMatShapes( <shapes> ) . . . . . . . . . . . .  incidence matrix.
 ##
-##  returns a $2^n \times 2^n$ matrix of $0$s and $1$s describing the
-##  containment of subsets in each other wrt to the list returned by
-##  'Subsets'.
+##  <#GAPDoc Label="IncidenceMatShapes">
+##  <ManSection>
+##  <Func Name="IncidenceMatShapes" Arg="shapes"/>
+##  <Returns>
+##    the <M>2^n \times 2^n</M> matrix of <M>0</M>s and <M>1</M>s describing
+##    the containment of subsets in each other wrt to the list of subsets of
+##    <M>S</M> in shape order.
+##  </Returns>
+##  <Description>
+##    The <E>incidence matrix</E><Index>incidence matrix</Index> of the
+##    subsets of <M>S</M> is the matrix <M>(i_{JK})_{J,K \subseteq S}</M>
+##    with <M>i_{JK} = 1</M> if <M>J \subseteq K</M> and <M>i_{JK} = 0</M>
+##    otherwise.  Here the row and column indices <M>J,K</M> are sorted in
+##    shape order, i.e., as returned by <Ref Label="SubsetsShapes"/>.
+##  <Example>
+##  gap> IncidenceMatShapes(Shapes(CoxeterGroup("A", 3)));
+##  [ [ 1, 1, 1, 1, 1, 1, 1, 1 ], [ 0, 1, 0, 0, 1, 1, 0, 1 ], 
+##    [ 0, 0, 1, 0, 0, 1, 1, 1 ], [ 0, 0, 0, 1, 1, 0, 1, 1 ], 
+##    [ 0, 0, 0, 0, 1, 0, 0, 1 ], [ 0, 0, 0, 0, 0, 1, 0, 1 ], 
+##    [ 0, 0, 0, 0, 0, 0, 1, 1 ], [ 0, 0, 0, 0, 0, 0, 0, 1 ] ]
+##  gap> PrintArray(last);
+##  [ [  1,  1,  1,  1,  1,  1,  1,  1 ],
+##    [  0,  1,  0,  0,  1,  1,  0,  1 ],
+##    [  0,  0,  1,  0,  0,  1,  1,  1 ],
+##    [  0,  0,  0,  1,  1,  0,  1,  1 ],
+##    [  0,  0,  0,  0,  1,  0,  0,  1 ],
+##    [  0,  0,  0,  0,  0,  1,  0,  1 ],
+##    [  0,  0,  0,  0,  0,  0,  1,  1 ],
+##    [  0,  0,  0,  0,  0,  0,  0,  1 ] ]
+##    gap> SubsetsShapes(Shapes(CoxeterGroup("A", 3)));
+##    [ [  ], [ 1 ], [ 2 ], [ 3 ], [ 1, 3 ], [ 1, 2 ], [ 2, 3 ], [ 1, 2, 3 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
+##  returns 
 ##  This matrix serves as the base change matrix X -> Y.
 ##
 IncidenceMatShapes:= function(shapes)
