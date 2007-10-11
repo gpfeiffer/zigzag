@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.55 2007/10/11 16:15:39 goetz Exp $
+#A  $Id: shapes.g,v 1.56 2007/10/11 17:44:43 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -966,11 +966,35 @@ end;
 
 #############################################################################
 ##
+##  InvolutionShapes( <W> ) . . . . . . . . . . . . . . . . . .  involutions.
+##
 ##  Find all ConjugacyClasses of involutions as shapes with a center.
 ##  Reference: Richardson.
 ##  must care for the case of W being a parabolic subgroup.
 ##  how about reflection subgroups?
 ##  FIXME: What is the most efficient way to do this?
+##
+##  <#GAPDoc Label="InvolutionShapes">
+##  <ManSection>
+##  <Func Name="InvolutionShapes" Arg="W"/>
+##  <Returns>
+##    the list of those shapes of <A>W</A> consisting of parabolic subgroups
+##    with central longest element.
+##  </Returns>
+##  <Description>
+##    The conjugacy classes of involutions (see <Ref Func="Involutions"/>) of
+##    <A>W</A> correspond to the shapes of <A>W</A> consisting of parabolic
+##    subgroups with central longest element.
+##  <Example>
+##  gap> InvolutionShapes(CoxeterGroup("E", 6));
+##  [ Shape( CoxeterGroup("E", 6), [  ] ), Shape( CoxeterGroup("E", 6), [ 1 ] ), 
+##    Shape( CoxeterGroup("E", 6), [ 1, 2 ] ), 
+##    Shape( CoxeterGroup("E", 6), [ 1, 4, 6 ] ), 
+##    Shape( CoxeterGroup("E", 6), [ 2, 3, 4, 5 ] ) ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 InvolutionShapes:= function(W)
     local   inv,  s,  r,  g,  w;
@@ -985,37 +1009,136 @@ InvolutionShapes:= function(W)
     return inv;    
 end;
 
+#############################################################################
+##
+##  Involutions( <W> )  . . . . . . . . . . . . . . . . . . . .  involutions.
+##
+##  <#GAPDoc Label="Involutions">
+##  <ManSection>
+##  <Func Name="Involutions" Arg="W"/>
+##  <Returns>
+##    the list of conjugacy classes of involutions of <A>W</A>.
+##  </Returns>
+##  <Description>
+##    The conjugacy classes of involutions of <A>W</A> correspond to the
+##    shapes of <A>W</A> consisting of parabolic subgroups with central
+##    longest element (see <Ref Func="InvolutionShapes"/>). 
+##  <Example>
+##  gap> W:= CoxeterGroup("E", 6);;  W.name:= "W";;
+##  gap> inv:= Involutions(W);
+##  [ ConjugacyClass( W, () ), ConjugacyClass( W, ( 1,37)( 3, 7)( 9,12)(13,17)
+##      (15,18)(19,22)(21,23)(24,26)(25,27)(28,30)(31,33)(39,43)(45,48)(49,53)
+##      (51,54)(55,58)(57,59)(60,62)(61,63)(64,66)(67,69) ), 
+##    ConjugacyClass( W, ( 1,37)( 2,38)( 3, 7)( 4, 8)( 9,17)(10,14)(12,13)(15,22)
+##      (16,20)(18,19)(21,27)(23,25)(24,26)(28,30)(31,33)(35,36)(39,43)(40,44)
+##      (45,53)(46,50)(48,49)(51,58)(52,56)(54,55)(57,63)(59,61)(60,62)(64,66)
+##      (67,69)(71,72) ), ConjugacyClass( W, ( 1,37)( 2, 8)( 3,12)( 4,40)( 5,16)
+##      ( 6,42)( 7, 9)(10,11)(13,17)(14,20)(15,23)(18,21)(19,30)(22,28)(24,27)
+##      (25,26)(29,32)(31,33)(34,35)(38,44)(39,48)(41,52)(43,45)(46,47)(49,53)
+##      (50,56)(51,59)(54,57)(55,66)(58,64)(60,63)(61,62)(65,68)(67,69)(70,71) ), 
+##    ConjugacyClass( W, ( 1,29)( 2,38)( 3,39)( 4,40)( 5,41)( 6,31)( 7,26)( 8,44)
+##      ( 9,45)(10,46)(11,28)(12,22)(13,49)(14,50)(15,51)(16,25)(17,18)(19,55)
+##      (20,21)(23,36)(24,60)(27,35)(30,34)(32,33)(37,65)(42,67)(43,62)(47,64)
+##      (48,58)(52,61)(53,54)(56,57)(59,72)(63,71)(66,70)(68,69) ) ]
+##  gap> List(inv, x-> CoxeterWord(W, Representative(x)));
+##  [ [  ], [ 1 ], [ 1, 2 ], [ 1, 4, 6 ], [ 2, 3, 4, 2, 3, 4, 5, 4, 2, 3, 4, 5 ] ]
+##  </Example>
+##    The number of involutions coincides with the sum of the degrees of the
+##    irreducible characters of <A>W</A>.
+##  <Example>
+##  gap> Sum(inv, Size);
+##  892
+##  gap> Sum(CharacterDegrees(W));
+##  892
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 Involutions:= function(W)
     local   inv,  s;
     inv:= [];
     for s in InvolutionShapes(W) do
-        inv:= Union(inv, ConjugacyClass(W, LongestCoxeterElement(ReflectionSubgroup(W, Representative(s)))));
+        Add(inv, 
+            LongestCoxeterElement(ReflectionSubgroup(W, Representative(s))));
     od;
-    return inv;
+    return List(inv, x-> ConjugacyClass(W, x));
 end;
 
+#############################################################################
+##
+##  SpecialInvolutions( <W> ) . . . . . . . . . . . . . . . . .  involutions.
+##
+##  <#GAPDoc Label="SpecialInvolutions">
+##  <ManSection>
+##  <Func Name="SpecialInvolutions" Arg="W"/>
+##  <Returns>
+##    the list of conjugacy classes of  <E>special</E> involutions of <A>W</A>.
+##  </Returns>
+##  <Description>
+##    An involution is called special, according to Felder and Veselov <Cite
+##    Key="FelderVeselov2005"/>, if there is a root whose projection on the
+##    $1$-eigenspace or on the $(-1)$-eigenspace is proportional to a root
+##    contained in this eigenspace.  An alternative characterization of
+##    special involutions in terms of the action of the normalizer complement
+##    (see <Ref Func="NormalizerComplement"/> has been given by Pfeiffer and
+##    Röhrle <Cite Key="PfeifferRoehrle2005"/>.
+##  <Example>
+##  gap> W:= CoxeterGroup("E", 6);;  W.name:= "W";;
+##  gap> inv:= SpecialInvolutions(W);              
+##  [ ConjugacyClass( W, () ), ConjugacyClass( W, ( 1,37)( 3, 7)( 9,12)(13,17)
+##      (15,18)(19,22)(21,23)(24,26)(25,27)(28,30)(31,33)(39,43)(45,48)(49,53)
+##      (51,54)(55,58)(57,59)(60,62)(61,63)(64,66)(67,69) ) ]
+##  gap> List(inv, x-> CoxeterWord(W, Representative(x)));
+##  [ [  ], [ 1 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 SpecialInvolutions:= function(W)
-    local   invo,  spec,  s,  J,  WJ,  NJ;
-
-    invo:= InvolutionShapes(W);
-    spec:= [];
-    for s in invo do
-        J:= s.J;
-        WJ:= ReflectionSubgroup(W, J);
-        NJ:= Call(s, "Complement");
+    local  inv,  s,  WJ,  NJ;
+    
+    inv:= [];
+    for s in InvolutionShapes(W) do
+        WJ:= ReflectionSubgroup(W, s.J);
+        NJ:= NormalizerComplement(W, s.J);
         if Size(CommutatorSubgroup(WJ, NJ)) = 1 then
-            Add(spec, LongestCoxeterElement(ReflectionSubgroup(W, Representative(s))));
+            Add(inv, LongestCoxeterElement(ReflectionSubgroup(W, Representative(s))));
         fi;
     od;
-    return spec;
+    return List(inv, x-> ConjugacyClass(W, x));
 end;
 
+
+#############################################################################
+##
+##  OrlikSolomonCharacter( <W> ) . . . . . . . . . . . . . . . . . character.
+##
+##  <#GAPDoc Label="OrlikSolomonCharacter">
+##  <ManSection>
+##  <Func Name="OrlikSolomonCharacter" Arg="W"/>
+##  <Returns>
+##    the character of the action of <A>W</A> on the Orlik-Solomon algebra.
+##  </Returns>
+##  <Description>
+##  <Example>
+##  gap> W:= CoxeterGroup("E", 6);;  W.name:= "W";;
+##  gap> inv:= SpecialInvolutions(W);              
+##  gap> OrlikSolomonCharacter(CoxeterGroup("E", 6));
+##  [ 51840, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1440, 0, 0, 0, 0, 0, 0, 0, 
+##    0, 0 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 OrlikSolomonCharacter:= function(W)
     local   reg,  sum,  s;
     reg:= PermutationCharacter(W, TrivialSubgroup(W));
     sum:= 0*reg;
     for s in SpecialInvolutions(W) do
-        sum:= sum + 2 * PermutationCharacter(W, Subgroup(W, [s])) - reg;
+        sum:= sum + 2 * PermutationCharacter(W, Subgroup(W, [Representative(s)])) - reg;
     od;
     return sum;
 end;
@@ -1092,7 +1215,7 @@ NamesShapes:= function(shapes)
 end;
 
 
-## FIXME: works only for type A, B.
+## FIXME: works only for type A, B, D.
 ShapeOps.Label:= function(self)
     local   type,  n,  cmp,  par,  i,  sgn;
     

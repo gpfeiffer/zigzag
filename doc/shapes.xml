@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: shapes.xml,v 1.2 2007/10/11 16:15:48 goetz Exp $
+     $Id: shapes.xml,v 1.3 2007/10/11 17:45:24 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -146,6 +146,20 @@ for finite Coxeter groups that use shapes.
 <#Include Label="XCharacters">
 <#Include Label="ParabolicTom">
 <#Include Label="YCharacters">
+
+</Section>
+
+<Section Label="Sect:ShapesInvolutions">
+<Heading>Shapes and Involutions.</Heading>
+
+The conjugacy classes of involutions of <M>W</M> correspond to the
+shapes of parabolic subgroups <M>W_J</M> of <M>W</M> with central
+longest element <M>w_J</M>, according to Richardson <Cite
+Key="Richardson1982"/>.
+
+<#Include Label="InvolutionShapes">
+<#Include Label="Involutions">
+<#Include Label="SpecialInvolutions">
 
 </Section>
 
