@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.60 2007/10/11 18:53:57 goetz Exp $
+#A  $Id: shapes.g,v 1.61 2007/10/11 19:04:14 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1143,6 +1143,14 @@ OrlikSolomonCharacter:= function(W)
 end;
 
 
+#############################################################################
+##
+##  How to turn a shape into an alley class.
+##
+ShapeOps.Street:= function(self)
+    return Street(self.W, [self.J, []]);
+end;
+
 
 #############################################################################
 ##
@@ -1270,18 +1278,6 @@ end;
 LabelsShapes:= function(shapes)
     return List(shapes, x-> Call(x, "Label"));
 end;
-
-
-#############################################################################
-##
-##  How to turn a shape into an alley class.
-##
-ShapeOps.Street:= function(self)
-    return Street(self.W, [self.J, []]);
-end;
-
-
-MatrixPath:= p -> Product(Reversed(p), x-> Call(x, "Matrix").mat);
 
 
 #############################################################################
