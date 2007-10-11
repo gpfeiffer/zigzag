@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.27 2007/10/11 12:02:39 goetz Exp $
+#A  $Id: subsets.g,v 1.28 2007/10/11 12:47:16 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -11,10 +11,10 @@
 ##
 ##  <#GAPDoc Label="Intro:Subsets">
 ##    A finite Coxeter group <M>W</M> has various important subsets, which
-##    are neither groups nor cosets.  In this chapter we collect some common
-##    functionality for prefix sets of elements of <M>W</M>, minimal length
-##    transversals of cosets and double cosets of parabolic subgroups, and
-##    other sets related to these.<P/>
+##    are neither subgroups nor cosets.  In this chapter we collect some
+##    common functionality for prefix sets of elements of <M>W</M>, minimal
+##    length transversals of cosets and double cosets of parabolic subgroups,
+##    and other sets, such as descent classes, related to these.<P/>
 ##
 ##    The functions described in this chapter are implemented in the file
 ##    <F>subsets.g</F>.  
@@ -575,9 +575,19 @@ end;
 #############################################################################
 ##
 ##  Parabolic Transversals.  
-##
+##  
 ##  Aka Right Coset Representatives.  Aka $X_J$, the prefix set of $w_J w_0$.
 ##
+##  <#GAPDoc Label="Intro:ParabolicTransversal">
+##    For each subset <M>J \subseteq S</M> of simple reflections, the set
+##    <M>X_J = \{w \in W : \ell(sw) > \ell(w) \text{ for all } s \in
+##    J\}</M> is a transversal of the right cosets of the parabolic subgroup
+##    <M>W_J = \langle J \rangle</M> in <M>W</M>.  It consists of the
+##    unique elements <M>x</M> of minimal length in their coset <M>W_J
+##    x</M>.  The set <M>X_J</M> is the set of prefixes of <M>w_J w_0</M>,
+##    the quotient of the longest element <M>w_J</M> of <M>W_J</M> and the
+##    longest element <M>w_0</M> of <M>W</M>.
+##  <#/GAPDoc>
 
 #############################################################################
 ##
@@ -603,7 +613,8 @@ ParabolicTransversalOps:=
 ##  <Description>
 ##  This is the constructor for ...
 ##  <Example>
-##  gap> ...
+##  gap> ParabolicTransversal(CoxeterGroup("A", 4), [1,2,4]);
+##  ParabolicTransversal( CoxeterGroup("A", 4), [ 1, 2, 4 ] )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -682,16 +693,19 @@ end;
 ##
 ##  Descent Classes. 
 ##
-##  Aka $Y_K$.  They are not prefix sets, but shifted prefix sets.
+##  <#GAPDoc Label="Intro:DescentClass">
+##    The (left) <E>descent set</E><Index>descent set</Index> of an element
+##    $w \in W$ is the set $\mathcal{D}(w) = \{s \in S : \ell(sw) <
+##    \ell(w)\}$.  For each subnset $K \subseteq S$ the <E>descent
+##    class</E><Index>descent class</Index> $Y_K$ is the set of elements of
+##    $W$ whose descent set is the <E>complement</E> of $K$ in $S$, that is
+##    $Y_K = \{w \ in W : \mathcal{D}(w) = S \setminus K\}$.  A Coxeter group
+##    $W$ of rank $n$ is partitioned into $2^n$ desecent classes.  The
+##    parabolic transversal $X_J$ is the disjoint union of the descent
+##    classes $Y_K$ where $K \supseteq J$.  The descent class $Y_K$ is the
+##    weak interval $[w_{S \setminus K}, w_K w_0]$.
+##  <#/GAPDoc>
 ##
-##  (called classes because they partition $W$ into $2^n$ classes.)
-##
-# And how to make $Y_K$?  Here $K \subseteq \{1, \dots, n\}$.
-# Use: $Y_K$ is the interval from $w_{\hat{K}}$ to $w_K w_0$.
-# Which is isomorphic to the interval from $1$ to $w = w_{\hat{K}} w_K w_0$.
-#
-# Here Y_K = { w \in W : sw > w <==> s \in K }
-#
 
 #############################################################################
 ##

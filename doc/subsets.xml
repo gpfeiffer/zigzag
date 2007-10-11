@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: subsets.xml,v 1.2 2007/10/07 23:18:58 goetz Exp $
+     $Id: subsets.xml,v 1.3 2007/10/11 12:47:08 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -14,16 +14,7 @@
 <Section>
 <Heading>Prefix Sets.</Heading>
 
-An element <M>v \in W</M>
-is called a <E>prefix</E><Index>prefix</Index>
-of an element <M>w \ in W</M>
-if there exist an element <M>v' \in W</M>
-such that <M>w = vv'</M> and <M>\ell(w) = \ell(v) + \ell(v')</M>.
-In that case we write <M>v \leq w</M>.
-In other words, <M>v &lt; w</M>
-if <M>\ell(w) - \ell(v) = \ell(v^{-1} w)</M>.
-The prefix set of <M>w \in W</M>
-is the set <M>\{v \in W : v &lt; w\}</M> of all prefixes <M>v</M> of <M>w</M>.
+<#Include Label="Intro:Prefixes">
 
 <#Include Label="Prefixes">
 <#Include Label="IsPrefixes">
@@ -37,13 +28,7 @@ is the set <M>\{v \in W : v &lt; w\}</M> of all prefixes <M>v</M> of <M>w</M>.
 <Section>
 <Heading>Weak Intervals.</Heading>
 
-The <E>weak interval</E><Index>weak interval</Index> <M>[v, w]</M>
-from <M>v \in W</M> to <M>w \in W</M> consist of all those prefixes
-<M>x</M> of <M>w</M> which have <M>v</M> as their prefix.  In other
-words, <M>[v, w] = \{x \in W : v \leq x \leq w\}</M>.  A prefix set is
-a weak interval <M>[v,w]</M> with <M>v = 1</M>.  Every weak interval
-can be described as a translate of a prefix set, <M>[v, w] = v [1,
-v^{-1} w]</M>.
+<#Include Label="Intro:WeakInterval">
 
 <#Include Label="WeakInterval">
 <#Include Label="IsWeakInterval">
@@ -55,8 +40,9 @@ v^{-1} w]</M>.
 <Section>
 <Heading>Parabolic Transversals.</Heading>
 
-<#Include Label="ParabolicTransversal">
+<#Include Label="Intro:ParabolicTransversal">
 
+<#Include Label="ParabolicTransversal">
 <#Include Label="IsParabolicTransversal">
 
 </Section>
@@ -64,10 +50,10 @@ v^{-1} w]</M>.
 <Section>
 <Heading>Descent Classes.</Heading>
 
+<#Include Label="Intro:DescentClass">
+
 <#Include Label="DescentClass">
-
 <#Include Label="IsDescentClass">
-
 <#Include Label="DescentClasses">
 
 </Section>
