@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?LaTeX ExtraPreamble="\usepackage{amsmath}
+<?LaTeX ExtraPreamble="
+\usepackage{amsmath}
 \usepackage{parskip}
 \usepackage[euler-digits]{eulervm}
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.27 2007/10/11 12:57:19 goetz Exp $
+     $Id: zigzag.xml,v 1.28 2007/10/11 12:57:37 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
