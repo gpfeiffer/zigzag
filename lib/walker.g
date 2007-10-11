@@ -1,19 +1,21 @@
 #############################################################################
 ##
-#A  $Id: walker.g,v 1.5 2007/10/04 09:58:34 goetz Exp $
+#A  $Id: walker.g,v 1.6 2007/10/11 11:04:12 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Götz Pfeiffer
+#Y  Copyright (C) 2001-2007 Götz Pfeiffer
 ##
 ##  This file contains some tree walking and counting functions.
 ##  
 ##  <#GAPDoc Label="Intro:Walker">
-##  An <E>tree</E> <Index>tree</Index>, or more precisely an ordered
-##  rooted tree, is an object that implements the 'Children' method,
-##  such that it returns a (possibly empty) list of trees.
-##
-##  Introduce a suitable small example ...
+##    An <E>tree</E> <Index>tree</Index>, or more precisely an ordered
+##    rooted tree, is a collection of nodes, each of which has a list
+##    of nodes as children.  Here, a tree is an object that implements
+##    the <K>Children()</K> method in such a way that it returns a
+##    (possibly empty) list of trees.  Several strategies for walking
+##    over the nodes of a tree for processing or just counting them
+##    are provided.<P/>
 ##
 ##    The functions described in this chapter are implemented in the file
 ##    <F>walker.g</F>.  
@@ -65,7 +67,7 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The tree <A>tree</A> is expanded breadth first, and vertices are
-##    counted when they are encountered for the first time.
+##    listed when they are encountered for the first time.
 ##  <Example>
 ##  gap> itr:= IteratorBreadthFirst(BinomialTree(4));;
 ##  gap> itr.hasNext();
@@ -367,8 +369,8 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The tree <A>tree</A> is expanded depth first, and a vertex is
-##    listed when it is encountered for the last time, provided it or
-##    one of its descendants satisfies the given property
+##    listed when it is encountered for the last time, provided it
+##    <E>or one of its descendants</E> satisfies the given property
 ##    <A>property</A>.  In post-order, all descendants of a vertex
 ##    have been visited when it has to be decided whether to list the
 ##    vertex or not.
@@ -408,8 +410,8 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The tree <A>tree</A> is expanded depth first, and a vertex is
-##    counted when it is encountered for the last time, provided it or
-##    one of its descendants satisfies the given property
+##    counted when it is encountered for the last time, provided it
+##    <E>or one of its descendants</E> satisfies the given property
 ##    <A>property</A>.  In post-order, all descendants of a vertex
 ##    have been visited when it has to be decided whether to count the
 ##    vertex or not.

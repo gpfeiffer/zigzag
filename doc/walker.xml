@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: walker.xml,v 1.2 2007/10/11 10:49:26 goetz Exp $
+     $Id: walker.xml,v 1.3 2007/10/11 11:03:56 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -80,7 +80,7 @@ gap> Display(BinomialTree(4));
     -2-0
       -1-0
 </Example>
-We will use this tree in the examples of the following sections.
+We will use binomial trees as examples in the following sections.
 
 </Section>
 
@@ -113,11 +113,11 @@ We will use this tree in the examples of the following sections.
 <#Include Label="NrPostOrderProperty">
 
 <Subsection>
-<Heading>Exercise.</Heading>
- Write a function
-	  <C>IteratorPostOrder</C>that produces an iterator for a tree
-	  such that its <C>next()</C> method returns the vertices of
-	  the tree in post order.
+<Heading>Exercise.</Heading> 
+
+  Write a function <C>IteratorPostOrder</C> that produces an iterator
+  for a tree such that its <C>next()</C> method returns the vertices
+  of the tree in post-order.
 </Subsection>
 
 </Section>
