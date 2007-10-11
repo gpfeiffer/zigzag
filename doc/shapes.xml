@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: shapes.xml,v 1.3 2007/10/11 17:45:24 goetz Exp $
+     $Id: shapes.xml,v 1.4 2007/10/11 18:56:29 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -160,6 +160,7 @@ Key="Richardson1982"/>.
 <#Include Label="InvolutionShapes">
 <#Include Label="Involutions">
 <#Include Label="SpecialInvolutions">
+<#Include Label="OrlikSolomonCharacter">
 
 </Section>
 
