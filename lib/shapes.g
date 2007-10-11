@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.59 2007/10/11 18:14:50 goetz Exp $
+#A  $Id: shapes.g,v 1.60 2007/10/11 18:53:57 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1133,16 +1133,13 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-##  FIXME: This function is presumably much faster with InducedCyclic.
-##
 OrlikSolomonCharacter:= function(W)
-    local   reg,  sum,  s;
-    reg:= PermutationCharacter(W, TrivialSubgroup(W));
-    sum:= 0*reg;
-    for s in SpecialInvolutions(W) do
-        sum:= sum + 2 * PermutationCharacter(W, Subgroup(W, [Representative(s)])) - reg;
-    od;
-    return sum;
+    local   cc,  sum;
+    cc:= ConjugacyClasses(W);
+    sum:= List(SpecialInvolutions(W), s-> Position(cc, s));
+    sum:= InducedCyclic(CharTable(W), sum);
+    #  the regular character is the last one in this list.
+    return 2*Sum(sum) - Length(sum) * sum[Length(sum)];
 end;
 
 
