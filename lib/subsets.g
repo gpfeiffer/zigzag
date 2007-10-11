@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.28 2007/10/11 12:47:16 goetz Exp $
+#A  $Id: subsets.g,v 1.29 2007/10/11 12:58:14 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -695,7 +695,7 @@ end;
 ##
 ##  <#GAPDoc Label="Intro:DescentClass">
 ##    The (left) <E>descent set</E><Index>descent set</Index> of an element
-##    $w \in W$ is the set $\mathcal{D}(w) = \{s \in S : \ell(sw) <
+##    $w \in W$ is the set $\mathcal{D}(w) = \{s \in S : \ell(sw) &lt;
 ##    \ell(w)\}$.  For each subnset $K \subseteq S$ the <E>descent
 ##    class</E><Index>descent class</Index> $Y_K$ is the set of elements of
 ##    $W$ whose descent set is the <E>complement</E> of $K$ in $S$, that is
@@ -731,7 +731,8 @@ DescentClassOps:= OperationsRecord("DescentClassOps", WeakIntervalOps);
 ##    This is the constructor for the descent class <M>Y_K</M> in <M>W</M>.
 ##    It is represented as the weak interval <M>[w_{\hat{K}}, w_K w_0]</M>.
 ##  <Example>
-##  gap> ...
+##  gap> DescentClass(CoxeterGroup("A", 4), [1, 2, 4]);
+##  DescentClass( CoxeterGroup("A", 4), [ 1, 2, 4 ] )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
