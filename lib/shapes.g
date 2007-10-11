@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.52 2007/10/07 19:54:04 goetz Exp $
+#A  $Id: shapes.g,v 1.53 2007/10/11 10:18:58 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Götz Pfeiffer
+#Y  Copyright (C) 2001-2007 Götz Pfeiffer
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -849,6 +849,10 @@ end;
 ##    [ 8, 0, 0, 4, 0, 0, 4, 0, 0, 2, 0, 2, 0 ], 
 ##    [ 8, 0, 0, 4, 0, 0, 0, 4, 0, 2, 0, 0, 2 ], 
 ##    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ] ]
+##  </Example>
+##  These characters can be displayed in the form of a character table
+##  as follows.
+##  <Example>
 ##  gap> ct:= CharTable(W);;  Unbind(ct.irredinfo);
 ##  gap> Display(ct, rec(chars:= xch, letter:= "X", powermap:= false,        
 ##  >                    centralizers:= false));
@@ -970,6 +974,10 @@ end;
 ##    [ 7, -1, -1, 3, -1, -1, 3, -1, -1, 1, -1, 1, -1 ], 
 ##    [ 7, -1, -1, 3, -1, -1, -1, 3, -1, 1, -1, -1, 1 ], 
 ##    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ] ]
+##  </Example>
+##  These characters can be displayed in the form of a character table
+##  as follows.
+##  <Example>
 ##  gap> ct:= CharTable(W);;  Unbind(ct.irredinfo);
 ##  gap> Display(ct, rec(chars:= ych, letter:= "Y", powermap:= false,
 ##  >                    centralizers:= false));
