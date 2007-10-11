@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.57 2007/10/11 17:47:23 goetz Exp $
+#A  $Id: shapes.g,v 1.58 2007/10/11 18:14:11 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1133,6 +1133,8 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
+##  FIXME: This function is presumably much faster with InducedCyclic.
+##
 OrlikSolomonCharacter:= function(W)
     local   reg,  sum,  s;
     reg:= PermutationCharacter(W, TrivialSubgroup(W));
@@ -1146,6 +1148,9 @@ end;
 
 
 #############################################################################
+##
+##  undocumented utility functions.
+##
 ShapeOps.CartanName:= function(sh)
     #FIXME: this naming scheme works only for small irreducibles ...
     #FIXME: and maybe we have to take care of types B and F ...
