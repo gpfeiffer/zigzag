@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.56 2007/10/11 17:44:43 goetz Exp $
+#A  $Id: shapes.g,v 1.57 2007/10/11 17:47:23 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1146,11 +1146,6 @@ end;
 
 
 #############################################################################
-PrimeShapes:= function(W)
-    return 0; ##FIXME
-end;
-
-#############################################################################
 ShapeOps.CartanName:= function(sh)
     #FIXME: this naming scheme works only for small irreducibles ...
     #FIXME: and maybe we have to take care of types B and F ...
@@ -1274,18 +1269,6 @@ LabelsShapes:= function(shapes)
     return List(shapes, x-> Call(x, "Label"));
 end;
 
-
-#############################################################################
-ShapeOps.Points:= function(self)
-    local   points,  o;
-    
-    points:= [];
-    for o in Orbits(Call(self, "Complement"), self.J) do
-        Add(points, o[1]);
-    od;
-    return points;
-end;
-      
 
 #############################################################################
 ##
