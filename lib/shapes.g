@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.58 2007/10/11 18:14:11 goetz Exp $
+#A  $Id: shapes.g,v 1.59 2007/10/11 18:14:50 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1281,14 +1281,6 @@ end;
 ##
 ShapeOps.Street:= function(self)
     return Street(self.W, [self.J, []]);
-end;
-
-
-###
-###  next:  the mu map.
-###
-ShapeOps.Matrix:= function(self)
-    return rec(tail:= self, head:= self, mat:=IdentityMat(Size(self)));
 end;
 
 
