@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.24 2007/10/11 11:28:04 goetz Exp $
+#A  $Id: subsets.g,v 1.25 2007/10/11 11:44:04 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -133,10 +133,12 @@ end;
 ##  <ManSection>
 ##  <Meth Name="Elements" Arg="prefixes" Label="for prefixes"/>
 ##  <Returns>
-##    the set of elements of the prefix oject <A>prefixes</A>.
+##    the set of elements of the prefix object <A>prefixes</A>.
 ##  </Returns>
 ##  <Description>
-##    The prefixes of <M>w</M> in <M>W</M> ...
+##    The prefixes of <M>w</M> in <M>W</M> ... As a side effect, the edges
+##    (see <Ref Meth="Edges" Label="for prefixes"/>) of the prefix graph are
+##    computed.
 ##  <Example>
 ##  gap> w:= PermCoxeterWord(CoxeterGroup("A", 5), [ 1, 2, 3, 4, 5, 4 ]);;
 ##  gap> pre:= Prefixes(W, w);;
@@ -250,14 +252,14 @@ PrefixesOps.Iterator:= function(self)
     itr:= rec();
     
 ##    
-##  hasNext() simply checks whether 'focus' is lookin' at an element.
+##  hasNext() simply checks whether 'focus' is looking at an element.
 ##    
     itr.hasNext:= function()
         return IsBound(focus.w);
     end;
     
 ##
-##  next() simply returns the element 'focus' is lookin at.  But before it
+##  next() simply returns the element 'focus' is looking at.  But before it
 ##  does that it needs to advance 'focus' to the next element in the queue,
 ##  and if the queue in front of 'focus' happens to be empty it needs to 
 ##  fill it up with prefixes of elements between 'back and 'focus'.
@@ -368,9 +370,15 @@ end;
 ##
 ##  Weak (Bruhat) Intervals.
 ##
-##  More generally, every (weak) interval [w1, w2] can be described as a
-##  "shifted" prefix set.
-##
+##  <#GAPDoc Label="Intro:WeakInterval">
+##    The <E>weak interval</E><Index>weak interval</Index> <M>[v, w]</M> from
+##    <M>v \in W</M> to <M>w \in W</M> consist of all those prefixes <M>x</M>
+##    of <M>w</M> which have <M>v</M> as their prefix.  In other words,
+##    <M>[v, w] = \{x \in W : v \leq x \leq w\}</M>.  A prefix set is a weak
+##    interval <M>[v,w]</M> with <M>v = 1</M>.  Every weak interval can be
+##    described as a translate of a prefix set, <M>[v, w] = v [1, v^{-1}
+##    w]</M>.
+##  <#/GAPDoc>
 
 
 #############################################################################
@@ -394,7 +402,10 @@ WeakIntervalOps:= OperationsRecord("WeakIntervalOps", DomainOps);
 ##    <A>top</A> in <A>W</A>.
 ##  </Returns>
 ##  <Description>
-##  This is the constructor for weak intervals.
+##    This is the constructor for weak intervals.  It constructs and returns
+##    an object which represents the weak interval from <A>bot</A> to
+##    <A>top</A> in <A>W</A>.  If <A>bot</A> is not a prefix of <A>top</A> an
+##    error is raised.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;                                     
 ##  gap> w:= PermCoxeterWord(W, [ 1, 2, 3, 4, 5, 4 ]);;                   
@@ -409,6 +420,10 @@ WeakIntervalOps:= OperationsRecord("WeakIntervalOps", DomainOps);
 ##  <#/GAPDoc>
 ##
 WeakInterval:= function(W, bot, top)
+    #  check arguments.
+    if not bot in Prefixes(W, top) then
+        Error("<bot> must be a prefix of <top>");
+    fi;
     return 
       rec(
           isDomain:= true,
