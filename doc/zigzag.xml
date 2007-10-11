@@ -4,7 +4,7 @@
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.25 2007/10/07 19:51:28 goetz Exp $
+     $Id: zigzag.xml,v 1.26 2007/10/11 10:18:10 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -18,12 +18,16 @@ of Finite Coxeter Groups</Subtitle>
     <Version>
 Version 0.71
     </Version>
+    <TitleComment>DRAFT</TitleComment>
     <Author>
 Götz Pfeiffer
 <Email>goetz.pfeiffer@nuigalway.ie</Email>
 <Homepage>http://schmidt.nuigalway.ie/zigzag</Homepage>
 </Author>
-<Date>04-Oct-2007</Date>
+<Date>07-Oct-2007</Date>
+<Address>
+Department of Mathematics<Br/> National University of Ireland, Galway, Ireland
+</Address>
 <Abstract>
 The descent algebra of a finite Coxeter group <M>W</M>
 of rank <M>n</M> is a remarkable <M>2^n</M>-dimensional subalgebra
@@ -31,9 +35,21 @@ of the group algebra of <M>W</M>.  This package provides
 some tools to work with descent algebras and related structures
 in various ways.
 </Abstract>
-    <Copyright>
-&copyright; 2007 Götz Pfeiffer, 
-Department of Mathematics, NUI, Galway, Ireland
+<Copyright>
+    Copyright &copyright; 2007 Götz Pfeiffer<P/>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version. <P/>
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details. <P/>
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see &lt;<URL>http://www.gnu.org/licenses/</URL>&gt;.
 </Copyright>
 <Acknowledgements>
 This ...
