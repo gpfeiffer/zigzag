@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.37 2007/10/08 22:34:47 goetz Exp $
+#A  $Id: descent.g,v 1.38 2007/10/11 10:14:37 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -31,7 +31,8 @@ DescentAlgebraOps:= OperationsRecord("DescentAlgebraOps", AlgebraOps);
 ##  <W>.
 ##  
 DescentAlgebra:= function(W)
-    local   self;
+    local   self,  i;
+
     self:= rec(W:= W, operations:= DescentAlgebraOps, isDescentAlgebra:= true);
     
     self.GetAJKL:= function(J, K, L)
@@ -45,6 +46,16 @@ DescentAlgebra:= function(W)
 
     self.basis:= "x";  # default basis
     
+    # a standard labelling of basis elements ...
+    self.sss:= SubsetsShapes(Shapes(W));
+    
+    # ... and how to locate a label in the list
+    self.encodeSet:= set -> Sum(set, i-> 2^(i-1)) + 1;
+    self.pos:= [];
+    for i in [1..Length(self.sss)] do
+        self.pos[self.encodeSet(self.sss[i])]:= i;
+    od;
+
     return self;
 end;
 
@@ -148,6 +159,16 @@ DescentAlgebraOps.Basis:= function(arg)
             Add(basis, DescentElt(self, self.basis, new));
         od;
         return basis;
+    elif Length(arg) = 2 then
+        if arg[2] = "x" then 
+            return function(arg)
+                new:= 0 * [1..Dimension(self)];
+                new[self.pos[self.encodeSet(arg)]]:= 1;
+                return DescentElt(self, "x", new);
+            end;
+        else
+            Error("not yet implemented");
+        fi;
     else
         Error("not yet implemented");
     fi;
@@ -166,7 +187,7 @@ end;
 
 #############################################################################
 DescentEltOps.String:= function(self)
-    local   bracketless,  sss,  summand,  str,  i;
+    local   bracketless,  sss,  more,  summand,  str,  i;
 
     # helper: how to print a list without brackets
     bracketless:= function(list)
@@ -231,7 +252,7 @@ DescentEltOps.String:= function(self)
 end;
 
 DescentEltOps.Print:= function(self)
-    Print("DescentElt(", self.D, ", \"", self.basis, "\", ", self.coeff);
+    Print("DescentElt(", self.D, ", \"", self.basis, "\", ", self.coeff, ")");
 end;
 
 
