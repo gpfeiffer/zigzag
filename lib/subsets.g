@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.25 2007/10/11 11:44:04 goetz Exp $
+#A  $Id: subsets.g,v 1.26 2007/10/11 11:49:22 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -466,6 +466,17 @@ WeakIntervalOps.Print:= function(self)
 end;
 
 
+#############################################################################
+##
+#F  <w> in <interval>  . . . . . . . . . . . . . . . . . . . . .  membership.
+## 
+##  <w> is in the weak interval <interval> if and only if ...
+##
+WeakIntervalOps.\in:= function(w, self)
+    return self.bot in Prefixes(self.W, w) and 
+           self.bot^-1 * w in self.pre;
+    
+    
 #############################################################################
 ##
 #F  Elements( <interval> ) . . . . . . . . . . . . . . . . . . . .  elements.
