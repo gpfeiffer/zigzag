@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.23 2007/10/07 23:19:17 goetz Exp $
+#A  $Id: subsets.g,v 1.24 2007/10/11 11:28:04 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Götz Pfeiffer
+#Y  Copyright (C) 2001-2007 Götz Pfeiffer
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
@@ -23,8 +23,19 @@
 
 #############################################################################
 ##
-##  Prefixes.  All types of subsets in this file are in some sense sets of
-##  prefixes of a given word.  So we provide the general functions first.
+##  Prefixes.  
+##
+##  <#GAPDoc Label="Intro:Prefixes">
+##    An element <M>v \in W</M> is called a
+##    <E>prefix</E><Index>prefix</Index> of an element <M>w \in W</M> if
+##    there exist an element <M>v' \in W</M> such that <M>w = vv'</M> and
+##    <M>\ell(w) = \ell(v) + \ell(v')</M>.  In that case we write <M>v \leq
+##    w</M>.  In other words, <M>v \leq w</M> if <M>\ell(w) - \ell(v) =
+##    \ell(v^{-1} w)</M>.  The prefix set of <M>w \in W</M> is the set <M>\{v
+##    \in W : v \leq w\}</M> of all prefixes <M>v</M> of <M>w</M>.  Many
+##    types of subsets in this chapter are in some way described by sets of
+##    prefixes of a given word.
+##  <#/GAPDoc>
 ##
 ##  TODO: the prefixes form a lattice ...
 ##
@@ -49,8 +60,9 @@ PrefixesOps:= OperationsRecord("PrefixesOps", DomainOps);
 ##    <A>W</A>. 
 ##  </Returns>
 ##  <Description>
-##  This is the constructor for the prefixes class.  It constructs and
-##  returns the prefixes of <A>w</A> in the finite Coxeter group <A>W</A>.
+##    This is the constructor for the prefixes class.  It constructs and
+##    returns the prefixes of the element <A>w</A> in the finite Coxeter
+##    group <A>W</A>.
 ##  <Example>
 ##  gap> w:= PermCoxeterWord(CoxeterGroup("A", 5), [ 1, 2, 3, 4, 5, 4 ]);;
 ##  gap> pre:= Prefixes(W, w);
@@ -98,6 +110,18 @@ end;
 ##
 PrefixesOps.Print:= function(self)
     Print("Prefixes( ", self.W, ", ", self.w, " )");
+end;
+
+
+#############################################################################
+##
+#F  <w> in <prefixes>  . . . . . . . . . . . . . . . . . . . . .  membership.
+## 
+##  <w> is in the prefix set  <prefixes> if and only if ...
+##
+PrefixesOps.\in:= function(w, self)
+    return CoxeterLength(w^-1 * self.w) = 
+           CoxeterLength(self.w) - CoxeterLength(w);
 end;
 
 
