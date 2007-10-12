@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.33 2007/10/12 14:56:01 goetz Exp $
+#A  $Id: subsets.g,v 1.34 2007/10/12 15:08:29 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -742,8 +742,7 @@ ParabolicTransversalOps:=
 ParabolicTransversal:= function(W, J)
     ##??? need to check the arguments?
     local self;
-    self:= Prefixes(W, LongestCoxeterElement(ReflectionSubgroup(W, J))
-                   * LongestCoxeterElement(W));
+    self:= Prefixes(W, LongestElement(W, J) * LongestCoxeterElement(W));
     self.isParabolicTransversal:= true;
     self.operations:= ParabolicTransversalOps;
     self.J:= J;
@@ -865,9 +864,8 @@ DescentClass:= function(W, K)
     ##??? need to check the arguments?
     
     n:= W.semisimpleRank;   
-    w1:= LongestCoxeterElement(ReflectionSubgroup(W, Difference([1..n], K)));
-    w2:= LongestCoxeterElement(ReflectionSubgroup(W, K)) 
-         * LongestCoxeterElement(W);
+    w1:= LongestElement(W, Difference([1..n], K));
+    w2:= LongestElement(W, K) * LongestCoxeterElement(W);
     self:= WeakInterval(W, w1, w2);   
     self.operations:= DescentClassOps;
     self.isDescentClass:= true;
