@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.32 2007/10/04 09:35:16 goetz Exp $
+#A  $Id: alleys.g,v 1.33 2007/10/12 15:13:47 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -173,8 +173,7 @@ end;
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> L:= [1, 2, 3, 5];;
-##  gap> d:= LongestCoxeterElement(ReflectionSubgroup(W, L)) *
-##  > LongestCoxeterElement(W);
+##  gap> d:= LongestElement(W, L) * LongestCoxeterElement(W);
 ##  ( 1, 3, 5)( 2, 4,30)( 6, 8,28)( 7, 9,29)(10,12,26)(11,25,27)(13,21,23)
 ##  (14,22,24)(15,17,19)(16,18,20)
 ##  gap> OnAlleys([L, [5, 2]], d);
@@ -258,8 +257,7 @@ LittleDeltaAlley:= function(W, alley)
         Error("alley must have length > 0");
     else
         K:= Difference(L, list{[1]});
-        d:= LongestCoxeterElement(ReflectionSubgroup(W, K))
-            * LongestCoxeterElement(ReflectionSubgroup(W, L));
+        d:= LongestElement(W, K) * LongestElement(W, L);
         lft:= [K, list{[2..Length(list)]}];
         rgt:= OnAlleys(lft, d);
     fi;
@@ -303,8 +301,7 @@ DeltaAlley:= function(W, alley)
         res[Position(head, L)]:= 1;
     else
         K:= Difference(L, list{[1]});
-        d:= LongestCoxeterElement(ReflectionSubgroup(W, K))
-            * LongestCoxeterElement(ReflectionSubgroup(W, L));
+        d:= LongestElement(W, K) * LongestElement(W, L);
         lft:= [K, list{[2..Length(list)]}];
         rgt:= OnAlleys(lft, d);
         if lft = rgt then # early 0 detection
@@ -375,9 +372,9 @@ ReversedAlley:= function(W, alley)
     fi;
     
     s:= list[1];
-    wL:= LongestCoxeterElement(ReflectionSubgroup(W, L));
+    wL:= LongestElement(W, L);
     K:= Difference(L, [s]);
-    d:= LongestCoxeterElement(ReflectionSubgroup(W, K)) * wL;
+    d:= LongestElement(W, K) * wL;
     rev:= [s^wL - W.N];
     Append(rev, OnTuples(list{[2..Length(list)]}, d));
 
@@ -448,8 +445,7 @@ helper:= function(W, J, d)
         if Size(des) <> 1 then Print("...ahemm...\n"); fi;
         Add(seq, des[1]);
         L:= Union(J, des);
-        a:= LongestCoxeterElement(ReflectionSubgroup(W, J)) *
-            LongestCoxeterElement(ReflectionSubgroup(W, L));
+        a:= LongestElement(W, J) * LongestElement(W, L);
         J:= OnSets(J, a);
         d:= a^-1 * d;
     od;
