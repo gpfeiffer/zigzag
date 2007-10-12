@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.34 2007/10/12 15:08:29 goetz Exp $
+#A  $Id: subsets.g,v 1.35 2007/10/12 19:50:41 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -282,7 +282,8 @@ PrefixesOps.Elements:= function(self)
         for x in Y do
             k:= k + 1;  edges[k]:= [];
             for i in S do
-                if i / x > W.parentN then
+                # if i / x > W.parentN then
+                if IsRightDescent(W, x, i) then
                     y:= x * W.(W.rootRestriction[i]);
                     AddSet(Z, y);
                     edges[k][i]:= y;
@@ -394,7 +395,8 @@ PrefixesOps.Iterator:= function(self)
             while not IsIdentical(back, focus) do
                 x:= back.w;
                 for i in S do
-                    if i / x > W.parentN then
+                    #if i / x > W.parentN then
+                    if IsRightDescent(W, x, i) then
                         y:= x * W.(W.rootRestriction[i]);
                         if not y in Z then
                             AddSet(Z, y);
@@ -799,7 +801,8 @@ ParabolicTransversalOps.\in:= function(w, self)
     local W, res, j;
     W:= self.W;  res:= [];
     for j in W.rootInclusion{[1 .. W.semisimpleRank]} do
-        if j in self.J and j^w > W.parentN then
+        # if j in self.J and j^w > W.parentN then
+        if j in self.J and IsLeftDescent(W, w, j) then
             return false;
         fi;
     od;
@@ -914,7 +917,8 @@ DescentClassOps.\in:= function(w, self)
     local W, res, j;
     W:= self.W;  res:= [];
     for j in W.rootInclusion{[1 .. W.semisimpleRank]} do
-        if j^w <= W.parentN then
+        # if j^w <= W.parentN then
+        if not IsLeftDescent(W, w, j) then
             Add(res, j);
         fi;
     od;
@@ -1313,9 +1317,7 @@ end;
 XJKLOps.Elements:= function(self)
     return 
       Filtered(Elements(DoubleParabolicTransversal(self.W, self.J, self.K)),
-              d -> Intersection(
-                      List(OnSets(self.J, d), x-> (x-1) mod self.W.parentN + 1),
-                      self.K) = self.L);
+              d -> Intersection(OnSets(self.J, d), self.K) = self.L);
 end;
 
 
