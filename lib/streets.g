@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.24 2007/10/07 19:54:49 goetz Exp $
+#A  $Id: streets.g,v 1.25 2007/10/12 15:34:58 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -200,8 +200,7 @@ StreetOps.Movers:= function(self)
             if not i in a[1] then
                 b:= [Union(a[1], [i]), Concatenation([i], a[2])];
                 K:= a[1];  L:= b[1];
-                d:= LongestCoxeterElement(ReflectionSubgroup(self.W, K))
-                    * LongestCoxeterElement(ReflectionSubgroup(self.W, L));
+                d:= LongestElement(self.W, K) * LongestElement(self.W, L);
                 c:= OnAlleys(a, d);
                 
                 if c <> a then
@@ -232,8 +231,7 @@ StreetOps.MoversPlus:= function(self)
             if not i in a[1] then
                 b:= [Union(a[1], [i]), Concatenation([i], a[2])];
                 K:= a[1];  L:= b[1];
-                d:= LongestCoxeterElement(ReflectionSubgroup(self.W, K))
-                    * LongestCoxeterElement(ReflectionSubgroup(self.W, L));
+                d:= LongestElement(self.W, K) * LongestElement(self.W, L);
                 c:= OnAlleys(a, d);
                 
                 if c <> a then
@@ -297,8 +295,7 @@ StreetOps.Shakers:= function(self)
             if not i in a[1] then
                 b:= [Union(a[1], [i]), Concatenation([i], a[2])];
                 K:= a[1];  L:= b[1];
-                d:= LongestCoxeterElement(ReflectionSubgroup(self.W, K))
-                    * LongestCoxeterElement(ReflectionSubgroup(self.W, L));
+                d:= LongestElement(self.W, K) * LongestElement(self.W, L);
                 c:= OnAlleys(a, d);
                 
                 if c = a then

@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.61 2007/10/11 19:04:14 goetz Exp $
+#A  $Id: shapes.g,v 1.62 2007/10/12 15:32:47 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -209,8 +209,7 @@ ShapeOps.Elements:= function(self)
     # and their negatives $[1..n]+N$. 
     # Mod by $N$ takes everything back into $[0..n-1]$.
     onParabolics:= function(J, i)
-        d:= LongestCoxeterElement(ReflectionSubgroup(W, J)) * 
-            LongestCoxeterElement(ReflectionSubgroup(W, Union(J, [i])));
+        d:= LongestElement(W, J) * LongestElement(W, Union(J, [i]));
         return Set(List(OnSets(J, d), x-> (x-1) mod W.parentN + 1));
     end;
 
@@ -836,12 +835,22 @@ end;
 ##  <ManSection>
 ##  <Func Name="ParabolicTom" Arg="W"/>
 ##  <Returns>
-##    the list of parabolic table of marks of <A>W</A>.
+##    the parabolic table of marks of <A>W</A>.
 ##  </Returns>
 ##  <Description>
+##    The <E>parabolic table of marks</E><Index>parabolic table of
+##    marks</Index> of a finite Coxeter group <M>W</M> is the section of the
+##    table of marks <Index>parabolic table of marks</Index> in the sense of
+##    Burnside <Cite Key="burnside11"/> corresponding to the conjugacy
+##    classes of parabolic subgroups of <M>W</M>.  Its rows and columns are
+##    labeled by (representatives of) the shapes of <M>W</M> and the entry in
+##    row <M>J</M> and column <M>K</M> for <M>J, K \subseteq S</M> is the
+##    number of fixed points of <M>W_K</M> in the action of <M>W</M> on the
+##    cosets of <M>W_J</M>.  It is easy to see that this number coincides
+##    with <M>a_{JKK} = |X_{JKK}|</M>, the size of a subset of <M>W</M> as
+##    constructed by <Ref Func="XJKL"/>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("D", 4);;
-##  gap> tom:= ParabolicTom(W);                
 ##  gap> tom:= ParabolicTom(W);
 ##  [ [ 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 96, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
 ##    [ 48, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 48, 8, 0, 8, 0, 0, 0, 0, 0, 0, 0 ],
@@ -880,11 +889,12 @@ end;
 ##  <ManSection>
 ##  <Func Name="YCharacters" Arg="W"/>
 ##  <Returns>
-##    the list of PIE stripped parabolic permutation characters of <A>W</A>.
+##    the list of characters of <A>W</A> corresponding to the descent classes
+##    <M>Y_K</M>, as constructed by <Ref Func="DescentClass"/>.
 ##  </Returns>
 ##  <Description>
 ##  There is  one
-##  character for each subset <M>J \subseteq S</M>, sorted in shape order;
+##  character for each subset <M>K \subseteq S</M>, sorted in shape order;
 ##  see <Ref Func="SubsetsShapes"/>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("D", 4);;
@@ -1001,7 +1011,7 @@ InvolutionShapes:= function(W)
     inv:= [];
     for s in Shapes(W) do
         r:= Representative(s);
-        w:= LongestCoxeterElement(ReflectionSubgroup(W, r));
+        w:= LongestElement(W, r);
         if ForAll(r, x-> x^w = x+W.parentN) then
             Add(inv, s);
         fi;
@@ -1059,8 +1069,7 @@ Involutions:= function(W)
     local   inv,  s;
     inv:= [];
     for s in InvolutionShapes(W) do
-        Add(inv, 
-            LongestCoxeterElement(ReflectionSubgroup(W, Representative(s))));
+        Add(inv, LongestElement(W, Representative(s)));
     od;
     return List(inv, x-> ConjugacyClass(W, x));
 end;
@@ -1104,7 +1113,7 @@ SpecialInvolutions:= function(W)
         WJ:= ReflectionSubgroup(W, s.J);
         NJ:= NormalizerComplement(W, s.J);
         if Size(CommutatorSubgroup(WJ, NJ)) = 1 then
-            Add(inv, LongestCoxeterElement(ReflectionSubgroup(W, Representative(s))));
+            Add(inv, LongestElement(W, Representative(s)));
         fi;
     od;
     return List(inv, x-> ConjugacyClass(W, x));
@@ -1119,7 +1128,8 @@ end;
 ##  <ManSection>
 ##  <Func Name="OrlikSolomonCharacter" Arg="W"/>
 ##  <Returns>
-##    the character of the action of <A>W</A> on the Orlik-Solomon algebra.
+##    the character of the action of <A>W</A> on the Orlik-Solomon algebra of
+##    <M>W</M>.
 ##  </Returns>
 ##  <Description>
 ##  <Example>
