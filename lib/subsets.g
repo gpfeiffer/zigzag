@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.32 2007/10/12 14:35:42 goetz Exp $
+#A  $Id: subsets.g,v 1.33 2007/10/12 14:56:01 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -118,13 +118,23 @@ end;
 ##  <#/GAPDoc>
 ##
 LongestElement:= function(W, J)
-    local   wJ,  i;
+    local   first,  wJ,  s;
+    
+    first:= function(list)
+        local l;
+        for l in list do
+            if not IsLeftDescent(W, wJ, l) then
+                return l;
+            fi;
+        od;
+        return false;
+    end;
     
     wJ:= ();
     while true do
-        i:= PositionProperty(J, s-> not IsLeftDescent(W, wJ, s));
-        if i = false then  return wJ;  fi;
-        wJ:= W.generators[J[i]] * wJ;
+        s:= first(J);
+        if s = false then  return wJ;  fi;
+        wJ:= W.generators[s] * wJ;
     od;
 end;
 
