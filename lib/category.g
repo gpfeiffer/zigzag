@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: category.g,v 1.5 2007/10/04 09:36:48 goetz Exp $
+#A  $Id: category.g,v 1.6 2007/10/12 15:25:25 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2007, Götz Pfeiffer
+#Y  Copyright (C) 2007 Götz Pfeiffer
 ##
 ##  This file contains support for the category of shapes and its elements.
 ##  
@@ -132,8 +132,7 @@ CategoryEltOps.GroupoidElt:= function(self)
     
     w:= self.W.identity;
     d:= function(J, L)
-        return LongestCoxeterElement(ReflectionSubgroup(self.W, J))
-               * LongestCoxeterElement(ReflectionSubgroup(self.W, L));
+        return LongestElement(self.W, J) * LongestElement(self.W, L);
     end;
     J:= self.elt[1];
     for s in self.elt[2] do

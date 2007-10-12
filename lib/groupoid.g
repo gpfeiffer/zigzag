@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: groupoid.g,v 1.5 2007/10/04 09:37:52 goetz Exp $
+#A  $Id: groupoid.g,v 1.6 2007/10/12 15:26:44 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2007, Götz Pfeiffer
+#Y  Copyright (C) 2007 Götz Pfeiffer
 ##
 ##  This file contains support for the groupoid of shapes and its elements.
 ##  
@@ -154,8 +154,7 @@ GroupoidEltOps.CategoryElt:= function(self)
         des:= LeftDescentSet(self.W, d);
         Add(seq, des[1]);
         L:= Union(J, des{[1]});
-        a:= LongestCoxeterElement(ReflectionSubgroup(W, J)) *
-            LongestCoxeterElement(ReflectionSubgroup(W, L));
+        a:= LongestElement(W, J) * LongestElement(W, L);
         J:= OnSets(J, a);
         d:= a^-1 * d;
     od;
