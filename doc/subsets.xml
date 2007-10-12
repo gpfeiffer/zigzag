@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: subsets.xml,v 1.5 2007/10/12 14:33:19 goetz Exp $
+     $Id: subsets.xml,v 1.6 2007/10/12 14:35:33 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -17,6 +17,8 @@
 <#Include Label="IsLeftDescent">
 <#Include Label="IsRightDescent">
 <#Include Label="LongestElement">
+
+</Section>
 
 <Section>
 <Heading>Prefix Sets.</Heading>

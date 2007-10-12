@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.31 2007/10/12 14:33:31 goetz Exp $
+#A  $Id: subsets.g,v 1.32 2007/10/12 14:35:42 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -37,7 +37,7 @@
 ##  <ManSection>
 ##  <Func Name="IsLeftDescent" Arg="W, w, s"/>
 ##  <Returns>
-##    <K>true</> if <A>s</A> is a left descent of <A>w</A> in <A>W</A> and
+##    <K>true</K> if <A>s</A> is a left descent of <A>w</A> in <A>W</A> and
 ##    <K>false</K> otherwise.
 ##  </Returns>
 ##  <Description>
@@ -68,7 +68,7 @@ end;
 ##  <ManSection>
 ##  <Func Name="IsRightDescent" Arg="W, w, s"/>
 ##  <Returns>
-##    <K>true</> if <A>s</A> is a right descent of <A>w</A> in <A>W</A> and
+##    <K>true</K> if <A>s</A> is a right descent of <A>w</A> in <A>W</A> and
 ##    <K>false</K> otherwise.
 ##  </Returns>
 ##  <Description>
