@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.33 2007/10/12 15:13:47 goetz Exp $
+#A  $Id: alleys.g,v 1.34 2007/10/14 14:38:44 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -12,7 +12,9 @@
 ##    An <E>alley</E> <Index>alley</Index> is a pair <M>(L; s_1, \dots,
 ##    s_l)</M> consisting of a subset <M>L</M> of <M>S</M> and a list
 ##    <M>(s_1, \dots, s_l)</M> of pairwise different elements of
-##    <M>L</M>.
+##    <M>L</M>. <P/>
+##    
+##    Alleys are immutable.
 ##  <#/GAPDoc>
 ##
 
@@ -71,7 +73,7 @@ end;
 ProductAlleyList:= function(list)
     local   product,  i;
     
-    # trivial case: the empty product.
+    # trivial case: the empty product. ???
     if list = [] then return [[], []]; fi;
     
     product:= list[1];
@@ -129,28 +131,22 @@ end;
 
 #############################################################################
 ##
-#F  HeadAlley( <W>, <alley> )  . . . . . . . . . . . . . . . . . . . .  head.
+#F  SourceAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . source.
 ##
-##  returns a reference to the shape of the head of <alley>.
+##  returns the source of the alley <alley>.
 ##
-HeadAlley:= function(W, alley)
-    local   sh, head;
-    sh:= Shapes(W);
-    head:= alley[1];
-    return sh[PositionProperty(sh, x-> head in x)];
+SourceAlley:= function(alley)
+    return alley[1];
 end;
 
 #############################################################################
 ##
-#F  TailAlley( <W>, <alley> )  . . . . . . . . . . . . . . . . . . . .  head.
+#F  TargetAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . target.
 ##
-##  returns a reference to the shape of the tail of <alley>.
+##  returns the target of the alley <alley>.
 ##
-TailAlley:= function(W, alley)
-    local   sh, tail;
-    sh:= Shapes(W);
-    tail:= Difference(alley[1], alley[2]);
-    return sh[PositionProperty(sh, x-> tail in x)];
+TargetAlley:= function(alley)
+    return Difference(alley[1], alley[2]);
 end;
 
 #############################################################################
@@ -187,6 +183,25 @@ OnAlleys:= function(alley, d)
     return [OnSets(alley[1], d), OnTuples(alley[2], d)];
 end;
                    
+#############################################################################
+PrefixAlley:= function(alley)
+    return [alley[1], alley[2]{[1..Length(alley[2])-1]}];
+end;
+
+#############################################################################
+SuffixAlley:= function(alley)
+    return [Difference(alley[1], alley[2]{[1]}), 
+            alley[2]{[2..Length(alley[2])]}];
+end;
+
+#############################################################################
+ActionAlley:= function(alley)
+    local   suf;
+    suf:= SuffixAlley(alley);
+    return [suf, 
+     OnAlleys(suf, LongestElement(W, suf[1]) * LongestElement(W, alley[1]))];
+end;
+
 
 #############################################################################
 ##
@@ -248,6 +263,8 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
+##  FIXME: result should be an element of the AlleyAlgebra.
+##
 LittleDeltaAlley:= function(W, alley)
     local   L,  list,  K,  d,  lft,  rgt;
     
@@ -290,22 +307,24 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
+##  FIXME:  result should be an element of the DescentAlgebra.
+##  in any case it should have the same format as Delta(street).
+##
 DeltaAlley:= function(W, alley)
     local   L,  list,  head,  res,  K,  d,  lft,  rgt;
     
-    L:= alley[1];
-    list:= alley[2];
+    L:= alley[1];  list:= alley[2];
     if list = [] then
-        head:= Elements(HeadAlley(W, alley));
-        res:= List(head, x-> 0);
-        res[Position(head, L)]:= 1;
+        shape:= Elements(Shape(W, L));
+        res:= List(shape, x-> 0);
+        res[Position(shape, L)]:= 1;
     else
         K:= Difference(L, list{[1]});
         d:= LongestElement(W, K) * LongestElement(W, L);
         lft:= [K, list{[2..Length(list)]}];
         rgt:= OnAlleys(lft, d);
         if lft = rgt then # early 0 detection
-            res:= List(Elements(TailAlley(W, alley)), x-> 0);
+            res:= List(Elements(Shape(W, TargetAlley(alley))), x-> 0);
         else
             res:= DeltaAlley(W, lft) - DeltaAlley(W, rgt);
         fi;
@@ -381,6 +400,7 @@ ReversedAlley:= function(W, alley)
     return [L, rev];
 end;
 
+#############################################################################
 LittleDeltaBarAlley:= function(W, alley)
     local   delta;
     
@@ -435,22 +455,44 @@ ReducedWordAlley:= function(W, alley)
 end;
 
 
-#  Given W, d = w_L w_M and J such that |L - J| = 1
-#  write d as a sequence of longest coset reps for J
-helper:= function(W, J, d)
-    local   seq,  des,  L,  a;
-    seq:= [];
-    while d <> () do
-        des:= LeftDescentSet(W, d);
-        if Size(des) <> 1 then Print("...ahemm...\n"); fi;
-        Add(seq, des[1]);
-        L:= Union(J, des);
-        a:= LongestElement(W, J) * LongestElement(W, L);
-        J:= OnSets(J, a);
-        d:= a^-1 * d;
-    od;
-    return seq;
+#############################################################################
+##
+##  The alley algebra.
+##
+
+
+#############################################################################
+AlleyAlgebraOps:= OperationsRecord("AlleyAlgebraOps", AlgebraOps);
+
+#############################################################################
+AlleyAlgebra:= function(W)
+    local   self;
+    
+    self:= rec();
+    self.isAlleyAlgebra:= true;
+    self.W:= W;
+    self.operations:= AlleyAlgebraOps;
+    return self;
 end;
+
+#############################################################################
+IsAlleyAlgebra:= function(obj)
+    return IsRec(obj) and IsBound(obj.isAlleyAlgebra)
+           and obj.isAlleyAlgebra = true;
+end;
+
+#############################################################################
+##  
+#F  Print( <aa> )  
+##  
+AlleyAlgebraOps.Print:= function(self)
+    if IsBound(self.name) then
+        Print(self.name);
+    else
+        Print("AlleyAlgebra( ", self.W, " )");
+    fi;
+end;
+
 
 
 #############################################################################
