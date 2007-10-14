@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.36 2007/10/14 14:45:50 goetz Exp $
+#A  $Id: alleys.g,v 1.37 2007/10/14 18:55:25 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -133,7 +133,22 @@ end;
 ##
 #F  SourceAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . source.
 ##
-##  returns the source of the alley <alley>.
+##  <#GAPDoc Label="SourceAlley">
+##  <ManSection>
+##  <Func Name="SourceAlley" Arg="alley"/>
+##  <Returns>
+##    the source of the alley <A>alley</A>.
+##  </Returns>
+##  <Description>
+##    The source of an alley <M>a = (L; s, t, \dots)</M> is the set
+##    <M>\iota(a) = L \subseteq S</M>.
+##  <Example>
+##  gap> SourceAlley([[1, 2, 3, 5], [5, 2]]);
+##  [ 1, 2, 3, 5 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 SourceAlley:= function(alley)
     return alley[1];
@@ -143,7 +158,22 @@ end;
 ##
 #F  TargetAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . target.
 ##
-##  returns the target of the alley <alley>.
+##  <#GAPDoc Label="TargetAlley">
+##  <ManSection>
+##  <Func Name="TargetAlley" Arg="alley"/>
+##  <Returns>
+##    the target of the alley <A>alley</A>.
+##  </Returns>
+##  <Description>
+##    The target of an alley <M>a = (L; s, t, \dots)</M> is the set
+##    <M>\tau(a) = L \setminus \{s, t, \dots\} \subseteq S</M>.
+##  <Example>
+##  gap> TargetAlley([[1, 2, 3, 5], [5, 2]]);
+##  [ 1, 3 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 TargetAlley:= function(alley)
     return Difference(alley[1], alley[2]);
@@ -195,7 +225,7 @@ SuffixAlley:= function(alley)
 end;
 
 #############################################################################
-ActionAlley:= function(alley)
+ActionAlley:= function(W, alley)
     local   suf;
     suf:= SuffixAlley(alley);
     return [suf, 

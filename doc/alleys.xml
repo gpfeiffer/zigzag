@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: alleys.xml,v 1.1 2007/10/05 17:28:12 goetz Exp $
+     $Id: alleys.xml,v 1.2 2007/10/14 18:53:55 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -15,10 +15,16 @@
 <Heading>Alley Multiplication.</Heading>
 
 <#Include Label="ProductAlleys">
-
 <#Include Label="ProductAlleyList">
-
 <#Include Label="FactorsAlley">
+
+</Section>
+
+<Section>
+<Heading>Alley Properties.</Heading>
+
+<#Include Label="SourceAlley">
+<#Include Label="TargetAlley">
 
 </Section>
 
