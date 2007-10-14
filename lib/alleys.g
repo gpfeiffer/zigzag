@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.38 2007/10/14 19:56:10 goetz Exp $
+#A  $Id: alleys.g,v 1.39 2007/10/14 20:12:03 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -309,6 +309,29 @@ SuffixAlley:= function(alley)
 end;
 
 #############################################################################
+##
+#F  ActionAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . action.
+##
+##  <#GAPDoc Label="ActionAlley">
+##  <ManSection>
+##  <Func Name="ActionAlley" Arg="alley"/>
+##  <Returns>
+##    the edge of the action graph corresponding to  the alley <A>alley</A>.
+##  </Returns>
+##  <Description>
+##    An alley <M>a = (L; s_1, \dots, s_l)</M> of length <M>\ell(a) = l >
+##    0</M> corresponds to an edge from <M>\sigma(a)</M> to
+##    <M>\sigma(a).s</M> labelled by <M>s</M>.  This function returns the
+##    pair <M>(\sigma(a), \sigma(a).s</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> ActionAlley(W, [[1, 2, 3, 5], [2, 3]]);
+##  [ [ [ 1, 3, 5 ], [ 3 ] ], [ [ 1, 3, 5 ], [ 1 ] ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 ActionAlley:= function(W, alley)
     local   suf;
     suf:= SuffixAlley(alley);
@@ -365,12 +388,11 @@ end;
 ##  <Description>
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
-##  gap> L:= [1, 2, 3, 5];;
-##  gap> DeltaAlley(W, [L, [3]]);
+##  gap> DeltaAlley(W, [[1, 2, 3, 5], [3]]);
 ##  [ 0, 1, 0, 0, -1, 0 ]
-##  gap> DeltaAlley(W, [L, [3,1]]);
+##  gap> DeltaAlley(W, [[1, 2, 3, 5], [3, 1]]);
 ##  [ 0, 0, -1, 0, 2, -1 ]
-##  gap> DeltaAlley(W, [L, [5]]);
+##  gap> DeltaAlley(W, [[1, 2, 3, 5], [5]]);   
 ##  [ 0, 0, 0 ]
 ##  </Example>
 ##  </Description>

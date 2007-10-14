@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: alleys.xml,v 1.3 2007/10/14 19:56:19 goetz Exp $
+     $Id: alleys.xml,v 1.4 2007/10/14 20:12:14 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -24,7 +24,6 @@
 <Heading>Operation on Alleys.</Heading>
 
 <#Include Label="OnAlleys">
-
 <#Include Label="StabilizerAlley">
 
 </Section>
@@ -36,17 +35,15 @@
 <#Include Label="TargetAlley">
 <#Include Label="PrefixAlley">
 <#Include Label="SuffixAlley">
+<#Include Label="ActionAlley">
+<#Include Label="ReversedAlley">
 
 </Section>
 
 <Section>
 <Heading>Difference Operators.</Heading>
 
-<#Include Label="LittleDeltaAlley">
-
 <#Include Label="DeltaAlley">
-
-<#Include Label="ReversedAlley">
 
 </Section>
 
