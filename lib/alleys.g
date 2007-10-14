@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.34 2007/10/14 14:38:44 goetz Exp $
+#A  $Id: alleys.g,v 1.35 2007/10/14 14:43:48 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -266,19 +266,9 @@ end;
 ##  FIXME: result should be an element of the AlleyAlgebra.
 ##
 LittleDeltaAlley:= function(W, alley)
-    local   L,  list,  K,  d,  lft,  rgt;
-    
-    L:= alley[1];
-    list:= alley[2];
-    if list = [] then
-        Error("alley must have length > 0");
-    else
-        K:= Difference(L, list{[1]});
-        d:= LongestElement(W, K) * LongestElement(W, L);
-        lft:= [K, list{[2..Length(list)]}];
-        rgt:= OnAlleys(lft, d);
-    fi;
-    return [lft, rgt];
+    local   act;
+    act:= ActionAlley(W, alley);
+    return act;
 end;
 
 #############################################################################
@@ -311,22 +301,19 @@ end;
 ##  in any case it should have the same format as Delta(street).
 ##
 DeltaAlley:= function(W, alley)
-    local   L,  list,  head,  res,  K,  d,  lft,  rgt;
+    local   L,  shape,  res,  act;
     
-    L:= alley[1];  list:= alley[2];
-    if list = [] then
+    L:= alley[1];
+    if alley[2] = [] then
         shape:= Elements(Shape(W, L));
         res:= List(shape, x-> 0);
         res[Position(shape, L)]:= 1;
     else
-        K:= Difference(L, list{[1]});
-        d:= LongestElement(W, K) * LongestElement(W, L);
-        lft:= [K, list{[2..Length(list)]}];
-        rgt:= OnAlleys(lft, d);
-        if lft = rgt then # early 0 detection
-            res:= List(Elements(Shape(W, TargetAlley(alley))), x-> 0);
+        act:= ActionAlley(W, alley);
+        if act[1] = act[2] then # early 0 detection
+            res:= [1..Size(Shape(W, TargetAlley(alley)))] * 0;
         else
-            res:= DeltaAlley(W, lft) - DeltaAlley(W, rgt);
+            res:= DeltaAlley(W, act[1]) - DeltaAlley(W, act[2]);
         fi;
     fi;
     return res;
