@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.35 2007/10/14 14:43:48 goetz Exp $
+#A  $Id: alleys.g,v 1.36 2007/10/14 14:45:50 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -73,8 +73,8 @@ end;
 ProductAlleyList:= function(list)
     local   product,  i;
     
-    # trivial case: the empty product. ???
-    if list = [] then return [[], []]; fi;
+    # trivial case: the empty product.
+    if list = [] then return 1; fi;
     
     product:= list[1];
     for i in [2..Length(list)] do
