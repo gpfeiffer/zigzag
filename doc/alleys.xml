@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: alleys.xml,v 1.2 2007/10/14 18:53:55 goetz Exp $
+     $Id: alleys.xml,v 1.3 2007/10/14 19:56:19 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -21,19 +21,21 @@
 </Section>
 
 <Section>
-<Heading>Alley Properties.</Heading>
-
-<#Include Label="SourceAlley">
-<#Include Label="TargetAlley">
-
-</Section>
-
-<Section>
 <Heading>Operation on Alleys.</Heading>
 
 <#Include Label="OnAlleys">
 
 <#Include Label="StabilizerAlley">
+
+</Section>
+
+<Section>
+<Heading>Alley Properties.</Heading>
+
+<#Include Label="SourceAlley">
+<#Include Label="TargetAlley">
+<#Include Label="PrefixAlley">
+<#Include Label="SuffixAlley">
 
 </Section>
 

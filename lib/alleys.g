@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.37 2007/10/14 18:55:25 goetz Exp $
+#A  $Id: alleys.g,v 1.38 2007/10/14 19:56:10 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -131,6 +131,74 @@ end;
 
 #############################################################################
 ##
+#F  OnAlleys( <alley>, <d> )  . . . . . . . . . . . . . . . . . .  operation.
+##
+##  <#GAPDoc Label="OnAlleys">
+##  <ManSection>
+##  <Func Name="OnAlleys" Arg="alley, d"/>
+##  <Returns>
+##    the image of the alley <A>alley</A> under the permutation <A>d</A>.
+##  </Returns>
+##  <Description>
+##    The Coxeter group <M>W</M> acts on its alleys by conjugation.  However,
+##    in order to map an alley <M>(L; s, t, \dots)</M> to another alley, the
+##    element <M>d</M> must be such that it maps <M>L</M> to a subset of
+##    <M>S</M>.  This is always the case if <M>d</M> is a longest coset
+##    representative of the parabolic subgroup <M>W_L</M> in a parabolic
+##    supergroup.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> L:= [1, 2, 3, 5];;
+##  gap> d:= LongestElement(W, L) * LongestCoxeterElement(W);
+##  ( 1, 3, 5)( 2, 4,30)( 6, 8,28)( 7, 9,29)(10,12,26)(11,25,27)(13,21,23)
+##  (14,22,24)(15,17,19)(16,18,20)
+##  gap> OnAlleys([L, [5, 2]], d);
+##  [ [ 1, 3, 4, 5 ], [ 1, 4 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+OnAlleys:= function(alley, d)
+    return [OnSets(alley[1], d), OnTuples(alley[2], d)];
+end;
+                   
+#############################################################################
+##
+#F  StabilizerAlley( <W>, <alley> ) . . . . . . . . . . . . . . . stabilizer.
+##
+##  <#GAPDoc Label="StabilizerAlley">
+##  <ManSection>
+##  <Func Name="StabilizerAlley" Arg="W, alley"/>
+##  <Returns>
+##    the stabilizer in <A>W</A> of the alley <A>alley</A>.
+##  </Returns>
+##  <Description>
+##    The stabilizer of the alley <A>alley</A> is a subgroup of the
+##    stabilizer of its head.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> L:= [1, 3, 5];;
+##  gap> st:= StabilizerAlley(W, [L, []]);;
+##  gap> List(Generators(st), x-> RestrictedPerm(x, L));
+##  [ (3,5), (1,3) ]
+##  gap> st:= StabilizerAlley(W, [L, [3]]);;
+##  gap> List(Generators(st), x-> RestrictedPerm(x, L));
+##  [ (1,5) ]
+##  gap> st:= StabilizerAlley(W, [L, [3,5]]);
+##  Subgroup( CoxeterGroup("A", 5), [  ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+StabilizerAlley:= function(W, alley)
+    return Stabilizer(NormalizerComplement(W, alley[1]), alley[2], OnTuples);
+end;
+
+
+#############################################################################
+##
 #F  SourceAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . source.
 ##
 ##  <#GAPDoc Label="SourceAlley">
@@ -181,45 +249,61 @@ end;
 
 #############################################################################
 ##
-#F  OnAlleys( <alley>, <d> )  . . . . . . . . . . . . . . . . . .  operation.
+#F  PrefixAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . prefix.
 ##
-##  <#GAPDoc Label="OnAlleys">
+##  <#GAPDoc Label="PrefixAlley">
 ##  <ManSection>
-##  <Func Name="OnAlleys" Arg="alley, d"/>
+##  <Func Name="PrefixAlley" Arg="alley"/>
 ##  <Returns>
-##    the image of the alley <A>alley</A> under the permutation <A>d</A>.
+##    the prefix of the alley <A>alley</A>.
 ##  </Returns>
 ##  <Description>
-##    The Coxeter group <M>W</M> acts on its alleys by conjugation.  However,
-##    in order to map an alley <M>(L; s, t, \dots)</M> to another alley, the
-##    element <M>d</M> must be such that it maps <M>L</M> to a subset of
-##    <M>S</M>.  This is always the case if <M>d</M> is a longest coset
-##    representative of the parabolic subgroup <M>W_L</M> in a parabolic
-##    supergroup.
+##    The prefix of an alley <M>a = (L; s_1, \dots, s_l)</M> of length
+##    <M>\ell(a) = l > 0</M> is the alley <M>\pi(a) = (L; s_1, \dots,
+##    s_{l-1})</M> of length <M>l-1</M>.  This function signals an error if
+##    the length of <A>alley</A> is <M>0</M>.
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 5);;
-##  gap> L:= [1, 2, 3, 5];;
-##  gap> d:= LongestElement(W, L) * LongestCoxeterElement(W);
-##  ( 1, 3, 5)( 2, 4,30)( 6, 8,28)( 7, 9,29)(10,12,26)(11,25,27)(13,21,23)
-##  (14,22,24)(15,17,19)(16,18,20)
-##  gap> OnAlleys([L, [5, 2]], d);
-##  [ [ 1, 3, 4, 5 ], [ 1, 4 ] ]
+##  gap> PrefixAlley([[1, 2, 3, 5], [5, 2, 3]]);
+##  [ [ 1, 2, 3, 5 ], [ 5, 2 ] ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-OnAlleys:= function(alley, d)
-    return [OnSets(alley[1], d), OnTuples(alley[2], d)];
-end;
-                   
-#############################################################################
 PrefixAlley:= function(alley)
+    if alley[2] = [] then
+        Error("alley must have length > 0");
+    fi;
     return [alley[1], alley[2]{[1..Length(alley[2])-1]}];
 end;
 
 #############################################################################
+##
+#F  SuffixAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . suffix.
+##
+##  <#GAPDoc Label="SuffixAlley">
+##  <ManSection>
+##  <Func Name="SuffixAlley" Arg="alley"/>
+##  <Returns>
+##    the suffix of the alley <A>alley</A>.
+##  </Returns>
+##  <Description>
+##    The suffix of an alley <M>a = (L; s_1, \dots, s_l)</M> of length
+##    <M>\ell(a) = l > 0</M> is the alley <M>\sigma(a) = (L; s_2, \dots,
+##    s_l)</M> of length <M>l-1</M>.  This function signals an error if
+##    the length of <A>alley</A> is <M>0</M>.
+##  <Example>
+##  gap> SuffixAlley([[1, 2, 3, 5], [5, 2, 3]]);
+##  [ [ 1, 2, 3 ], [ 2, 3 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 SuffixAlley:= function(alley)
+    if alley[2] = [] then
+        Error("alley must have length > 0");
+    fi;
     return [Difference(alley[1], alley[2]{[1]}), 
             alley[2]{[2..Length(alley[2])]}];
 end;
@@ -230,40 +314,6 @@ ActionAlley:= function(W, alley)
     suf:= SuffixAlley(alley);
     return [suf, 
      OnAlleys(suf, LongestElement(W, suf[1]) * LongestElement(W, alley[1]))];
-end;
-
-
-#############################################################################
-##
-#F  StabilizerAlley( <W>, <alley> ) . . . . . . . . . . . . . . . stabilizer.
-##
-##  <#GAPDoc Label="StabilizerAlley">
-##  <ManSection>
-##  <Func Name="StabilizerAlley" Arg="W, alley"/>
-##  <Returns>
-##    the stabilizer in <A>W</A> of the alley <A>alley</A>.
-##  </Returns>
-##  <Description>
-##    The stabilizer of the alley <A>alley</A> is a subgroup of the
-##    stabilizer of its head.
-##  <Example>
-##  gap> W:= CoxeterGroup("A", 5);;
-##  gap> L:= [1, 3, 5];;
-##  gap> st:= StabilizerAlley(W, [L, []]);;
-##  gap> List(Generators(st), x-> RestrictedPerm(x, L));
-##  [ (3,5), (1,3) ]
-##  gap> st:= StabilizerAlley(W, [L, [3]]);;
-##  gap> List(Generators(st), x-> RestrictedPerm(x, L));
-##  [ (1,5) ]
-##  gap> st:= StabilizerAlley(W, [L, [3,5]]);
-##  Subgroup( CoxeterGroup("A", 5), [  ] )
-##  </Example>
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-StabilizerAlley:= function(W, alley)
-    return Stabilizer(NormalizerComplement(W, alley[1]), alley[2], OnTuples);
 end;
 
 
@@ -424,29 +474,6 @@ LittleDeltaBarAlley:= function(W, alley)
     delta:= LittleDeltaAlley(W, alley);
     delta[2]:= ReversedAlley(W, delta[2]);
     return delta;
-end;
-
-#############################################################################
-PrefixAlley:= function(alley)
-    local   list;
-    list:= alley[2];
-    if list = [] then
-        Error("alley must have length > 0");
-    fi;
-    return [alley[1], list{[1..Length(list)-1]}];
-end;
-
-
-#############################################################################
-SuffixAlley:= function(alley)
-    local   list,  s,  K;
-    list:= alley[2];
-    if list = [] then
-        Error("alley must have length > 0");
-    fi;
-    s:= list[1];
-    K:= Difference(alley[1], [s]);
-    return [K, list{[2..Length(list)]}];
 end;
 
 
