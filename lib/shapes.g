@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.62 2007/10/12 15:32:47 goetz Exp $
+#A  $Id: shapes.g,v 1.63 2007/10/15 11:32:24 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -264,12 +264,11 @@ end;
 
 #############################################################################
 ##
-#F  ShapeOps.Edges( <shape> )  . . . . . . . . . . . . . . . . . . . . edges.
+#F  Edges( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . edges.
 ##
 ##  <#GAPDoc Label="Edges(shape)">
 ##  <ManSection>
 ##  <Meth Name="Edges" Arg="shape" Label="for shapes"/>
-##  <Meth Name="ShapeOps.Edges" Arg="shape"/>
 ##  <Returns>
 ##    the list of edges of the graph formed by the elements of the shape 
 ##    <A>shape</A>.
@@ -324,12 +323,11 @@ end;
 
 #############################################################################
 ##
-#F  ShapeOps.Transversal( <shape> )  . . . . . . . . . . . . . . transversal.
+#F  Transversal( <shape> ) . . . . . . . . . . . . . . . . . . . transversal.
 ##
 ##  <#GAPDoc Label="Transversal(shape)">
 ##  <ManSection>
 ##  <Meth Name="Transversal" Arg="shape" Label="for shapes"/>
-##  <Meth Name="ShapeOps.Transversal" Arg="shape"/>
 ##  <Returns>
 ##    a transversal of the graph formed by the elements of the shape 
 ##    <A>shape</A>.
@@ -476,12 +474,11 @@ end;
 
 #############################################################################
 ##
-#F  ShapeOps.Relation( <shape> ) . . . . . . . . . . . . . . . . .  relation.
+#F  Relation( <shape> ) . . . . . . . . . . . . . . . . . . . . . . relation.
 ##
 ##  <#GAPDoc Label="Relation(shape)">
 ##  <ManSection>
 ##  <Meth Name="Relation" Arg="shape" Label="for shapes"/>
-##  <Meth Name="ShapeOps.Relation" Arg="shape"/>
 ##  <Returns>
 ##    the directed graph formed by the elements of the shape as a binary
 ##    relation in the sense of MONOiD <Cite Key="monoid"/>.
