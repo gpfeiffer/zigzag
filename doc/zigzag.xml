@@ -6,7 +6,7 @@
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.30 2007/10/15 09:16:11 goetz Exp $
+     $Id: zigzag.xml,v 1.31 2007/10/15 10:55:57 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -20,7 +20,7 @@ of Finite Coxeter Groups</Subtitle>
     <Version>
 Version 0.71
     </Version>
-    <TitleComment>This is a badly documented alpha version of the ZigZag package.  Future versions of the package will most likely be incompatible with this version.</TitleComment>
+    <TitleComment>WARNING: This is a badly documented alpha version of the ZigZag package.  Future versions of the package will most likely be incompatible with this version.</TitleComment>
     <Author>
 Götz Pfeiffer
 <Email>goetz.pfeiffer@nuigalway.ie</Email>
