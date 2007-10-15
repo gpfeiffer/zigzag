@@ -1,35 +1,6 @@
-## gawk 'BEGIN {                                                              \
-##     while ( getline < "lib/init.g" && $0 !~ /^AUTO/ )                      \
-##         print $0;                                                          \
-## }                                                                          \
-##                                                                            \
-## FNR == 1 {                                                                 \
-##     if ( line != "" && line !~ /^AUTO/ )                                   \
-##         print line " );\n";                                                \
-##     line = "AUTO( ReadPkg(\"zigzag\",\"lib\", ";                           \
-##     line = line "\"" substr( FILENAME, 5, index(FILENAME,".")-5 ) "\" )";  \
-## }                                                                          \
-##                                                                            \
-## /^[A-Za-z0-9_]+ *:=/ && FILENAME != "lib/init.g" {                         \
-##     if ( $1 in funcs )                                                     \
-##         print "clash " $1 " in " funcs[$1] " and " FILENAME > "/dev/stderr";\
-##     funcs[$1] = FILENAME;                                                  \
-##     if ( length( line ", " $1 ) <= 77 && line !~ /^AUTO/ ) {               \
-##         line = line ", " $1;                                               \
-##     }                                                                      \
-##     else {                                                                 \
-##         print line ",";                                                    \
-##         line = "  " $1;                                                    \
-##     }                                                                      \
-## }                                                                          \
-##                                                                            \
-## END {                                                                      \
-##     if ( line != "" && line !~ /^AUTO/ )                                   \
-##         print line " );\n";                                                \
-## }' lib/*.g > lib/init.new
-## mv lib/init.g lib/init.g~
-## mv lib/init.new lib/init.g
-## diff -u lib/init.g~ lib/init.g
+##
+##  $Id: makeinit.py,v 1.2 2007/10/15 08:56:12 goetz Exp $
+##
 
 init = open("init.g")
 out = open("init.new", 'w')
