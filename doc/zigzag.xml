@@ -6,7 +6,7 @@
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.28 2007/10/11 12:57:37 goetz Exp $
+     $Id: zigzag.xml,v 1.29 2007/10/15 09:12:12 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -20,7 +20,7 @@ of Finite Coxeter Groups</Subtitle>
     <Version>
 Version 0.71
     </Version>
-    <TitleComment>DRAFT</TitleComment>
+    <TitleComment>This is a badly documented alpha version of the ZigZag package.  Future versions of the package will most likely be incompatible with this version.</TitleComment>
     <Author>
 Götz Pfeiffer
 <Email>goetz.pfeiffer@nuigalway.ie</Email>
@@ -53,12 +53,6 @@ in various ways.
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see &lt;<URL>http://www.gnu.org/licenses/</URL>&gt;.
 </Copyright>
-<Acknowledgements>
-This ...
-</Acknowledgements>
-<Colophon>
-This ...
-</Colophon>
 </TitlePage>
 
 <TableOfContents/>
