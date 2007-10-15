@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.32 2007/10/15 12:10:47 goetz Exp $
+#A  $Id: streets.g,v 1.33 2007/10/15 21:11:25 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -791,14 +791,6 @@ StreetOps.Delta:= function(self)
     return rec(support:= J, mat:= mat);
 end;
 
-# a path is a sequence of alleys, with adjacent ones multiplyable.
-DeltaPath:= function(path)
-    local   p;
-    
-    p:= ProductAlleyMatrixList(List(path, x-> Call(x, "Matrix")));
-    return rec(support:= p.target, mat:= Sum(p.mat));
-end;
-
 StreetOps.BigMatrix:= function(self)
     local   sh,  m,  l,  mat;
     
@@ -955,6 +947,7 @@ StreetOps.LongestSuffix:= function(self)
     return self;
           
 end;
+
 
 # a path is a sequence of alleys, with adjacent ones multiplyable.
 DeltaPath:= function(path)
