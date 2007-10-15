@@ -6,7 +6,7 @@
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.29 2007/10/15 09:12:12 goetz Exp $
+     $Id: zigzag.xml,v 1.30 2007/10/15 09:16:11 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -28,7 +28,9 @@ Götz Pfeiffer
 </Author>
 <Date>07-Oct-2007</Date>
 <Address>
-Department of Mathematics<Br/> National University of Ireland, Galway, Ireland
+Department of Mathematics<Br/> 
+National University of Ireland, Galway<Br/>
+Galway, Ireland
 </Address>
 <Abstract>
 The descent algebra of a finite Coxeter group <M>W</M>
