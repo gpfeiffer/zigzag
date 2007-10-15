@@ -1,16 +1,16 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.25 2007/10/12 15:34:58 goetz Exp $
+#A  $Id: streets.g,v 1.26 2007/10/15 10:30:06 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
 #Y  Copyright (C) 2001-2007, Götz Pfeiffer
 ##
-##  This file contains support for streets aka alley classes.
+##  This file contains support for streets.
 ##  
 ##  <#GAPDoc Label="Intro:Streets">
-##    An <E>street</E> <Index>street</Index> is an orbit of alleys under the
-##    conjugation action of W.
+##    An <E>street</E><Index>street</Index> is an orbit of alleys under the
+##    action of the free monoid <M>S^*</M>.<P/>
 ##
 ##    The functions described in this chapter are implemented in the file
 ##    <F>streets.g</F>.  
@@ -19,24 +19,24 @@
 
 #############################################################################
 ##  
-#O  StreetOps  . . . . . . . . . . . . . . . . . . . operations record.
+#O  StreetOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
 ##  
 StreetOps:= OperationsRecord("StreetOps", DomainOps);
 
 #############################################################################
 ##  
-#C  Street( <W>, <alley> )  . . . . . . . . . . . . . . . .  constructor.
+#C  Street( <W>, <alley> ) . . . . . . . . . . . . . . . . . . . constructor.
 ##  
 ##  <#GAPDoc Label="Street">
 ##  <ManSection>
-##  <Func Name="Street" Arg="W, J"/>
+##  <Func Name="Street" Arg="W, alley"/>
 ##  <Returns>
-##    a new alley class, an object that represents the class of the alley
-##    <A>alley</A> under <A>W</A>.
+##    a new street, an object that represents the orbit of the alley
+##    <A>alley</A> under <A>S^*</A>.
 ##  </Returns>
 ##  <Description>
-##    This is the simple constructor for an alley class.  It constructs and
-##  returns the class  of <A>alley</A> in <A>W</A>.
+##    This is the simple constructor for streets.  It constructs and returns
+##    the street of <A>alley</A> in <A>W</A>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);; 
 ##  gap> Street(W, [[1,2,3], [3]]);
@@ -61,6 +61,7 @@ Street:= function(W, alley)
           );
 end;
 
+
 #############################################################################
 ##
 #F  IsStreet( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
@@ -69,7 +70,7 @@ end;
 ##  <ManSection>
 ##  <Func Name="IsStreet" Arg="obj"/>
 ##  <Returns>
-##    <K>true</K> if <A>obj</A> is an alley class and <K>false</K> otherwise.
+##    <K>true</K> if <A>obj</A> is a street and <K>false</K> otherwise.
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -82,7 +83,7 @@ end;
 
 #############################################################################  
 ##  
-#F  Print( <street> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
+#M  Print( <street> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
 StreetOps.Print:= function(self)
     Print("Street( ", self.W, ", ", self.alley, " )");
@@ -103,7 +104,7 @@ end;
 ##  as <C>Street(W, J)</C> (see <Ref Label="Street"/>) will be its
 ##  initial element <C>J</C>.
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> Representative(Street(W, [[1,2,3], [3]]));
 ##  [ [ 1, 2, 3 ], [ 3 ] ]
 ##  </Example>
@@ -117,7 +118,7 @@ end;
 
 #############################################################################  
 ##  
-#F  Elements( <street> )  . . . . . . . . . . . . . . . . . . . . . elements.
+#M  Elements( <street> )  . . . . . . . . . . . . . . . . . . . . . elements.
 ##  
 ##  <#GAPDoc Label="Elements(street)">
 ##  <ManSection>
@@ -127,7 +128,7 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The street of the alley <M>(L; s, t, \dots)</M> is its orbit under the
-##    action of <M>A^*</M>.
+##    action of <M>S^*</M>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;                
 ##  gap> Elements(Street(W, [[1,2,3], [3]]));      
@@ -160,7 +161,7 @@ end;
 
 #############################################################################
 ##
-#F  Movers( <street> ) . . . . . . . . . . . . . . . . . . . . . . . movers.
+#M  Movers( <street> ) . . . . . . . . . . . . . . . . . . . . . . . movers.
 ##
 ##  The edges of the graph of a street are either movers or shakers.
 ##  
@@ -220,7 +221,10 @@ StreetOps.Movers:= function(self)
     return new;
 end;
 
-
+#############################################################################
+##
+##  Streets of movers come in pairs of opposites.  MoversPlus lists only one.
+##
 StreetOps.MoversPlus:= function(self)
     local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  new;
     
@@ -256,7 +260,7 @@ end;
 
 #############################################################################
 ##
-#F  Shakers( <street> ) . . . . . . . . . . . . . . . . . . . . . . . shakers.
+#M  Shakers( <street> ) . . . . . . . . . . . . . . . . . . . . . . . shakers.
 ##
 ##  The edges of the graph of a street are either movers or shakers.
 ##  
@@ -315,33 +319,145 @@ StreetOps.Shakers:= function(self)
     return new;
 end;
 
+
 #############################################################################
+##
+#M  Suffix( <street> ) . . . . . . . . . . . . . . . . . . . . . . .  suffix.
+##
+##  <#GAPDoc Label="Suffix(street)">
+##  <ManSection>
+##  <Meth Name="Suffix" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the suffix of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The <E>suffix</E><Index>suffix</Index> of a street <M>\alpha = [L; s_1,
+##    \dots, s_l]</M> of length <M>\ell(\alpha) = l > 0</M> is the street
+##    <M>\sigma(\alpha) = [L; s_2, \dots, s_l]</M> of length <M>l-1</M>.
+##    This method signals an error if the length of <A>street</A> is
+##    <M>0</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> Call(Street(W, [[1,2,3,5], [5,2,3]]), "Suffix");
+##  Street( CoxeterGroup("A", 5), [ [ 1, 2, 3 ], [ 2, 3 ] ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 StreetOps.Suffix:= function(self)
     
     # an alley of length 0 has no suffix.
-    if self.alley[2] = [] then return false; fi;
+    if self.alley[2] = [] then
+        Error("street must have length > 0");
+    fi;
     
-    # otherwise, form the longest nontrivial suffix.
-    return Street(self.W, [Difference(self.alley[1], self.alley[2]{[1]}),
-                   self.alley[2]{[2..Length(self.alley[2])]}]);
+    # otherwise, return the suffix of the representative.
+    return Street(self.W, SuffixAlley(self.alley));
 end;
 
+
+#############################################################################
+##
+#M  InverseSuffix( <street> ) . . . . . . . . . . . . . . . . . . . . suffix.
+##
+##  <#GAPDoc Label="InverseSuffix(street)">
+##  <ManSection>
+##  <Meth Name="InverseSuffix" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the inverse suffix of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The <E>inverse suffix</E><Index>inverse suffix</Index> of a street
+##    <M>\alpha</M> is the set of all streets <M>\alpha'</M> with
+##    <M>\sigma(\alpha') = \alpha</M>.  The inverse suffix of a street
+##    <M>\alpha</M> is the (disjoint) union of the movers of <M>\alpha</M>
+##    (see <Ref Meth="Movers" Label="for streets"/>) and the shakers of
+##    <M>\alpha</M> (see <Ref Meth="Shakers" Label="for streets"/>).
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> Call(Street(W, [[1,2,3], [2,3]]), "InverseSuffix");  
+##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 1, 3, 4 ] ] ), 
+##    Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 4, 2, 3 ] ] ), 
+##    Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 5 ], [ 5, 2, 3 ] ] ) ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 ##  TODO: find a more systematic way to list all inverse suffixes.
+##
 StreetOps.InverseSuffix:= function(self)
     return Concatenation(Call(self, "Movers"), Call(self, "Shakers"));
 end;
 
 
+#############################################################################
+##
+#M  Prefix( <street> ) . . . . . . . . . . . . . . . . . . . . . . .  prefix.
+##
+##  <#GAPDoc Label="Prefix(street)">
+##  <ManSection>
+##  <Meth Name="Prefix" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the prefix of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The <E>prefix</E><Index>prefix</Index> of a street <M>\alpha = [L; s_1,
+##    \dots, s_l]</M> of length <M>\ell(\alpha) = l > 0</M> is the street
+##    <M>\pi(\alpha) = [L; s_1, \dots, s_{l-1}]</M> of length <M>l-1</M>.
+##    This method signals an error if the length of <A>street</A> is
+##    <M>0</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> Call(Street(W, [[1,2,3,5], [5,2,3]]), "Prefix");
+##  Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 5 ], [ 5, 2 ] ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 StreetOps.Prefix:= function(self)
     
     # an alley of length 0 has no prefix.
-    if self.alley[2] = [] then return false; fi;
+    if self.alley[2] = [] then
+        Error("street must have length > 0");
+    fi;
     
-    # otherwise, form the longest nontrivial prefix.
-    return Street(self.W, [self.alley[1], 
-                   self.alley[2]{[1..Length(self.alley[2])-1]}]);
+    # otherwise, return the prefix of the representative.
+    return Street(self.W, PrefixAlley(alley));
 end;
 
+
+#############################################################################
+##
+#M  InversePrefix( <street> ) . . . . . . . . . . . . . . . . . . . . prefix.
+##
+##  <#GAPDoc Label="InversePrefix(street)">
+##  <ManSection>
+##  <Meth Name="InversePrefix" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the inverse prefix of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The <E>inverse prefix</E><Index>inverse prefix</Index> of a street
+##    <M>\alpha</M> is the set of all streets <M>\alpha'</M> with
+##    <M>\pi(\alpha') = \alpha</M>.  The inverse prefix of the street
+##    <M>\alpha = [a]</M> of <M>a = (L; s_1, \dots, s_l)</M> consists of the
+##    streets <M>[L; s_1, \dots, s_l, t]</M> where <M>t</M> ranges over a
+##    transversal of the orbits of the stabilizer of <M>a</M> (see <Ref
+##    Func="StabilizerAlley">) on the set <M>L \setminus \{s_1, \dots,
+##    s_l\}</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> Call(Street(W, [[1,2,3,5], [5,2]]), "InversePrefix");
+##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 5 ], [ 5, 2, 1 ] ] ), 
+##    Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 5 ], [ 5, 2, 3 ] ] ) ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 StreetOps.InversePrefix:= function(self)
     local   stab,  children,  o,  new;
     
@@ -369,6 +485,26 @@ StreetOps.InversePrefix:= function(self)
     return children;
 end;
 
+#############################################################################
+##
+#M  Children( <street> ) . . . . . . . . . . . . . . . . . . . . .  children.
+##
+##  <#GAPDoc Label="Children(street)">
+##  <ManSection>
+##  <Meth Name="Children" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the children of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The children of a street are its inverse prefixes (see <Ref
+##    Meth="InversePrefix" Label"for streets">).  This defines a tree
+##    structure in the sense of Chapter <Ref Chapter="ch:walker"> on the set
+##    of all streets of <M>W</M> which can be used to list them (see <Ref
+##    Func="Streets">) or to count them (see <Ref Func="NrStreets">).
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 StreetOps.Children:= StreetOps.InversePrefix;
 
 #############################################################################
