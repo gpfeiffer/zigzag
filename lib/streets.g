@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.31 2007/10/15 11:21:00 goetz Exp $
+#A  $Id: streets.g,v 1.32 2007/10/15 12:10:47 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -639,7 +639,34 @@ StreetOps.Transversal:= function(self)
     return 0;
 end;
 
+
 #############################################################################
+##
+#F  Edges( <street> )  . . . . . . . . . . . . . . . . . . . . . . . . edges.
+##
+##  <#GAPDoc Label="Edges(street)">
+##  <ManSection>
+##  <Meth Name="Edges" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the edges of the action graph on the elements of the street
+##    <A>street</A>.
+##  </Returns>
+##  <Description>
+##  ... more ...
+##  <Example>
+##  gap> b:= Street(CoxeterGroup("A", 5), [[1,3,5], [1,3]]);;
+##  gap> Elements(b);
+##  [ [ [ 1, 3, 5 ], [ 1, 3 ] ], [ [ 1, 3, 5 ], [ 1, 5 ] ], 
+##    [ [ 1, 3, 5 ], [ 3, 1 ] ], [ [ 1, 3, 5 ], [ 3, 5 ] ], 
+##    [ [ 1, 3, 5 ], [ 5, 1 ] ], [ [ 1, 3, 5 ], [ 5, 3 ] ] ]
+##  gap> Call(b, "Edges");                                  
+##  [ [ , 3,, 2 ], [ , 4,, 1 ], [ , 1,, 5 ], [ , 2,, 6 ], [ , 6,, 3 ], 
+##    [ , 5,, 4 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 StreetOps.Edges:= function(self)
     local   W,  S,  source,  hhh,  eee,  all,  edges,  a,  new,  l,  s;
     
@@ -664,6 +691,31 @@ StreetOps.Edges:= function(self)
 end;
 
 #############################################################################
+##
+#F  Relation( <street> )  . . . . . . . . . . . . . . . . . . . . . relation.
+##
+##  <#GAPDoc Label="Relation(street)">
+##  <ManSection>
+##  <Meth Name="Relation" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the action graph on the elements of the street as a binary relation in
+##    the sense of MONOiD <Cite Key="monoid"/>.
+##  </Returns>
+##  <Description>
+##  ... more ...
+##  <Example>
+##  gap> b:= Street(CoxeterGroup("A", 5), [[1,3,5], [1,3]]);;
+##  gap> Elements(b);
+##  [ [ [ 1, 3, 5 ], [ 1, 3 ] ], [ [ 1, 3, 5 ], [ 1, 5 ] ], 
+##    [ [ 1, 3, 5 ], [ 3, 1 ] ], [ [ 1, 3, 5 ], [ 3, 5 ] ], 
+##    [ [ 1, 3, 5 ], [ 5, 1 ] ], [ [ 1, 3, 5 ], [ 5, 3 ] ] ]
+##  gap> Call(b, "Relation");
+##  Relation( [ [ 2, 3 ], [ 1, 4 ], [ 1, 5 ], [ 2, 6 ], [ 3, 6 ], [ 4, 5 ] ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 StreetOps.Relation:= function(self)
     return Relation(List(Call(self, "Edges"), Set));
 end;
