@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: alleys.xml,v 1.4 2007/10/14 20:12:14 goetz Exp $
+     $Id: alleys.xml,v 1.5 2007/10/15 08:57:55 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -31,6 +31,7 @@
 <Section>
 <Heading>Alley Properties.</Heading>
 
+<#Include Label="NrAlleys">
 <#Include Label="SourceAlley">
 <#Include Label="TargetAlley">
 <#Include Label="PrefixAlley">
