@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.29 2007/10/15 10:53:43 goetz Exp $
+#A  $Id: streets.g,v 1.30 2007/10/15 10:57:57 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -566,41 +566,6 @@ NrStreets:= function(W)
     return Sum(Shapes(W), x-> NrPreOrder(Call(x, "Street")));
 end;
     
-
-EssentialStreets:= function(W)
-    local   list,  hhh,  sh,  new,  N;
-    
-    list:= [];
-    
-    hhh:= function(alley, N)
-        local   L,  o,  s,  new,  Ns,  m,  c;
-        
-        L:= Difference(alley[1], alley[2]);
-        for o in Orbits(N, L) do
-            s:= o[1];
-            new:= [alley[1], Concatenation(alley[2], [s])];
-            m:= DeltaAlley(W, new);
-            if m <> 0*m then
-                c:= Street(W, new);
-                m:= Call(c, "Matrix").mat;
-                if m <> 0*m then 
-                    Add(list, c);
-                    Print(".\c");
-                fi;
-            fi;
-            Ns:= Stabilizer(N, s);
-            hhh(new, Ns);
-        od;
-    end;
-            
-    for sh in Shapes(W) do
-        new:= [Representative(sh), []];
-        Add(list, Street(W, new));
-        N:= Call(sh, "Complement");
-        hhh(new, N);
-    od;
-    return list;
-end;
 
 #############################################################################
 StreetOps.Transversal:= function(self)
