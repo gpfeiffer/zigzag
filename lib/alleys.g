@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.39 2007/10/14 20:12:03 goetz Exp $
+#A  $Id: alleys.g,v 1.40 2007/10/15 10:55:15 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -14,7 +14,10 @@
 ##    <M>(s_1, \dots, s_l)</M> of pairwise different elements of
 ##    <M>L</M>. <P/>
 ##    
-##    Alleys are immutable.
+##    Alleys are to be treated as immutable objects.<P/>
+##
+##    The functions described in this chapter are implemented in the file
+##    <F>alleys.g</F>.  
 ##  <#/GAPDoc>
 ##
 
@@ -199,6 +202,42 @@ end;
 
 #############################################################################
 ##
+#F  NrAlleys( <n> ) . . . . . . . . . . . . . . . . . . . . number of alleys.
+##
+##  <#GAPDoc Label="NrAlleys">
+##  <ManSection>
+##  <Func Name="NrAlleys" Arg="n"/>
+##  <Returns>
+##    the number of alleys on a set of size <A>n</A>.
+##  </Returns>
+##  <Description>
+##    The number of alleys on a set of size <M>n</M> is <M>n! \sum_{l=0}^n
+##    2^l/l!</M>.
+##  <Example>
+##  gap> List([0..9], NrAlleys);
+##  [ 1, 3, 10, 38, 168, 872, 5296, 37200, 297856, 2681216 ]
+##  gap> NrAlleys(55);          
+##  93814436634832245005010260707043886255914618433202630120004150861368393728
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  n! \sum_{l=0}^n 2^l/l!
+##
+NrAlleys:= function(n)
+    local   term,  sum,  l;
+    term:= Factorial(n);
+    sum:= term;
+    for l in [1..n] do
+        term:= term * 2 / l;
+        sum:= sum + term;
+    od;
+    return sum;
+end;
+
+
+#############################################################################
+##
 #F  SourceAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . source.
 ##
 ##  <#GAPDoc Label="SourceAlley">
@@ -258,10 +297,10 @@ end;
 ##    the prefix of the alley <A>alley</A>.
 ##  </Returns>
 ##  <Description>
-##    The prefix of an alley <M>a = (L; s_1, \dots, s_l)</M> of length
-##    <M>\ell(a) = l > 0</M> is the alley <M>\pi(a) = (L; s_1, \dots,
-##    s_{l-1})</M> of length <M>l-1</M>.  This function signals an error if
-##    the length of <A>alley</A> is <M>0</M>.
+##    The <E>prefix</E><Index>prefix</Index> of an alley <M>a = (L; s_1,
+##    \dots, s_l)</M> of length <M>\ell(a) = l > 0</M> is the alley <M>\pi(a)
+##    = (L; s_1, \dots, s_{l-1})</M> of length <M>l-1</M>.  This function
+##    signals an error if the length of <A>alley</A> is <M>0</M>.
 ##  <Example>
 ##  gap> PrefixAlley([[1, 2, 3, 5], [5, 2, 3]]);
 ##  [ [ 1, 2, 3, 5 ], [ 5, 2 ] ]
@@ -288,10 +327,10 @@ end;
 ##    the suffix of the alley <A>alley</A>.
 ##  </Returns>
 ##  <Description>
-##    The suffix of an alley <M>a = (L; s_1, \dots, s_l)</M> of length
-##    <M>\ell(a) = l > 0</M> is the alley <M>\sigma(a) = (L; s_2, \dots,
-##    s_l)</M> of length <M>l-1</M>.  This function signals an error if
-##    the length of <A>alley</A> is <M>0</M>.
+##    The <E>suffix</E><Index>suffix</Index> of an alley <M>a = (L; s_1,
+##    \dots, s_l)</M> of length <M>\ell(a) = l > 0</M> is the alley
+##    <M>\sigma(a) = (L; s_2, \dots, s_l)</M> of length <M>l-1</M>.  This
+##    function signals an error if the length of <A>alley</A> is <M>0</M>.
 ##  <Example>
 ##  gap> SuffixAlley([[1, 2, 3, 5], [5, 2, 3]]);
 ##  [ [ 1, 2, 3 ], [ 2, 3 ] ]
@@ -520,7 +559,6 @@ ReducedWordAlley:= function(W, alley)
     return CategoryElt(W, [K, z]);
 end;
 
-
 #############################################################################
 ##
 ##  The alley algebra.
@@ -559,6 +597,14 @@ AlleyAlgebraOps.Print:= function(self)
     fi;
 end;
 
+
+#############################################################################
+##
+##  n! \sum_{l=0}^n 2^l/l!
+##
+AlleyAlgebraOps.Dimension:= function(self)
+    return NrAlleys(self.W.semisimpleRank);
+end;
 
 
 #############################################################################
