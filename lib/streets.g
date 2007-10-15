@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.27 2007/10/15 10:31:19 goetz Exp $
+#A  $Id: streets.g,v 1.28 2007/10/15 10:33:50 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -511,33 +511,6 @@ StreetOps.Children:= StreetOps.InversePrefix;
 ##
 #F  Streets( <W> )
 ##
-Streets0:= function(W)
-    local   list,  hhh,  sh,  new,  N;
-    
-    list:= [];
-    
-    hhh:= function(alley, N)
-        local   L,  o,  s,  new,  Ns;
-        
-        L:= Difference(alley[1], alley[2]);
-        for o in Orbits(N, L) do
-            s:= o[1];
-            new:= [alley[1], Concatenation(alley[2], [s])];
-            Ns:= Stabilizer(N, s);
-            Add(list, Street(W, new));
-            hhh(new, Ns);
-        od;
-    end;
-            
-    for sh in Shapes(W) do
-        new:= [Representative(sh), []];
-        Add(list, Street(W, new));
-        N:= Call(sh, "Complement");
-        hhh(new, N);
-    od;
-    return list;
-end;
-
 Streets:= function(W)
     local   list,  shape;
     list:= [];
