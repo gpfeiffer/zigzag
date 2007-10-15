@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.30 2007/10/15 10:57:57 goetz Exp $
+#A  $Id: streets.g,v 1.31 2007/10/15 11:21:00 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -425,7 +425,7 @@ StreetOps.Prefix:= function(self)
     fi;
     
     # otherwise, return the prefix of the representative.
-    return Street(self.W, PrefixAlley(alley));
+    return Street(self.W, PrefixAlley(self.alley));
 end;
 
 
@@ -568,6 +568,72 @@ end;
     
 
 #############################################################################
+##
+#M  Source( <street> ) . . . . . . . . . . . . . . . . . . . . . . .  source.
+##
+##  <#GAPDoc Label="Source(street)">
+##  <ManSection>
+##  <Meth Name="Source" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the source of the street <A>street</A> as an address in the list of
+##    shapes.
+##  </Returns>
+##  <Description>
+##    The <E>source</E><Index>source</Index> of a street <M>\alpha = [L; s_1,
+##    \dots, s_l]</M> is the shape
+##    <M>\tau(\alpha) = [L]</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> Call(Street(W, [[1,2,3,5], [5,2]]), "Source");
+##  9
+##  gap> Shapes(W)[9];
+##  Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 5 ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+StreetOps.Source:= function(self)
+    local   source;
+    source:= SourceAlley(self.alley);
+    return PositionProperty(Shapes(self.W), x-> source in x);
+end;
+
+
+#############################################################################
+##
+#M  Target( <street> ) . . . . . . . . . . . . . . . . . . . . . . .  target.
+##
+##  <#GAPDoc Label="Target(street)">
+##  <ManSection>
+##  <Meth Name="Target" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the target of the street <A>street</A> as an address in the list of
+##    shapes.
+##  </Returns>
+##  <Description>
+##    The <E>target</E><Index>target</Index> of a street <M>\alpha = [L; s_1,
+##    \dots, s_l]</M> is the shape
+##    <M>\tau(\alpha) = [L \setminus \{s_1, \dots, s_{l-1}\}]</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> Call(Street(W, [[1,2,3,5], [5,2]]), "Target");
+##  3
+##  gap> Shapes(W)[3];
+##  Shape( CoxeterGroup("A", 5), [ 1, 3 ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+StreetOps.Target:= function(self)
+    local   target;
+    target:= TargetAlley(self.alley);
+    return PositionProperty(Shapes(self.W), x-> target in x);
+end;
+
+
+#############################################################################
 StreetOps.Transversal:= function(self)
     #  FIXME:
     return 0;
@@ -575,13 +641,13 @@ end;
 
 #############################################################################
 StreetOps.Edges:= function(self)
-    local   W,  S,  head,  hhh,  eee,  all,  edges,  a,  new,  l,  s;
+    local   W,  S,  source,  hhh,  eee,  all,  edges,  a,  new,  l,  s;
     
     W:= self.W;
     S:= [1..W.semisimpleRank];
-    head:= Shapes(W)[Call(self, "Head")];
-    hhh:= Elements(head);
-    eee:= Call(head, "Edges");
+    source:= Shapes(W)[Call(self, "Source")];
+    hhh:= Elements(source);
+    eee:= Call(source, "Edges");
     all:= Elements(self);
     edges:= [];
     for a in all do
@@ -610,18 +676,6 @@ StreetOps.SpanningTree:= function(self)
 end;
 
 
-#############################################################################
-StreetOps.Tail:= function(self)
-    return PositionProperty(Shapes(self.W), 
-                   x-> ApplyFunc(Difference, self.alley) in x);
-end;
-
-#############################################################################
-StreetOps.Head:= function(self)
-    return PositionProperty(Shapes(self.W), x-> self.alley[1] in x);
-end;
-
-
 ###
 ###  next:  the mu map.
 ###
@@ -629,21 +683,21 @@ StreetOps.Matrix:= function(self)
     local   sh,  L,  J,  subL,  mat,  e,  i;
 
     sh:= Shapes(self.W);
-    L:= Call(self, "Head");
-    J:= Call(self, "Tail");
+    L:= Call(self, "Source");
+    J:= Call(self, "Target");
     subL:= Elements(sh[L]);
     mat:= NullMat(Size(sh[L]), Size(sh[J]));
     for e in Elements(self) do
         i:= Position(subL, e[1]);
         mat[i]:= mat[i] + DeltaAlley(self.W, e);
     od;
-    return rec(tail:= J, head:= L, mat:= mat);
+    return rec(target:= J, source:= L, mat:= mat);
 end;
 
 #  how to multiply two such matrices.  checked!  Turn into proper objects?
 ProductAlleyMatrices:= function(a, b)
-    if a.tail = b.head then
-        return rec(tail:= b.tail, head:= a.head, mat:= a.mat * b.mat);
+    if a.target = b.source then
+        return rec(target:= b.target, source:= a.source, mat:= a.mat * b.mat);
     fi;
     return 0;
 end;
@@ -666,8 +720,8 @@ end;
 
 
 SumAlleyMatrices:= function(a, b)
-    if a.tail = b.tail and a.head = b.head then
-        return rec(tail:= b.tail, head:= a.head, mat:= a.mat + b.mat);
+    if a.target = b.target and a.source = b.source then
+        return rec(target:= b.target, source:= a.source, mat:= a.mat + b.mat);
     fi;
     Error("think ...");
 end;
@@ -677,7 +731,7 @@ StreetOps.Delta:= function(self)
     local   sh,  J,  mat,  e;
 
     sh:= Shapes(self.W);
-    J:= Call(self, "Tail");
+    J:= Call(self, "Target");
     mat:= List(Elements(sh[J]), x-> 0);
     for e in Elements(self) do
         mat:= mat + DeltaAlley(self.W, e);
@@ -690,7 +744,7 @@ DeltaPath:= function(path)
     local   p;
     
     p:= ProductAlleyMatrixList(List(path, x-> Call(x, "Matrix")));
-    return rec(support:= p.tail, mat:= Sum(p.mat));
+    return rec(support:= p.target, mat:= Sum(p.mat));
 end;
 
 StreetOps.BigMatrix:= function(self)
@@ -701,7 +755,7 @@ StreetOps.BigMatrix:= function(self)
     l:= SetComposition(List(sh, Size));
     mat:= NullMat(m, m);
     m:= Call(self, "Matrix");
-    mat{l[m.head]}{l[m.tail]}:= m.mat;
+    mat{l[m.source]}{l[m.target]}:= m.mat;
     return mat;
 end;
 
@@ -755,7 +809,7 @@ StreetOps.\*:= function(l, r)
     W:= l.W;
     
     # unless they fit together
-    if Call(l, "Tail") <> Call(r, "Head") then
+    if Call(l, "Target") <> Call(r, "Source") then
         return res;
     fi;
     
@@ -802,8 +856,8 @@ end;
 #############################################################################
 ##
 ##  the *depth* of an alley class alpha is the Size of alpha(L),
-##  the number of alleys in the class with the same head L.
-##  the *width of an alley class is the size of the shape of its head.
+##  the number of alleys in the class with the same source L.
+##  the *width of an alley class is the size of the shape of its source.
 ##  Thus the size of the class is its width
 ##  times its depth.  In most cases, the depth is 1.  Also,
 ##  alley classes of larger depth tend to map to 0.
@@ -815,7 +869,7 @@ StreetOps.Depth:= function(self)
 end;
 
 StreetOps.Width:= function(self)
-    return Size(Shapes(self.W)[Call(self, "Head")]);
+    return Size(Shapes(self.W)[Call(self, "Source")]);
 end;
 
 #############################################################################
@@ -855,7 +909,7 @@ DeltaPath:= function(path)
     local   p;
     
     p:= ProductAlleyMatrixList(List(path, x-> Call(x, "Matrix")));
-    return rec(support:= p.tail, mat:= Sum(p.mat));
+    return rec(support:= p.target, mat:= Sum(p.mat));
 end;
 
 
@@ -1299,7 +1353,7 @@ PrintQuiver:= function(qr)
     Print("\nEdges:\n");
     for e in gens do
         mat:= Call(e, "Matrix");
-        Print(mat.tail, " --> ", mat.head, ". ", 
+        Print(mat.target, " --> ", mat.source, ". ", 
               shortalley(e.alley), "\n");
     od;
     
@@ -1312,9 +1366,9 @@ PrintQuiver:= function(qr)
                 Print("+", r.coeffs[i], "(");
                 for e in p do
                     mat:= Call(e, "Matrix");
-                    Print(mat.head, "---");
+                    Print(mat.source, "---");
                 od;
-                Print(mat.tail, ") \c");
+                Print(mat.target, ") \c");
             od;
             for p in r.paths do
                 for e in p do
@@ -1341,8 +1395,8 @@ DimensionsMatrix:= function(qr)
     for k in [1..Length(qr.path)] do
         mat:= NullMat(l, l);
         for p in qr.path[k] do
-            i:= Call(p[1], "Matrix").head;
-            j:= Call(p[Length(p)], "Matrix").tail;
+            i:= Call(p[1], "Matrix").source;
+            j:= Call(p[Length(p)], "Matrix").target;
             mat[i][j]:= mat[i][j] + 1;
         od;
         dim[k]:= mat;
@@ -1397,14 +1451,14 @@ VerifyQuiver:= function(qr)
         Print("checking \c");
         mat:= Call(Product(a), "Matrix");
         Print(" ...\c");
-        fa:= Sum(mat.mat) * eee{l[mat.tail]};
-        fa{l[mat.head]}{l[mat.tail]}:= fa{l[mat.head]}{l[mat.tail]} - mat.mat;
+        fa:= Sum(mat.mat) * eee{l[mat.target]};
+        fa{l[mat.source]}{l[mat.target]}:= fa{l[mat.source]}{l[mat.target]} - mat.mat;
         if fa <> 0*fa then 
             return false;
         fi;
         Print (" OK.  ");
-        fa:= mat.mat[1] * eee{l[mat.tail]};
-        if Length(l[mat.head]) * eee[l[mat.head][1]] * fa = fa then
+        fa:= mat.mat[1] * eee{l[mat.target]};
+        if Length(l[mat.source]) * eee[l[mat.source][1]] * fa = fa then
             Print("Eigenvalue good also.\n");
         else
             Print("*** EIGENVALUE OUT OF LINE ***\n");
@@ -1476,8 +1530,8 @@ CartanMatStreets:= function(W)
     l:= Length(Shapes(W));
     mat:= NullMat(l, l);
     for b in Streets(W) do
-        i:= Call(b, "Head");
-        j:= Call(b, "Tail");
+        i:= Call(b, "Source");
+        j:= Call(b, "Target");
         mat[i][j]:= mat[i][j] + 1;
     od;
     
@@ -1507,8 +1561,8 @@ CartanMatMovers:= function(W)
     l:= Length(Shapes(W));
     mat:= NullMat(l, l);
     for b in bbb do
-        i:= Call(b, "Head");
-        j:= Call(b, "Tail");
+        i:= Call(b, "Source");
+        j:= Call(b, "Target");
         mat[i][j]:= mat[i][j] + 1;
     od;
     
@@ -1538,8 +1592,8 @@ CartanMatMoversPlus:= function(W)
     l:= Length(Shapes(W));
     mat:= NullMat(l, l);
     for b in bbb do
-        i:= Call(b, "Head");
-        j:= Call(b, "Tail");
+        i:= Call(b, "Source");
+        j:= Call(b, "Target");
         mat[i][j]:= mat[i][j] + 1;
     od;
     
@@ -1571,8 +1625,8 @@ CartanMatMoversPlusNZ:= function(W)
     l:= Length(Shapes(W));
     mat:= NullMat(l, l);
     for b in bbb do
-        i:= Call(b, "Head");
-        j:= Call(b, "Tail");
+        i:= Call(b, "Source");
+        j:= Call(b, "Target");
         mat[i][j]:= mat[i][j] + 1;
     od;
     
