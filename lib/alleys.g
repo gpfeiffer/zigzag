@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.40 2007/10/15 10:55:15 goetz Exp $
+#A  $Id: alleys.g,v 1.41 2007/10/15 11:02:08 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -283,7 +283,7 @@ end;
 ##  <#/GAPDoc>
 ##
 TargetAlley:= function(alley)
-    return Difference(alley[1], alley[2]);
+    return ApplyFunc(Difference, alley);
 end;
 
 #############################################################################
