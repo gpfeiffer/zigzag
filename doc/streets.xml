@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: streets.xml,v 1.1 2007/10/05 17:31:17 goetz Exp $
+     $Id: streets.xml,v 1.2 2007/10/15 10:53:52 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
 
 <Chapter Label="ch:streets">
-<Heading>Streets aka Alley Classes.</Heading>
+<Heading>Streets.</Heading>
 
 <#Include Label="Intro:Streets">
 
@@ -15,8 +15,9 @@
 <Heading>Street Objects.</Heading>
 
 <#Include Label="Street">
-
 <#Include Label="IsStreet">
+<#Include Label="Streets">
+<#Include Label="NrStreets">
 
 </Section>
 
@@ -45,9 +46,14 @@ more efficient implementations.
 
 Various methods can be applied to streets.
 
-<#Include Label="Movers(street)">
 
+<#Include Label="Movers(street)">
 <#Include Label="Shakers(street)">
+<#Include Label="Prefix(street)">
+<#Include Label="InversePrefix(street)">
+<#Include Label="Suffix(street)">
+<#Include Label="InverseSuffix(street)">
+<#Include Label="Children(street)">
 
 </Section>
 

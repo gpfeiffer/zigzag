@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.28 2007/10/15 10:33:50 goetz Exp $
+#A  $Id: streets.g,v 1.29 2007/10/15 10:53:43 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -497,8 +497,8 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The children of a street are its inverse prefixes (see <Ref
-##    Meth="InversePrefix" Label"for streets"/>).  This defines a tree
-##    structure in the sense of Chapter <Ref Chapter="ch:walker"/> on the set
+##    Meth="InversePrefix" Label="for streets"/>).  This defines a tree
+##    structure in the sense of Chapter <Ref Chap="ch:walker"/> on the set
 ##    of all streets of <M>W</M> which can be used to list them (see <Ref
 ##    Func="Streets"/>) or to count them (see <Ref Func="NrStreets"/>).
 ##  </Description>
@@ -509,17 +509,59 @@ StreetOps.Children:= StreetOps.InversePrefix;
 
 #############################################################################
 ##
-#F  Streets( <W> )
+#F  Streets( <W> ) . . . . . . . . . . . . . . . . . . . . . . . . . streets.
+##  
+##  <#GAPDoc Label="Streets">
+##  <ManSection>
+##  <Func Name="Streets" Arg="W"/>
+##  <Returns>
+##    the list of all streets of <A>W</A>.
+##  </Returns>
+##  <Description>
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 2);;  W.name:= "W";;
+##  gap> Streets(W);                               
+##  [ Street( W, [ [  ], [  ] ] ), Street( W, [ [ 1 ], [  ] ] ), 
+##    Street( W, [ [ 1 ], [ 1 ] ] ), Street( W, [ [ 1, 2 ], [  ] ] ), 
+##    Street( W, [ [ 1, 2 ], [ 1 ] ] ), Street( W, [ [ 1, 2 ], [ 2 ] ] ), 
+##    Street( W, [ [ 1, 2 ], [ 1, 2 ] ] ), Street( W, [ [ 1, 2 ], [ 2, 1 ] ] ) ]
+##  gap> List(Streets(W), Size);
+##  [ 1, 2, 2, 1, 1, 1, 1, 1 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 Streets:= function(W)
-    local   list,  shape;
-    list:= [];
-    for shape in Shapes(W) do
-        Append(list, BreadthFirst(Call(shape, "Street")));
-    od;
-    return list;
+    return Concatenation(List(Shapes(W), 
+                   x-> BreadthFirst(Call(x, "Street"))));
 end;
 
+#############################################################################
+##
+#F  NrStreets( <W> ) . . . . . . . . . . . . . . . . . . . number of streets.
+##  
+##  <#GAPDoc Label="NrStreets">
+##  <ManSection>
+##  <Func Name="NrStreets" Arg="W"/>
+##  <Returns>
+##    the number of streets of <A>W</A>.
+##  </Returns>
+##  <Description>
+##  <Example>
+##  gap> NrStreets(CoxeterGroup("A", 2));
+##  8
+##  gap> NrStreets(CoxeterGroup("E", 6));
+##  3347
+##  gap> NrStreets(CoxeterGroup("E", 8));
+##  180570
+##  gap> NrStreets(CoxeterGroup("A", 8));
+##  176175
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 NrStreets:= function(W)
     return Sum(Shapes(W), x-> NrPreOrder(Call(x, "Street")));
 end;
