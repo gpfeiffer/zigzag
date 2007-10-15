@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.26 2007/10/15 10:30:06 goetz Exp $
+#A  $Id: streets.g,v 1.27 2007/10/15 10:31:19 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -446,7 +446,7 @@ end;
 ##    <M>\alpha = [a]</M> of <M>a = (L; s_1, \dots, s_l)</M> consists of the
 ##    streets <M>[L; s_1, \dots, s_l, t]</M> where <M>t</M> ranges over a
 ##    transversal of the orbits of the stabilizer of <M>a</M> (see <Ref
-##    Func="StabilizerAlley">) on the set <M>L \setminus \{s_1, \dots,
+##    Func="StabilizerAlley"/>) on the set <M>L \setminus \{s_1, \dots,
 ##    s_l\}</M>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
@@ -497,10 +497,10 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The children of a street are its inverse prefixes (see <Ref
-##    Meth="InversePrefix" Label"for streets">).  This defines a tree
-##    structure in the sense of Chapter <Ref Chapter="ch:walker"> on the set
+##    Meth="InversePrefix" Label"for streets"/>).  This defines a tree
+##    structure in the sense of Chapter <Ref Chapter="ch:walker"/> on the set
 ##    of all streets of <M>W</M> which can be used to list them (see <Ref
-##    Func="Streets">) or to count them (see <Ref Func="NrStreets">).
+##    Func="Streets"/>) or to count them (see <Ref Func="NrStreets"/>).
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
