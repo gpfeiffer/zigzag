@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.34 2007/10/15 21:51:50 goetz Exp $
+#A  $Id: streets.g,v 1.35 2007/10/22 09:29:02 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -720,7 +720,6 @@ StreetOps.Relation:= function(self)
     return Relation(List(Call(self, "Edges"), Set));
 end;
 
-
 #############################################################################
 StreetOps.SpanningTree:= function(self)
     #  FIXME:
@@ -728,6 +727,54 @@ StreetOps.SpanningTree:= function(self)
 end;
 
 
+#############################################################################
+##
+#M  Length( <street> ) . . . . . . . . . . . . . . . . . . . . . . .  length.
+##
+##  <#GAPDoc Label="Length(street)">
+##  <ManSection>
+##  <Meth Name="Length" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the length of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The <E>length</E><Index>length</Index> of a street <M>\alpha = [L; s_1,
+##    \dots, s_l]</M> is the length 
+##    <M>l</M> of a representative <M>(L; s_1,
+##    \dots, s_l)</M>.
+##  <Example>
+##  gap> Call(Street(CoxeterGroup("A", 5), [[1,2,3,5], [5,2]]), "Length");
+##  2
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+StreetOps.Length:= function(self)
+    return LengthAlley(self.alley);
+end;
+
+#############################################################################
+##
+##  the *depth* of an alley class alpha is the Size of alpha(L),
+##  the number of alleys in the class with the same source L.
+##  the *width of an alley class is the size of the shape of its source.
+##  Thus the size of the class is its width
+##  times its depth.  In most cases, the depth is 1.  Also,
+##  alley classes of larger depth tend to map to 0.
+##
+##
+StreetOps.Depth:= function(self)
+    return Index(StabilizerAlley(self.W, [self.alley[1], []]),
+                 StabilizerAlley(self.W, self.alley));
+end;
+
+StreetOps.Width:= function(self)
+    return Size(Shapes(self.W)[Call(self, "Source")]);
+end;
+
+
+#############################################################################
 ###
 ###  next:  the mu map.
 ###
@@ -814,16 +861,16 @@ Negative:= function(matrix)
 end;
 
 ##
-##  Alley classes can be multiplied. 
+##  Streets can be multiplied. 
 ##
-##  how to do this efficiently ?
+##  FIXME:  use formula to do tgis more efficiently!!!
 ##
 StreetOps.\*:= function(l, r)
     local   W,  res,  all,  a,  b,  c;
     
     res:= [];
     
-    #  alley * alley class.
+    #  alley * street.
     if not IsStreet(l) then
         for b in Elements(r) do
             c:= ProductAlleys(l, b);
@@ -834,7 +881,7 @@ StreetOps.\*:= function(l, r)
         return res;
     fi;
     
-    # alley class * alley
+    # street * alley
     if not IsStreet(r) then
         for a in Elements(l) do
             c:= ProductAlleys(a, r);
@@ -845,7 +892,7 @@ StreetOps.\*:= function(l, r)
         return res;
     fi;
     
-    # alley class * alley class.
+    # street * street.
     if l.W <> r.W then
         Error("factors must have same W component");
     fi;
@@ -890,30 +937,6 @@ StreetOps.\*:= function(l, r)
     od;
     
     return res;
-end;
-
-#############################################################################
-StreetOps.Length:= function(self)
-    return Length(self.alley[2]);
-end;
-
-#############################################################################
-##
-##  the *depth* of an alley class alpha is the Size of alpha(L),
-##  the number of alleys in the class with the same source L.
-##  the *width of an alley class is the size of the shape of its source.
-##  Thus the size of the class is its width
-##  times its depth.  In most cases, the depth is 1.  Also,
-##  alley classes of larger depth tend to map to 0.
-##
-##
-StreetOps.Depth:= function(self)
-    return Index(StabilizerAlley(self.W, [self.alley[1], []]),
-                 StabilizerAlley(self.W, self.alley));
-end;
-
-StreetOps.Width:= function(self)
-    return Size(Shapes(self.W)[Call(self, "Source")]);
 end;
 
 #############################################################################
