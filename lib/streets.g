@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.36 2007/10/22 10:26:05 goetz Exp $
+#A  $Id: streets.g,v 1.37 2007/10/22 10:29:09 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -769,7 +769,7 @@ end;
 ##    \dots, s_l]</M> is the size of <M>L \circ \alpha</M>, the number of
 ##    alleys in the street with the same source <M>L</M>.  In most cases, the
 ##    depth is 1.  The size of a street is the product of its depth and its
-##    width (see <Ref Meth="Width" Label="for streets">).
+##    width (see <Ref Meth="Width" Label="for streets"/>).
 ##  <Example>
 ##  gap> b:= Street(CoxeterGroup("A", 4), [[1, 3], [1]]);;
 ##  gap> Call(b, "Depth");
@@ -803,7 +803,7 @@ end;
 ##    The <E>width</E><Index>width</Index> of a street <M>\alpha = [L; s_1,
 ##    \dots, s_l]</M> is the size of the shape of its source.  The size of a
 ##    street is the product of its depth and its width (see <Ref Meth="Depth"
-##    Label="for streets">).
+##    Label="for streets"/>).
 ##  <Example>
 ##  gap> b:= Street(CoxeterGroup("A", 4), [[1, 3], [1]]);;
 ##  gap> Call(b, "Width");
