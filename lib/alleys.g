@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.41 2007/10/15 11:02:08 goetz Exp $
+#A  $Id: alleys.g,v 1.42 2007/10/22 09:10:55 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -29,8 +29,8 @@
 ##  <ManSection>
 ##  <Func Name="ProductAlleys" Arg="a, b"/>
 ##  <Returns>
-##    the product of the alleys <A>a</A> and <A>b</A>, if the tail of
-##    <A>a</A> is the head of <A>b</A>, and <M>0</M> otherwise.
+##    the product of the alleys <A>a</A> and <A>b</A>, if the target of
+##    <A>a</A> is the source of <A>b</A>, and <M>0</M> otherwise.
 ##  </Returns>
 ##  <Description>
 ##    The product of alley <M>a = (L; s, t, \dots)</M> and alley <M>b = (L';
@@ -178,7 +178,7 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The stabilizer of the alley <A>alley</A> is a subgroup of the
-##    stabilizer of its head.
+##    stabilizer of its source.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> L:= [1, 3, 5];;
@@ -421,8 +421,8 @@ end;
 ##  <ManSection>
 ##  <Func Name="DeltaAlley" Arg="W, alley"/>
 ##  <Returns>
-##    the coefficients of <M>\Delta(a)</M> in terms of the shape of its tail,
-##    where <M>a</M> is the alley <A>alley</A>.
+##    the coefficients of <M>\Delta(a)</M> in terms of the shape of its
+##    target, where <M>a</M> is the alley <A>alley</A>
 ##  </Returns>
 ##  <Description>
 ##  <Example>
