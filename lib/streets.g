@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.40 2007/10/22 22:24:02 goetz Exp $
+#A  $Id: streets.g,v 1.41 2007/10/22 22:57:15 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -932,7 +932,7 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    <M>\Delta(\alpha)</M> for a street <M>\alpha</M> is the sum of the
-##    <M>\Delta(a)</M> of the elements <M>a \in \alpha</>, as computed by
+##    <M>\Delta(a)</M> of the elements <M>a \in \alpha</M>, as computed by
 ##    <Ref Func="DeltaAlley"/>.  It is represented as a record with
 ##    components <K>support</K> and <K>mat</K>, where <K>support</K> is the
 ##    position of the target of <M>\alpha</M> in the list of shapes of
