@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.42 2007/10/22 09:10:55 goetz Exp $
+#A  $Id: alleys.g,v 1.43 2007/10/22 09:22:09 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -235,6 +235,31 @@ NrAlleys:= function(n)
     return sum;
 end;
 
+
+#############################################################################
+##
+#F  LengthAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . length.
+##
+##  <#GAPDoc Label="LengthAlley">
+##  <ManSection>
+##  <Func Name="LengthAlley" Arg="alley"/>
+##  <Returns>
+##    the length of the alley <A>alley</A>.
+##  </Returns>
+##  <Description>
+##    The length of an alley <M>a = (L; s, t, \dots)</M> is the size of the
+##    set <M>\{s, t, \dots, \}</M>.
+##  <Example>
+##  gap> LengthAlley([[1, 2, 3, 5], [5, 2]]);
+##  2
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+LengthAlley:= function(alley)
+    return Length(alley[2]);
+end;
 
 #############################################################################
 ##
