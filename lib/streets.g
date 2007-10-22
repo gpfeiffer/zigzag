@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.35 2007/10/22 09:29:02 goetz Exp $
+#A  $Id: streets.g,v 1.36 2007/10/22 10:26:05 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -739,9 +739,8 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The <E>length</E><Index>length</Index> of a street <M>\alpha = [L; s_1,
-##    \dots, s_l]</M> is the length 
-##    <M>l</M> of a representative <M>(L; s_1,
-##    \dots, s_l)</M>.
+##    \dots, s_l]</M> is the length <M>l</M> of a representative <M>(L; s_1,
+##    \dots, s_l)</M>
 ##  <Example>
 ##  gap> Call(Street(CoxeterGroup("A", 5), [[1,2,3,5], [5,2]]), "Length");
 ##  2
@@ -754,21 +753,69 @@ StreetOps.Length:= function(self)
     return LengthAlley(self.alley);
 end;
 
+
 #############################################################################
 ##
-##  the *depth* of an alley class alpha is the Size of alpha(L),
-##  the number of alleys in the class with the same source L.
-##  the *width of an alley class is the size of the shape of its source.
-##  Thus the size of the class is its width
-##  times its depth.  In most cases, the depth is 1.  Also,
-##  alley classes of larger depth tend to map to 0.
+#M  Depth( <street> ) . . . . . . . . . . . . . . . . . . . . . . .  depth.
 ##
+##  <#GAPDoc Label="Depth(street)">
+##  <ManSection>
+##  <Meth Name="Depth" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the depth of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The <E>depth</E><Index>depth</Index> of a street <M>\alpha = [L; s_1,
+##    \dots, s_l]</M> is the size of <M>L \circ \alpha</M>, the number of
+##    alleys in the street with the same source <M>L</M>.  In most cases, the
+##    depth is 1.  The size of a street is the product of its depth and its
+##    width (see <Ref Meth="Width" Label="for streets">).
+##  <Example>
+##  gap> b:= Street(CoxeterGroup("A", 4), [[1, 3], [1]]);;
+##  gap> Call(b, "Depth");
+##  2
+##  gap> Elements(b);
+##  [ [ [ 1, 3 ], [ 1 ] ], [ [ 1, 3 ], [ 3 ] ], [ [ 1, 4 ], [ 1 ] ], 
+##    [ [ 1, 4 ], [ 4 ] ], [ [ 2, 4 ], [ 2 ] ], [ [ 2, 4 ], [ 4 ] ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+##  streets of larger depth tend to map to 0.
 ##
 StreetOps.Depth:= function(self)
     return Index(StabilizerAlley(self.W, [self.alley[1], []]),
                  StabilizerAlley(self.W, self.alley));
 end;
 
+#############################################################################
+##
+#M  Width( <street> ) . . . . . . . . . . . . . . . . . . . . . . .  width.
+##
+##  <#GAPDoc Label="Width(street)">
+##  <ManSection>
+##  <Meth Name="Width" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the width of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The <E>width</E><Index>width</Index> of a street <M>\alpha = [L; s_1,
+##    \dots, s_l]</M> is the size of the shape of its source.  The size of a
+##    street is the product of its depth and its width (see <Ref Meth="Depth"
+##    Label="for streets">).
+##  <Example>
+##  gap> b:= Street(CoxeterGroup("A", 4), [[1, 3], [1]]);;
+##  gap> Call(b, "Width");
+##  3
+##  gap> Elements(b);
+##  [ [ [ 1, 3 ], [ 1 ] ], [ [ 1, 3 ], [ 3 ] ], [ [ 1, 4 ], [ 1 ] ], 
+##    [ [ 1, 4 ], [ 4 ] ], [ [ 2, 4 ], [ 2 ] ], [ [ 2, 4 ], [ 4 ] ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 StreetOps.Width:= function(self)
     return Size(Shapes(self.W)[Call(self, "Source")]);
 end;
