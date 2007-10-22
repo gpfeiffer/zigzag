@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.38 2007/10/22 20:14:23 goetz Exp $
+#A  $Id: streets.g,v 1.39 2007/10/22 21:47:33 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -740,7 +740,7 @@ end;
 ##  <Description>
 ##    The <E>length</E><Index>length</Index> of a street <M>\alpha = [L; s_1,
 ##    \dots, s_l]</M> is the length <M>l</M> of a representative <M>(L; s_1,
-##    \dots, s_l)</M>
+##    \dots, s_l)</M>.
 ##  <Example>
 ##  gap> Call(Street(CoxeterGroup("A", 5), [[1,2,3,5], [5,2]]), "Length");
 ##  2
@@ -841,9 +841,9 @@ end;
 ##    <M>W</M>, <K>target</K> is the position of the target of <M>\alpha</M>
 ##    in the list of shapes of <M>W</M>, and <K>mat</K> is the portion of the
 ##    matrix corresponding to these two subsets of <M>S</M>.  All other
-##    entries are 0 anyway
+##    entries are 0 anyway.
 ##  <Example>
-##  W:= CoxeterGroup("A", 4);
+##  gap> W:= CoxeterGroup("A", 4);
 ##  gap> b:= Street(W, [[1,2,3], [3]]);;
 ##  gap> Call(b, "Matrix");
 ##  rec(
@@ -874,51 +874,7 @@ StreetOps.Matrix:= function(self)
     return rec(target:= J, source:= L, mat:= mat);
 end;
 
-#  how to multiply two such matrices.  checked!  Turn into proper objects?
-ProductAlleyMatrices:= function(a, b)
-    if a.target = b.source then
-        return rec(target:= b.target, source:= a.source, mat:= a.mat * b.mat);
-    fi;
-    return 0;
-end;
-
-##  the product of a list of alleys.
-ProductAlleyMatrixList:= function(list)
-    local   product,  i;
-    
-    # trivial case: the empty product.
-    if list = [] then return 1; fi;  # ???
-    
-    product:= list[1];
-    for i in [2..Length(list)] do
-        product:= ProductAlleyMatrices(product, list[i]);
-    od;
-    
-    return product;
-end;
-
-
-
-SumAlleyMatrices:= function(a, b)
-    if a.target = b.target and a.source = b.source then
-        return rec(target:= b.target, source:= a.source, mat:= a.mat + b.mat);
-    fi;
-    Error("think ...");
-end;
-
-
-StreetOps.Delta:= function(self)
-    local   sh,  J,  mat,  e;
-
-    sh:= Shapes(self.W);
-    J:= Call(self, "Target");
-    mat:= List(Elements(sh[J]), x-> 0);
-    for e in Elements(self) do
-        mat:= mat + DeltaAlley(self.W, e);
-    od;
-    return rec(support:= J, mat:= mat);
-end;
-
+## Deprecate:
 StreetOps.BigMatrix:= function(self)
     local   sh,  m,  l,  mat;
     
@@ -932,6 +888,83 @@ StreetOps.BigMatrix:= function(self)
 end;
 
     
+#  how to multiply two such matrices.  checked!  Turn into proper objects?
+ProductStreetMatrices:= function(a, b)
+    if a.target = b.source then
+        return rec(target:= b.target, source:= a.source, mat:= a.mat * b.mat);
+    fi;
+    return 0;
+end;
+
+##  the product of a list of streets.
+ProductStreetMatrixList:= function(list)
+    local   product,  i;
+    
+    # trivial case: the empty product.
+    if list = [] then return 1; fi;  # ???
+    
+    product:= list[1];
+    for i in [2..Length(list)] do
+        product:= ProductStreetMatrices(product, list[i]);
+    od;
+    
+    return product;
+end;
+
+##  the sum of two such matrices.
+SumStreetMatrices:= function(a, b)
+    if a.target = b.target and a.source = b.source then
+        return rec(target:= b.target, source:= a.source, mat:= a.mat + b.mat);
+    fi;
+    Error("not yet implemented ...");
+end;
+
+
+#############################################################################
+##
+#M  Delta( <street> ) . . . . . . . . . . . . . . . . . . . . . . . .  delta.
+##
+##  <#GAPDoc Label="Delta(street)">
+##  <ManSection>
+##  <Meth Name="Delta" Arg="street" Label="for streets"/>
+##  <Returns>
+##    <M>\Delta(\alpha)</M> where <M>\alpha</M> is the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    <M>\Delta(\alpha)</M> for a street <M>\alpha</M> is the sum of the
+##    <M>\Delta(a)</M> of the elements <M>a \in \alpha</>, as computed by
+##    <Ref Func="DeltaAlley"/>.  It is represented as a record with
+##    components <K>support</K> and <K>mat</K>, where <K>support</K> is the
+##    position of the target of <M>\alpha</M> in the list of shapes of
+##    <M>W</M> and <K>mat</K> is the list of coefficients of
+##    <M>\Delta(\alpha)</M> on this two subset of <M>S</M>.  All other
+##    entries are 0 anyway.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 4);
+##  gap> b:= Street(W, [[1,2,3], [3]]);;
+##  gap> Call(b, "Delta");
+##  rec(
+##    support := 4,
+##    mat := [ 1, 0, -1 ] )
+##  gap> Elements(Shapes(W)[4]);
+##  [ [ 1, 2 ], [ 2, 3 ], [ 3, 4 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+StreetOps.Delta:= function(self)
+    local   sh,  J,  mat,  e;
+
+    sh:= Shapes(self.W);
+    J:= Call(self, "Target");
+    mat:= List(Elements(sh[J]), x-> 0);
+    for e in Elements(self) do
+        mat:= mat + DeltaAlley(self.W, e);
+    od;
+    return rec(support:= J, mat:= mat);
+end;
+
 
 Negative:= function(matrix)
     local   new;
@@ -1053,11 +1086,11 @@ StreetOps.LongestSuffix:= function(self)
 end;
 
 
-# a path is a sequence of alleys, with adjacent ones multiplyable.
+# a path is a sequence of streets, with adjacent ones multiplyable.
 DeltaPath:= function(path)
     local   p;
     
-    p:= ProductAlleyMatrixList(List(path, x-> Call(x, "Matrix")));
+    p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
     return rec(support:= p.target, mat:= Sum(p.mat));
 end;
 
