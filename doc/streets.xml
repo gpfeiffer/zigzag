@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: streets.xml,v 1.6 2007/10/22 10:28:03 goetz Exp $
+     $Id: streets.xml,v 1.7 2007/10/22 20:14:49 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -60,6 +60,7 @@ Various methods can be applied to streets.
 <#Include Label="Children(street)">
 <#Include Label="Edges(street)">
 <#Include Label="Relation(street)">
+<#Include Label="Matrix(street)">
 
 </Section>
 

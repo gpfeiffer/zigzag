@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.37 2007/10/22 10:29:09 goetz Exp $
+#A  $Id: streets.g,v 1.38 2007/10/22 20:14:23 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -756,7 +756,7 @@ end;
 
 #############################################################################
 ##
-#M  Depth( <street> ) . . . . . . . . . . . . . . . . . . . . . . .  depth.
+#M  Depth( <street> ) . . . . . . . . . . . . . . . . . . . . . . . .  depth.
 ##
 ##  <#GAPDoc Label="Depth(street)">
 ##  <ManSection>
@@ -791,7 +791,7 @@ end;
 
 #############################################################################
 ##
-#M  Width( <street> ) . . . . . . . . . . . . . . . . . . . . . . .  width.
+#M  Width( <street> ) . . . . . . . . . . . . . . . . . . . . . . . .  width.
 ##
 ##  <#GAPDoc Label="Width(street)">
 ##  <ManSection>
@@ -822,9 +822,43 @@ end;
 
 
 #############################################################################
-###
-###  next:  the mu map.
-###
+##
+#M  Matrix( <street> ) . . . . . . . . . . . . . . . . . . . . . . .  matrix.
+##
+##  <#GAPDoc Label="Matrix(street)">
+##  <ManSection>
+##  <Meth Name="Matrix" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the matrix of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The <E>matrix</E><Index>matrix</Index> of a street <M>\alpha</M> of the
+##    Coxeter group <M>W</M> is the matrix of the linear map
+##    <M>\mu(\alpha)</M> defined by <M>L.\mu(\alpha) = \Delta(L \circ
+##    \alpha)</M>.  It is represented by a record with components
+##    <K>source</K>, <K>target</K> and <K>mat</K>, where <K>source</K> is the
+##    position of the source of <M>\alpha</M> in the list of shapes of
+##    <M>W</M>, <K>target</K> is the position of the target of <M>\alpha</M>
+##    in the list of shapes of <M>W</M>, and <K>mat</K> is the portion of the
+##    matrix corresponding to these two subsets of <M>S</M>.  All other
+##    entries are 0 anyway
+##  <Example>
+##  W:= CoxeterGroup("A", 4);
+##  gap> b:= Street(W, [[1,2,3], [3]]);;
+##  gap> Call(b, "Matrix");
+##  rec(
+##    target := 4,
+##    source := 6,
+##    mat := [ [ 1, -1, 0 ], [ 0, 1, -1 ] ] )
+##  gap> Elements(Shapes(W)[6]);
+##  [ [ 1, 2, 3 ], [ 2, 3, 4 ] ]
+##  gap> Elements(Shapes(W)[4]);
+##  [ [ 1, 2 ], [ 2, 3 ], [ 3, 4 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 StreetOps.Matrix:= function(self)
     local   sh,  L,  J,  subL,  mat,  e,  i;
 
