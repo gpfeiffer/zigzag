@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: shapes.xml,v 1.4 2007/10/11 18:56:29 goetz Exp $
+     $Id: shapes.xml,v 1.5 2007/10/22 09:38:11 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -104,11 +104,11 @@ the functions that will create them if not present.
 </Item>
 <Mark><C>edges</C>:</Mark>
 <Item> is the  set of edges  of the shape  and can be obtained through the
-        method <Ref Meth="ShapeOps.Edges"/>.
+        method <Ref Meth="Edges" Label="for shapes"/>.
 </Item>
 <Mark><C>transversal</C>:</Mark>
 <Item> is  the transversal of  the shape  and can  be obtained  through the
-        method <Ref Meth="ShapeOps.Transversal"/>.
+        method <Ref Meth="Transversal" Label="for shapes"/>.
 </Item>
 </List>
 
