@@ -6,7 +6,7 @@
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.31 2007/10/15 10:55:57 goetz Exp $
+     $Id: zigzag.xml,v 1.32 2007/10/24 08:55:02 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -18,7 +18,7 @@
     <Subtitle>A &GAP;3 package for Descent Algebras 
 of Finite Coxeter Groups</Subtitle>
     <Version>
-Version 0.71
+Version 0.73
     </Version>
     <TitleComment>WARNING: This is a badly documented alpha version of the ZigZag package.  Future versions of the package will most likely be incompatible with this version.</TitleComment>
     <Author>
@@ -68,6 +68,7 @@ in various ways.
 <#Include SYSTEM "shapes.xml">
 <#Include SYSTEM "alleys.xml">
 <#Include SYSTEM "streets.xml">
+<#Include SYSTEM "descent.xml">
 </Body>
 
 <Bibliography Databases="descent" Style="amsplain"/>
