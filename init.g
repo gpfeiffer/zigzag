@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.22 2007/10/15 09:16:35 goetz Exp $
+#A  $Id: init.g,v 1.23 2007/10/24 08:55:32 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -11,8 +11,8 @@
 
 #############################################################################
 ZIGZAG:= rec();
-ZIGZAG.Version:= "0.71";
-ZIGZAG.Date:= "09-07-2007";
+ZIGZAG.Version:= "0.73";
+ZIGZAG.Date:= "23-10-2007";
 
 #############################################################################
 ##
@@ -47,10 +47,10 @@ AUTO( ReadPkg( "zigzag", "lib", "iterator" ), IteratorList, IteratorEmpty,
   PartitionsIntOps, PartitionsInt);
 
 AUTO( ReadPkg( "zigzag", "lib", "alleys" ), ProductAlleys, ProductAlleyList,
-  FactorsAlley, OnAlleys, StabilizerAlley, NrAlleys, SourceAlley, TargetAlley,
-  PrefixAlley, SuffixAlley, ActionAlley, LittleDeltaAlley, DeltaAlley,
-  BigMatrixAlley, ReversedAlley, LittleDeltaBarAlley, ReducedWordAlley,
-  AlleyAlgebraOps, AlleyAlgebra, IsAlleyAlgebra);
+  FactorsAlley, OnAlleys, StabilizerAlley, NrAlleys, LengthAlley, SourceAlley,
+  TargetAlley, PrefixAlley, SuffixAlley, ActionAlley, LittleDeltaAlley,
+  DeltaAlley, BigMatrixAlley, ReversedAlley, LittleDeltaBarAlley,
+  ReducedWordAlley, AlleyAlgebraOps, AlleyAlgebra, IsAlleyAlgebra);
 
 AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
   IsCategory, CategoryEltOps, CategoryElt, IsCategoryElt);
@@ -65,14 +65,9 @@ AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, PartitionOps,
   Partition);
 
 AUTO( ReadPkg( "zigzag", "lib", "streets" ), StreetOps, Street, IsStreet,
-  Streets0, Streets, NrStreets, EssentialStreets, ProductAlleyMatrices,
-  ProductAlleyMatrixList, SumAlleyMatrices, DeltaPath, Negative, DeltaPath,
-  StreetsAlley, QuiverRelations, QuiverRelations5, QuiverRelations1,
-  QuiverRelations0, StreetProduct, PrintQuiver, DimensionsMatrix,
-  CartanMatQuiver, SpelledOutQuiver, VerifyQuiver, ProjectiveModule,
-  LaTeXProjectiveModule, CartanMatStreets, QuiverMatStreets, CartanMatMovers,
-  QuiverMatMovers, CartanMatMoversPlus, QuiverMatMoversPlus,
-  CartanMatMoversPlusNZ, QuiverMatMoversPlusNZ, BlocksMat);
+  Streets, NrStreets, ProductStreetMatrices, ProductStreetMatrixList,
+  SumStreetMatrices, DeltaPath, QuiverRelations, PrintQuiver,
+  DimensionsMatrix, CartanMatQuiver, CartanMatStreets, QuiverMatStreets);
 
 AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
   IteratorBreadthFirst, PreOrder, NrPreOrder, IteratorPreOrder,
@@ -93,14 +88,8 @@ AUTO( ReadPkg( "zigzag", "lib", "groupoid" ), GroupoidOps, Groupoid,
 
 AUTO( ReadPkg( "zigzag", "lib", "zigzag" ), DescentAlgebraOps, DescentAlgebra,
   IsDescentAlgebra, DescentEltOps, DescentElt, IsDescentElt,
-  CharacterDescentElt, SlowFoundation, SlowI, SlowCombine, MaximalAJKL1,
-  MaximalAJKL2, MaximalAJKL, MatCompressedAJKL, ProductCompressedAJKL,
+  CharacterDescentElt, MaximalAJKL, MatCompressedAJKL, ProductCompressedAJKL,
   RightRegularX, LeftRegularX, LeftRegularY, LeftRegularZ, LeftRegularE,
-  DiagonalMat, SizesDescentConjugacyClasses, ECharacters, CCharacters,
-  WhatCharacters, PrimitiveIdempotents, CartanMatDescent, HomDescent,
-  RadicalDescent, RadicalSeriesDescent, MatsRadsDescent, ProjectiveModule1,
-  LaTeXProjectiveModule1, MatDescentVec, MatQuiverSym, MajorIndex,
-  RanMatDescent, SizMatDescent, LisMatDescent, ClosLis, OpenLis, ClosLisRank,
-  OpenLisRank, Lat, RightIdeal, LeftIdeal, RightPIE, SetComposition,
-  IsNonZero, QuiverB, QuiverD);
+  DiagonalMat, SizesDescentConjugacyClasses, ECharacters, MatQuiverSym,
+  MajorIndex, SetComposition, IsNonZero);
 
