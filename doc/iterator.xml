@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: iterator.xml,v 1.3 2007/10/28 09:41:19 goetz Exp $
+     $Id: iterator.xml,v 1.4 2007/10/28 09:52:24 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -244,9 +244,11 @@ Partition( [ 4 ] )
 <Subsection>
 <Heading>Exercise.</Heading>
 Write a function that produces an iterator
-for all permutations of a finite set.
+for all permutations of a finite list.
 Write a function that produces an iterator
 for all subsets of a finite set.
+Write a function that produces an iterator
+for all set partitions of a finite set.
 </Subsection>
 
 </Section>
