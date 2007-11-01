@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.40 2007/11/01 11:16:40 goetz Exp $
+#A  $Id: descent.g,v 1.41 2007/11/01 12:00:10 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -20,11 +20,6 @@ RequirePackage("chevie");
 
 #############################################################################
 ##  
-##  TODO:
-##
-##  * Avoid the expansion of RightRegularX into full matrices ...
-##
-
 ##  create descent algebras as a subclass of Algebra -- need to provide
 ##  special functions later ...
 ##  
