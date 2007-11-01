@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.43 2007/11/01 13:50:45 goetz Exp $
+#A  $Id: descent.g,v 1.44 2007/11/01 14:27:20 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -542,8 +542,41 @@ end;
 
 #############################################################################
 ##
+#F  SymmetricMatrix( <D> )  . . . . . . . . . . . . . . . . symmetric matrix.
 ##
-##
+##  <#GAPDoc Label="SymmetricMatrix(descentalg)">
+##  <ManSection>
+##  <Meth Name="SymmetricMatrix" Arg="D" Label="for descent algebras"/>
+##  <Returns>the matrix of values <M>\theta(x_J)(x_K)</M>.</Returns>
+##  <Description>
+##    Let <M>\theta</M> be the homomorphism from the descent algebra of a
+##    finite Coxeter group <M>W</M> into the character ring of <M>W</M>
+##    which, for <M>J \subseteq S</M> assigns to an element <M>x_J</M>
+##    the permutation character of the action of <M>W</M> on the cosets
+##    of the parabolic subgroup <M>W_J</M>.  Then the matrix of values
+##    <M>\theta(x_J)(x_K)</M> is symmetric (see <Cite
+##    Key="JoellenbeckReutenauer2001"/> and <Cite Key="BHS2005"/>).
+##  <Example>
+##  gap> D:= DescentAlgebra(CoxeterGroup("A", 3));;
+##  gap> Call(D, "SymmetricMatrix");
+##  [ [ 24, 24, 24, 24, 24, 24, 24, 24 ], [ 24, 18, 18, 18, 14, 14, 14, 12 ], 
+##    [ 24, 18, 18, 18, 14, 14, 14, 12 ], [ 24, 18, 18, 18, 14, 14, 14, 12 ], 
+##    [ 24, 14, 14, 14, 10, 8, 8, 6 ], [ 24, 14, 14, 14, 8, 7, 7, 4 ], 
+##    [ 24, 14, 14, 14, 8, 7, 7, 4 ], [ 24, 12, 12, 12, 6, 4, 4, 1 ] ]
+##  gap> PrintArray(last);
+##  [ [  24,  24,  24,  24,  24,  24,  24,  24 ],
+##    [  24,  18,  18,  18,  14,  14,  14,  12 ],
+##    [  24,  18,  18,  18,  14,  14,  14,  12 ],
+##    [  24,  18,  18,  18,  14,  14,  14,  12 ],
+##    [  24,  14,  14,  14,  10,   8,   8,   6 ],
+##    [  24,  14,  14,  14,   8,   7,   7,   4 ],
+##    [  24,  14,  14,  14,   8,   7,   7,   4 ],
+##    [  24,  12,  12,  12,   6,   4,   4,   1 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
 DescentAlgebraOps.SymmetricMatrix:= function(self)
     local  inc,  sz,  yct;
 
@@ -557,7 +590,7 @@ end;
     
 #############################################################################
 ##
-# here is the procedure to calculate the Lie characters.
+##  here is the procedure to calculate the Lie characters.
 ##
 ##  
 ECharacters:= function(W)
