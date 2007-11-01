@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.23 2007/10/24 08:55:32 goetz Exp $
+#A  $Id: init.g,v 1.24 2007/11/01 18:12:03 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -78,18 +78,17 @@ AUTO( ReadPkg( "zigzag", "lib", "subsets" ), IsLeftDescent, IsRightDescent,
   LongestElement, PrefixesOps, Prefixes, IsPrefixes, WeakIntervalOps,
   WeakInterval, IsWeakInterval, ParabolicTransversalOps, ParabolicTransversal,
   IsParabolicTransversal, DescentClassOps, DescentClass, IsDescentClass,
-  DescentClasses, LeftParabolicTransversalOps, LeftParabolicTransversal,
-  IsLeftParabolicTransversal, DoubleParabolicTransversalOps,
-  DoubleParabolicTransversal, IsDoubleParabolicTransversal, XJKLOps, XJKL,
-  IsXJKL);
+  DescentClasses, SizesDescentConjugacyClasses, LeftParabolicTransversalOps,
+  LeftParabolicTransversal, IsLeftParabolicTransversal,
+  DoubleParabolicTransversalOps, DoubleParabolicTransversal,
+  IsDoubleParabolicTransversal, XJKLOps, XJKL, IsXJKL);
 
 AUTO( ReadPkg( "zigzag", "lib", "groupoid" ), GroupoidOps, Groupoid,
   IsGroupoid, GroupoidEltOps, GroupoidElt, IsGroupoidElt);
 
-AUTO( ReadPkg( "zigzag", "lib", "zigzag" ), DescentAlgebraOps, DescentAlgebra,
-  IsDescentAlgebra, DescentEltOps, DescentElt, IsDescentElt,
+AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
+  DescentAlgebra, IsDescentAlgebra, DescentEltOps, DescentElt, IsDescentElt,
   CharacterDescentElt, MaximalAJKL, MatCompressedAJKL, ProductCompressedAJKL,
   RightRegularX, LeftRegularX, LeftRegularY, LeftRegularZ, LeftRegularE,
-  DiagonalMat, SizesDescentConjugacyClasses, ECharacters, MatQuiverSym,
-  MajorIndex, SetComposition, IsNonZero);
+  ECharacters, MatQuiverSym, MajorIndex, SetComposition, IsNonZero);
 
