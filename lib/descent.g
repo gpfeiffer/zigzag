@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.42 2007/11/01 13:14:00 goetz Exp $
+#A  $Id: descent.g,v 1.43 2007/11/01 13:50:45 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -541,67 +541,19 @@ end;
 
 
 #############################################################################
-#
-#  intersections of Descent and Conjugacy classes.
-#  there is probably a more efficient way to do this ...
-##  
-##  Application:  to calculate the symmetric matrix  \theta(x_J)(x_K)
-##  
-##  inc:= IncidenceMatShapes(Shapes(W));
-##  zs:= SizesDescentConjugacyClasses(W);
-##  yct:= YCharacters(W);
-##  mat:= inc * yct * TransposedMat(inc * sz);
-##  
-#
-SizesDescentConjugacyClasses:= function(W)
-    local   subsets,  cc,  sec,  csp,  per,  J,  row,  des,  w,  p,  
-            class;
-    
-    if IsBound(W.sizesDescentConjugacyClasses) then
-        return W.sizesDescentConjugacyClasses;
-    fi;
-    
-    subsets:= SubsetsShapes(Shapes(W));
-    cc:= ConjugacyClasses(W);
-    sec:= [];
-    
-    csp:= List(cc, x-> CycleStructurePerm(Representative(x)));
-    per:= Sortex(csp);
-    
-    if IsSet(csp) then  # classes are distinguished by cycle structure!
-        # now can identify class of w by
-        #   PositionSorted(csp, CycleStructurePerm(w))/per
-        
-       for J in subsets do
-           row:= List(cc, x-> 0);
-           des:= Iterator(DescentClass(W, J));
-           while des.hasNext() do
-               w:= des.next();
-               p:= PositionSorted(csp, CycleStructurePerm(w))/per;
-               row[p]:= row[p] + 1;
-           od;
-           Add(sec, row);
-           Print(".\c");
-       od;
-       Print("\n");
-   else
-       for J in subsets do
-           row:= List(cc, x-> 0);
-           des:= Iterator(DescentClass(W, J));
-           while des.hasNext() do
-               w:= des.next();
-               p:= PositionProperty(cc, x-> w in x);
-               row[p]:= row[p] + 1;
-           od;
-           Add(sec, row);
-           Print(",\c");
-       od;
-       Print("\n");
-   fi;
-   
-   W.sizesDescentConjugacyClasses:= sec;
-   return sec;
+##
+##
+##
+DescentAlgebraOps.SymmetricMatrix:= function(self)
+    local  inc,  sz,  yct;
+
+    inc:= IncidenceMatShapes(Shapes(self.W));
+    sz:= SizesDescentConjugacyClasses(self.W);
+    yct:= YCharacters(self.W);
+    return inc * yct * TransposedMat(inc * sz);
 end;
+
+
     
 #############################################################################
 ##

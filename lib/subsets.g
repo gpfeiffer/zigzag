@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.35 2007/10/12 19:50:41 goetz Exp $
+#A  $Id: subsets.g,v 1.36 2007/11/01 13:50:18 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -25,7 +25,6 @@
 ##
 ##  Some useful functions.
 ##
-
 
 #############################################################################
 ##
@@ -982,6 +981,108 @@ end;
 ##  
 DescentClasses:= function(W)
     return List(SubsetsShapes(Shapes(W)), x-> DescentClass(W, x));
+end;
+
+
+#############################################################################
+##
+#F  SizesDescentConjugacyClasses( <W> ) . . . . . . . . . . .  intersections.
+##
+##  <#GAPDoc Label="SizesDescentConjugacyClasses">
+##  <ManSection>
+##  <Func Name="SizesDescentConjugacyClasses" Arg="W"/>
+##  <Returns>
+##    the matrix of the sizes of the intersections of the descent classes
+##    (see <Ref Func="DescentClasses"/> of the finite Coxeter group <A>W</>
+##    with its conjugacy classes of elements.
+##  </Returns>
+##  <Description>
+##    The numbers of permutations with given cycle structure and descent set
+##    are studied by Gessel and Reutenauer <Cite Key="GesselReut1993"/>.
+##    This function lists all these numbers for a finite Coxeter group
+##    <M>W</M> in a matrix, with rows corresponding to the descent classes of
+##    <M>W</M> in in shape order (see <Ref Func="SubsetsShapes"/>) and
+##    columns corresponding to the conjugacy classes of elements of <M>W</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> sdc:= SizesDescentConjugacyClasses(W);
+##  [ [ 0, 0, 1, 0, 0 ], [ 0, 1, 0, 1, 1 ], [ 0, 1, 1, 2, 1 ], [ 0, 1, 0, 1, 1 ], 
+##    [ 0, 1, 1, 2, 1 ], [ 0, 1, 0, 1, 1 ], [ 0, 1, 0, 1, 1 ], [ 1, 0, 0, 0, 0 ] ]
+##  </Example>
+##    This matrix can be displayed in the form of a character table as
+##    follows.
+##  <Example>
+##  gap> ct:= CharTable(W);;  Unbind(ct.irredinfo);
+##  gap> Display(ct, rec(chars:= sdc, letter:= "G", powermap:= false,
+##  >            centralizers:= false));
+##  W( A3 )
+##  
+##         1111 211 22 31 4
+##  
+##  G.1       .   .  1  . .
+##  G.2       .   1  .  1 1
+##  G.3       .   1  1  2 1
+##  G.4       .   1  .  1 1
+##  G.5       .   1  1  2 1
+##  G.6       .   1  .  1 1
+##  G.7       .   1  .  1 1
+##  G.8       1   .  .  . .
+##  
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
+##  Application:  to calculate the symmetric matrix  \theta(x_J)(x_K)
+##  
+SizesDescentConjugacyClasses:= function(W)
+    local   subsets,  cc,  sec,  csp,  per,  J,  row,  des,  w,  p,  
+            class;
+    
+    if IsBound(W.sizesDescentConjugacyClasses) then
+        return W.sizesDescentConjugacyClasses;
+    fi;
+    
+    subsets:= SubsetsShapes(Shapes(W));
+    cc:= ConjugacyClasses(W);
+    sec:= [];
+    
+    csp:= List(cc, x-> CycleStructurePerm(Representative(x)));
+    per:= Sortex(csp);
+    
+    if IsSet(csp) then  # classes are distinguished by cycle structure!
+        # now can identify class of w by
+        #   PositionSorted(csp, CycleStructurePerm(w))/per
+        
+       for J in subsets do
+           row:= List(cc, x-> 0);
+           des:= Iterator(DescentClass(W, J));
+           while des.hasNext() do
+               w:= des.next();
+               p:= PositionSorted(csp, CycleStructurePerm(w))/per;
+               row[p]:= row[p] + 1;
+           od;
+           Add(sec, row);
+           InfoZigzag2(".\c");
+       od;
+       InfoZigzag2("\n");
+   else
+       for J in subsets do
+           row:= List(cc, x-> 0);
+           des:= Iterator(DescentClass(W, J));
+           while des.hasNext() do
+               w:= des.next();
+               p:= PositionProperty(cc, x-> w in x);
+               row[p]:= row[p] + 1;
+           od;
+           Add(sec, row);
+           InfoZigzag2(",\c");
+       od;
+       InfoZigzag2("\n");
+   fi;
+   
+   W.sizesDescentConjugacyClasses:= sec;
+   return sec;
 end;
 
 
