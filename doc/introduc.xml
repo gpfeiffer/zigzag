@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: introduc.xml,v 1.6 2007/10/15 08:57:20 goetz Exp $
+     $Id: introduc.xml,v 1.7 2007/11/01 11:17:34 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -43,12 +43,27 @@ It is an amazing property of the elements <M>y_q</M>, where
 <M>q</M> ranges over all the <M>2^n</M> compositions of <M>n+1</M>,
 that they span a <E>subalgebra</E> of the group algebra.  In other
 words, the product of <M>y_q</M> and <M>y_r</M>, formed inside the
-group algebra of <M>W</M>, is a linear combination of elemenst
+group algebra of <M>W</M>, is a linear combination of elements
 <M>y_s</M> for certain compositions <M>s</M> of <M>n+1</M>.  Atkinson
 <Cite Key="Atkinson1986"/> describes the product <M>y_q y_r</M> in terms of
 <M>0</M>-<M>1</M> matrices with prescribed row and column sums.  <P/>
 
-    A <E>descent algebra</E> is primarily a subalgebra of the group
-algebra of a finite Coxeter group.
+Even more remarkable is the fact that Solomon
+<Cite Key="Solomon1976"/> originally discovered descent
+algebras inside the group algebras of finite Coxeter groups.
+The symmetric groups are just one type of finite Coxeter
+groups.  Many properties of symmetric groups
+are in some form shared by other or all
+finite Coxeter groups.  Usually, such properties
+are first described for symmetric groups and
+then generalized to other types of finite Coxeter groups.
+In the case of the descent algebras,
+the general description for all
+finite Coxeter groups came before the special
+case of the symmetric group. <P/>
+
+A Coxeter group ...
+
+
 </Section>
 </Chapter>
