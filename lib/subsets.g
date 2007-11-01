@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.36 2007/11/01 13:50:18 goetz Exp $
+#A  $Id: subsets.g,v 1.37 2007/11/01 17:45:56 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -133,7 +133,7 @@ LongestElement:= function(W, J)
     while true do
         s:= first(J);
         if s = false then  return wJ;  fi;
-        wJ:= W.generators[s] * wJ;
+        wJ:= W.(W.rootRestriction[s]) * wJ;
     od;
 end;
 
@@ -993,7 +993,7 @@ end;
 ##  <Func Name="SizesDescentConjugacyClasses" Arg="W"/>
 ##  <Returns>
 ##    the matrix of the sizes of the intersections of the descent classes
-##    (see <Ref Func="DescentClasses"/> of the finite Coxeter group <A>W</>
+##    (see <Ref Func="DescentClasses"/> of the finite Coxeter group <A>W</A>
 ##    with its conjugacy classes of elements.
 ##  </Returns>
 ##  <Description>
