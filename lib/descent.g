@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.41 2007/11/01 12:00:10 goetz Exp $
+#A  $Id: descent.g,v 1.42 2007/11/01 13:14:00 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -542,21 +542,6 @@ end;
 
 #############################################################################
 #
-# A helper function
-#
-DiagonalMat:= function(diag)
-    local mat, i, n;
-    n:= Length(diag);
-    mat:= IdentityMat(n);
-    for i in [1..n] do
-        mat[i][i]:= diag[i];
-    od;
-    return mat;
-end;
-
-
-#############################################################################
-#
 #  intersections of Descent and Conjugacy classes.
 #  there is probably a more efficient way to do this ...
 ##  
@@ -624,8 +609,19 @@ end;
 ##
 ##  
 ECharacters:= function(W)
-    local   sec,  nu,  ee,  a,  lll,  l,  dia;
+    local   diagonalMat,  sec,  nu,  ee,  a,  lll,  l,  dia;
     
+    # how to make a diagonal matrix.
+    diagonalMat:= function(diag)
+        local mat, i, n;
+        n:= Length(diag);
+        mat:= IdentityMat(n);
+        for i in [1..n] do
+            mat[i][i]:= diag[i];
+        od;
+        return mat;
+    end;
+
     sec:= SizesDescentConjugacyClasses(W);
     nu:= Call(DescentAlgebra(W), "Mu")^-1;
     ee:= [];  a:= 0;  lll:= List(Shapes(W), Size);
@@ -634,7 +630,7 @@ ECharacters:= function(W)
         a:= a + l;
     od;
 
-    dia:= DiagonalMat(List(ConjugacyClasses(W), x-> Size(W)/Size(x)));
+    dia:= diagonalMat(List(ConjugacyClasses(W), x-> Size(W)/Size(x)));
     return ee * IncidenceMatShapes(Shapes(W)) * sec * dia;
 end;
 
