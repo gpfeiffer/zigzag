@@ -4,7 +4,7 @@ lib:= "../lib/";
 files:= [ 
           "methods.g", "iterator.g", "walker.g",
           "subsets.g", "shapes.g", "alleys.g", "streets.g",
-          "zigzag.g",
+          "descent.g", "category.g", "groupoid.g",
         ];
 files:= List(files, x-> Concatenation(lib, x));
 bookname:= "zigzag";
