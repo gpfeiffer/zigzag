@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.41 2007/10/22 22:57:15 goetz Exp $
+#A  $Id: streets.g,v 1.42 2007/11/02 09:16:36 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1091,10 +1091,13 @@ end;
 
 #############################################################################
 QuiverRelations:= function(W)
-    local   aaa,  bbb,  path,  path0,  more,  a,  relations,  sss,  l,  
-            null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
-            line,  pos,  i,  b;
+    local   isNonZero,  bbb,  a,  aaa,  path,  path0,  more,  
+            relations,  sss,  l,  null,  all,  mat,  delta,  new,  
+            kern,  adr,  delete,  line,  pos,  i,  b;
     
+    # how to test for zero matrix.
+    isNonZero:= m -> m <> 0*m;
+
     # start with a reasonably small set of alley classes.
     bbb:= List(Shapes(W), x-> Call(x, "Street"));
     for a in bbb do 
@@ -1102,7 +1105,7 @@ QuiverRelations:= function(W)
     od;
     InfoZigzag1("Generated ", Length(bbb), " streets\n");
 
-    aaa:= Filtered(bbb, x-> IsNonZero(Call(x, "Delta").mat));
+    aaa:= Filtered(bbb, x-> isNonZero(Call(x, "Delta").mat));
     InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
     
     aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
