@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.63 2007/10/15 11:32:24 goetz Exp $
+#A  $Id: shapes.g,v 1.64 2007/11/02 10:13:09 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -618,14 +618,11 @@ Shapes:= function(W)
     # lets see, we might know them already.
     if IsBound(W.shapes) then  return W.shapes;  fi;
 
-    # get the Coxeter System (W, S) to work in.
-    S:= W.rootInclusion{[1..W.semisimpleRank]};
-
     # initialize.
     shapes:= [];
 
     # loop over all possible ranks l.  
-    for l in [0..Length(S)] do 
+    for l in [0..W.semisimpleRank] do 
         Append(shapes, ShapesRank(W, l));
     od;
 
