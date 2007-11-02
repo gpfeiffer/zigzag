@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.45 2007/11/02 09:35:44 goetz Exp $
+#A  $Id: descent.g,v 1.46 2007/11/02 10:10:42 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -712,6 +712,215 @@ MatQuiverSym:= function(n)
         od;
     od;
     return mat;
+end;
+
+
+#############################################################################
+QuiverRelations:= function(W)
+    local   isNonZero,  deltaPath,  bbb,  a,  aaa,  path,  path0,  
+            more,  relations,  sss,  l,  null,  all,  mat,  delta,  
+            new,  kern,  adr,  delete,  line,  pos,  i,  b;
+    
+    # how to test for zero matrix.
+    isNonZero:= m -> m <> 0*m;
+
+    # a path is a sequence of streets, with adjacent ones multiplyable.
+    deltaPath:= function(path)
+        local   p;
+        
+        p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
+        return rec(support:= p.target, mat:= Sum(p.mat));
+    end;
+
+
+    # start with a reasonably small set of alley classes.
+    bbb:= List(Shapes(W), x-> Call(x, "Street"));
+    for a in bbb do 
+        Append(bbb, Call(a, "MoversPlus"));
+    od;
+    InfoZigzag1("Generated ", Length(bbb), " streets\n");
+
+    aaa:= Filtered(bbb, x-> isNonZero(Call(x, "Delta").mat));
+    InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
+    
+    aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
+    InfoZigzag1("Starting with ", Length(aaa), " irreducible streets\n");
+    
+    # split idempotents from nilpotents.
+    path:= [];  path0:= [];  more:= [];
+    for a in aaa do
+        if a.alley[2] = [] then
+            Add(path0, a);
+        else
+            Add(more, [a]);
+        fi;
+    od;
+    InfoZigzag1("of which ", Length(path0), " have length 0.\n");
+    
+    relations:= [];
+    
+    sss:= SubsetsShapes(Shapes(W));
+    l:= SetComposition(List(Shapes(W), Size));
+    null:= List(sss, x-> 0);
+    
+    while more <> [] do
+        
+        Add(path, more);
+        InfoZigzag1("Added ", Length(more), " paths of length ", Length(path), ".\n");
+        
+        # consider all paths at once.
+        all:= Concatenation(path);
+        
+        mat:= [];
+        for a in all do
+            delta:= deltaPath(a);
+            new:= Copy(null);
+            new{l[delta.support]}:= delta.mat;
+            Add(mat, new);
+        od;
+        
+        kern:= NullspaceMat(mat);
+        InfoZigzag1("Found ", Length(kern), " relations.\n");
+        
+        
+        # FIXME:
+        # suppose adr is a list of back references such that 
+        #   all[i] = path[adr[i][1]][adr[i][2]] ...
+        adr:= Concatenation(List([1..Length(path)], i-> TransposedMat([List(path[i], x-> i), [1..Length(path[i])]])));
+
+        
+        # find all relations.
+        delete:= List(path, x-> []);
+        for line in kern do
+            pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
+            Add(relations, rec(paths:= all{pos}, coeffs:= line{pos}));
+            Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
+        od;
+        
+        # remove obsoletes.
+        for i in [1..Length(path)] do
+            path[i]:= path[i]{Difference([1..Length(path[i])], delete[i])};
+        od;
+        
+        InfoZigzag1("Deleted: ", List(delete, Length), "\n");
+        InfoZigzag1("Length: ", List(path, Length), ": ", Length(path0) + Sum(path, Length), ".\n");
+        
+        # extend paths.
+        more:= [];
+        for a in path[Length(path)] do
+            for b in path[1] do
+                if a[Length(a)] * b[1] <> [] then
+                    Add(more, Concatenation(a, b));
+                fi; 
+            od;
+        od;
+        
+    od;
+    
+    return rec(path0:= path0, path:= path, relations:= relations);
+end;
+
+
+
+#############################################################################
+PrintQuiver:= function(qr)
+    local   short,  shortalley,  name,  vertex,  i,  gens,  e,  mat,  
+            r,  p;
+    
+    short:= function(set)
+        local   text,  s;
+        
+        text:= "";
+        for s in set do
+            Append(text, String(s));
+        od;
+        IsString(text);
+        return text;
+    end;
+    
+    shortalley:= function(a)
+        local   text;
+        text:= "[";
+        Append(text, short(a[1]));
+        Append(text, ";");
+        Append(text, short(a[2]));
+        Append(text, "]");
+        return text;
+    end;
+    
+    vertex:= qr.path0;
+    name:= NamesShapes(Shapes(vertex[1].W));
+    PrintDynkinDiagram(vertex[1].W);
+    
+    Print("\nVertices:\n");
+    for i in [1..Length(vertex)] do
+        Print(i, ". ", name[i], " [", short(vertex[i].alley[1]), "]\n");
+    od;
+    
+    if qr.path = [] then return; fi;
+    
+    gens:= List(qr.path[1], x-> x[1]);
+    Print("\nEdges:\n");
+    for e in gens do
+        mat:= Call(e, "Matrix");
+        Print(mat.target, " --> ", mat.source, ". ", 
+              shortalley(e.alley), "\n");
+    od;
+    
+    Print("\nRelations:\n");
+    for r in qr.relations do
+        if Difference(Union(r.paths), gens) = [] then
+            i:= 0;
+            for p in r.paths do
+                i:= i + 1;
+                Print("+", r.coeffs[i], "(");
+                for e in p do
+                    mat:= Call(e, "Matrix");
+                    Print(mat.source, "---");
+                od;
+                Print(mat.target, ") \c");
+            od;
+            for p in r.paths do
+                for e in p do
+                    Print(shortalley(e.alley), "\c");
+                od;
+                Print(", ");
+            od;
+            Print("\n");
+        fi;
+    od;
+        
+end;
+
+#############################################################################
+##
+##  The Cartan Mat, decomposed along the radical series.
+##
+DimensionsMatrix:= function(qr)
+    local   W,  l,  dim,  k,  mat,  p,  i,  j;
+    
+    W:= qr.path0[1].W;
+    l:= Length(Shapes(W));
+    dim:= [];
+    for k in [1..Length(qr.path)] do
+        mat:= NullMat(l, l);
+        for p in qr.path[k] do
+            i:= Call(p[1], "Matrix").source;
+            j:= Call(p[Length(p)], "Matrix").target;
+            mat[i][j]:= mat[i][j] + 1;
+        od;
+        dim[k]:= mat;
+    od;
+    
+    return dim;
+end;
+
+#############################################################################
+CartanMatQuiver:= function(qr)
+    local car;
+    
+    car:= Sum(DimensionsMatrix(qr));
+    return car + car^0;
 end;
 
 
