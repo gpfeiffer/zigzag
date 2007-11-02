@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.24 2007/11/01 18:12:03 goetz Exp $
+#A  $Id: init.g,v 1.25 2007/11/02 10:17:34 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -66,22 +66,22 @@ AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, PartitionOps,
 
 AUTO( ReadPkg( "zigzag", "lib", "streets" ), StreetOps, Street, IsStreet,
   Streets, NrStreets, ProductStreetMatrices, ProductStreetMatrixList,
-  SumStreetMatrices, DeltaPath, QuiverRelations, PrintQuiver,
-  DimensionsMatrix, CartanMatQuiver, CartanMatStreets, QuiverMatStreets);
+  SumStreetMatrices, CartanMatStreets, QuiverMatStreets);
 
 AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
   IteratorBreadthFirst, PreOrder, NrPreOrder, IteratorPreOrder,
   PreOrderProperty, NrPreOrderProperty, PostOrder, PostOrderProperty,
   NrPostOrderProperty, BinomialTreeOps, BinomialTree);
 
-AUTO( ReadPkg( "zigzag", "lib", "subsets" ), IsLeftDescent, IsRightDescent,
-  LongestElement, PrefixesOps, Prefixes, IsPrefixes, WeakIntervalOps,
-  WeakInterval, IsWeakInterval, ParabolicTransversalOps, ParabolicTransversal,
-  IsParabolicTransversal, DescentClassOps, DescentClass, IsDescentClass,
-  DescentClasses, SizesDescentConjugacyClasses, LeftParabolicTransversalOps,
-  LeftParabolicTransversal, IsLeftParabolicTransversal,
-  DoubleParabolicTransversalOps, DoubleParabolicTransversal,
-  IsDoubleParabolicTransversal, XJKLOps, XJKL, IsXJKL);
+AUTO( ReadPkg( "zigzag", "lib", "subsets" ), SetComposition, IsLeftDescent,
+  IsRightDescent, LongestElement, PrefixesOps, Prefixes, IsPrefixes,
+  WeakIntervalOps, WeakInterval, IsWeakInterval, ParabolicTransversalOps,
+  ParabolicTransversal, IsParabolicTransversal, DescentClassOps, DescentClass,
+  IsDescentClass, DescentClasses, SizesDescentConjugacyClasses,
+  LeftParabolicTransversalOps, LeftParabolicTransversal,
+  IsLeftParabolicTransversal, DoubleParabolicTransversalOps,
+  DoubleParabolicTransversal, IsDoubleParabolicTransversal, XJKLOps, XJKL,
+  IsXJKL);
 
 AUTO( ReadPkg( "zigzag", "lib", "groupoid" ), GroupoidOps, Groupoid,
   IsGroupoid, GroupoidEltOps, GroupoidElt, IsGroupoidElt);
@@ -90,5 +90,6 @@ AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
   DescentAlgebra, IsDescentAlgebra, DescentEltOps, DescentElt, IsDescentElt,
   CharacterDescentElt, MaximalAJKL, MatCompressedAJKL, ProductCompressedAJKL,
   RightRegularX, LeftRegularX, LeftRegularY, LeftRegularZ, LeftRegularE,
-  ECharacters, MatQuiverSym, MajorIndex, SetComposition, IsNonZero);
+  SymmetricMatrix, ECharacters, MatQuiverSym, QuiverRelations, PrintQuiver,
+  DimensionsMatrix, CartanMatQuiver);
 
