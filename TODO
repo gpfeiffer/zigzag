@@ -29,3 +29,9 @@ TODO:
 * Bruhat intervals ...
 
 * All of that wrt to ReflectionLength ...
+-----------------------------------------------------------------------------
+
+LongestCoxeterElement(ReflectionSubgroup(W, L)) -> 
+LongestElement(W, L)
+
+use: IsLeftDescent and IsRightDescent for clarification!

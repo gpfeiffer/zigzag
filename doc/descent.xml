@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: descent.xml,v 1.1 2007/10/24 08:54:02 goetz Exp $
+     $Id: descent.xml,v 1.2 2007/11/02 10:14:05 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -15,6 +15,18 @@
 <Heading>Descent Algebras.</Heading>
 
 <#Include Label="DescentAlgebra">
+</Section>
+
+<Section>
+<Heading>Properties of Descent Algebras.</Heading>
+
+<#Include Label="SymmetricMatrix">
+<#Include Label="ECharacters">
+</Section>
+
+<Section>
+<Heading>Quivers of Descent Algebras.</Heading>
+
 </Section>
 
 </Chapter>
