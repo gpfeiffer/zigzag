@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.37 2007/11/01 17:45:56 goetz Exp $
+#A  $Id: subsets.g,v 1.38 2007/11/02 09:35:35 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -25,6 +25,44 @@
 ##
 ##  Some useful functions.
 ##
+
+#############################################################################
+##
+#F  SetComposition( <composition> ) . . . . . . . . . . . . . .  composition.
+##
+##  Helper.  How to turn a  composition of n into a set composition of [1..n]
+##
+##  <#GAPDoc Label="SetComposition">
+##  <ManSection>
+##  <Func Name="SetComposition" Arg="composition"/>
+##  <Returns>
+##    a composition of the set <C>[1..n]</C> into contiguous parts of sizes
+##    given as composition <A>composition</A> of the integer <C>n</C>.
+##  </Returns>
+##  <Description>
+##    A set composition of <M>I = \{1, \dots, n\}</M> is an ordered partition
+##    of the set <M>I</M>.  The sizes of the parts of a set composition of
+##    <M>I</M> determine a composition of the integer <M>n</M>.  This
+##    function computes for a given composition of <M>n</M> the unique set
+##    composition of <M>I</M> in which the part <M>[i]</M> of <M>i \in I</M>
+##    precedes the part <M>[k]</M> of <M>k \in I</M> whenever <M>i \leq
+##    k</M>
+##  <Example>
+##  gap> l:= List(Shapes(CoxeterGroup("A", 5)), Size);
+##  [ 1, 5, 6, 4, 1, 6, 3, 1, 2, 2, 1 ]
+##  gap> SetComposition(l);
+##  [ [ 1 ], [ 2, 3, 4, 5, 6 ], [ 7, 8, 9, 10, 11, 12 ], [ 13, 14, 15, 16 ], 
+##    [ 17 ], [ 18, 19, 20, 21, 22, 23 ], [ 24, 25, 26 ], [ 27 ], [ 28, 29 ], 
+##    [ 30, 31 ], [ 32 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+SetComposition:= function(l)
+    return List([1..Length(l)], i-> Sum(l{[1..i-1]}) + [1..l[i]]);
+end;
+
 
 #############################################################################
 ##

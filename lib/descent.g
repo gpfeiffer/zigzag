@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.44 2007/11/01 14:27:20 goetz Exp $
+#A  $Id: descent.g,v 1.45 2007/11/02 09:35:44 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -544,9 +544,9 @@ end;
 ##
 #F  SymmetricMatrix( <D> )  . . . . . . . . . . . . . . . . symmetric matrix.
 ##
-##  <#GAPDoc Label="SymmetricMatrix(descentalg)">
+##  <#GAPDoc Label="SymmetricMatrix">
 ##  <ManSection>
-##  <Meth Name="SymmetricMatrix" Arg="D" Label="for descent algebras"/>
+##  <Func Name="SymmetricMatrix" Arg="D"/>
 ##  <Returns>the matrix of values <M>\theta(x_J)(x_K)</M>.</Returns>
 ##  <Description>
 ##    Let <M>\theta</M> be the homomorphism from the descent algebra of a
@@ -558,7 +558,7 @@ end;
 ##    Key="JoellenbeckReutenauer2001"/> and <Cite Key="BHS2005"/>).
 ##  <Example>
 ##  gap> D:= DescentAlgebra(CoxeterGroup("A", 3));;
-##  gap> Call(D, "SymmetricMatrix");
+##  gap> SymmetricMatrix(D);
 ##  [ [ 24, 24, 24, 24, 24, 24, 24, 24 ], [ 24, 18, 18, 18, 14, 14, 14, 12 ], 
 ##    [ 24, 18, 18, 18, 14, 14, 14, 12 ], [ 24, 18, 18, 18, 14, 14, 14, 12 ], 
 ##    [ 24, 14, 14, 14, 10, 8, 8, 6 ], [ 24, 14, 14, 14, 8, 7, 7, 4 ], 
@@ -577,23 +577,80 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-DescentAlgebraOps.SymmetricMatrix:= function(self)
+SymmetricMatrix:= function(D)
     local  inc,  sz,  yct;
 
-    inc:= IncidenceMatShapes(Shapes(self.W));
-    sz:= SizesDescentConjugacyClasses(self.W);
-    yct:= YCharacters(self.W);
+    inc:= IncidenceMatShapes(Shapes(D.W));
+    sz:= SizesDescentConjugacyClasses(D.W);
+    yct:= YCharacters(D.W);
     return inc * yct * TransposedMat(inc * sz);
 end;
 
 
-    
 #############################################################################
 ##
-##  here is the procedure to calculate the Lie characters.
+#F  ECharacters( <D> )  . . . . . . . . . . . . . . . . . . . . . characters.
 ##
+##  <#GAPDoc Label="ECharacters">
+##  <ManSection>
+##  <Func Name="ECharacters" Arg="D"/>
+##  <Returns>
+##    the list of characters corresponding to the primitive idempotents of
+##    <A>D</A>.
+##  </Returns>
+##  <Description>
+##    Each idempotent <M>e</M> in the group algebra <M>KW</M> of a finite
+##    Coxeter <M>W</M> generates a submodule <M>eKW</M> of the regular
+##    module <M>KW</M>.  This function computes the characters of the
+##    modules generated in this way by the primitive idempotents of the
+##    descent algebra of <M>W</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;                                                
+##  gap> ech:= ECharacters(DescentAlgebra(W));
+##  [ [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ], 
+##    [ 15, 5, -1, -3, 3, -1, 0, 1, -1, 0, 0 ], 
+##    [ 45, -3, 1, 9, 0, 0, 0, -1, -1, 0, 0 ], 
+##    [ 40, 8, 0, 0, 1, -1, -2, 0, 0, 0, 0 ], 
+##    [ 15, -3, 3, -7, 0, 0, 3, -1, 1, 0, -1 ], 
+##    [ 120, -8, 0, 0, -3, 1, 0, 0, 0, 0, 0 ], 
+##    [ 90, 6, -2, -6, 0, 0, 0, 0, 0, 0, 0 ], 
+##    [ 40, 0, 0, 8, -2, 0, 1, 0, 0, 0, -1 ], 
+##    [ 90, -6, -2, 6, 0, 0, 0, 0, 0, 0, 0 ], 
+##    [ 144, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0 ], 
+##    [ 120, 0, 0, -8, 0, 0, -3, 0, 0, 0, 1 ] ]
+##  </Example>
+##    These characters can be displayed in the form of a character table
+##    as follows.
+##  <Example>
+##  gap> ct:= CharTable(W);;  Unbind(ct.irredinfo);
+##  gap> Display(ct, rec(chars:= ech, letter:= "E", powermap:= false,              
+##  >            centralizer:= false));
+##  W( A5 )
 ##  
-ECharacters:= function(W)
+##        2      4     4    4   4    1   1  1   3  3  .  1
+##        3      2     1    .   1    2   1  2   .  .  .  1
+##        5      1     .    .   .    .   .  .   .  .  1  .
+##  
+##          111111 21111 2211 222 3111 321 33 411 42 51  6
+##  
+##  E.1          1     1    1   1    1   1  1   1  1  1  1
+##  E.2         15     5   -1  -3    3  -1  .   1 -1  .  .
+##  E.3         45    -3    1   9    .   .  .  -1 -1  .  .
+##  E.4         40     8    .   .    1  -1 -2   .  .  .  .
+##  E.5         15    -3    3  -7    .   .  3  -1  1  . -1
+##  E.6        120    -8    .   .   -3   1  .   .  .  .  .
+##  E.7         90     6   -2  -6    .   .  .   .  .  .  .
+##  E.8         40     .    .   8   -2   .  1   .  .  . -1
+##  E.9         90    -6   -2   6    .   .  .   .  .  .  .
+##  E.10       144     .    .   .    .   .  .   .  . -1  .
+##  E.11       120     .    .  -8    .   . -3   .  .  .  1
+##  
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
+ECharacters:= function(D)
     local   diagonalMat,  sec,  nu,  ee,  a,  lll,  l,  dia;
     
     # how to make a diagonal matrix.
@@ -607,23 +664,25 @@ ECharacters:= function(W)
         return mat;
     end;
 
-    sec:= SizesDescentConjugacyClasses(W);
-    nu:= Call(DescentAlgebra(W), "Mu")^-1;
-    ee:= [];  a:= 0;  lll:= List(Shapes(W), Size);
+    sec:= SizesDescentConjugacyClasses(D.W);
+    nu:= Call(D, "Mu")^-1;
+    ee:= [];  a:= 0;  lll:= List(Shapes(D.W), Size);
     for l in lll do
         Add(ee, Sum(nu{a+[1..l]}));
         a:= a + l;
     od;
 
-    dia:= diagonalMat(List(ConjugacyClasses(W), x-> Size(W)/Size(x)));
-    return ee * IncidenceMatShapes(Shapes(W)) * sec * dia;
+    dia:= diagonalMat(List(ConjugacyClasses(D.W), x-> Size(D.W)/Size(x)));
+    return ee * IncidenceMatShapes(Shapes(D.W)) * sec * dia;
 end;
 
-##??? This should be a binary relation ...
+
 #############################################################################
 ##
 ##  For type A:  The partitions quiver.
 ##
+##  ??? This should be a binary relation ...
+##  
 MatQuiverSym:= function(n)
     local   shrirev,  ppp,  l,  mat,  i,  pp,  p,  new,  j;
     
@@ -654,35 +713,6 @@ MatQuiverSym:= function(n)
     od;
     return mat;
 end;
-
-
-##  the major index of a permutation:
-##
-MajorIndex:= function(perm)
-    local   maj,  i;
-    
-    # trivial case first.
-    if perm = () then return 0; fi;
-    
-    maj:= 0;
-    for i in [1..LargestMovedPointPerm(perm)] do
-        if i^perm > (i+1)^perm then
-            maj:= maj + i;
-        fi;
-    od;
-    
-    return maj;
-end;
-
-
-##  Helper.  How to turn a  composition of n into a set composition of [1..n]
-SetComposition:= function(l)
-    return List([1..Length(l)], i-> Sum(l{[1..i-1]}) + [1..l[i]]);
-end;
-
-
-##  Helper.  Test for not 0.
-IsNonZero:= m -> m <> 0*m;
 
 
 #############################################################################

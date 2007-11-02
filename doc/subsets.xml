@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: subsets.xml,v 1.7 2007/10/15 08:56:51 goetz Exp $
+     $Id: subsets.xml,v 1.8 2007/11/02 09:35:26 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -17,6 +17,7 @@
 Longest elements and descent sets are used to define and describe some
 of the subsets in this chapter.
 
+<#Include Label="SetComposition">
 <#Include Label="IsLeftDescent">
 <#Include Label="IsRightDescent">
 <#Include Label="LongestElement">
@@ -67,6 +68,7 @@ of the subsets in this chapter.
 <#Include Label="DescentClass">
 <#Include Label="IsDescentClass">
 <#Include Label="DescentClasses">
+<#Include Label="SizesDescentConjugacyClasses">
 
 </Section>
 
