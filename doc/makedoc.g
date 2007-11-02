@@ -13,3 +13,6 @@ r:= ParseTreeXMLString(str);
 CheckAndCleanGapDocTree(r);
 l:= GAPDoc2LaTeX(r);;
 FileString(Filename(path, Concatenation(bookname, ".tex")), l);
+#h:= GAPDoc2HTML(r);
+#h:= GAPDoc2HTML(r, "Tth");
+#GAPDoc2HTMLPrintHTMLFiles(h, path);
