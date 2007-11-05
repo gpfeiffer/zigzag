@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.46 2007/11/02 10:10:42 goetz Exp $
+#A  $Id: descent.g,v 1.47 2007/11/05 10:29:06 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -716,7 +716,42 @@ end;
 
 
 #############################################################################
-QuiverRelations:= function(W)
+##
+#F  QuiverRelations( <D> )  . . . . . . . . . . . . . . . . . . . . . quiver.
+##
+##  <#GAPDoc Label="QuiverRelations">
+##  <ManSection>
+##  <Func Name="QuiverRelations" Arg="D"/>
+##  <Returns>
+##    the quiver with relations of the descent algebra 
+##    <A>D</A>.
+##  </Returns>
+##  <Description>
+##    The quiver with relations of the descent algebra of a finite Coxeter
+##    group <M>W</M> is computed by the algorithm from <Cite
+##    Key="pfeiffer2007"/>.  The result is a directed graph which has the
+##    shapes of <M>W</M> as its vertex set.  This graph is here
+##    represented by a record with components <K>path0</K>, the list of
+##    vertices as streets of length 0, <K>path</K>, a list of lists of
+##    lists, where <K>path[i]</K> is a list of paths of length <K>i</K>,
+##    and <K>relations</K>, a list of relations that have been discovered
+##    between paths of the same length.
+##  <Example>
+##  gap> qr:= QuiverRelations(DescentAlgebra(CoxeterGroup("A", 2)));
+##  rec(
+##    path0 := [ Street( CoxeterGroup("A", 2), [ [  ], [  ] ] ), 
+##        Street( CoxeterGroup("A", 2), [ [ 1 ], [  ] ] ), 
+##        Street( CoxeterGroup("A", 2), [ [ 1, 2 ], [  ] ] ) ],
+##    path := [ [ [ Street( CoxeterGroup("A", 2), [ [ 1, 2 ], [ 1 ] ] ) ] ] ],
+##    relations := [  ] )
+##  </Example>
+##    A formatted version of the quiver can be produced with the function
+##    <Ref Func="DisplayQuiver"/>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
+QuiverRelations:= function(D)
     local   isNonZero,  deltaPath,  bbb,  a,  aaa,  path,  path0,  
             more,  relations,  sss,  l,  null,  all,  mat,  delta,  
             new,  kern,  adr,  delete,  line,  pos,  i,  b;
@@ -734,7 +769,7 @@ QuiverRelations:= function(W)
 
 
     # start with a reasonably small set of alley classes.
-    bbb:= List(Shapes(W), x-> Call(x, "Street"));
+    bbb:= List(Shapes(D.W), x-> Call(x, "Street"));
     for a in bbb do 
         Append(bbb, Call(a, "MoversPlus"));
     od;
@@ -759,8 +794,8 @@ QuiverRelations:= function(W)
     
     relations:= [];
     
-    sss:= SubsetsShapes(Shapes(W));
-    l:= SetComposition(List(Shapes(W), Size));
+    sss:= SubsetsShapes(Shapes(D.W));
+    l:= SetComposition(List(Shapes(D.W), Size));
     null:= List(sss, x-> 0);
     
     while more <> [] do
@@ -821,9 +856,56 @@ QuiverRelations:= function(W)
 end;
 
 
-
 #############################################################################
-PrintQuiver:= function(qr)
+##
+#F  DisplayQuiver( <quiver> ) . . . . . . . . . . . . . . . . . . . . .  print.
+##
+##  <#GAPDoc Label="DisplayQuiver">
+##  <ManSection>
+##  <Func Name="DisplayQuiver" Arg="quiver"/>
+##  <Returns>
+##    nothing.
+##  </Returns>
+##  <Description>
+##    This function produces a formatted description of a quiver as returned
+##    by the function <Ref Func="QuiverRelations"/>.
+##  <Example>
+##  gap> quiver:= QuiverRelations(DescentAlgebra(CoxeterGroup("A", 5)));;
+##  gap> DisplayQuiver(quiver);
+##  A5    1 - 2 - 3 - 4 - 5
+##  
+##  Vertices:
+##  1. \emptyset []
+##  2. A_{1} [1]
+##  3. A_{11} [13]
+##  4. A_{2} [12]
+##  5. A_{111} [135]
+##  6. A_{21} [124]
+##  7. A_{3} [123]
+##  8. A_{22} [1245]
+##  9. A_{31} [1235]
+##  10. A_{4} [1234]
+##  11. A_{5} [12345]
+##  
+##  Edges:
+##  2 --> 4. [12;1]
+##  3 --> 6. [124;1]
+##  4 --> 7. [123;1]
+##  6 --> 10. [1234;2]
+##  6 --> 9. [1235;1]
+##  6 --> 8. [1245;1]
+##  7 --> 10. [1234;1]
+##  9 --> 11. [12345;2]
+##  10 --> 11. [12345;1]
+##  
+##  Relations:
+##  +1(11---9---6---3) +-1(11---10---6---3) [12345;2][1235;1][124;1], [12345;1][1234;2][124;1], 
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
+DisplayQuiver:= function(qr)
     local   short,  shortalley,  name,  vertex,  i,  gens,  e,  mat,  
             r,  p;
     
