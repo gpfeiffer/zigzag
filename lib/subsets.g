@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.39 2007/11/05 09:48:29 goetz Exp $
+#A  $Id: subsets.g,v 1.40 2007/11/05 10:33:53 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -859,9 +859,9 @@ end;
 ##  <#GAPDoc Label="Intro:DescentClass">
 ##    The (left) <E>descent set</E><Index>descent set</Index> of an element
 ##    <M>w \in W</M> is the set <M>\mathcal{D}(w) = \{s \in S : \ell(sw) &lt;
-##    \ell(w)\}</M>.  For each subnset <M>K \subseteq S</M> the <E>descent
+##    \ell(w)\}</M>.  For each subset <M>K \subseteq S</M>, the <E>descent
 ##    class</E><Index>descent class</Index> <M>Y_K</M> is the set of elements
-##    of <M>W</M> whose descent set is the <E>complement</E> of <M>K</M> in
+##    of <M>W</M> whose descent set is the <E>complement</E> of <M>K</M> \in
 ##    <M>S</M>, that is <M>Y_K = \{w \ in W : \mathcal{D}(w) = S \setminus
 ##    K\}</M>.  A Coxeter group <M>W</M> of rank <M>n</M> is partitioned into
 ##    <M>2^n</M> desecent classes.  The parabolic transversal <M>X_J</M> is
