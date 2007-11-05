@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.40 2007/11/05 10:33:53 goetz Exp $
+#A  $Id: subsets.g,v 1.41 2007/11/05 14:54:37 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -154,27 +154,27 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-LongestElement:= function(W, J)
-    local   first,  wJ,  s;
-    
-    first:= function(list)
-        local l;
-        for l in list do
-            if not IsLeftDescent(W, wJ, l) then
-                return l;
-            fi;
-        od;
-        return false;
-    end;
-    
-    wJ:= ();
-    while true do
-        s:= first(J);
-        if s = false then  return wJ;  fi;
-        wJ:= W.(W.rootRestriction[s]) * wJ;
-    od;
-end;
-
+#LongestElement:= function(W, J)
+#    local   first,  wJ,  s;
+#    
+#    first:= function(list)
+#        local l;
+#        for l in list do
+#            if not IsLeftDescent(W, wJ, l) then
+#                return l;
+#            fi;
+#        od;
+#        return false;
+#    end;
+#    
+#    wJ:= ();
+#    while true do
+#        s:= first(J);
+#        if s = false then  return wJ;  fi;
+#        wJ:= W.(W.rootRestriction[s]) * wJ;
+#    od;
+#end;
+#
 ##  This is much faster (and shorter):
 ##  (should we cache longest elements locally???)
 LongestElement:= function(W, J)
