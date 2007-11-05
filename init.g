@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.26 2007/11/05 14:52:30 goetz Exp $
+#A  $Id: init.g,v 1.27 2007/11/05 14:55:24 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -90,6 +90,6 @@ AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
   DescentAlgebra, IsDescentAlgebra, DescentEltOps, DescentElt, IsDescentElt,
   CharacterDescentElt, MaximalAJKL, MatCompressedAJKL, ProductCompressedAJKL,
   RightRegularX, LeftRegularX, LeftRegularY, LeftRegularZ, LeftRegularE,
-  SymmetricMatrix, ECharacters, MatQuiverSym, QuiverRelations, PrintQuiver,
+  SymmetricMatrix, ECharacters, MatQuiverSym, QuiverRelations, DisplayQuiver,
   DimensionsMatrix, CartanMatQuiver);
 
