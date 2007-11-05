@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.38 2007/11/02 09:35:35 goetz Exp $
+#A  $Id: subsets.g,v 1.39 2007/11/05 09:48:29 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -175,6 +175,11 @@ LongestElement:= function(W, J)
     od;
 end;
 
+##  This is much faster (and shorter):
+##  (should we cache longest elements locally???)
+LongestElement:= function(W, J)
+    return LongestCoxeterElement(ReflectionSubgroup(W, J));
+end;
 
 
 #############################################################################
