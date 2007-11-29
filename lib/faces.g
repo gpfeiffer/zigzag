@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: faces.g,v 1.1 2007/11/13 09:45:23 goetz Exp $
+#A  $Id: faces.g,v 1.2 2007/11/29 21:24:40 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -20,18 +20,18 @@
 
 #############################################################################
 ##  
-#O  FaceOps . . . . . . . . . . . . . . . . . . . . . . . operations record.
+#O  FaceOps . . . . . . . . . . . . . . . . . . . . . . .  operations record.
 ##  
 FaceOps:= OperationsRecord("FaceOps", DomainOps);
 
 
 #############################################################################
 ##  
-#C  Face( <W>, <J> ) . . . . . . . . . . . . . . . . . . . . .  constructor.
+#C  Face( <W>, <J>, <x> ) . . . . . . . . . . . . . . . . . . .  constructor.
 ##  
 ##  <#GAPDoc Label="Face">
 ##  <ManSection>
-##  <Func Name="Face" Arg="W, J"/>
+##  <Func Name="Face" Arg="W, J, x"/>
 ##  <Returns>
 ##    a new face, an object that represents the face of <A>J</A> and
 ##    <A>x</A> in <A>W</A>.
@@ -55,15 +55,20 @@ FaceOps:= OperationsRecord("FaceOps", DomainOps);
 ##    x, a coset rep of W_J
 ##  
 Face:= function(W, J, x)
-    return 
-      rec(
-          isDomain:= true,
-          isFace:= true,
-          operations:= FaceOps,
-          W:= W,
-          J:= J,
-          x:= x
-          );
+    
+    # check arguments?
+    if IsList(x) then 
+        x:= PermCoxeterWord(W, x);
+    fi;
+    
+    return rec(
+               isDomain:= true,
+               isFace:= true,
+               operations:= FaceOps,
+               W:= W,
+               J:= J,
+               x:= x
+               );
 end;
 
 
@@ -84,13 +89,31 @@ IsFace:= function(obj)
     return IsRec(obj) and IsBound(obj.isFace) and obj.isFace = true;
 end;
 
+#############################################################################
+##
+##
+##
+FaceOps.\=:= function(l, r)
+    if not IsFace(l) or not IsFace(r) then
+        return false;
+    fi;
+    
+    return l.W = r.W and l.J = r.J and l.x = r.x;
+end;
+
 
 #############################################################################  
 ##  
 #F  Print( <face> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
+FaceOps.PrintFormat:= "perm";  # "perm" or "word"
+
 FaceOps.Print:= function(self)
-    Print("Face( ", self.W, ", ", self.J, ", ", self.x, " )");
+    if FaceOps.PrintFormat = "word" then
+        Print("Face( ", self.W, ", ", self.J, ", ", CoxeterWord(self.W, self.x), " )");
+    else
+        Print("Face( ", self.W, ", ", self.J, ", ", self.x, " )");
+    fi;
 end;
 
 #############################################################################
@@ -99,12 +122,22 @@ end;
 ##
 Faces:= function(W)
     local   faces,  J,  x;
+    
+    # lets see, we might know them already.
+    if IsBound(W.faces) then  return W.faces;  fi;
+
+    # initialize.
     faces:= [];
+    
+    # loop over all subsets
     for J in SubsetsShapes(Shapes(W)) do
         for x in Elements(ParabolicTransversal(W, J)) do
             Add(faces, Face(W, J, x));
         od;
     od;
+    
+    # remember the faces before returning them.
+    W.faces:= faces;
     return faces;
 end;
 
@@ -186,9 +219,277 @@ FaceOps.\*:= function(l, r)
     J:= l.J;  K:= r.J;
     x:= l.x;  y:= r.x;
     
-    # write x/y as udv
+    # write x/y as udv, u in W_J, d in X_{JK}, v in X_{J^d \cap K}^K.
     dv:= ReducedInCoxeterCoset(ReflectionSubgroup(W, J), x/y);
     d:= ReducedInCoxeterCoset(ReflectionSubgroup(W, K), dv^-1)^-1;
     v:= d^-1 * dv;
     return Face(W, Intersection(OnSets(J, d), K), v*y);
 end;
+
+#############################################################################
+##
+##  FIXME: avoid listing of elements.  implement IsSubset!!
+##
+FaceOps.Elements:= function(self)
+    return Elements(ReflectionSubgroup(W, self.J) * self.x);
+end;
+
+
+#############################################################################
+FaceOps.IsSubset:= function(l, r)
+    if IsFace(l) and IsFace(r) and l.W = r.W then
+        return IsSubset(l.J, r.J)
+            and ReducedInCoxeterCoset(ReflectionSubgroup(W, l.J), r.x) = l.x;
+    else
+        return IsSubset(Elements(l), Elements(r));
+    fi;
+end;
+
+
+#############################################################################
+OnFaces:= function(face, w)
+    return Face(face.W, face.J, 
+      ReducedInCoxeterCoset(ReflectionSubgroup(face.W, face.J), face.x * w));
+end;
+    
+#############################################################################
+FaceOps.Support:= function(self)
+    return ReflectionSubgroup(W, OnSets(self.J, self.x));
+end;
+
+#############################################################################
+KernelSupportMap:= function(W)
+    local   fff,  sup,  pos,  ker,  i,  s,  p;
+    
+    fff:= Faces(W);
+    sup:= [];  pos:= [];  ker:= [];
+    for i in [1..Length(fff)] do
+        s:= Call(fff[i],"Support");
+        p:= Position(sup, s);
+        if p = false then
+            Add(sup, s);  Add(pos, i);  Add(ker, [i]);
+        else
+            Add(ker, ker[pos[p]]);
+            Add(ker[i], i);
+        fi;
+    od;
+    return ker;
+end;
+
+
+#############################################################################
+##
+##  a facet is a subface of codimension 1 ???
+##
+##  FIXME: improve
+##
+FaceOps.CoFacets:= function(self)
+    return Filtered(Faces(self.W), x-> Size(x.J) = Size(self.J) + 1 and IsSubset(x, self));
+end;
+
+FaceOps.Facets:= function(self)
+    local   WJ,  list,  s,  K,  u;
+    
+    WJ:= ReflectionSubgroup(W, self.J);
+    list:= [];
+    for s in self.J do
+        K:= Difference(self.J, [s]);
+        for u in Elements(ParabolicTransversal(WJ, K)) do
+            Add(list, Face(self.W, K, u*self.x));
+        od;
+    od;
+    return list;
+end;
+    
+
+#############################################################################
+##
+##  The Face Monoid Algebra and its elements
+##
+
+#############################################################################
+##  
+#O  FaceEltOps . . . . . . . . . . . . . . . . . . . . . . operations record.
+##  
+FaceEltOps:= OperationsRecord("FaceEltOps", AlgebraElementOps);
+
+
+#############################################################################
+##  
+#C  FaceElt( <W>, <coef> ) . . . . . . . . . . . . . . . . . . .  constructor.
+##  
+##  <#GAPDoc Label="FaceElt">
+##  <ManSection>
+##  <Func Name="Face" Arg="W, coef"/>
+##  <Returns>
+##    a new face monoid algebra element ...
+##  </Returns>
+##  <Description>
+##    ...
+##  <Example>
+##  ...
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+FaceElt:= function(W, coef)
+    return rec(W:= W,
+               coef:= coef,
+               isFaceElt:= true,
+               operations:= FaceEltOps);
+end;
+
+
+#############################################################################
+##
+#F  IsFaceElt( <obj> ) . . . . . . . . . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsFaceElt">
+##  <ManSection>
+##  <Func Name="IsFaceElt" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a face monoid algebra element and
+##    <K>false</K> otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsFaceElt:= function(obj)
+    return IsRec(obj) and IsBound(obj.isFaceElt) and obj.isFaceElt = true;
+end;
+
+#############################################################################  
+##  
+#F  Print( <faceelt> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
+##  
+FaceEltOps.Print:= function(self)
+    local   null,  fff,  i;
+    
+    null:= true;
+    fff:= Faces(self.W);
+    for i in [1..Length(fff)] do
+        if self.coef[i] > 0 then
+            if not null then Print(" + "); fi;
+            Print(self.coef[i], "*", fff[i]);
+            null:= false;
+        elif self.coef[i] < 0 then 
+            Print(" - ", -self.coef[i], "*", fff[i]);
+            null:= false;
+        fi;
+    od;
+        
+    if null then Print(0); fi;
+end;
+
+#############################################################################
+FaceOps.FaceElt:= function(self)
+    local   fff,  coef,  p;
+    
+    fff:= Faces(self.W);
+    coef:= List(fff, x-> 0);
+    p:= Position(fff, self);
+    coef[p]:= 1;
+    return FaceElt(self.W, coef);
+end;
+
+
+#############################################################################
+##
+##  =
+##
+FaceEltOps.\=:= function(l, r)
+    if not IsFaceElt(l) or not IsFaceElt(r) then
+        return false;
+    fi;
+    
+    return l.W = r.W and l.coef = r.coef;
+end;
+
+#############################################################################
+##
+##  +
+##
+FaceEltOps.\+:= function(l, r)
+    if IsFaceElt(l) and IsFaceElt(r) then
+        if l.W <> r.W then
+            Error("<l> and <r> must lie in a common domain");
+        fi;
+        return FaceElt(l.W, l.coef + r.coef);
+    else
+        Error("don't know how to <l> + <r>");
+    fi;
+    
+end;
+
+
+#############################################################################
+##
+##  *
+##
+FaceEltOps.\*:= function(l, r)
+    local   fff,  prod,  i,  j,  k;
+    
+    if IsFaceElt(l) then
+        if IsFaceElt(r) then
+            if l.W <> r.W then
+                Error("<l> and <r> must lie in a common domain");
+            fi;
+            fff:= Faces(l.W);
+            prod:= List(fff, x-> 0);
+            for i in [1..Length(fff)] do
+                if l.coef[i] <> 0 then
+                    for j in [1..Length(fff)] do
+                        if r.coef[j] <> 0 then
+                            k:= Position(fff, fff[i] * fff[j]);
+                            prod[k]:= prod[k] + l.coef[i] * r.coef[j];
+                        fi;
+                    od;
+                fi;
+            od;
+            return FaceElt(l.W, prod);
+        else
+            Error("don't know how to <l> * <r>");
+        fi;
+    elif IsCyc(l) then
+        if IsFaceElt(r) then
+            return FaceElt(r.W, l * r.coef);
+        else
+            Error("Panic: this should not happen!");
+        fi;
+    else
+        Error("don't know how to <l> * <r>");
+    fi;
+end;
+
+#############################################################################
+##
+##  FIXME: THIS DOES NOT WORK
+##
+FaceOps.Delta:= function(self)
+    local   sum,  x,  s,  k;
+    
+    sum:= 0 * Call(self, "FaceElt");
+    for x in Call(self, "Facets") do
+        s:= Difference(self.J, x.J)[1];
+        k:= Number(x.J, t-> t > s);
+        sum:= sum + (-1)^k * Call(x, "FaceElt");
+    od;
+    return sum;
+end;
+
+
+FaceEltOps.Delta:= function(self)
+    local   fff,  sum,  i;
+    
+    fff:= Faces(self.W);
+    sum:= 0 * self;
+    for i in [1..Length(fff)] do
+        if self.coef[i] <> 0 then
+            sum:= sum + self.coef[i] * Call(fff[i], "Delta");
+        fi;
+    od;
+    return sum;
+end;
+
+
