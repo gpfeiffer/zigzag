@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: faces.g,v 1.2 2007/11/29 21:24:40 goetz Exp $
+#A  $Id: faces.g,v 1.3 2007/11/30 22:09:04 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -127,7 +127,7 @@ Faces:= function(W)
     if IsBound(W.faces) then  return W.faces;  fi;
 
     # initialize.
-    faces:= [];
+    faces:= [Face(W, 0, 0)];  # empty face
     
     # loop over all subsets
     for J in SubsetsShapes(Shapes(W)) do
@@ -151,6 +151,9 @@ FaceOps.Sign:= function(self)
     local   sign,  i,  r;
     
     sign:= "";
+    if self.J = 0 then   # empty face -> empty sign seq
+        return sign;
+    fi;
     for i in [1..self.W.N] do
         if i/self.x > self.W.N then
             sign[i]:= '-';
@@ -212,11 +215,13 @@ FaceOps.\*:= function(l, r)
     local   W,  J,  K,  x,  y,  dv,  d,  v;
     
     # check arguments
-    if l.W < r.W then
+    if l.W <> r.W then
         Error("<l> and <r> must be faces of the same Coxeter group");
     fi;
     W:= l.W;
     J:= l.J;  K:= r.J;
+    if J = 0 then  return l;  fi;  # empty
+    if K = 0 then  return r;  fi;  # empty    
     x:= l.x;  y:= r.x;
     
     # write x/y as udv, u in W_J, d in X_{JK}, v in X_{J^d \cap K}^K.
@@ -231,6 +236,7 @@ end;
 ##  FIXME: avoid listing of elements.  implement IsSubset!!
 ##
 FaceOps.Elements:= function(self)
+    if self.J = 0 then return []; fi;    # empty
     return Elements(ReflectionSubgroup(W, self.J) * self.x);
 end;
 
@@ -238,6 +244,8 @@ end;
 #############################################################################
 FaceOps.IsSubset:= function(l, r)
     if IsFace(l) and IsFace(r) and l.W = r.W then
+        if r.J = 0 then return true; fi;     # empty
+        if l.J = 0 then return false; fi;    # empty
         return IsSubset(l.J, r.J)
             and ReducedInCoxeterCoset(ReflectionSubgroup(W, l.J), r.x) = l.x;
     else
@@ -248,12 +256,14 @@ end;
 
 #############################################################################
 OnFaces:= function(face, w)
+    if face.J = 0 then return face; fi;    # empty
     return Face(face.W, face.J, 
       ReducedInCoxeterCoset(ReflectionSubgroup(face.W, face.J), face.x * w));
 end;
     
 #############################################################################
 FaceOps.Support:= function(self)
+    if self.J = 0 then return []; fi;
     return ReflectionSubgroup(W, OnSets(self.J, self.x));
 end;
 
@@ -290,6 +300,8 @@ end;
 FaceOps.Facets:= function(self)
     local   WJ,  list,  s,  K,  u;
     
+    if self.J = 0 then  return [];  fi;   # empty
+    if self.J = [] then  return [Face(W, 0, 0)];  fi;
     WJ:= ReflectionSubgroup(W, self.J);
     list:= [];
     for s in self.J do
@@ -464,12 +476,19 @@ end;
 
 #############################################################################
 ##
-##  FIXME: THIS DOES NOT WORK
+##  
 ##
 FaceOps.Delta:= function(self)
     local   sum,  x,  s,  k;
     
     sum:= 0 * Call(self, "FaceElt");
+    if self.J = 0 then return sum; fi;  # empty
+    
+    if self.J = [] then
+        sum.coef[1]:= (-1)^CoxeterLength(self.W, self.x);
+        return sum;
+    fi;
+   
     for x in Call(self, "Facets") do
         s:= Difference(self.J, x.J)[1];
         k:= Number(x.J, t-> t > s);
@@ -493,3 +512,36 @@ FaceEltOps.Delta:= function(self)
 end;
 
 
+#############################################################################
+##
+##  The Intersection Lattice.
+##
+
+#############################################################################
+##
+##  Its elements.  How does this relate to KernelSupportMap?
+##  Call(fff[s], "Support") = ImageSupportMap(W)[i] for all s in 
+##  Set(KernelSupportMap(W))[i]
+##
+ImageSupportMap:= function(W)
+    local   list,  face,  sup;
+
+    list:= [];
+    for face in Faces(W) do
+        sup:= Call(face, "Support");
+        if not sup in list then 
+            Add(list, sup);
+        fi;
+    od;
+    return list;
+end;
+
+#############################################################################
+##
+##  can be fed into HasseDiagram.
+##
+IncidenceIntersectionLattice:= function(W)
+    local   lll;
+    lll:= ImageSupportMap(W);
+    return Relation(List(lll, x-> List(lll, y-> IsSubset(x, y))));
+end;
