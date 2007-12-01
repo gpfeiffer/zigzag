@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: faces.g,v 1.3 2007/11/30 22:09:04 goetz Exp $
+#A  $Id: faces.g,v 1.4 2007/12/01 00:40:20 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -545,3 +545,42 @@ IncidenceIntersectionLattice:= function(W)
     lll:= ImageSupportMap(W);
     return Relation(List(lll, x-> List(lll, y-> IsSubset(x, y))));
 end;
+
+
+#############################################################################
+onEmptyOrReflectionSubgroup:= function(x, a)
+    if x = [] then return x; fi;
+    return ReflectionSubgroup(x.parent, OnTuples(x.rootInclusion, a));
+end;
+
+
+#############################################################################
+##
+##  PrimitiveIdempotents
+##
+PrimitiveIdempotentsFaceElts:= function(W)
+    local   fff,  ker,  lll,  ell,  id,  i,  new,  sum,  j;
+    
+    fff:= Faces(W);
+    ker:= Set(KernelSupportMap(W));
+    lll:= ImageSupportMap(W);
+    
+    ell:= function(class)
+        return 1/Length(class) * Sum(class, k-> Call(fff[k], "FaceElt"));
+    end;
+    
+    id:= [];
+    for i in [1..Length(ker)] do
+        new:= ell(ker[i]);
+        sum:= new;
+        for j in [1..i-1] do
+            if IsSubset(lll[i], lll[j]) then
+                sum:= sum + (-1)*id[j] * new;
+            fi;
+        od;
+        id[i]:= sum;
+    od;
+    return id;
+end;
+
+         
