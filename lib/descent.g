@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.48 2007/12/14 17:02:35 goetz Exp $
+#A  $Id: descent.g,v 1.49 2007/12/14 17:07:08 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1054,7 +1054,7 @@ RelationsMatrix:= function(qr)
         pth:= pth * inc;
         sum:= sum + pth;
         rel:= inc * rel + rel + rel * inc;
-        cap:= Capp(car - sum + rel);
+        cap:= capp(car - sum + rel);
         Add(mat, cap);
         rel:= rel + cap;
     od;
