@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.47 2007/11/05 10:29:06 goetz Exp $
+#A  $Id: descent.g,v 1.48 2007/12/14 17:02:35 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1003,6 +1003,62 @@ CartanMatQuiver:= function(qr)
     
     car:= Sum(DimensionsMatrix(qr));
     return car + car^0;
+end;
+
+
+#############################################################################
+RelationsMatrix:= function(qr)
+    local   capp,  dim,  inc,  pth,  car,  sum,  mat,  rel,  cap;
+
+    # return a matrix cap of the same dimension as mat, such that cap + mat >=0.
+    capp:= function(mat)
+        local   cap,  row,  new,  a;
+        cap:= [];
+        for row in mat do
+            new:= [];
+            for a in row do
+                if a < 0 then
+                    Add(new, -a);
+                else
+                    Add(new, 0);
+                fi;
+            od;
+            Add(cap, new);
+        od;
+        return cap;
+    end;
+
+
+
+# output:
+#    a list mat such that
+#
+#      car = \sum_i inc^i - rel[i]
+#
+#    where 
+#
+#      rel[0] = 0 (and rel[1] = 0)
+#
+#    and
+#
+#      rel[i] = inc * rel[i-1] + rel[i-1] * inc + mat[i]
+#
+    dim:= DimensionsMatrix(qr);
+    inc:= dim[1];
+    pth:= inc^0;
+    car:= Sum(dim) + pth;
+    sum:= pth;
+    mat:= [];
+    rel:= 0 * pth;
+    while pth <> 0 * pth do
+        pth:= pth * inc;
+        sum:= sum + pth;
+        rel:= inc * rel + rel + rel * inc;
+        cap:= Capp(car - sum + rel);
+        Add(mat, cap);
+        rel:= rel + cap;
+    od;
+    return mat;
 end;
 
 
