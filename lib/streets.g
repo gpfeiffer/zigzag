@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.43 2007/11/02 10:11:01 goetz Exp $
+#A  $Id: streets.g,v 1.44 2008/02/24 20:23:19 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -818,6 +818,33 @@ end;
 ##
 StreetOps.Width:= function(self)
     return Size(Shapes(self.W)[Call(self, "Source")]);
+end;
+
+
+#############################################################################
+##
+#M  Reversed( <street> )  . . . . . . . . . . . . . . . . . . . . . reversed.
+##
+##  <#GAPDoc Label="Reversed(street)">
+##  <ManSection>
+##  <Meth Name="Reversed" Arg="street" Label="for streets"/>
+##  <Returns>
+##    the reverse of the street <A>street</A>.
+##  </Returns>
+##  <Description>
+##    The <E>reverse</E><Index>reverse</Index> of a street <M>\alpha =
+##    [a]</M> is the street <M>\overline{\alpha} = [\overline{a}]</M>.
+##  <Example>
+##  gap> b:= Street(CoxeterGroup("A", 4), [[1, 2, 3], [1, 3]]);;
+##  gap> Call(b, "Reversed");                                   
+##  Street( CoxeterGroup("A", 4), [ [ 1, 2, 3 ], [ 3, 2 ] ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+StreetOps.Reversed:= function(self)
+    return Street(self.W, ReversedAlley(self.W, self.alley));
 end;
 
 
