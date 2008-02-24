@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: streets.xml,v 1.8 2007/10/22 22:54:37 goetz Exp $
+     $Id: streets.xml,v 1.9 2008/02/24 21:17:15 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -51,6 +51,7 @@ Various methods can be applied to streets.
 <#Include Label="Target(street)">
 <#Include Label="Depth(street)">
 <#Include Label="Width(street)">
+<#Include Label="Reversed(street)">
 <#Include Label="Movers(street)">
 <#Include Label="Shakers(street)">
 <#Include Label="Prefix(street)">
