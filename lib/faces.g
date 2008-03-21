@@ -1,13 +1,13 @@
 #############################################################################
 ##
-#A  $Id: faces.g,v 1.4 2007/12/01 00:40:20 goetz Exp $
+#A  $Id: faces.g,v 1.5 2008/03/21 14:17:37 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
 #Y  Copyright (C) 2007 Götz Pfeiffer
 ##
 ##  This file contains the routines for faces of hyperplane
-##  arrangements of finite Coxeter groups
+##  arrangements of finite Coxeter groups.
 ##
 ##  <#GAPDoc Label="Intro:Faces">
 ##    Let <M>(W, S)</M> be a finite Coxeter system.  The <E>face</E>
@@ -127,7 +127,7 @@ Faces:= function(W)
     if IsBound(W.faces) then  return W.faces;  fi;
 
     # initialize.
-    faces:= [Face(W, 0, 0)];  # empty face
+    faces:= [];
     
     # loop over all subsets
     for J in SubsetsShapes(Shapes(W)) do
@@ -151,9 +151,6 @@ FaceOps.Sign:= function(self)
     local   sign,  i,  r;
     
     sign:= "";
-    if self.J = 0 then   # empty face -> empty sign seq
-        return sign;
-    fi;
     for i in [1..self.W.N] do
         if i/self.x > self.W.N then
             sign[i]:= '-';
@@ -220,8 +217,6 @@ FaceOps.\*:= function(l, r)
     fi;
     W:= l.W;
     J:= l.J;  K:= r.J;
-    if J = 0 then  return l;  fi;  # empty
-    if K = 0 then  return r;  fi;  # empty    
     x:= l.x;  y:= r.x;
     
     # write x/y as udv, u in W_J, d in X_{JK}, v in X_{J^d \cap K}^K.
@@ -236,7 +231,6 @@ end;
 ##  FIXME: avoid listing of elements.  implement IsSubset!!
 ##
 FaceOps.Elements:= function(self)
-    if self.J = 0 then return []; fi;    # empty
     return Elements(ReflectionSubgroup(W, self.J) * self.x);
 end;
 
@@ -244,8 +238,6 @@ end;
 #############################################################################
 FaceOps.IsSubset:= function(l, r)
     if IsFace(l) and IsFace(r) and l.W = r.W then
-        if r.J = 0 then return true; fi;     # empty
-        if l.J = 0 then return false; fi;    # empty
         return IsSubset(l.J, r.J)
             and ReducedInCoxeterCoset(ReflectionSubgroup(W, l.J), r.x) = l.x;
     else
@@ -256,14 +248,12 @@ end;
 
 #############################################################################
 OnFaces:= function(face, w)
-    if face.J = 0 then return face; fi;    # empty
     return Face(face.W, face.J, 
       ReducedInCoxeterCoset(ReflectionSubgroup(face.W, face.J), face.x * w));
 end;
     
 #############################################################################
 FaceOps.Support:= function(self)
-    if self.J = 0 then return []; fi;
     return ReflectionSubgroup(W, OnSets(self.J, self.x));
 end;
 
@@ -300,8 +290,6 @@ end;
 FaceOps.Facets:= function(self)
     local   WJ,  list,  s,  K,  u;
     
-    if self.J = 0 then  return [];  fi;   # empty
-    if self.J = [] then  return [Face(W, 0, 0)];  fi;
     WJ:= ReflectionSubgroup(W, self.J);
     list:= [];
     for s in self.J do
@@ -423,12 +411,27 @@ end;
 ##  +
 ##
 FaceEltOps.\+:= function(l, r)
-    if IsFaceElt(l) and IsFaceElt(r) then
-        if l.W <> r.W then
-            Error("<l> and <r> must lie in a common domain");
+    if IsFaceElt(l) then
+        if IsFaceElt(r) then
+            if l.W <> r.W then
+                Error("<l> and <r> must lie in a common domain");
+            fi;
+            return FaceElt(l.W, l.coef + r.coef);
+        elif r = 0 then
+            return l;
+        else
+            Error("don't know how to <l> + <r>");
         fi;
-        return FaceElt(l.W, l.coef + r.coef);
+        
+    elif l = 0 then
+        if IsFaceElt(r) then
+            return r;
+        else
+            Error("don't know how to <l> + <r>");
+        fi;
+    
     else
+            
         Error("don't know how to <l> + <r>");
     fi;
     
@@ -460,6 +463,8 @@ FaceEltOps.\*:= function(l, r)
                 fi;
             od;
             return FaceElt(l.W, prod);
+        elif IsCyc(r) then
+            return FaceElt(l.W, r * l.coef);
         else
             Error("don't know how to <l> * <r>");
         fi;
@@ -479,20 +484,17 @@ end;
 ##  
 ##
 FaceOps.Delta:= function(self)
-    local   sum,  x,  s,  k;
+    local   epsilon,  sum,  x;
     
+    epsilon:= function(a, b) # suppose a covers b
+        local   s;
+        s:= Difference(a.J, b.J)[1];
+        return (-1)^(Number(b.J, t -> t > s) + CoxeterLength(a.W, b.x/a.x));
+    end;
+
     sum:= 0 * Call(self, "FaceElt");
-    if self.J = 0 then return sum; fi;  # empty
-    
-    if self.J = [] then
-        sum.coef[1]:= (-1)^CoxeterLength(self.W, self.x);
-        return sum;
-    fi;
-   
     for x in Call(self, "Facets") do
-        s:= Difference(self.J, x.J)[1];
-        k:= Number(x.J, t-> t > s);
-        sum:= sum + (-1)^k * Call(x, "FaceElt");
+        sum:= sum + epsilon(self, x) * Call(x, "FaceElt");
     od;
     return sum;
 end;
@@ -548,8 +550,7 @@ end;
 
 
 #############################################################################
-onEmptyOrReflectionSubgroup:= function(x, a)
-    if x = [] then return x; fi;
+onReflectionSubgroups:= function(x, a)
     return ReflectionSubgroup(x.parent, OnTuples(x.rootInclusion, a));
 end;
 
@@ -564,6 +565,10 @@ PrimitiveIdempotentsFaceElts:= function(W)
     fff:= Faces(W);
     ker:= Set(KernelSupportMap(W));
     lll:= ImageSupportMap(W);
+    
+    ell:= function(class)
+        return Call(fff[class[1]], "FaceElt");
+    end;
     
     ell:= function(class)
         return 1/Length(class) * Sum(class, k-> Call(fff[k], "FaceElt"));
@@ -584,3 +589,48 @@ PrimitiveIdempotentsFaceElts:= function(W)
 end;
 
          
+NilpotentFaceElts:= function(W)    
+    local   fff,  ker,  lll,  has,  id,  nil,  i,  del,  new,  j;
+    
+    fff:= Faces(W);
+    ker:= Set(KernelSupportMap(W));
+    lll:= ImageSupportMap(W);
+    has:= HasseDiagram(IncidenceIntersectionLattice(W));
+    Print(has, "\n");
+    id:= PrimitiveIdempotentsFaceElts(W);
+    Print("idempotents.\n");
+    nil:= [];
+    for i in [1..Length(id)] do
+        del:= Call(fff[ker[i][1]], "Delta");
+        new:= 0 * [1..Length(id)];
+        for j in i^has do
+            new[j]:=  id[j] * del * id[i];
+            Print(". \c");
+        od;
+        Add(nil, new);
+        Print("\n");
+    od;
+    return nil;
+end;
+
+
+# helper
+ProdMat:= function(a, b)
+    local   c,  i,  j,  k;
+    
+    if Length(a[1]) <> Length(b) then
+        Error("product not defined");
+    fi;
+    
+    c:= [];
+    for i in [1..Length(a)] do
+        c[i]:= [];
+        for j in [1..Length(b[1])] do
+            c[i][j]:= 0;
+            for k in [1..Length(b)] do
+                c[i][j]:= c[i][j] + a[i][k] * b[k][j];
+            od;
+        od;
+    od;
+    return c;
+end;
