@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.44 2008/02/24 20:23:19 goetz Exp $
+#A  $Id: streets.g,v 1.45 2008/03/21 14:15:45 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -833,7 +833,8 @@ end;
 ##  </Returns>
 ##  <Description>
 ##    The <E>reverse</E><Index>reverse</Index> of a street <M>\alpha =
-##    [a]</M> is the street <M>\overline{\alpha} = [\overline{a}]</M>.
+##    [a]</M> is the street <M>\overline{\alpha} = [\overline{a}]</M>; see
+##    <Ref Func="ReversedAlley"/>.
 ##  <Example>
 ##  gap> b:= Street(CoxeterGroup("A", 4), [[1, 2, 3], [1, 3]]);;
 ##  gap> Call(b, "Reversed");                                   
