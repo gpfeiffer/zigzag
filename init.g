@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.27 2007/11/05 14:55:24 goetz Exp $
+#A  $Id: init.g,v 1.28 2008/03/28 15:42:58 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -42,6 +42,9 @@ fi;
 ##
 #A  AUTO . . . . . . . . . . . . . . . . . . . . . . . . . . . .  auto reads.  
 ##
+AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
+  ProductLSigns, ProductRSigns);
+
 AUTO( ReadPkg( "zigzag", "lib", "iterator" ), IteratorList, IteratorEmpty,
   Iterator, IteratorRange, MPartitionsOps, MPartitions, NrMPartitions,
   PartitionsIntOps, PartitionsInt);
