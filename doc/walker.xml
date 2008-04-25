@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: walker.xml,v 1.3 2007/10/11 11:03:56 goetz Exp $
+     $Id: walker.xml,v 1.4 2008/04/25 13:09:56 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -85,7 +85,7 @@ We will use binomial trees as examples in the following sections.
 </Section>
 
 <Section>
-<Heading>Breadth First Serach.</Heading>
+<Heading>Breadth First Search.</Heading>
 
 <#Include Label="BreadthFirst">
 
