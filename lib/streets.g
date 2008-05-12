@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.45 2008/03/21 14:15:45 goetz Exp $
+#A  $Id: streets.g,v 1.46 2008/05/12 17:55:32 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1105,6 +1105,35 @@ StreetOps.LongestSuffix:= function(self)
     
     return self;
           
+end;
+
+
+#############################################################################
+StreetOps.Monoid:= function(self)
+    local   W,  S,  source,  hhh,  eee,  all,  edges,  a,  new,  l,  s;
+    
+    W:= self.W;
+    S:= [1..W.semisimpleRank];
+    source:= Shapes(W)[Call(self, "Source")];
+    hhh:= Elements(source);
+    eee:= Call(source, "Edges");
+    all:= Elements(self);
+    edges:= [];
+    i:= 0;
+    for a in all do
+        i:= i+1;
+        new:= [];
+        l:= Position(hhh, a[1]);
+        for s in S do
+            if not s in a[1] then
+                new[s]:= Position(all, OnAlleys(a, eee[l][s].d));
+            else
+                new[s]:= i;
+            fi;
+        od;
+        Add(edges, new);
+    od;
+    return Monoid(List(Transposed(edges), Transformation));
 end;
 
 
