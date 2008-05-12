@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.46 2008/05/12 17:55:32 goetz Exp $
+#A  $Id: streets.g,v 1.47 2008/05/12 17:57:57 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1110,7 +1110,7 @@ end;
 
 #############################################################################
 StreetOps.Monoid:= function(self)
-    local   W,  S,  source,  hhh,  eee,  all,  edges,  a,  new,  l,  s;
+    local   W,  S,  source,  hhh,  eee,  all,  edges,  a,  new,  l,  s, i;
     
     W:= self.W;
     S:= [1..W.semisimpleRank];
