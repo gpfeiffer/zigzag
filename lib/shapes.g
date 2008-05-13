@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.64 2007/11/02 10:13:09 goetz Exp $
+#A  $Id: shapes.g,v 1.65 2008/05/13 23:19:44 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1153,6 +1153,11 @@ end;
 ##
 ShapeOps.Street:= function(self)
     return Street(self.W, [self.J, []]);
+end;
+
+#############################################################################
+ShapeOps.Monoid:= function(self)
+    return Call(Call(self, "Street"), "Monoid");
 end;
 
 
