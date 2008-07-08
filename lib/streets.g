@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.47 2008/05/12 17:57:57 goetz Exp $
+#A  $Id: streets.g,v 1.48 2008/07/08 19:28:46 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1105,6 +1105,32 @@ StreetOps.LongestSuffix:= function(self)
     
     return self;
           
+end;
+
+##FIXME:  does a street have a unique factorization into irreducibles?
+StreetOps.Factors:= function(self)
+    local   fff,  fac,  o,  i,  lft,  rgt,  pro;
+    
+    # idempotent case first.
+    if self.alley[2] = [] then
+        return self;
+    fi;
+    
+    
+    fff:= FactorsAlley(self.alley);
+    fac:= [];
+    o:= 1;
+    for i in [1..Length(fff)-1] do
+        lft:= Street(self.W, ProductAlleyList(fff{[o..i]}));
+        rgt:= Street(self.W, ProductAlleyList(fff{[i+1..Length(fff)]}));
+        pro:= lft * rgt;
+        if Length(pro) = 1 then
+            Add(fac, lft);
+            o:= i+1;
+        fi;
+    od;
+    Add(fac, Street(self.W, ProductAlleyList(fff{[o..Length(fff)]})));
+    return fac;
 end;
 
 
