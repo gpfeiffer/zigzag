@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: methods.g,v 1.10 2007/10/07 19:55:20 goetz Exp $
+#A  $Id: methods.g,v 1.11 2008/07/14 11:13:09 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -87,6 +87,15 @@ ApplyMethod:= function(arg)
     list:= [object];
     Append(list, arg{[3..Length(arg)]});
     return ApplyFunc(method, list);
+end;
+
+
+#############################################################################
+##
+##  How to apply a method to a list of objects.
+##
+Map:= function(list, method)
+    return List(list, x-> Call(x, method));
 end;
 
 
