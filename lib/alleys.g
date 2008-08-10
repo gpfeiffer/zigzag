@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.43 2007/10/22 09:22:09 goetz Exp $
+#A  $Id: alleys.g,v 1.44 2008/08/10 23:39:01 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -386,7 +386,7 @@ end;
 ##    An alley <M>a = (L; s_1, \dots, s_l)</M> of length <M>\ell(a) = l >
 ##    0</M> corresponds to an edge from <M>\sigma(a)</M> to
 ##    <M>\sigma(a).s</M> labelled by <M>s</M>.  This function returns the
-##    pair <M>(\sigma(a), \sigma(a).s</M>.
+##    pair <M>(\sigma(a), \sigma(a).s)</M>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> ActionAlley(W, [[1, 2, 3, 5], [2, 3]]);
