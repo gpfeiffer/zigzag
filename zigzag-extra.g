@@ -742,7 +742,7 @@ CCharacters:= function(W)
         ind[i]:= ind[i]{fil}; 
     od;
     
-    ect:= ECharacters(W);
+    ect:= ECharacters(DescentAlgebra(W));
     ccc:= List(Shapes(W), ConjugacyClasses);
     
     for i in [1..Length(ect)] do
