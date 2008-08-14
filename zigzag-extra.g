@@ -170,66 +170,6 @@ end;
 
 #############################################################################
 ##  
-##  deprecated, new version in streets.g
-##  
-ProjectiveModule1:= function(D, i)
-    local   ser,  zero,  hom,  j,  lis,  s;
-
-    ser:= List(RadicalSeriesDescent(D), x-> VectorSpace(x, Rationals));
-    zero:= 0*[1..Dimension(D)];
-    hom:= [];
-    for j in [1..Length(Shapes(D.W))] do
-        hom[j]:= VectorSpace(HomDescent(D, i, j), Rationals, zero);
-    od;
-    lis:= [List(hom, Dimension)];
-    for s in ser do 
-        Add(lis, List(hom, h-> Dimension(Intersection(s, h))));
-    od;
-    
-    for j in [2..Length(lis)] do
-        if lis[j] = 0*lis[j] then
-            Unbind(lis[j]);
-        else
-            lis[j-1]:= lis[j-1] - lis[j];
-        fi;
-    od;
-        
-    return lis;
-end;
-
-LaTeXProjectiveModule1:= function(D, nam, i)
-    local   lis,  text,  j,  comma,  k;
-    lis:= ProjectiveModule(D, i);
-    text:= "$\\begin{array}[b]{|c|}\\hline\n";
-    for j in [1..Length(lis)] do
-        comma:= false;
-        for k in [1..Length(nam)] do
-            if lis[j][k] > 0 then
-                if comma then
-                    Append(text, "\\, \c");
-                fi;
-                if lis[j][k] = 1 then
-                    Append(text, nam[k]);
-                else 
-                    Append(text, "(");
-                    Append(text, nam[k]);
-                    Append(text, ")^{");
-                    Append(text, String(lis[j][k]));
-                    Append(text, "}");
-                fi;
-                comma:= true;
-            fi;
-        od;
-        Append(text, "\\\\\\hline\n");
-    od;
-    Append(text, "\\end{array}$");
-    
-    return text;
-end;
-
-
-#############################################################################
-##  
 ##  
 RanMatDescent:= function(D)
     local   mat,  xxx,  shapes,  i,  row,  iii,  j,  jjj,  lis;
@@ -889,6 +829,66 @@ MatsRadsDescent:= function(D)
     
     return mat;
 end;
+
+#############################################################################
+##  
+##  deprecated, new version in streets.g
+##  
+ProjectiveModule1:= function(D, i)
+    local   ser,  zero,  hom,  j,  lis,  s;
+
+    ser:= List(RadicalSeriesDescent(D), x-> VectorSpace(x, Rationals));
+    zero:= 0*[1..Dimension(D)];
+    hom:= [];
+    for j in [1..Length(Shapes(D.W))] do
+        hom[j]:= VectorSpace(HomDescent(D, i, j), Rationals, zero);
+    od;
+    lis:= [List(hom, Dimension)];
+    for s in ser do 
+        Add(lis, List(hom, h-> Dimension(Intersection(s, h))));
+    od;
+    
+    for j in [2..Length(lis)] do
+        if lis[j] = 0*lis[j] then
+            Unbind(lis[j]);
+        else
+            lis[j-1]:= lis[j-1] - lis[j];
+        fi;
+    od;
+        
+    return lis;
+end;
+
+LaTeXProjectiveModule1:= function(D, nam, i)
+    local   lis,  text,  j,  comma,  k;
+    lis:= ProjectiveModule1(D, i);
+    text:= "$\\begin{array}[b]{|c|}\\hline\n";
+    for j in [1..Length(lis)] do
+        comma:= false;
+        for k in [1..Length(nam)] do
+            if lis[j][k] > 0 then
+                if comma then
+                    Append(text, "\\, \c");
+                fi;
+                if lis[j][k] = 1 then
+                    Append(text, nam[k]);
+                else 
+                    Append(text, "(");
+                    Append(text, nam[k]);
+                    Append(text, ")^{");
+                    Append(text, String(lis[j][k]));
+                    Append(text, "}");
+                fi;
+                comma:= true;
+            fi;
+        od;
+        Append(text, "\\\\\\hline\n");
+    od;
+    Append(text, "\\end{array}$");
+    
+    return text;
+end;
+
 
 #############################################################################
 ##
