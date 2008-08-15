@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.50 2008/03/21 14:15:12 goetz Exp $
+#A  $Id: descent.g,v 1.51 2008/08/15 09:55:08 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -682,6 +682,8 @@ end;
 ##  For type A:  The partitions quiver.
 ##
 ##  ??? This should be a binary relation ...
+##
+##  FIXME: use standard ordering on partitions.
 ##  
 MatQuiverSym:= function(n)
     local   shrirev,  ppp,  l,  mat,  i,  pp,  p,  new,  j;
@@ -713,6 +715,60 @@ MatQuiverSym:= function(n)
     od;
     return mat;
 end;
+
+##  
+##  and the Cartan Matrix after [Garsia-Reutenauer]
+##  
+LyndonFactorisation:= function(word)
+    local   lastFactor,  factors,  f;
+    
+    # The last factor is the lexicographically smallest tail of list.
+    lastFactor:= function(list)
+        local l, tail;
+        l:= Length(list);
+        tail:= List([1..l], i-> list{[i..l]});
+        Sort(tail);
+        return tail[1];
+    end;
+
+    factors:= [];
+    while Length(word) > 0 do
+        f:= lastFactor(word);
+        Add(factors, f);
+        word:= word{[1..Length(word)-Length(f)]};
+    od;
+    return Reversed(factors);
+end;
+
+
+##  FIXME: find faster way to produce partitions in standard order
+CartanMatrixA:=function(n)
+    local   typeComposition,  par,  p,  car,  i,  x,  j;
+
+    #  the type of a composition is determined by the sums of the 
+    #  factors of its Lyndon Factorization
+    typeComposition:=function(com)
+        local sum;
+        
+        sum:= List(LyndonFactorisation(com), Sum);
+        Sort(sum);
+        return Reversed(sum);
+    end;
+
+    par:= LabelsShapes(Shapes(CoxeterGroup("A", n)));
+    p:= Length(par);
+    car:= NullMat(p, p);
+    for i in [1..p] do 
+        for x in Arrangements(par[i], Length(par[i])) do
+            j:= Position(par, typeComposition(x));
+            car[j][i]:= car[j][i] + 1;
+        od;
+    od;
+    return car;
+end;
+
+
+
 
 
 #############################################################################
