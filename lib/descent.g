@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.53 2008/08/17 21:17:15 goetz Exp $
+#A  $Id: descent.g,v 1.54 2008/08/17 21:36:22 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -805,8 +805,8 @@ CartanMatrixD:=function(n)
     typeComposition:=function(com)
         local   fac,  sum;
         
-#        fac:= Filtered(LyndonFactorisation(com), x-> Length(x) mod 2 = 1);
-        fac:= LyndonFactorisation(com);
+        fac:= Filtered(LyndonFactorisation(com), x-> Length(x) mod 2 = 1);
+#        fac:= LyndonFactorisation(com);
         sum:= List(fac, Sum);
         Sort(sum);
         return Reversed(sum);
