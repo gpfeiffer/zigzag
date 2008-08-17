@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.65 2008/05/13 23:19:44 goetz Exp $
+#A  $Id: shapes.g,v 1.66 2008/08/17 20:02:16 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1248,7 +1248,7 @@ ShapeOps.Label:= function(self)
         Sort(par, function(a, b) return a > b; end);
         return par;
         
-    elif type[1][1] = "B" then
+    elif type[1][1] = "B" or type[1][1] = "C" then
         n:= self.W.semisimpleRank;
         cmp:= Difference([0..n], self.J - 1);
         par:= [];
