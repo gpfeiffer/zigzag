@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.52 2008/08/17 20:26:18 goetz Exp $
+#A  $Id: descent.g,v 1.53 2008/08/17 21:17:15 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -784,6 +784,35 @@ CartanMatrixB:=function(n)
     end;
 
     par:= LabelsShapes(Shapes(CoxeterGroup("B", n)));
+    p:= Length(par);
+    car:= NullMat(p, p);
+    for i in [1..p] do 
+        for x in Arrangements(par[i], Length(par[i])) do
+            j:= Position(par, typeComposition(x));
+            car[j][i]:= car[j][i] + 1;
+        od;
+    od;
+    return car;
+end;
+
+##  this is only an experiment:
+##  
+CartanMatrixD:=function(n)
+    local   typeComposition,  par,  p,  car,  i,  x,  j;
+
+    #  the type of a composition is determined by the sums of the 
+    #  factors of its Lyndon Factorization
+    typeComposition:=function(com)
+        local   fac,  sum;
+        
+#        fac:= Filtered(LyndonFactorisation(com), x-> Length(x) mod 2 = 1);
+        fac:= LyndonFactorisation(com);
+        sum:= List(fac, Sum);
+        Sort(sum);
+        return Reversed(sum);
+    end;
+
+    par:= LabelsShapes(Shapes(CoxeterGroup("D", n)));
     p:= Length(par);
     car:= NullMat(p, p);
     for i in [1..p] do 
