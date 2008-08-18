@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.56 2008/08/18 15:02:46 goetz Exp $
+#A  $Id: descent.g,v 1.57 2008/08/18 15:16:11 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -823,7 +823,7 @@ CartanMatrixD:=function(n)
             car[j][i]:= car[j][i] + 1;
             
             # NEW: account for the other short leg.
-            if x <> [] and x[1] > 1 then
+            if Sum(x) = n and x[1] > 1 then
                 y:= Reversed(x);  Add(y, bigg);
                 j:= Position(par, typeComposition(y));
                 car[j][i]:= car[j][i] + 1;
