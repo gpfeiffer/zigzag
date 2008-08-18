@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.54 2008/08/17 21:36:22 goetz Exp $
+#A  $Id: descent.g,v 1.55 2008/08/18 15:01:18 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -798,7 +798,9 @@ end;
 ##  this is only an experiment:
 ##  
 CartanMatrixD:=function(n)
-    local   typeComposition,  par,  p,  car,  i,  x,  j;
+    local   bigg,  typeComposition,  par,  p,  car,  i,  x,  j,  y;
+    
+    bigg:= 1000;  # a number bigger than all parts ever considered.
 
     #  the type of a composition is determined by the sums of the 
     #  factors of its Lyndon Factorization
@@ -807,7 +809,7 @@ CartanMatrixD:=function(n)
         
         fac:= Filtered(LyndonFactorisation(com), x-> Length(x) mod 2 = 1);
 #        fac:= LyndonFactorisation(com);
-        sum:= List(fac, Sum);
+        sum:= List(fac, x-> Sum(x) mod bigg);
         Sort(sum);
         return Reversed(sum);
     end;
@@ -819,6 +821,13 @@ CartanMatrixD:=function(n)
         for x in Arrangements(par[i], Length(par[i])) do
             j:= Position(par, typeComposition(x));
             car[j][i]:= car[j][i] + 1;
+            
+            # NEW: account for the other short leg.
+            if x[1] > 1 then
+                y:= Reversed(x);  Add(y, bigg);
+                j:= Position(par, typeComposition(y));
+                car[j][i]:= car[j][i] + 1;
+            fi;
         od;
     od;
     return car;
