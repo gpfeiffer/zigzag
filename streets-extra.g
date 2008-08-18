@@ -511,3 +511,64 @@ LaTeXProjectiveModule:= function(dim, nam, i)
 end;
 
 
+ProjectiveResolution:= function(dim, i)
+    local   sum,  car,  lis,  l,  new,  j;
+        
+    sum:= Sum(dim);
+    car:= sum + sum^0;
+    lis:= [];
+    
+    l:= 0 * sum[i];
+    l[i]:= 1;
+
+    while l <> 0*l do
+        new:= 0*l;
+        for j in Reversed([1..i]) do
+            if l[j] > 0 then
+                new[j]:= l[j];
+                l:= l - l[j] * car[j];
+            fi;
+        od;
+        Add(lis, new);
+        l:= -l;
+    od;
+    
+    return Reversed(lis);
+end;
+
+
+LaTeXProjectiveResolution:= function(dim, nam, i)
+    local   lis,  text,  l,  comma,  k;
+    
+    lis:= ProjectiveResolution(dim, i);
+    text:= "0 \\to ";
+    
+    for l in lis do
+        Append(text, "P(");
+        comma:= false;
+        for k in [1..Length(l)] do
+            if l[k] > 0 then
+                if comma then
+                    Append(text, "\\, \c");
+                fi;
+                if l[k] = 1 then
+                    Append(text, nam[k]);
+                else 
+                    Append(text, "(");
+                    Append(text, nam[k]);
+                    Append(text, ")^{");
+                    Append(text, String(l[k]));
+                    Append(text, "}");
+                fi;
+                comma:= true;
+            fi;
+        od;
+        Append(text, ") \\to ");
+    od;
+    Append(text, nam[i]);
+    Append(text, " \\to 0");
+        
+    return text;
+end;
+
+   
