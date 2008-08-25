@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.57 2008/08/18 15:16:11 goetz Exp $
+#A  $Id: descent.g,v 1.58 2008/08/25 23:56:11 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -977,6 +977,27 @@ QuiverRelations:= function(D)
     return rec(path0:= path0, path:= path, relations:= relations);
 end;
 
+IrreducibleStreets:= function(D)
+    local   isNonZero,  bbb,  a,  aaa;
+    
+    # how to test for zero matrix.
+    isNonZero:= m -> m <> 0*m;
+
+    # start with a reasonably small set of alley classes.
+    bbb:= List(Shapes(D.W), x-> Call(x, "Street"));
+    for a in bbb do 
+        Append(bbb, Call(a, "MoversPlus"));
+    od;
+    InfoZigzag1("Generated ", Length(bbb), " streets\n");
+
+    aaa:= Filtered(bbb, x-> isNonZero(Call(x, "Delta").mat));
+    InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
+    
+    aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
+    InfoZigzag1("Starting with ", Length(aaa), " irreducible streets\n");
+    
+    return Filtered(aaa, x-> Call(x, "Length") > 1);
+end;
 
 #############################################################################
 ##
