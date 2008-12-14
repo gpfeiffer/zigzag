@@ -593,6 +593,132 @@ QuiverD:= function(n)
 end;
 
 
+QuiverDod:= function(n)
+    local   lab,  l,  mat,  i,  p,  abc,  e,  b,  a,  q,  j,  c;
+    
+    if n mod 2 = 0 then
+        Error("<n> must be odd");
+    fi;
+    
+    lab:= LabelsShapes(Shapes(CoxeterGroup("D", n)));
+    l:= Length(lab);
+    mat:= NullMat(l, l);
+    
+    # loop over the vertices.
+    for i in [1..l] do
+        p:= lab[i];
+        
+        if Sum(p) < n then
+        
+            # drop two parts a, b.
+            for abc in Combinations(p, 2) do
+                e:= Size(Set(abc)) - 1;
+                if e > 0 then
+                    b:= Position(p, abc[2]);
+                    a:= Position(p, abc[1], b);
+                    q:= p{Difference([1..Length(p)], [a,b])};
+                    j:= Position(lab, q);
+                    mat[j][i]:= mat[j][i] + e;
+                fi;
+            od;
+            
+            # join three parts a, b, c.
+            for abc in Combinations(p, 3) do
+                e:= Size(Set(abc)) - 1;
+                if e > 0 then
+                    c:= Position(p, abc[3]);
+                    b:= Position(p, abc[2], c);
+                    a:= Position(p, abc[1], b);
+                    q:= p{Difference([1..Length(p)], [a,b,c])};
+                    Add(q, Sum(abc));
+                    Sort(q, function(a, b) return a > b; end);
+                    j:= Position(lab, q);
+                    mat[j][i]:= mat[j][i] + e;
+                fi;
+            od;
+            
+        else
+            
+            # drop an odd part a > 1.
+            for abc in Combinations(p, 1) do
+                if abc[1] > 1 then
+                    a:= Position(p, abc[1]);
+                    q:= p{Difference([1..Length(p)], [a])};
+                    if ForAll(q, x-> x mod 2 = 0) then
+                        j:= Position(lab, q);
+                        mat[j][i]:= mat[j][i] + 1;
+                    fi;
+                fi;
+            od;
+            
+            # join or drop two parts a, b.
+            for abc in Combinations(p, 2) do
+                e:= Size(Set(abc)) - 1;
+                if e > 0 then
+                    b:= Position(p, abc[2]);
+                    a:= Position(p, abc[1], b);
+                    q:= p{Difference([1..Length(p)], [a,b])};
+                    if abc[1] > 1 or not 1 in q then
+                        Add(q, Sum(abc));
+                        Sort(q, function(a, b) return a > b; end);
+                    fi;
+                    j:= Position(lab, q);
+                    mat[j][i]:= mat[j][i] + e;
+                fi;
+            od;
+            
+            # conditionally join three parts a, b, c.
+            for abc in Combinations(p, 3) do
+                e:= Size(Set(abc)) - 1;
+                if e > 0 then
+                    if Sum(abc) mod 2 = 0 or ForAll(abc, x-> x mod 2 = 1) then
+                        c:= Position(p, abc[3]);
+                        b:= Position(p, abc[2], c);
+                        a:= Position(p, abc[1], b);
+                        q:= p{Difference([1..Length(p)], [a,b,c])};
+                        Add(q, Sum(abc));
+                        Sort(q, function(a, b) return a > b; end);
+                        j:= Position(lab, q);
+                        mat[j][i]:= mat[j][i] + e;
+                    fi;
+                fi;
+            od;
+        fi;
+    od;
+    
+    return mat;    
+end;
+
+
+# given two partitions, decide what joined or dropped.
+CompareLabels:= function(sml, big)
+    local   l,  i,  join,  drop,  list,  j;
+    l:= 0*[1..Sum(sml)];
+    for i in sml do
+        l[i]:= l[i] + 1;
+    od;
+    for i in big do
+        l[i]:= l[i] - 1;
+    od;
+    join:= [];  drop:= [];
+    if Sum(sml) = Sum(big) then  
+        list:= join;
+    else 
+        list:= drop;
+    fi;
+    
+    for i in Reversed([1..Length(l)]) do
+        for j in [1..l[i]] do
+            Add(list, i);
+        od;
+    od;
+        
+    return rec(join:= join, drop:= drop);
+end;
+
+        
+
+
 #############################################################################
 MaximalAJKL1:= function(W, s)
 
