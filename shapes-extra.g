@@ -40,6 +40,21 @@ IncMatShapes:= function(shapes)
     return mat;
 end;
 
+IncMatShapesQ:= function(shapes, q)
+    local   mat,  a,  row,  nor,  b;
+
+    mat:= [];
+    for a in shapes do
+        row:= [];
+        nor:= Call(a, "Complement");
+        for b in shapes do
+            Add(row, q^(Size(a.J)-Size(b.J)) * Length(Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets)));
+        od;
+        Add(mat, row);
+    od;
+    return mat;
+end;
+
 
 InxMatShapes:= function(shapes)
     local   mat,  a,  row,  b;
@@ -90,6 +105,32 @@ FusMatShapes:= function(shapes)
             fi;
 
             Add(row, n);
+        od;
+        Add(mat, row);
+    od;
+    return mat;
+end;
+
+
+FusMatShapesQ:= function(shapes, q)
+    local   mat,  a,  row,  nor,  sub,  aaa,  b,  orb,  n;
+
+    mat:= [];
+    for a in shapes do
+        row:= [];
+        nor:= Call(a, "Complement");
+        sub:= ReflectionSubgroup(a.W, a.J);
+        aaa:= Shapes(sub);
+        for b in shapes do
+            orb:= Orbits(nor, Filtered(Elements(b), x-> IsSubset(a.J, x)), OnSets);
+            orb:= List(orb, x-> Filtered(x, y-> IsSubset([1..a.W.semisimpleRank], y)));
+            if orb = [] then
+                n:= 0;
+            else
+                n:= Size(Set(List(orb, x-> Set(List(x, y-> PositionProperty(aaa, z-> y in z))))));
+            fi;
+
+            Add(row, q^(Size(a.J)-Size(b.J)) * n);
         od;
         Add(mat, row);
     od;
