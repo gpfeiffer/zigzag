@@ -33,6 +33,9 @@ all: zigzag.pdf
 zigzag.tex: $(XMLFILES) $(GAPFILES) descent.bib
 	gap4 -b -r < makedoc.g
 
+descent.bib: ../../descent.bib
+	ln $< $@
+
 clean:
 	rm -fv *.aux *.log *.blg *.ilg
 	rm -fv *.bbl *.brf *.ind *.pnr *.toc *.out *.idx
