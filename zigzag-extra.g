@@ -1139,3 +1139,47 @@ end;
 ##  Helper.  Test for not 0.
 IsNonZero:= m -> m <> 0*m;
 
+#############################################################################
+##
+##  the cartan matrix of type D.
+##  this is only an experiment:
+##  
+CartanMatrixD:=function(n)
+    local   bigg,  typeComposition,  par,  p,  car,  i,  x,  j,  y;
+    
+    bigg:= 1000;  # a number bigger than all parts ever considered.
+
+    #  the type of a composition is determined by the sums of the 
+    #  factors of its Lyndon Factorization
+    typeComposition:=function(com)
+        local   fac,  sum;
+        
+        fac:= Filtered(LyndonFactorisation(com), x-> Length(x) mod 2 = 1);
+#        fac:= LyndonFactorisation(com);
+        sum:= List(fac, x-> Sum(x) mod bigg);
+        Sort(sum);
+        return Reversed(sum);
+    end;
+
+    par:= LabelsShapes(Shapes(CoxeterGroup("D", n)));
+    p:= Length(par);
+    car:= NullMat(p, p);
+    for i in [1..p] do 
+        for x in Arrangements(par[i], Length(par[i])) do
+            j:= Position(par, typeComposition(x));
+            car[j][i]:= car[j][i] + 1;
+            
+            # NEW: account for the other short leg.
+            if Sum(x) = n and x[1] > 1 then
+                y:= Reversed(x);  Add(y, bigg);
+                j:= Position(par, typeComposition(y));
+                car[j][i]:= car[j][i] + 1;
+            fi;
+        od;
+    od;
+    return car;
+end;
+
+
+
+
