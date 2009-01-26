@@ -6,7 +6,7 @@
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.34 2007/11/05 14:55:53 goetz Exp $
+     $Id: zigzag.xml,v 1.35 2009/01/26 16:13:31 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -18,7 +18,7 @@
     <Subtitle>A &GAP;3 package for Descent Algebras 
 of Finite Coxeter Groups</Subtitle>
     <Version>
-Version 0.73
+Version 0.74
     </Version>
     <TitleComment>WARNING: This is a badly documented alpha version of the ZigZag package.  Future versions of the package will most likely be incompatible with this version.</TitleComment>
     <Author>
@@ -26,7 +26,7 @@ Götz Pfeiffer
 <Email>goetz.pfeiffer@nuigalway.ie</Email>
 <Homepage>http://schmidt.nuigalway.ie/zigzag</Homepage>
 </Author>
-<Date>05-11-2007</Date>
+<Date>26-01-2009</Date>
 <Address>
 Department of Mathematics<Br/> 
 National University of Ireland, Galway<Br/>
