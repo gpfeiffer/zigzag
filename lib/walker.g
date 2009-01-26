@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: walker.g,v 1.8 2009/01/26 15:59:55 goetz Exp $
+#A  $Id: walker.g,v 1.9 2009/01/26 16:00:23 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -473,3 +473,13 @@ BinomialTreeOps.Display:= function(self, dummy)
 end;
 
 
+#############################################################################
+##
+#E  Emacs  . . . . . . . . . . . . . . . . . . . . . . local emacs variables.
+##
+##  Local Variables:
+##  mode:               gap
+##  outline-regexp:     "#F\\|#V\\|#E\\|#A"
+##  fill-column:        77
+##  End:
+##
