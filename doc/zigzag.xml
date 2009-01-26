@@ -6,7 +6,7 @@
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.35 2009/01/26 16:13:31 goetz Exp $
+     $Id: zigzag.xml,v 1.36 2009/01/26 16:14:40 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -30,6 +30,7 @@ Götz Pfeiffer
 <Address>
 Department of Mathematics<Br/> 
 National University of Ireland, Galway<Br/>
+University Road<Br/>
 Galway, Ireland
 </Address>
 <Abstract>
@@ -40,7 +41,7 @@ some tools to work with descent algebras and related structures
 in various ways.
 </Abstract>
 <Copyright>
-    Copyright &copyright; 2007 Götz Pfeiffer<P/>
+    Copyright &copyright; 2007--2009 Götz Pfeiffer<P/>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
