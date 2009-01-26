@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: walker.g,v 1.7 2008/10/05 09:57:18 goetz Exp $
+#A  $Id: walker.g,v 1.8 2009/01/26 15:59:55 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -472,32 +472,4 @@ BinomialTreeOps.Display:= function(self, dummy)
     BinomialTreeOps.indent:= BinomialTreeOps.indent - 2;
 end;
 
-#############################################################################
-BinaryTreeOps:= rec();
-
-BinaryTree:= function(l, o, r)
-    return rec(l:= l, o:= o, r:= r, operations:= BinaryTreeOps);
-end;
-
-BinaryTreeOps.Children:= function(self)
-    return [self.l, self.r];
-end;
-
-BinaryTreeOps.Print:= function(self)
-    Print(self.o);
-end;
-
-LeafOps:= rec();
-
-Leaf:= function(o)
-    return rec(o:= o, operations:= LeafOps);
-end;
-
-LeafOps.Children:= function(self)
-    return [];
-end;
-
-LeafOps.Print:= function(self)
-    Print(self.o);
-end;
 
