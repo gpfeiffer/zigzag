@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.59 2009/01/26 15:33:14 goetz Exp $
+#A  $Id: descent.g,v 1.60 2009/02/10 21:47:15 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -810,7 +810,7 @@ end;
 ##  <Description>
 ##    The quiver with relations of the descent algebra of a finite Coxeter
 ##    group <M>W</M> is computed by the algorithm from <Cite
-##    Key="pfeiffer2007"/>.  The result is a directed graph which has the
+##    Key="pfeiffer-quiver"/>.  The result is a directed graph which has the
 ##    shapes of <M>W</M> as its vertex set.  This graph is here
 ##    represented by a record with components <K>path0</K>, the list of
 ##    vertices as streets of length 0, <K>path</K>, a list of lists of
@@ -1106,6 +1106,16 @@ CartanMatQuiver:= function(qr)
     car:= Sum(DimensionsMatrix(qr));
     return car + car^0;
 end;
+  
+  
+CartanMatQuiverQ:= function(qr, q)
+    local   dim,  car;
+    
+    dim:= DimensionsMatrix(qr);
+    car:= Sum([1..Length(dim)], i-> q^i * dim[i]);
+    return car + car^0;
+end;
+
 
 
 #############################################################################
