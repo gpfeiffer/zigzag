@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.61 2009/03/09 16:14:04 goetz Exp $
+#A  $Id: descent.g,v 1.62 2009/03/16 16:05:29 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1101,6 +1101,7 @@ end;
 
 #############################################################################
 CartanMatQuiver:= function(qr)
+    local   car;
     
     car:= Sum(DimensionsMatrix(qr));
     return car + car^0;
