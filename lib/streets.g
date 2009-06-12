@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.49 2009/06/12 08:29:00 goetz Exp $
+#A  $Id: streets.g,v 1.50 2009/06/12 08:48:45 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -595,8 +595,19 @@ end;
 ##
 StreetOps.Source:= function(self)
     local   source;
+    
+    # maybe we know it already.
+    if IsBound(self.source) then
+        return self.source;
+    fi;
+    
+    # otherwise: compute source.
     source:= SourceAlley(self.alley);
-    return PositionProperty(Shapes(self.W), x-> source in x);
+    source:= PositionProperty(Shapes(self.W), x-> source in x);
+    
+    # remember for next visit.
+    self.source:= source;
+    return self.source;
 end;
 
 
@@ -628,8 +639,19 @@ end;
 ##
 StreetOps.Target:= function(self)
     local   target;
+    
+    # maybe we know it already.
+    if IsBound(self.target) then
+        return self.target;
+    fi;
+    
+    # otherwise: compute target.
     target:= TargetAlley(self.alley);
-    return PositionProperty(Shapes(self.W), x-> target in x);
+    target:= PositionProperty(Shapes(self.W), x-> target in x);
+    
+    # remember for next visit.
+    self.target:= target;
+    return self.target;
 end;
 
 
