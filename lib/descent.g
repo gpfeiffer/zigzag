@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.62 2009/03/16 16:05:29 goetz Exp $
+#A  $Id: descent.g,v 1.63 2009/06/12 08:30:09 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -832,11 +832,16 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-QuiverRelations:= function(D)
+QuiverRelations0:= function(D)
     local   isNonZero,  deltaPath,  bbb,  a,  aaa,  path,  path0,  
             more,  relations,  sss,  l,  null,  all,  mat,  delta,  
             new,  kern,  adr,  delete,  line,  pos,  i,  b;
     
+    # maybe we know it already.
+    if IsBound(D.quiverRelations) then
+        return D.quiverRelations;
+    fi;
+        
     # how to test for zero matrix.
     isNonZero:= m -> m <> 0*m;
 
@@ -856,6 +861,8 @@ QuiverRelations:= function(D)
     od;
     InfoZigzag1("Generated ", Length(bbb), " streets\n");
 
+    
+    # FIXME: swap tests, irreducible is cheaper than Delta = 0.
     aaa:= Filtered(bbb, x-> isNonZero(Call(x, "Delta").mat));
     InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
     
@@ -933,8 +940,130 @@ QuiverRelations:= function(D)
         
     od;
     
-    return rec(path0:= path0, path:= path, relations:= relations);
+    # remember for next visit.
+    D.quiverRelations:= rec(path0:= path0, path:= path, relations:= relations);
+    
+    return D.quiverRelations;
 end;
+
+
+
+# alternatively:
+
+QuiverRelations1:= function(D)
+    local   isNonZero,  deltaPath,  bbb,  a,  aaa,  path,  path0,  
+            more,  relations,  sss,  l,  null,  all,  mat,  delta,  
+            new,  kern,  adr,  delete,  line,  pos,  i,  b;
+    
+    # maybe we know it already.
+    if IsBound(D.quiverRelations) then
+        return D.quiverRelations;
+    fi;
+        
+    # how to test for zero matrix.
+    isNonZero:= m -> m <> 0*m;
+
+    # a path is a sequence of streets, with adjacent ones multiplyable.
+    deltaPath:= function(path)
+        local   p;
+        
+        p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
+        return rec(support:= p.target, mat:= Sum(p.mat));
+    end;
+
+
+    # start with a reasonably small set of alley classes.
+    bbb:= List(Shapes(D.W), x-> Call(x, "Street"));
+    for a in bbb do 
+        Append(bbb, Call(a, "MoversPlus"));
+    od;
+    InfoZigzag1("Generated ", Length(bbb), " streets\n");
+
+    aaa:= Filtered(bbb, x-> x = Call(x, "LongestSuffix"));
+    InfoZigzag1("Starting with ", Length(aaa), " irreducible streets\n");
+    
+    aaa:= Filtered(aaa, x-> isNonZero(Call(x, "Delta").mat));
+    InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
+    
+    # split idempotents from nilpotents.
+    path:= [];  path0:= [];  more:= [];
+    for a in aaa do
+        if a.alley[2] = [] then
+            Add(path0, a);
+        else
+            Add(more, [a]);
+        fi;
+    od;
+    InfoZigzag1("of which ", Length(path0), " have length 0.\n");
+    
+    relations:= [];
+    
+    sss:= SubsetsShapes(Shapes(D.W));
+    l:= SetComposition(List(Shapes(D.W), Size));
+    null:= List(sss, x-> 0);
+    
+    while more <> [] do
+        
+        Add(path, more);
+        InfoZigzag1("Added ", Length(more), " paths of length ", Length(path), ".\n");
+        
+        # consider all paths at once.
+        all:= Concatenation(path);
+        
+        mat:= [];
+        for a in all do
+            delta:= deltaPath(a);
+            new:= Copy(null);
+            new{l[delta.support]}:= delta.mat;
+            Add(mat, new);
+        od;
+        
+        kern:= NullspaceMat(mat);
+        InfoZigzag1("Found ", Length(kern), " relations.\n");
+        
+        
+        # FIXME:
+        # suppose adr is a list of back references such that 
+        #   all[i] = path[adr[i][1]][adr[i][2]] ...
+        adr:= Concatenation(List([1..Length(path)], i-> TransposedMat([List(path[i], x-> i), [1..Length(path[i])]])));
+
+        
+        # find all relations.
+        delete:= List(path, x-> []);
+        for line in kern do
+            pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
+            Add(relations, rec(paths:= all{pos}, coeffs:= line{pos}));
+            Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
+        od;
+        
+        # remove obsoletes.
+        for i in [1..Length(path)] do
+            path[i]:= path[i]{Difference([1..Length(path[i])], delete[i])};
+        od;
+        
+        InfoZigzag1("Deleted: ", List(delete, Length), "\n");
+        InfoZigzag1("Length: ", List(path, Length), ": ", Length(path0) + Sum(path, Length), ".\n");
+        
+        # extend paths.
+        more:= [];
+        for a in path[Length(path)] do
+            for b in path[1] do
+                if a[Length(a)] * b[1] <> [] then
+                    Add(more, Concatenation(a, b));
+                fi; 
+            od;
+        od;
+        
+    od;
+    
+    # remember for next visit.
+    D.quiverRelations:= rec(path0:= path0, path:= path, relations:= relations);
+    
+    return D.quiverRelations;
+end;
+
+QuiverRelations:= QuiverRelations0;
+
 
 IrreducibleStreets:= function(D)
     local   isNonZero,  bbb,  a,  aaa;
@@ -1221,6 +1350,36 @@ RelationsMatrix2:= function(qr)
         rel:= rel + cap;
     od;
     return mat;
+end;
+
+##  given a Cartan matrix, determine the blocks (as an equivalence on the 
+##  row and column indices
+BlocksCartan:= function(car)
+    local   n,  equ,  i,  j,  new,  k;
+
+    n:= Length(car);
+    equ:= List([1..n], i-> [i]);
+    for i in [1..n] do
+        for j in [1..n] do
+            if car[i][j] <> 0*car[i][j] and not i in equ[j] then
+                new:= Union(equ[i], equ[j]);
+                for k in new do
+                    equ[k]:= new;
+                od;
+            fi;
+        od;
+    od;
+    return Set(equ);
+end;
+
+##  given a q-Cartan matrix, determine the minimal projective resolutions
+ProjectiveResolutions:= function(D)
+    local   q,  qr,  car;
+
+    q:= X(Rationals);
+    qr:= QuiverRelations(D);
+    car:= QCartanMatQuiver(qr, q);
+    return List(car^-1, x-> List(x, y-> Value(y, -q)));
 end;
 
 
