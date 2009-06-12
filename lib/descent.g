@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.63 2009/06/12 08:30:09 goetz Exp $
+#A  $Id: descent.g,v 1.64 2009/06/12 08:48:04 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -853,7 +853,6 @@ QuiverRelations0:= function(D)
         return rec(support:= p.target, mat:= Sum(p.mat));
     end;
 
-
     # start with a reasonably small set of alley classes.
     bbb:= List(Shapes(D.W), x-> Call(x, "Street"));
     for a in bbb do 
@@ -861,13 +860,11 @@ QuiverRelations0:= function(D)
     od;
     InfoZigzag1("Generated ", Length(bbb), " streets\n");
 
+    aaa:= Filtered(bbb, x-> x = Call(x, "LongestSuffix"));
+    InfoZigzag1("of which ", Length(aaa), " are irreducible\n");
     
-    # FIXME: swap tests, irreducible is cheaper than Delta = 0.
-    aaa:= Filtered(bbb, x-> isNonZero(Call(x, "Delta").mat));
-    InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
-    
-    aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
-    InfoZigzag1("Starting with ", Length(aaa), " irreducible streets\n");
+    aaa:= Filtered(aaa, x-> isNonZero(Call(x, "Delta").mat));
+    InfoZigzag1("Starting with ", Length(aaa), " nonzero streets\n");
     
     # split idempotents from nilpotents.
     path:= [];  path0:= [];  more:= [];
