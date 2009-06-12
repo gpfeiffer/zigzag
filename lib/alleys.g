@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.44 2008/08/10 23:39:01 goetz Exp $
+#A  $Id: alleys.g,v 1.45 2009/06/12 09:37:45 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -387,6 +387,10 @@ end;
 ##    0</M> corresponds to an edge from <M>\sigma(a)</M> to
 ##    <M>\sigma(a).s</M> labelled by <M>s</M>.  This function returns the
 ##    pair <M>(\sigma(a), \sigma(a).s)</M>.
+##    
+##    Note that <M>\delta(a)</M> is defined as the difference of the end
+##    points of the edge corresponding to the alley <M>a</M>, i.e., 
+##    <M>\delta(a) = \sigma(a) - \sigma(a).s</M>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> ActionAlley(W, [[1, 2, 3, 5], [2, 3]]);
@@ -396,6 +400,8 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
+##  FIXME:  index \sigma(a) and \delta(a) ...
+##
 ActionAlley:= function(W, alley)
     local   suf;
     suf:= SuffixAlley(alley);
@@ -403,40 +409,6 @@ ActionAlley:= function(W, alley)
      OnAlleys(suf, LongestElement(W, suf[1]) * LongestElement(W, alley[1]))];
 end;
 
-
-#############################################################################
-##
-#F  LittleDeltaAlley( <W>, <alley> ) . . . . . . . . . . . . . .  difference.
-##
-##  <#GAPDoc Label="LittleDeltaAlley">
-##  <ManSection>
-##  <Func Name="LittleDeltaAlley" Arg="W, alley"/>
-##  <Returns>
-##    <M>\delta(a) = a - b</M> as the pair <M>(a, b)</M>, where <M>a</M> is
-##    the alley <A>alley</A>.
-##  </Returns>
-##  <Description>
-##  <Example>
-##  gap> W:= CoxeterGroup("A", 5);;
-##  gap> L:= [1, 2, 3, 5];;
-##  gap> LittleDeltaAlley(W, [L, [3]]);
-##  [ [ [ 1, 2, 5 ], [  ] ], [ [ 2, 3, 5 ], [  ] ] ]
-##  gap> LittleDeltaAlley(W, [L, [3,1]]);
-##  [ [ [ 1, 2, 5 ], [ 1 ] ], [ [ 2, 3, 5 ], [ 2 ] ] ]
-##  gap> LittleDeltaAlley(W, [L, [5]]);
-##  [ [ [ 1, 2, 3 ], [  ] ], [ [ 1, 2, 3 ], [  ] ] ]
-##  </Example>
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-##  FIXME: result should be an element of the AlleyAlgebra.
-##
-LittleDeltaAlley:= function(W, alley)
-    local   act;
-    act:= ActionAlley(W, alley);
-    return act;
-end;
 
 #############################################################################
 ##
@@ -557,7 +529,7 @@ end;
 LittleDeltaBarAlley:= function(W, alley)
     local   delta;
     
-    delta:= LittleDeltaAlley(W, alley);
+    delta:= ActionAlley(W, alley);
     delta[2]:= ReversedAlley(W, delta[2]);
     return delta;
 end;
