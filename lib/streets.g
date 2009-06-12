@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.51 2009/06/12 08:59:40 goetz Exp $
+#A  $Id: streets.g,v 1.52 2009/06/12 09:20:19 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1009,16 +1009,11 @@ end;
 ##  <#/GAPDoc>
 ##
 StreetOps.Delta:= function(self)
-    local   sh,  J,  mat,  e;
-
-    sh:= Shapes(self.W);
-    J:= Call(self, "Target");
-    mat:= List(Elements(sh[J]), x-> 0);
-    for e in Elements(self) do
-        mat:= mat + DeltaAlley(self.W, e);
-    od;
-    return rec(support:= J, mat:= mat);
+    local   mat;
+    mat:= Call(self, "Matrix");
+    return rec(support:= mat.target, mat:= Sum(mat.mat));
 end;
+
 
 #############################################################################
 ##
