@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.64 2009/06/12 08:48:04 goetz Exp $
+#A  $Id: descent.g,v 1.65 2009/06/12 10:03:59 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -833,42 +833,26 @@ end;
 ##  <#/GAPDoc>
 ##  
 QuiverRelations0:= function(D)
-    local   isNonZero,  deltaPath,  bbb,  a,  aaa,  path,  path0,  
-            more,  relations,  sss,  l,  null,  all,  mat,  delta,  
-            new,  kern,  adr,  delete,  line,  pos,  i,  b;
+    local   deltaPath,  path,  path0,  more,  a,  relations,  sss,  l,  
+            null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
+            line,  pos,  i,  b;
     
     # maybe we know it already.
     if IsBound(D.quiverRelations) then
         return D.quiverRelations;
     fi;
-        
-    # how to test for zero matrix.
-    isNonZero:= m -> m <> 0*m;
 
+    
     # a path is a sequence of streets, with adjacent ones multiplyable.
     deltaPath:= function(path)
         local   p;
-        
         p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
         return rec(support:= p.target, mat:= Sum(p.mat));
     end;
 
-    # start with a reasonably small set of alley classes.
-    bbb:= List(Shapes(D.W), x-> Call(x, "Street"));
-    for a in bbb do 
-        Append(bbb, Call(a, "MoversPlus"));
-    od;
-    InfoZigzag1("Generated ", Length(bbb), " streets\n");
-
-    aaa:= Filtered(bbb, x-> x = Call(x, "LongestSuffix"));
-    InfoZigzag1("of which ", Length(aaa), " are irreducible\n");
-    
-    aaa:= Filtered(aaa, x-> isNonZero(Call(x, "Delta").mat));
-    InfoZigzag1("Starting with ", Length(aaa), " nonzero streets\n");
-    
-    # split idempotents from nilpotents.
+    # split idempotent from nilpotent generators.
     path:= [];  path0:= [];  more:= [];
-    for a in aaa do
+    for a in BasicStreets(D.W) do
         if a.alley[2] = [] then
             Add(path0, a);
         else
@@ -948,43 +932,25 @@ end;
 # alternatively:
 
 QuiverRelations1:= function(D)
-    local   isNonZero,  deltaPath,  bbb,  a,  aaa,  path,  path0,  
-            more,  relations,  sss,  l,  null,  all,  mat,  delta,  
-            new,  kern,  adr,  delete,  line,  pos,  i,  b;
+    local   deltaPath,  path,  path0,  more,  a,  relations,  sss,  l,  
+            null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
+            line,  pos,  i,  b;
     
     # maybe we know it already.
     if IsBound(D.quiverRelations) then
         return D.quiverRelations;
     fi;
         
-    # how to test for zero matrix.
-    isNonZero:= m -> m <> 0*m;
-
     # a path is a sequence of streets, with adjacent ones multiplyable.
     deltaPath:= function(path)
         local   p;
-        
         p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
         return rec(support:= p.target, mat:= Sum(p.mat));
     end;
 
-
-    # start with a reasonably small set of alley classes.
-    bbb:= List(Shapes(D.W), x-> Call(x, "Street"));
-    for a in bbb do 
-        Append(bbb, Call(a, "MoversPlus"));
-    od;
-    InfoZigzag1("Generated ", Length(bbb), " streets\n");
-
-    aaa:= Filtered(bbb, x-> x = Call(x, "LongestSuffix"));
-    InfoZigzag1("Starting with ", Length(aaa), " irreducible streets\n");
-    
-    aaa:= Filtered(aaa, x-> isNonZero(Call(x, "Delta").mat));
-    InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
-    
-    # split idempotents from nilpotents.
+    # split idempotent from nilpotent generators.
     path:= [];  path0:= [];  more:= [];
-    for a in aaa do
+    for a in BasicStreets(D.W) do
         if a.alley[2] = [] then
             Add(path0, a);
         else
@@ -1061,28 +1027,6 @@ end;
 
 QuiverRelations:= QuiverRelations0;
 
-
-IrreducibleStreets:= function(D)
-    local   isNonZero,  bbb,  a,  aaa;
-    
-    # how to test for zero matrix.
-    isNonZero:= m -> m <> 0*m;
-
-    # start with a reasonably small set of alley classes.
-    bbb:= List(Shapes(D.W), x-> Call(x, "Street"));
-    for a in bbb do 
-        Append(bbb, Call(a, "MoversPlus"));
-    od;
-    InfoZigzag1("Generated ", Length(bbb), " streets\n");
-
-    aaa:= Filtered(bbb, x-> isNonZero(Call(x, "Delta").mat));
-    InfoZigzag1("Of which ", Length(aaa), " are nonzero streets\n");
-    
-    aaa:= Filtered(aaa, x-> x = Call(x, "LongestSuffix"));
-    InfoZigzag1("Starting with ", Length(aaa), " irreducible streets\n");
-    
-    return Filtered(aaa, x-> Call(x, "Length") > 1);
-end;
 
 #############################################################################
 ##
