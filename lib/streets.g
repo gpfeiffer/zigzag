@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.52 2009/06/12 09:20:19 goetz Exp $
+#A  $Id: streets.g,v 1.53 2009/06/12 09:55:36 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1183,6 +1183,35 @@ StreetOps.Monoid:= function(self)
     od;
     return Monoid(List(Transposed(edges), Transformation));
 end;
+
+
+#############################################################################
+## a subset of streets, big enough to generate the descent algebra.
+BasicStreets:= function(W)
+    local   isNonZero,  basic,  a;
+    
+    # how to test for zero matrix.
+    isNonZero:= m -> m <> 0*m;
+
+    # start with a reasonably small set of alley classes.
+    basic:= List(Shapes(W), x-> Call(x, "Street"));
+    for a in basic do 
+        Append(basic, Call(a, "MoversPlus"));
+    od;
+    InfoZigzag1("Generated ", Length(basic), " streets\n");
+    
+    # test for irreducibility.
+    basic:= Filtered(basic, x-> x = Call(x, "LongestSuffix"));
+    InfoZigzag1("of which ", Length(basic), " are irreducible\n");
+    
+    # test for Delta = 0.
+    basic:= Filtered(basic, x-> isNonZero(Call(x, "Delta").mat));
+    InfoZigzag1("Starting with ", Length(basic), " nonzero streets\n");
+    
+    # return survivors.
+    return basic;
+end;
+
 
 
 #############################################################################
