@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.50 2009/06/12 08:48:45 goetz Exp $
+#A  $Id: streets.g,v 1.51 2009/06/12 08:59:40 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -912,16 +912,21 @@ end;
 StreetOps.Matrix:= function(self)
     local   sh,  L,  J,  subL,  mat,  e,  i;
 
-    sh:= Shapes(self.W);
-    L:= Call(self, "Source");
-    J:= Call(self, "Target");
-    subL:= Elements(sh[L]);
-    mat:= NullMat(Size(sh[L]), Size(sh[J]));
-    for e in Elements(self) do
-        i:= Position(subL, e[1]);
-        mat[i]:= mat[i] + DeltaAlley(self.W, e);
-    od;
-    return rec(target:= J, source:= L, mat:= mat);
+    # maybe we know it already.
+    if not IsBound(self.matrix) then
+        sh:= Shapes(self.W);
+        L:= Call(self, "Source");
+        J:= Call(self, "Target");
+        subL:= Elements(sh[L]);
+        mat:= NullMat(Size(sh[L]), Size(sh[J]));
+        for e in Elements(self) do
+            i:= Position(subL, e[1]);
+            mat[i]:= mat[i] + DeltaAlley(self.W, e);
+        od;
+        self.matrix:= mat;
+    fi;
+    
+    return rec(target:= self.target, source:= self.source, mat:= self.matrix);
 end;
 
 ## Deprecate:
