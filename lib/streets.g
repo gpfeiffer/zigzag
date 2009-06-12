@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.48 2008/07/08 19:28:46 goetz Exp $
+#A  $Id: streets.g,v 1.49 2009/06/12 08:29:00 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1161,6 +1161,33 @@ StreetOps.Monoid:= function(self)
     od;
     return Monoid(List(Transposed(edges), Transformation));
 end;
+
+
+#############################################################################
+# given a set of streets, compute all possible paths, ie, sequences of streets
+# of length len.
+PathsStreets:= function(streets, len)
+    local   paths,  old,  i,  new,  a,  b;
+    
+    paths:= [];
+    old:= List(streets, x-> [x]);
+    #    while old <> [] do
+    for i in [1..len] do
+        Add(paths, old);
+        new:= [];
+        for a in old do
+            for b in streets do
+                if Call(a[Length(a)], "Target") = Call(b, "Source") then
+                    Add(new, Concatenation(a, [b]));
+                fi;
+            od;
+        od;
+        old:= new;
+    od;
+    
+    return paths;
+end;
+
 
 
 #############################################################################
