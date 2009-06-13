@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.65 2009/06/12 10:03:59 goetz Exp $
+#A  $Id: descent.g,v 1.66 2009/06/13 16:30:18 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -932,97 +932,231 @@ end;
 # alternatively:
 
 QuiverRelations1:= function(D)
-    local   deltaPath,  path,  path0,  more,  a,  relations,  sss,  l,  
-            null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
-            line,  pos,  i,  b;
+    local   sourcePath,  targetPath,  deltaPath,  eee,  path1,  path0,  
+            a,  path,  sh,  pathmat,  i,  j,  delete,  relations,  
+            adr,  mat,  kern,  line,  pos,  e,  k,  map,  p,  rel,  
+            cons,  space;
     
-    # maybe we know it already.
-    if IsBound(D.quiverRelations) then
-        return D.quiverRelations;
-    fi;
-        
+#    # maybe we know it already.
+#    if IsBound(D.quiverRelations) then
+#        return D.quiverRelations;
+#    fi;
+#        
     # a path is a sequence of streets, with adjacent ones multiplyable.
+    sourcePath:= function(path)
+        return Call(path[1], "Source");
+    end;
+    
+    targetPath:= function(path)
+        return Call(path[Length(path)], "Target");
+    end;
+    
     deltaPath:= function(path)
         local   p;
         p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
         return rec(support:= p.target, mat:= Sum(p.mat));
     end;
-
+    
+    eee:= BasicStreets(D.W);
+    
     # split idempotent from nilpotent generators.
-    path:= [];  path0:= [];  more:= [];
-    for a in BasicStreets(D.W) do
+    path1:= [];  path0:= []; 
+    for a in eee do
         if a.alley[2] = [] then
             Add(path0, a);
         else
-            Add(more, [a]);
+            Add(path1, a);
         fi;
     od;
     InfoZigzag1("of which ", Length(path0), " have length 0.\n");
-    
-    relations:= [];
-    
-    sss:= SubsetsShapes(Shapes(D.W));
-    l:= SetComposition(List(Shapes(D.W), Size));
-    null:= List(sss, x-> 0);
-    
-    while more <> [] do
         
-        Add(path, more);
-        InfoZigzag1("Added ", Length(more), " paths of length ", Length(path), ".\n");
+    repeat 
+        path:= PathsStreets(path1, W.semisimpleRank);
+        sh:= Shapes(W);
         
-        # consider all paths at once.
-        all:= Concatenation(path);
-        
-        mat:= [];
-        for a in all do
-            delta:= deltaPath(a);
-            new:= Copy(null);
-            new{l[delta.support]}:= delta.mat;
-            Add(mat, new);
-        od;
-        
-        kern:= NullspaceMat(mat);
-        InfoZigzag1("Found ", Length(kern), " relations.\n");
-        
-        
-        # FIXME:
-        # suppose adr is a list of back references such that 
-        #   all[i] = path[adr[i][1]][adr[i][2]] ...
-        adr:= Concatenation(List([1..Length(path)], i-> TransposedMat([List(path[i], x-> i), [1..Length(path[i])]])));
-
-        
-        # find all relations.
-        delete:= List(path, x-> []);
-        for line in kern do
-            pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
-            Add(relations, rec(paths:= all{pos}, coeffs:= line{pos}));
-            Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
-        od;
-        
-        # remove obsoletes.
+        # distribute paths over hom-spaces
+        pathmat:= List(sh, x-> List(sh, x-> rec(path:= [], adr:= [])));
         for i in [1..Length(path)] do
-            path[i]:= path[i]{Difference([1..Length(path[i])], delete[i])};
-        od;
-        
-        InfoZigzag1("Deleted: ", List(delete, Length), "\n");
-        InfoZigzag1("Length: ", List(path, Length), ": ", Length(path0) + Sum(path, Length), ".\n");
-        
-        # extend paths.
-        more:= [];
-        for a in path[Length(path)] do
-            for b in path[1] do
-                if a[Length(a)] * b[1] <> [] then
-                    Add(more, Concatenation(a, b));
-                fi; 
+            for j in [1..Length(path[i])] do
+                Add(pathmat[sourcePath(path[i][j])][targetPath(path[i][j])].adr, [i,j]
+                    );
+                Add(pathmat[sourcePath(path[i][j])][targetPath(path[i][j])].path, path[i][j]
+                    );
             od;
         od;
         
+        # calculate all relations
+        delete:= List(path, x-> []);
+        relations:= [];
+        
+        for i in [1..Length(sh)] do
+            for j in [1..Length(sh)] do
+                adr:= pathmat[i][j].adr;
+                mat:= [];
+                for a in adr do
+                    Add(mat, deltaPath(path[a[1]][a[2]]).mat);
+                od;
+                if mat = [] then
+                    kern:= [];
+                else
+                    kern:= NullspaceMat(mat);
+                fi;
+                
+                for line in kern do
+                    pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
+                    Add(relations, rec(paths:= adr{pos}, coeffs:= line{pos}));
+                    Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
+                od;
+                
+                
+                pathmat[i][j].mat:= mat;
+                pathmat[i][j].kern:= kern;
+            od;
+        od;
+        
+#        InfoZigzag1(delete, "\n");
+        
+        path1:= path1{Difference([1..Length(path1)], delete[1])};
+    until delete[1] =  [];
+        
+    # determine consequences of relations.
+    for i in [1..Length(sh)] do
+        for j in [1..Length(sh)] do
+            pathmat[i][j].cons:= [];
+        od;
+    od;
+                
+    for e in path[1] do
+        j:= sourcePath(e);  k:= targetPath(e);
+        
+        # postmultply edge and make map from (i, j) to (i, k).
+        for i in [1..Length(sh)] do
+            map:= [];
+            for p in pathmat[i][j].path do
+                Add(map, Position(pathmat[i][k].path, Concatenation(p, e)));
+            od;
+            for rel in pathmat[i][j].kern do
+                cons:= List(pathmat[i][k].path, x-> 0);
+                cons{map}:= rel;
+                Add(pathmat[i][k].cons, cons);
+            od;
+        od;
+        
+        
+        # premultiply edge and make map from (k, i) to (j, i).
+        for i in [1..Length(sh)] do
+            map:= [];
+            for p in pathmat[k][i].path do
+                Add(map, Position(pathmat[j][i].path, Concatenation(e, p)));
+            od;
+            for rel in pathmat[k][i].kern do
+                cons:= List(pathmat[j][i].path, x-> 0);
+                cons{map}:= rel;
+                Add(pathmat[j][i].cons, cons);
+            od;
+        od;
+        
+        
     od;
     
-    # remember for next visit.
-    D.quiverRelations:= rec(path0:= path0, path:= path, relations:= relations);
+    # find essential relations.
+    for i in [1..Length(sh)] do
+        for j in [1..Length(sh)] do
+            if pathmat[i][j].cons = [] then
+                pathmat[i][j].rela:= pathmat[i][j].kern;
+            else
+                space:= RowSpace(Rationals, pathmat[i][j].kern);
+                space:= space/Subspace(space, pathmat[i][j].cons);
+                pathmat[i][j].rela:= Basis(space).vectors;
+            fi;
+        od;
+    od;
+        
+    # calculate all relations
+    delete:= List(path, x-> []);
+    relations:= [];
     
-    return D.quiverRelations;
+    for i in [1..Length(sh)] do
+        for j in [1..Length(sh)] do
+            adr:= pathmat[i][j].adr;
+            for line in pathmat[i][j].rela do
+                pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
+                Add(relations, rec(paths:= adr{pos}, coeffs:= line{pos}));
+            od;
+            
+            pathmat[i][j].mat:= mat;
+            pathmat[i][j].kern:= kern;
+        od;
+    od;
+        
+        
+    return rec(path0:= path0, path:= path, pathmat:= pathmat, delete:= delete, relations:= relations);
+#    
+#    
+#    relations:= [];
+#    
+#    sss:= SubsetsShapes(Shapes(D.W));
+#    l:= SetComposition(List(Shapes(D.W), Size));
+#    null:= List(sss, x-> 0);
+#    
+#    while more <> [] do
+#        
+#        Add(path, more);
+#        InfoZigzag1("Added ", Length(more), " paths of length ", Length(path), ".\n");
+#        
+#        # consider all paths at once.
+#        all:= Concatenation(path);
+#        
+#        mat:= [];
+#        for a in all do
+#            delta:= deltaPath(a);
+#            new:= Copy(null);
+#            new{l[delta.support]}:= delta.mat;
+#            Add(mat, new);
+#        od;
+#        
+#        kern:= NullspaceMat(mat);
+#        InfoZigzag1("Found ", Length(kern), " relations.\n");
+#        
+#        
+#        # FIXME:
+#        # suppose adr is a list of back references such that 
+#        #   all[i] = path[adr[i][1]][adr[i][2]] ...
+#        adr:= Concatenation(List([1..Length(path)], i-> TransposedMat([List(path[i], x-> i), [1..Length(path[i])]])));
+#
+#        
+#        # find all relations.
+#        delete:= List(path, x-> []);
+#        for line in kern do
+#            pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
+#            Add(relations, rec(paths:= all{pos}, coeffs:= line{pos}));
+#            Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
+#        od;
+#        
+#        # remove obsoletes.
+#        for i in [1..Length(path)] do
+#            path[i]:= path[i]{Difference([1..Length(path[i])], delete[i])};
+#        od;
+#        
+#        InfoZigzag1("Deleted: ", List(delete, Length), "\n");
+#        InfoZigzag1("Length: ", List(path, Length), ": ", Length(path0) + Sum(path, Length), ".\n");
+#        
+#        # extend paths.
+#        more:= [];
+#        for a in path[Length(path)] do
+#            for b in path[1] do
+#                if a[Length(a)] * b[1] <> [] then
+#                    Add(more, Concatenation(a, b));
+#                fi; 
+#            od;
+#        od;
+#        
+#    od;
+#    
+#    # remember for next visit.
+#    D.quiverRelations:= rec(path0:= path0, path:= path, relations:= relations);
+#    
+#    return D.quiverRelations;
 end;
 
 QuiverRelations:= QuiverRelations0;
@@ -1142,6 +1276,73 @@ DisplayQuiver:= function(qr)
             od;
             Print("\n");
         fi;
+    od;
+        
+end;
+
+DisplayQuiver1:= function(qr)
+    local   short,  shortalley,  name,  vertex,  i,  gens,  e,  mat,  
+            r,  p;
+    
+    short:= function(set)
+        local   text,  s;
+        
+        text:= "";
+        for s in set do
+            Append(text, String(s));
+        od;
+        IsString(text);
+        return text;
+    end;
+    
+    shortalley:= function(a)
+        local   text;
+        text:= "[";
+        Append(text, short(a[1]));
+        Append(text, ";");
+        Append(text, short(a[2]));
+        Append(text, "]");
+        return text;
+    end;
+    
+    vertex:= qr.path0;
+    name:= NamesShapes(Shapes(vertex[1].W));
+    PrintDynkinDiagram(vertex[1].W);
+    
+    Print("\nVertices:\n");
+    for i in [1..Length(vertex)] do
+        Print(i, ". ", name[i], " [", short(vertex[i].alley[1]), "]\n");
+    od;
+    
+    if qr.path = [] then return; fi;
+    
+    gens:= List(qr.path[1], x-> x[1]);
+    Print("\nEdges:\n");
+    for e in gens do
+        mat:= Call(e, "Matrix");
+        Print(mat.target, " --> ", mat.source, ". ", 
+              shortalley(e.alley), "\n");
+    od;
+    
+    Print("\nRelations:\n");
+    for r in qr.relations do
+        i:= 0;
+        for p in r.paths do
+            i:= i + 1;
+            Print("+", r.coeffs[i], "(");
+            for e in qr.path[p[1]][p[2]] do
+                mat:= Call(e, "Matrix");
+                Print(mat.source, "---");
+            od;
+            Print(mat.target, ") \c");
+        od;
+        for p in r.paths do
+            for e in qr.path[p[1]][p[2]] do
+                Print(shortalley(e.alley), "\c");
+            od;
+            Print(", ");
+        od;
+        Print("\n");
     od;
         
 end;
