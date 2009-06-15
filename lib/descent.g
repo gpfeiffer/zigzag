@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.66 2009/06/13 16:30:18 goetz Exp $
+#A  $Id: descent.g,v 1.67 2009/06/15 17:44:32 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1083,80 +1083,11 @@ QuiverRelations1:= function(D)
                 pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
                 Add(relations, rec(paths:= adr{pos}, coeffs:= line{pos}));
             od;
-            
-            pathmat[i][j].mat:= mat;
-            pathmat[i][j].kern:= kern;
         od;
     od;
         
         
     return rec(path0:= path0, path:= path, pathmat:= pathmat, delete:= delete, relations:= relations);
-#    
-#    
-#    relations:= [];
-#    
-#    sss:= SubsetsShapes(Shapes(D.W));
-#    l:= SetComposition(List(Shapes(D.W), Size));
-#    null:= List(sss, x-> 0);
-#    
-#    while more <> [] do
-#        
-#        Add(path, more);
-#        InfoZigzag1("Added ", Length(more), " paths of length ", Length(path), ".\n");
-#        
-#        # consider all paths at once.
-#        all:= Concatenation(path);
-#        
-#        mat:= [];
-#        for a in all do
-#            delta:= deltaPath(a);
-#            new:= Copy(null);
-#            new{l[delta.support]}:= delta.mat;
-#            Add(mat, new);
-#        od;
-#        
-#        kern:= NullspaceMat(mat);
-#        InfoZigzag1("Found ", Length(kern), " relations.\n");
-#        
-#        
-#        # FIXME:
-#        # suppose adr is a list of back references such that 
-#        #   all[i] = path[adr[i][1]][adr[i][2]] ...
-#        adr:= Concatenation(List([1..Length(path)], i-> TransposedMat([List(path[i], x-> i), [1..Length(path[i])]])));
-#
-#        
-#        # find all relations.
-#        delete:= List(path, x-> []);
-#        for line in kern do
-#            pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
-#            Add(relations, rec(paths:= all{pos}, coeffs:= line{pos}));
-#            Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
-#        od;
-#        
-#        # remove obsoletes.
-#        for i in [1..Length(path)] do
-#            path[i]:= path[i]{Difference([1..Length(path[i])], delete[i])};
-#        od;
-#        
-#        InfoZigzag1("Deleted: ", List(delete, Length), "\n");
-#        InfoZigzag1("Length: ", List(path, Length), ": ", Length(path0) + Sum(path, Length), ".\n");
-#        
-#        # extend paths.
-#        more:= [];
-#        for a in path[Length(path)] do
-#            for b in path[1] do
-#                if a[Length(a)] * b[1] <> [] then
-#                    Add(more, Concatenation(a, b));
-#                fi; 
-#            od;
-#        od;
-#        
-#    od;
-#    
-#    # remember for next visit.
-#    D.quiverRelations:= rec(path0:= path0, path:= path, relations:= relations);
-#    
-#    return D.quiverRelations;
 end;
 
 QuiverRelations:= QuiverRelations0;
