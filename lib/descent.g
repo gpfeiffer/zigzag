@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.67 2009/06/15 17:44:32 goetz Exp $
+#A  $Id: descent.g,v 1.68 2009/06/18 13:53:19 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -934,8 +934,8 @@ end;
 QuiverRelations1:= function(D)
     local   sourcePath,  targetPath,  deltaPath,  eee,  path1,  path0,  
             a,  path,  sh,  pathmat,  i,  j,  delete,  relations,  
-            adr,  mat,  kern,  line,  pos,  e,  k,  map,  p,  rel,  
-            cons,  space;
+            adr,  mat,  kern,  line,  pos,  e,  k,  map,  p,  new,  
+            rel,  cons,  space;
     
 #    # maybe we know it already.
 #    if IsBound(D.quiverRelations) then
@@ -1035,11 +1035,15 @@ QuiverRelations1:= function(D)
             for p in pathmat[i][j].path do
                 Add(map, Position(pathmat[i][k].path, Concatenation(p, e)));
             od;
+            new:= [];
             for rel in pathmat[i][j].kern do
                 cons:= List(pathmat[i][k].path, x-> 0);
                 cons{map}:= rel;
-                Add(pathmat[i][k].cons, cons);
+                Add(new, cons);
             od;
+            if new <> [] then
+                Add(pathmat[i][k].cons, new);
+            fi;
         od;
         
         
@@ -1049,11 +1053,16 @@ QuiverRelations1:= function(D)
             for p in pathmat[k][i].path do
                 Add(map, Position(pathmat[j][i].path, Concatenation(e, p)));
             od;
+            new:= [];
             for rel in pathmat[k][i].kern do
                 cons:= List(pathmat[j][i].path, x-> 0);
                 cons{map}:= rel;
-                Add(pathmat[j][i].cons, cons);
+                Add(new, cons);
             od;
+            if new <> [] then
+                Add(pathmat[j][i].cons, new);
+            fi;
+            
         od;
         
         
@@ -1066,7 +1075,7 @@ QuiverRelations1:= function(D)
                 pathmat[i][j].rela:= pathmat[i][j].kern;
             else
                 space:= RowSpace(Rationals, pathmat[i][j].kern);
-                space:= space/Subspace(space, pathmat[i][j].cons);
+                space:= space/Subspace(space, Concatenation(pathmat[i][j].cons));
                 pathmat[i][j].rela:= Basis(space).vectors;
             fi;
         od;
@@ -1092,6 +1101,110 @@ end;
 
 QuiverRelations:= QuiverRelations0;
 
+
+SyzygiesQuiver:= function(qr)
+    local   sourcePath,  targetPath,  N,  more,  syz,  l,  i,  j,  
+            cons,  kern,  e,  k,  map,  p,  rel,  space;
+    
+    sourcePath:= function(path)
+        return Call(path[1], "Source");
+    end;
+    
+    targetPath:= function(path)
+        return Call(path[Length(path)], "Target");
+    end;
+
+    # init. 1st syzygies are the relations.
+    N:= Length(qr.pathmat);
+    more:= false;
+             
+    syz:= [];
+    l:=  1;
+    for i in [1..N] do
+        syz[i]:= [];
+        for j in [1..N] do
+            syz[i][j]:= rec(kern:= [qr.pathmat[i][j].kern],
+                            cons:= [qr.pathmat[i][j].cons]);
+            if qr.pathmat[i][j].cons <> [] then
+                more:= true;
+            fi;
+        od;
+    od;
+    
+    while more  do
+        l:= l + 1;
+
+        # compute next layer of syzygies.
+        for i in [1..N] do
+            for j in [1..N] do
+                cons:= syz[i][j].cons[l-1];
+                if cons = [] then
+                    kern:= [];
+                else
+                    kern:= NullspaceMat(cons);
+                fi;
+                syz[i][j].kern[l]:= kern;
+            od;
+        od;
+                
+        # determine consequences.
+        for i in [1..N] do
+            for j in [1..N] do
+                syz[i][j].cons[l]:= [];
+            od;
+        od;
+        
+        for e in qr.path[1] do
+            j:= sourcePath(e);  k:= targetPath(e);
+            
+            # postmultply edge and make map from (i, j) to (i, k).
+            for i in [1..N] do
+                map:= [];
+                for p in qr.pathmat[i][j].path do
+                    Add(map, Position(qr.pathmat[i][k].path, Concatenation(p, e)));
+                od;
+#                for rel in syz[i][j].kern[l] do
+#                    cons:= List(qr.pathmat[i][k].path, x-> 0);
+#                    cons{map}:= rel;
+#                    Add(pathmat[i][k].cons, cons);
+#                od;
+            od;
+            
+            
+            # premultiply edge and make map from (k, i) to (j, i).
+            for i in [1..N] do
+                map:= [];
+                for p in qr.pathmat[k][i].path do
+                    Add(map, Position(qr.pathmat[j][i].path, Concatenation(e, p)));
+                od;
+#                for rel in pathmat[k][i].kern do
+#                    cons:= List(qr.pathmat[j][i].path, x-> 0);
+#                    cons{map}:= rel;
+#                    Add(pathmat[j][i].cons, cons);
+#                od;
+            od;
+            
+            
+        od;
+    
+        # find essential relations.
+#        for i in [1..N] do
+#            for j in [1..N] do
+#                if pathmat[i][j].cons = [] then
+#                    pathmat[i][j].rela:= pathmat[i][j].kern;
+#                else
+#                    space:= RowSpace(Rationals, pathmat[i][j].kern);
+#                    space:= space/Subspace(space, pathmat[i][j].cons);
+#                    pathmat[i][j].rela:= Basis(space).vectors;
+#                fi;
+#            od;
+#        od;
+#        
+    od;
+    
+    return syz;
+        
+end;
 
 #############################################################################
 ##
