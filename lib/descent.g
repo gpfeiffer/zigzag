@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.68 2009/06/18 13:53:19 goetz Exp $
+#A  $Id: descent.g,v 1.69 2009/06/19 11:11:51 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -987,7 +987,6 @@ QuiverRelations1:= function(D)
         
         # calculate all relations
         delete:= List(path, x-> []);
-        relations:= [];
         
         for i in [1..Length(sh)] do
             for j in [1..Length(sh)] do
@@ -1004,7 +1003,6 @@ QuiverRelations1:= function(D)
                 
                 for line in kern do
                     pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
-                    Add(relations, rec(paths:= adr{pos}, coeffs:= line{pos}));
                     Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
                 od;
                 
@@ -1082,7 +1080,6 @@ QuiverRelations1:= function(D)
     od;
         
     # calculate all relations
-    delete:= List(path, x-> []);
     relations:= [];
     
     for i in [1..Length(sh)] do
