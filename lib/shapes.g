@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.66 2008/08/17 20:02:16 goetz Exp $
+#A  $Id: shapes.g,v 1.67 2009/06/22 15:14:06 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1191,17 +1191,22 @@ ShapeOps.CartanName:= function(sh)
         fi;
     od;
 
-    for t in [1..Length(typ)] do
-        if typ[t][2] > 9 then
-            Error("not yet implemented");
-        fi;
-    od;
-
+#    for t in [1..Length(typ)] do
+#        if typ[t][2] > 9 then
+#            Error("not yet implemented");
+#        fi;
+#    od;
 
     name:= typ[1][1];
     Append(name, "_{");
     for t in typ do
-        Append(name, String(t[2]));
+        if t[2] > 9 then
+            Add(name, '.');
+            Append(name, String(t[2]));
+            Add(name, '.');
+        else
+            Append(name, String(t[2]));
+        fi;
     od;
     Append(name, "}");
     IsString(name);
