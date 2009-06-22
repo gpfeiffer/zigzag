@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.69 2009/06/19 11:11:51 goetz Exp $
+#A  $Id: descent.g,v 1.70 2009/06/22 15:02:24 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -971,11 +971,16 @@ QuiverRelations1:= function(D)
     InfoZigzag1("of which ", Length(path0), " have length 0.\n");
         
     repeat 
-        path:= PathsStreets(path1, W.semisimpleRank);
-        sh:= Shapes(W);
+        path:= PathsStreets(path1, D.W.semisimpleRank);
+        sh:= Shapes(D.W);
         
         # distribute paths over hom-spaces
         pathmat:= List(sh, x-> List(sh, x-> rec(path:= [], adr:= [])));
+        for j in [1..Length(path0)] do  # here actually i == j !!!
+            i:= Call(path0[j], "Source");
+            Add(pathmat[i][i].adr, [0,j]);
+            Add(pathmat[i][i].path, []);
+        od;
         for i in [1..Length(path)] do
             for j in [1..Length(path[i])] do
                 Add(pathmat[sourcePath(path[i][j])][targetPath(path[i][j])].adr, [i,j]
@@ -993,7 +998,11 @@ QuiverRelations1:= function(D)
                 adr:= pathmat[i][j].adr;
                 mat:= [];
                 for a in adr do
-                    Add(mat, deltaPath(path[a[1]][a[2]]).mat);
+                    if a[1] = 0 then
+                        Add(mat, Call(path0[a[2]], "Delta").mat);
+                    else
+                        Add(mat, deltaPath(path[a[1]][a[2]]).mat);
+                    fi;
                 od;
                 if mat = [] then
                     kern:= [];
@@ -1009,6 +1018,13 @@ QuiverRelations1:= function(D)
                 
                 pathmat[i][j].mat:= mat;
                 pathmat[i][j].kern:= kern;
+                pathmat[i][j].basis:= Difference([1..Length(mat)], List(kern, x-> Position(x, 1)));
+                
+                # express each path in terms of chosen basis.
+                mat:= TransposedMat(Reversed(mat));
+                TriangulizeMat(mat);
+                mat:= Filtered(mat, x-> x <> 0*x);
+                pathmat[i][j].map:= Reversed(TransposedMat(Reversed(mat)));
             od;
         od;
         
@@ -1100,108 +1116,166 @@ QuiverRelations:= QuiverRelations0;
 
 
 SyzygiesQuiver:= function(qr)
-    local   sourcePath,  targetPath,  N,  more,  syz,  l,  i,  j,  
-            cons,  kern,  e,  k,  map,  p,  rel,  space;
+    local   basisPim,  N,  prores,  matrixEdge;
     
-    sourcePath:= function(path)
-        return Call(path[1], "Source");
-    end;
-    
-    targetPath:= function(path)
-        return Call(path[Length(path)], "Target");
+    # how to find the basis of a pim.
+    basisPim:= function(i)
+        return Concatenation(List(qr.pathmat[i], x-> x.adr{x.basis}));
     end;
 
-    # init. 1st syzygies are the relations.
     N:= Length(qr.pathmat);
-    more:= false;
-             
-    syz:= [];
-    l:=  1;
-    for i in [1..N] do
-        syz[i]:= [];
-        for j in [1..N] do
-            syz[i][j]:= rec(kern:= [qr.pathmat[i][j].kern],
-                            cons:= [qr.pathmat[i][j].cons]);
-            if qr.pathmat[i][j].cons <> [] then
-                more:= true;
+
+    # now for the projective resolutions.
+    prores:= List([1..N],
+                  x-> rec(mat:= [], src:= []));
+
+    # how to turn an edge into a matrix (of the hom from one pim to another)
+    matrixEdge:= function(e)
+        local   j,  k,  pj,  pk,  dimj,  dimk,  comj,  comk,  matrix,  
+                i,  map,  p;
+
+        j:= Call(e[1], "Source");
+        k:= Call(e[1], "Target");
+
+        pj:= qr.pathmat[j];
+        pk:= qr.pathmat[k];
+
+        dimj:= List(pj, x-> Length(x.basis));
+        dimk:= List(pk, x-> Length(x.basis));
+
+        comj:= SetComposition(dimj);
+        comk:= SetComposition(dimk);
+
+        matrix:= NullMat(Sum(dimk), Sum(dimj));
+
+        # premultiply edge and make map from (k, i) to (j, i).
+        for i in [1..N] do
+            map:= [];
+            for p in pk[i].path{pk[i].basis} do
+                Add(map, pj[i].map[Position(pj[i].path, Concatenation(e, p))]);
+            od;
+            if map <> [] then
+                matrix{comk[i]}{comj[i]}:= map;
             fi;
         od;
-    od;
-    
-    while more  do
-        l:= l + 1;
 
-        # compute next layer of syzygies.
-        for i in [1..N] do
-            for j in [1..N] do
-                cons:= syz[i][j].cons[l-1];
-                if cons = [] then
-                    kern:= [];
-                else
-                    kern:= NullspaceMat(cons);
-                fi;
-                syz[i][j].kern[l]:= kern;
-            od;
-        od;
-                
-        # determine consequences.
-        for i in [1..N] do
-            for j in [1..N] do
-                syz[i][j].cons[l]:= [];
-            od;
-        od;
-        
-        for e in qr.path[1] do
-            j:= sourcePath(e);  k:= targetPath(e);
-            
-            # postmultply edge and make map from (i, j) to (i, k).
-            for i in [1..N] do
-                map:= [];
-                for p in qr.pathmat[i][j].path do
-                    Add(map, Position(qr.pathmat[i][k].path, Concatenation(p, e)));
-                od;
-#                for rel in syz[i][j].kern[l] do
-#                    cons:= List(qr.pathmat[i][k].path, x-> 0);
-#                    cons{map}:= rel;
-#                    Add(pathmat[i][k].cons, cons);
-#                od;
-            od;
-            
-            
-            # premultiply edge and make map from (k, i) to (j, i).
-            for i in [1..N] do
-                map:= [];
-                for p in qr.pathmat[k][i].path do
-                    Add(map, Position(qr.pathmat[j][i].path, Concatenation(e, p)));
-                od;
-#                for rel in pathmat[k][i].kern do
-#                    cons:= List(qr.pathmat[j][i].path, x-> 0);
-#                    cons{map}:= rel;
-#                    Add(pathmat[j][i].cons, cons);
-#                od;
-            od;
-            
-            
-        od;
-    
-        # find essential relations.
-#        for i in [1..N] do
-#            for j in [1..N] do
-#                if pathmat[i][j].cons = [] then
-#                    pathmat[i][j].rela:= pathmat[i][j].kern;
-#                else
-#                    space:= RowSpace(Rationals, pathmat[i][j].kern);
-#                    space:= space/Subspace(space, pathmat[i][j].cons);
-#                    pathmat[i][j].rela:= Basis(space).vectors;
-#                fi;
-#            od;
-#        od;
-#        
+        Add(prores[j].src, k);
+        Append(prores[j].mat, matrix);
+
+        return matrix;
+    end;
+
+    return rec(edges:=  List(qr.path[1], matrixEdge), prores:= prores);
+
+end;
+
+##  Suppose a module M is given as a submodule of a direct sum of projectives, ie., as a list of indices and a basis, find a projective cover, ie. a direct sum P of pims and a linear map  P -> M.
+##  
+ProjectiveCover:= function(qr, pims, basis) 
+    local   N,  iii,  lll,  dim,  o,  com,  d,  ind,  pim,  i,  space,  
+            radical,  eMat,  e,  j,  k,  new,  pi,  map,  p,  ss,  
+            simples,  matrix,  top,  line,  a;
+
+    N:= Length(qr.pathmat);  # nr of shapes.
+    iii:= [1..Length(pims)];
+    lll:= [1..Length(basis)];
+
+    # set up some addresses
+    dim:= List(pims, j-> List(qr.pathmat[j], x-> Length(x.basis)));
+    o:= 0; # offset;
+    com:= [];
+    for d in dim do
+        Add(com, SetComposition(d) + o);
+        o:= o + Sum(d);
     od;
     
-    return syz;
+    # assert that no basis elt mixes pims and attach pims to them
+    ind:= List([1..N], i-> Concatenation(com{iii}[i]));
+    pim:= List(basis, x-> Filtered([1..N], i-> x{ind[i]} <> 0 * ind[i]));
+    for i in [1..Length(pim)] do
+        if Length(pim[i]) <> 1 then
+            Error("basis elt mixes");
+        else
+            pim[i]:= pim[i][1];
+        fi;
+    od;
         
+    # compute radical of the module: postmultiply edges
+    space:= RowSpace(Rationals, basis);
+    radical:= Subspace(space, []);
+    eMat:= [];
+    for e in qr.path[1] do
+        j:= Call(e[1], "Source");
+        k:= Call(e[1], "Target");
+        new:= 0*basis;
+        for i in iii do
+            pi:= qr.pathmat[pims[i]];
+            map:= [];
+            for p in pi[j].path{pi[j].basis} do
+                Add(map, pi[k].map[Position(pi[k].path, Concatenation(p, e))]);
+            od;
+            if map <> [] then 
+                new{lll}{com[i][k]}:= basis{lll}{com[i][j]} * map;
+            fi;
+        od;
+        
+        for k in new do
+            if not k in radical then
+                radical:= radical + Subspace(space, [k]);
+            fi;
+        od;
+        
+        
+        # express new in terms of basis
+        new:= TransposedMat(Concatenation(basis, new));
+        TriangulizeMat(new);
+        k:= Length(basis);
+        Add(eMat, TransposedMat(new{[1..k]}{k+[1..k]}));
+    od;
+    
+    # form the quotient
+    ss:= Basis(space/radical).vectors;
+    j:= Length(ss);
+    
+    # assert that these are a subset of the original basis.
+    ss:= List(ss, x-> Position(basis, x));
+    if false in ss then
+        Error("quotient basis is not a subset");
+    fi;
+    
+      
+    
+#    # express ss in terms of basis
+#    ss:= TransposedMat(Concatenation(basis, ss));
+#    TriangulizeMat(ss);
+#    k:= Length(basis);
+#    ss:= TransposedMat(ss{[1..k]}{k+[1..j]});
+
+    # identify simples (as *the* vMat that doesnt act trivially)
+    simples:= pim{ss};
+    
+    
+    # compute new matrix
+    matrix:= [];
+    for k in ss do
+        top:= List(basis, x-> 0);  top[k]:= 1;      # make k-th basis vector
+        pi:= qr.pathmat[pim[k]];
+        for j in [1..N] do
+            for p in pi[j].path{pi[j].basis} do
+                line:= Copy(top);
+                for a in p do
+                    line:= line * eMat[Position(qr.path[1], [a])];
+                od;
+                Add(matrix, line);
+            od;
+        od;
+    od;
+             
+
+    return rec(pim:= pim, com:= com, radical:= radical, eMat:= eMat, simples:= simples, matrix:= matrix);
 end;
+
+    
 
 #############################################################################
 ##
