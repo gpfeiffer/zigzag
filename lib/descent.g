@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.70 2009/06/22 15:02:24 goetz Exp $
+#A  $Id: descent.g,v 1.71 2009/06/23 09:00:31 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1275,7 +1275,31 @@ ProjectiveCover:= function(qr, pims, basis)
     return rec(pim:= pim, com:= com, radical:= radical, eMat:= eMat, simples:= simples, matrix:= matrix);
 end;
 
+ProjectiveResolutions:= function(qr)
+    local   pr,  sz,  N,  new,  sim,  null,  p;
+
+    pr:= [];
+    sz:= SyzygiesQuiver(qr);
+    for N in [1..Length(sz.prores)] do
+        new:= [[N]];
+        sim:= sz.prores[N].src;
+        if sim <> [] then
+            Add(new, sim);
+            null:= NullspaceMat(sz.prores[N].mat);
+            while null <> [] do
+                p:= ProjectiveCover(qr, sim, null);
+                sim:=  p.simples;
+                Add(new, sim);
+                null:= NullspaceMat(p.matrix);
+            od;
+        fi;
+        Add(pr, new);
+    od;
     
+    return pr;
+end;
+
+
 
 #############################################################################
 ##
@@ -1630,15 +1654,15 @@ BlocksCartan:= function(car)
 end;
 
 ##  given a q-Cartan matrix, determine the minimal projective resolutions
-ProjectiveResolutions:= function(D)
-    local   q,  qr,  car;
-
-    q:= X(Rationals);
-    qr:= QuiverRelations(D);
-    car:= QCartanMatQuiver(qr, q);
-    return List(car^-1, x-> List(x, y-> Value(y, -q)));
-end;
-
+#ProjectiveResolutions:= function(D)
+#    local   q,  qr,  car;
+#
+#    q:= X(Rationals);
+#    qr:= QuiverRelations(D);
+#    car:= QCartanMatQuiver(qr, q);
+#    return List(car^-1, x-> List(x, y-> Value(y, -q)));
+#end;
+#
 
 #############################################################################
 ##
