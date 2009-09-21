@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.53 2009/06/12 09:55:36 goetz Exp $
+#A  $Id: streets.g,v 1.54 2009/09/21 14:43:08 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1216,7 +1216,7 @@ end;
 
 #############################################################################
 # given a set of streets, compute all possible paths, ie, sequences of streets
-# of length len.
+# of length up to len.
 PathsStreets:= function(streets, len)
     local   paths,  old,  i,  new,  a,  b;
     
