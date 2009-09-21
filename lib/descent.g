@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.73 2009/09/21 10:04:24 goetz Exp $
+#A  $Id: descent.g,v 1.74 2009/09/21 10:05:31 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1644,17 +1644,6 @@ BlocksCartan:= function(car)
     od;
     return Set(equ);
 end;
-
-##  given a q-Cartan matrix, determine the minimal projective resolutions
-#ProjectiveResolutions:= function(D)
-#    local   q,  qr,  car;
-#
-#    q:= X(Rationals);
-#    qr:= QuiverRelations(D);
-#    car:= QCartanMatQuiver(qr, q);
-#    return List(car^-1, x-> List(x, y-> Value(y, -q)));
-#end;
-#
 
 #############################################################################
 ##
