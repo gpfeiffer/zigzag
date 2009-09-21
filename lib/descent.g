@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.74 2009/09/21 10:05:31 goetz Exp $
+#A  $Id: descent.g,v 1.75 2009/09/21 12:21:57 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -954,45 +954,89 @@ end;
 
 
 
-# alternatively:
+#  alternatively:  
+#  with a slightly different, more efficient data structure.
+#  
+##  The resulting object qr has components:
+##  
+##  path0
+##  a list of streets of length 0, the vertices, or paths of length 0.
+##  
+##  path
+##  a list, with path[i] being the list of all? paths of length i,
+##  where a path is a list of Streets of length > 0.
+##  In particular path[1] is the list of streets chosen to represent
+##  the edges
+##  
+##  relations
+##  
+##  pathmat
+##  a matrix with one entry for each  homspace with components
+##
+##    path
+##    the list of paths in this hom-space
+##  
+##    adr
+##    the list of addresses of the paths in the above lists path0, path.
+##  
+##    mat
+##    the list of delta-values, ie. images in the descent algebra
+##  
+##    kern
+##    the nullspacemat of mat, a basis of the kernel of delta
+##  
+##    basis
+##    a list of positions in path, selecting a preimage of a basis
+##  
+##    map
+##    how to express the image of a path in terms of the basis.
+##  
+##    cons
+##    consequences of relations in other hom spaces to this one
+##  
+##    rela
+##    essential relations on this hom-space
+##
 
 QuiverRelations1:= function(D)
-    local   sourcePath,  targetPath,  deltaPath,  eee,  path1,  path0,  
-            a,  path,  sh,  pathmat,  i,  j,  delete,  relations,  
-            adr,  mat,  kern,  line,  pos,  e,  k,  map,  p,  new,  
-            rel,  cons,  space;
+    local   sourcePath,  targetPath,  deltaPath,  path1,  path0,  s,  
+            path,  sh,  pathmat,  j,  i,  t,  delete,  adr,  mat,  a,  
+            kern,  line,  pos,  e,  k,  map,  p,  new,  rel,  cons,  
+            space,  relations;
     
 #    # maybe we know it already.
 #    if IsBound(D.quiverRelations) then
 #        return D.quiverRelations;
 #    fi;
 #        
-    # a path is a sequence of streets, with adjacent ones multiplyable.
+    # a path is a sequence of streets, with adjacent ones multiplyable:
+    # it has a source ...
     sourcePath:= function(path)
         return Call(path[1], "Source");
     end;
     
+    # ... it has a target ...
     targetPath:= function(path)
         return Call(path[Length(path)], "Target");
     end;
     
+    # ... and an associated delta-value.
     deltaPath:= function(path)
         local   p;
         p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
         return rec(support:= p.target, mat:= Sum(p.mat));
     end;
     
-    eee:= BasicStreets(D.W);
-    
     # split idempotent from nilpotent generators.
     path1:= [];  path0:= []; 
-    for a in eee do
-        if a.alley[2] = [] then
-            Add(path0, a);
+    for s in BasicStreets(D.W) do
+        if s.alley[2] = [] then
+            Add(path0, s);
         else
-            Add(path1, a);
+            Add(path1, s);
         fi;
     od;
+    InfoZigzag1("Starting with ", Length(path0) + Length(path1), " paths,\n");
     InfoZigzag1("of which ", Length(path0), " have length 0.\n");
         
     repeat 
@@ -1001,17 +1045,17 @@ QuiverRelations1:= function(D)
         
         # distribute paths over hom-spaces
         pathmat:= List(sh, x-> List(sh, x-> rec(path:= [], adr:= [])));
-        for j in [1..Length(path0)] do  # here actually i == j !!!
-            i:= Call(path0[j], "Source");
-            Add(pathmat[i][i].adr, [0,j]);
-            Add(pathmat[i][i].path, []);
+        for j in [1..Length(path0)] do  # here actually s == j !!!
+            s:= Call(path0[j], "Source");
+            Add(pathmat[s][s].adr, [0,j]);
+            Add(pathmat[s][s].path, []);
         od;
         for i in [1..Length(path)] do
             for j in [1..Length(path[i])] do
-                Add(pathmat[sourcePath(path[i][j])][targetPath(path[i][j])].adr, [i,j]
-                    );
-                Add(pathmat[sourcePath(path[i][j])][targetPath(path[i][j])].path, path[i][j]
-                    );
+                s:= sourcePath(path[i][j]);
+                t:= targetPath(path[i][j]);
+                Add(pathmat[s][t].adr, [i,j]);
+                Add(pathmat[s][t].path, path[i][j]);
             od;
         od;
         
@@ -1053,7 +1097,7 @@ QuiverRelations1:= function(D)
             od;
         od;
         
-#        InfoZigzag1(delete, "\n");
+        InfoZigzag1(delete, " ", delete[1], "\n");
         
         path1:= path1{Difference([1..Length(path1)], delete[1])};
     until delete[1] =  [];
@@ -1134,10 +1178,10 @@ QuiverRelations1:= function(D)
     od;
         
         
-    return rec(path0:= path0, path:= path, pathmat:= pathmat, delete:= delete, relations:= relations);
+    return rec(path0:= path0, path:= path, pathmat:= pathmat, relations:= relations);
 end;
 
-QuiverRelations:= QuiverRelations0;
+QuiverRelations:= QuiverRelations1;
 
 
 SyzygiesQuiver:= function(qr)
@@ -1375,7 +1419,7 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-DisplayQuiver:= function(qr)
+DisplayQuiver0:= function(qr)
     local   short,  shortalley,  name,  vertex,  i,  gens,  e,  mat,  
             r,  p;
     
@@ -1510,6 +1554,8 @@ DisplayQuiver1:= function(qr)
     od;
         
 end;
+
+DisplayQuiver:= DisplayQuiver1;
 
 #############################################################################
 ##
