@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.75 2009/09/21 12:21:57 goetz Exp $
+#A  $Id: descent.g,v 1.76 2009/09/21 14:44:55 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1561,7 +1561,7 @@ DisplayQuiver:= DisplayQuiver1;
 ##
 ##  The Cartan Mat, decomposed along the radical series.
 ##
-DimensionsMatrix:= function(qr)
+DimensionsMatrix0:= function(qr)
     local   W,  l,  dim,  k,  mat,  p,  i,  j;
     
     W:= qr.path0[1].W;
@@ -1580,23 +1580,61 @@ DimensionsMatrix:= function(qr)
     return dim;
 end;
 
+DimensionsMatrix1:= function(qr)
+    local   l,  dim,  i,  j,  m,  k,  a;
+    
+    l:= Length(qr.pathmat);
+    dim:= List([1..Length(qr.path)], k-> NullMat(l, l));
+    
+    for i in [1..l] do 
+        for j in [1..l] do
+            m:= qr.pathmat[i][j];
+            for k in m.basis do
+                a:= m.adr[k];
+                if a[1] > 0 then
+                    dim[a[1]][i][j]:= dim[a[1]][i][j] + 1;
+                fi;
+            od;
+        od;
+    od;
+    
+    return dim;
+end;
+
+DimensionsMatrix:= DimensionsMatrix1;
+
+
 #############################################################################
-CartanMatQuiver:= function(qr)
+CartanMatQuiver0:= function(qr)
     local   car;
     
-    car:= Sum(DimensionsMatrix(qr));
+    car:= Sum(DimensionsMatrix0(qr));
     return car + car^0;
 end;
   
+CartanMatQuiver1:= function(qr)
+    return List(qr.pathmat, x-> List(x, y-> Length(y.basis)));
+end;
+
+CartanMatQuiver:= CartanMatQuiver1;
   
-QCartanMatQuiver:= function(qr, q)
+  
+QCartanMatQuiver0:= function(qr, q)
     local   dim,  car;
     
-    dim:= DimensionsMatrix(qr);
+    dim:= DimensionsMatrix0(qr);
     car:= Sum([1..Length(dim)], i-> q^i * dim[i]);
     return car + car^0;
 end;
 
+QCartanMatQuiver1:= function(qr, q)
+    return List(qr.pathmat, x-> List(x, y-> Sum(y.adr{y.basis}, x-> q^x[1]))); 
+end;
+
+QCartanMatQuiver:= QCartanMatQuiver1;
+
+
+##  
 ##  how to typeset a square matrix with named rows and cols.
 LaTeXMatNames:= function(mat, names, blocks, list)
     local   bb,  l,  i,  j;
