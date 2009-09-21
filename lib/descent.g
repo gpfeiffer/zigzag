@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.72 2009/09/21 10:02:37 goetz Exp $
+#A  $Id: descent.g,v 1.73 2009/09/21 10:04:24 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1625,113 +1625,6 @@ LaTeXQCartan:= function(W, file)
 end;
     
     
-#############################################################################
-## deprecate:  
-RelationsMatrix:= function(qr)
-    local   capp,  dim,  inc,  pth,  car,  sum,  mat,  rel,  cap;
-
-    # return a matrix cap of the same dimension as mat, such that cap + mat >=0.
-    capp:= function(mat)
-        local   cap,  row,  new,  a;
-        cap:= [];
-        for row in mat do
-            new:= [];
-            for a in row do
-                if a < 0 then
-                    Add(new, -a);
-                else
-                    Add(new, 0);
-                fi;
-            od;
-            Add(cap, new);
-        od;
-        return cap;
-    end;
-
-
-
-# output:
-#    a list mat such that
-#
-#      car = \sum_i inc^i - rel[i]
-#
-#    where 
-#
-#      rel[0] = 0 (and rel[1] = 0)
-#
-#    and
-#
-#      rel[i] = inc * rel[i-1] + rel[i-1] * inc + mat[i]
-#
-    dim:= DimensionsMatrix(qr);
-    inc:= dim[1];
-    pth:= inc^0;
-    car:= Sum(dim) + pth;
-    sum:= pth;
-    mat:= [];
-    rel:= 0 * pth;
-    while pth <> 0 * pth do
-        pth:= pth * inc;
-        sum:= sum + pth;
-        rel:= inc * rel + rel + rel * inc;
-        cap:= capp(car - sum + rel);
-        Add(mat, cap);
-        rel:= rel + cap;
-    od;
-    return mat;
-end;
-
-
-#############################################################################
-RelationsMatrix2:= function(qr)
-    local   capp,  dim,  inc,  mat,  rel,  i,  cap;
-
-    # return a matrix cap of the same dimension as mat, such that cap + mat >=0.
-    capp:= function(mat)
-        local   cap,  row,  new,  a;
-        cap:= [];
-        for row in mat do
-            new:= [];
-            for a in row do
-                if a < 0 then
-                    Add(new, -a);
-                else
-                    Add(new, 0);
-                fi;
-            od;
-            Add(cap, new);
-        od;
-        return cap;
-    end;
-
-
-
-# output:
-#    a list mat such that
-#
-#      car = \sum_i inc^i - rel[i]
-#
-#    where 
-#
-#      rel[0] = 0 (and rel[1] = 0)
-#
-#    and
-#
-#      rel[i] = inc * rel[i-1] + rel[i-1] * inc + mat[i]
-#
-    dim:= DimensionsMatrix(qr);
-    inc:= dim[1];
-    mat:= [];
-    rel:= 0 * inc;
-    for i in [1..Length(dim)] do
-        rel:= inc * rel + rel * inc;
-        cap:= capp(dim[i] - inc^i + rel);
-        Add(mat, cap);
-        rel:= rel + cap;
-    od;
-    return mat;
-end;
-
 ##  given a Cartan matrix, determine the blocks (as an equivalence on the 
 ##  row and column indices
 BlocksCartan:= function(car)
