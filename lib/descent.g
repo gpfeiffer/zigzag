@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.71 2009/06/23 09:00:31 goetz Exp $
+#A  $Id: descent.g,v 1.72 2009/09/21 10:02:37 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -767,6 +767,31 @@ CartanMatrixA:=function(n)
     return car;
 end;
 
+QCartanMatrixA:=function(n, q)
+    local   typeComposition,  par,  p,  car,  i,  x,  j;
+
+    #  the type of a composition is determined by the sums of the 
+    #  factors of its Lyndon Factorization
+    typeComposition:=function(com)
+        local sum;
+        
+        sum:= List(LyndonFactorisation(com), Sum);
+        Sort(sum);
+        return Reversed(sum);
+    end;
+
+    par:= LabelsShapes(Shapes(CoxeterGroup("A", n)));
+    p:= Length(par);
+    car:= q * NullMat(p, p);
+    for i in [1..p] do 
+        for x in Arrangements(par[i], Length(par[i])) do
+            j:= Position(par, typeComposition(x));
+            car[j][i]:= car[j][i] + q^(Length(par[i]) - Length(par[j]));
+        od;
+    od;
+    return car;
+end;
+
 ##  this is only conjecturally correct:  
 ##  
 CartanMatrixB:=function(n)
@@ -1526,8 +1551,82 @@ QCartanMatQuiver:= function(qr, q)
     return car + car^0;
 end;
 
+##  how to typeset a square matrix with named rows and cols.
+LaTeXMatNames:= function(mat, names, blocks, list)
+    local   bb,  l,  i,  j;
 
+    blocks:= Filtered(List(blocks, x-> Intersection(x, list)), y-> y <> []);
+    bb:= List(blocks, x-> x[1]); # the block beginners.
+    l:= Length(mat);  # the common length of *all* arguments
+    
+    # print preamble
+    Print("\\begin{array}{r|\c");
+    for i in list do
+        if i in bb then 
+            Print("|");
+        fi;
+        Print("c");
+    od;
+    Print("|}\n");
+    
+    # print rows
+    for i in list do
+        if i in bb then
+            Print("\\hline\n");
+        fi;
+        
+        Print(names[i]);
+        for j in [1..l] do
+            Print("&\c");
+            if mat[i][j] = 0*mat[i][j] then
+                Print(".");
+            else
+                Print(String(mat[i][j]));
+            fi;
+        od;
+        Print("\\\\\n");
+    od;
+    
+    # print closing
+    Print("\\hline\n\\end{array}\n");
+end;
+
+# the kernel of a list is the equvalence relation 'have the same value'
+KernelList:= function(list)
+    local   vals,  i,  v;
+    vals:= rec();
+    for i in [1..Length(list)] do
+        v:= list[i];
+        if IsBound(vals.(v)) then
+            Add(vals.(v), i);
+        else
+            vals.(v):= [i];
+        fi;
+    od;
+    return Set(List(RecFields(vals), v-> vals.(v)));
+end;
+
+    
+LaTeXQCartan:= function(W, file)    
+    local   D,  qr,  car,  q,  qar,  sh,  nam,  list,  blocks;
+
+    D:= DescentAlgebra(W);
+    qr:= QuiverRelations(D);
+    car:= CartanMatQuiver(qr);
+    q:= X(Rationals); q.name:= "q";
+    qar:= QCartanMatQuiver(qr, q);
+    sh:= Shapes(W);
+    nam:= NamesShapes(sh);
+    list:= [1..Length(sh)];
+    blocks:= KernelList(List(sh, Rank));
+
+    PrintTo(file, LaTeXMatNames(qar, nam, blocks, list));
+    AppendTo(file, LaTeXMatNames(qar^-1, nam, blocks, list));
+end;
+    
+    
 #############################################################################
+## deprecate:  
 RelationsMatrix:= function(qr)
     local   capp,  dim,  inc,  pth,  car,  sum,  mat,  rel,  cap;
 
