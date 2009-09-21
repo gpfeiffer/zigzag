@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.32 2009/06/22 20:46:23 goetz Exp $
+#A  $Id: init.g,v 1.33 2009/09/21 10:07:39 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -11,8 +11,8 @@
 
 #############################################################################
 ZIGZAG:= rec();
-ZIGZAG.Version:= "0.75";
-ZIGZAG.Date:= "18-06-2009";
+ZIGZAG.Version:= "0.76";
+ZIGZAG.Date:= "24-06-2009";
 
 #############################################################################
 ##
@@ -60,10 +60,11 @@ AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
   CharacterDescentElt, MaximalAJKL, MatCompressedAJKL, ProductCompressedAJKL,
   RightRegularX, LeftRegularX, LeftRegularY, LeftRegularZ, LeftRegularE,
   SymmetricMatrix, ECharacters, MatQuiverSym, LyndonFactorisation,
-  CartanMatrixA, CartanMatrixB, QuiverRelations0, QuiverRelations1,
-  QuiverRelations, DisplayQuiver, DimensionsMatrix, CartanMatQuiver,
-  QCartanMatQuiver, RelationsMatrix, RelationsMatrix2, BlocksCartan,
-  ProjectiveResolutions);
+  CartanMatrixA, QCartanMatrixA, CartanMatrixB, QuiverRelations0,
+  QuiverRelations1, QuiverRelations, SyzygiesQuiver, ProjectiveCover,
+  ProjectiveResolutions, DisplayQuiver, DisplayQuiver1, DimensionsMatrix,
+  CartanMatQuiver, QCartanMatQuiver, LaTeXMatNames, KernelList, LaTeXQCartan,
+  BlocksCartan);
 
 AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
   IteratorBreadthFirst, PreOrder, NrPreOrder, IteratorPreOrder,
