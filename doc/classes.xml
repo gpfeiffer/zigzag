@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  ZigZag Documentation
+     $Id: classes.xml,v 1.1 2009/12/05 01:31:44 goetz Exp $
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:classes">
+<Heading>Conjugacy Classes.</Heading>
+
+<#Include Label="Intro:Classes">
+
+The functions described here are in the file <F>classes.g</F>.
+
+<Section>
+<Heading>Cyclic Shift Class Constructors and Methods.</Heading>
+
+In this section I describe the functions that construct cyclic shift classes
+and work on cyclic shift classes.
+
+<#Include Label="CylicShifts">
+
+<#Include Label="IsCyclicShifts">
+
+</Section>
+
+<Section Label="Sect:ShapesAsSets">
+<Heading>Set Methods for Shapes.</Heading>
+
+Cyclic shift classes are domains and therefore all set theoretic functions described
+in  chapter "Domains"  are also  applicable to  shapes.   This section
+describes  which  functions  are  implemented  specially  for  cyclic shift classes.
+Functions  not  mentioned here  are  handled  by  the default  methods
+described in the respective sections of chapter "Domains".
+
+More precisely, every cyclic shif class has as its operations record
+<C>CyclicShiftsOps</C> which inherits from <C>DomainOps</C>
+and overrides the methods below to make it work or to provide 
+more efficient implementations.
+
+<#Include Label="Elements(cycsc)">
+
+<#Include Label="Representative(cycsc)">
+
+</Section>
+
+<Section Label="Sect:CycscRecords">
+<Heading>Cyclic Shift Class Records.</Heading> 
+
+Like all other domains cyclic shift classes are represented by
+records.  While it is possible to construct such a record by hand it
+is preferable to use the constructor function
+<Ref Func="CyclicShifts"/>).<P/>
+
+After such a record is created you can add more components.  But you
+should not alter the values of components which are already
+present.<P/>
+
+A cyclic shift class record has the following <E>category components</E>.
+<List>
+<Mark>
+  <C>isDomain</C>:
+</Mark>
+<Item>
+  is always <K>true</K> since a cyclic shift class is a domain.
+</Item>
+<Mark>
+  <C>isCyclicShifts</C>:
+</Mark>
+<Item>
+  is always <K>true</K>.
+</Item>
+</List>
+        
+The following components are the <E>identification</E> components of a
+cyclic shift class record.
+<List>
+<Mark>
+  <C>W</C>:
+</Mark>
+<Item>
+  is the Coxeter group this cyclic shift class refers to.
+</Item>
+<Mark>
+  <C>w</C>:
+</Mark>
+<Item>
+  is the element of <M>W</M> that generates this cyclic shift class.
+</Item>
+</List>
+        
+Other components which contain information about the cyclic shift
+class may be added automatically over time.  These components are
+better accessed through the functions that will create them if not
+present.
+<List>
+<Mark><C>size</C>:</Mark>
+<Item> is the  size of the cyclic shift class  and can be obtained  through the method
+<C>Size</C>.
+</Item>
+<Mark><C>elements</C>:</Mark>
+<Item> is the set of elements of  the cyclic shift class and can be obtained from the
+        method <Ref Meth="Elements" Label="for cyclic shift classes"/>.
+</Item>
+<Mark><C>edges</C>:</Mark>
+<Item> is the  set of edges  of the shape  and can be obtained through the
+        method <Ref Meth="Edges" Label="for shapes"/>.
+</Item>
+<Mark><C>transversal</C>:</Mark>
+<Item> is  the transversal of  the shape  and can  be obtained  through the
+        method <Ref Meth="Transversal" Label="for shapes"/>.
+</Item>
+</List>
+
+<#Include Label="Edges(shape)">
+
+<#Include Label="Transversal(shape)">
+
+</Section>
+
+<Section Label="Sect:ShapesAsShapes">
+<Heading>Further Methods for Cyclic Shift Classes.</Heading>
+
+In this section I describe some methods for cyclic shift classes.
+
+<#Include Label="CentralizerComplement">
+
+</Section>
+
+</Chapter>
