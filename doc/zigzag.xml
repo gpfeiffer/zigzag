@@ -6,7 +6,7 @@
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.37 2009/09/21 10:08:37 goetz Exp $
+     $Id: zigzag.xml,v 1.38 2009/12/05 01:35:05 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -41,7 +41,7 @@ some tools to work with descent algebras and related structures
 in various ways.
 </Abstract>
 <Copyright>
-    Copyright &copyright; 2007--2009 Götz Pfeiffer<P/>
+    Copyright &copyright; 2007--2010 Götz Pfeiffer<P/>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -67,6 +67,7 @@ in various ways.
 <#Include SYSTEM "walker.xml">
 <#Include SYSTEM "shapes.xml">
 <#Include SYSTEM "subsets.xml">
+<#Include SYSTEM "classes.xml">
 <#Include SYSTEM "alleys.xml">
 <#Include SYSTEM "streets.xml">
 <#Include SYSTEM "descent.xml">
