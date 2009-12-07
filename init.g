@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.33 2009/09/21 10:07:39 goetz Exp $
+#A  $Id: init.g,v 1.34 2009/12/07 12:04:42 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -62,14 +62,20 @@ AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
   SymmetricMatrix, ECharacters, MatQuiverSym, LyndonFactorisation,
   CartanMatrixA, QCartanMatrixA, CartanMatrixB, QuiverRelations0,
   QuiverRelations1, QuiverRelations, SyzygiesQuiver, ProjectiveCover,
-  ProjectiveResolutions, DisplayQuiver, DisplayQuiver1, DimensionsMatrix,
-  CartanMatQuiver, QCartanMatQuiver, LaTeXMatNames, KernelList, LaTeXQCartan,
-  BlocksCartan);
+  ProjectiveResolutions, DisplayQuiver0, DisplayQuiver1, DisplayQuiver,
+  DimensionsMatrix0, DimensionsMatrix1, DimensionsMatrix, CartanMatQuiver0,
+  CartanMatQuiver1, CartanMatQuiver, QCartanMatQuiver0, QCartanMatQuiver1,
+  QCartanMatQuiver, LaTeXMatNames, KernelList, LaTeXQCartan, BlocksCartan);
 
 AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
   IteratorBreadthFirst, PreOrder, NrPreOrder, IteratorPreOrder,
   PreOrderProperty, NrPreOrderProperty, PostOrder, PostOrderProperty,
   NrPostOrderProperty, BinomialTreeOps, BinomialTree);
+
+AUTO( ReadPkg( "zigzag", "lib", "towers" ), FallingSequence, TowersAOps,
+  TowersA, IsTowersA, TowersAPerm, TowersAWord, TowersBOps, TowersB,
+  IsTowersB, TowersBPerm, TowersBWord, TowersDOps, TowersD, IsTowersD,
+  TowersDPerm, TowersDWord);
 
 AUTO( ReadPkg( "zigzag", "lib", "streets" ), StreetOps, Street, IsStreet,
   Streets, NrStreets, ProductStreetMatrices, ProductStreetMatrixList,
@@ -81,6 +87,9 @@ AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
   FaceElt, IsFaceElt, ImageSupportMap, IncidenceIntersectionLattice,
   onReflectionSubgroups, PrimitiveIdempotentsFaceElts, NilpotentFaceElts,
   ProdMat);
+
+AUTO( ReadPkg( "zigzag", "lib", "classes" ), CyclicShiftsOps, CyclicShifts,
+  IsCyclicShifts, CentralizerComplement, IsNonCompliant, CuspidalClasses);
 
 AUTO( ReadPkg( "zigzag", "lib", "iterator" ), IteratorList, IteratorEmpty,
   Iterator, IteratorRange, MPartitionsOps, MPartitions, NrMPartitions,
@@ -96,10 +105,10 @@ AUTO( ReadPkg( "zigzag", "lib", "groupoid" ), GroupoidOps, Groupoid,
   IsGroupoid, GroupoidEltOps, GroupoidElt, IsGroupoidElt);
 
 AUTO( ReadPkg( "zigzag", "lib", "shapes" ), ShapeOps, Shape, IsShape,
-  NormalizerComplement, ShapesRank, Shapes, SubsetsShapes, ComplementsShapes,
-  IncidenceMatShapes, XCharacters, ParabolicTom, YCharacters, ZCharacters,
-  InvolutionShapes, Involutions, SpecialInvolutions, OrlikSolomonCharacter,
-  NamesShapes, LabelsShapes);
+  NormalizerComplement, NormalParabolicClosure, ShapesRank, Shapes,
+  SubsetsShapes, ComplementsShapes, IncidenceMatShapes, XCharacters,
+  ParabolicTom, YCharacters, ZCharacters, InvolutionShapes, Involutions,
+  SpecialInvolutions, OrlikSolomonCharacter, NamesShapes, LabelsShapes);
 
 AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
   IsCategory, CategoryEltOps, CategoryElt, IsCategoryElt);
