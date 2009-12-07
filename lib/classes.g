@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: classes.g,v 1.1 2009/12/05 17:18:20 goetz Exp $
+#A  $Id: classes.g,v 1.2 2009/12/07 12:08:34 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -445,7 +445,27 @@ CentralizerComplement:= function(W, w)
 end;
 
 
+# lab is a pair of partitions
+IsNonCompliant:= function(lab)
+    return
+      Length(lab[2]) > 0 and
+      Length(lab[2]) mod 2 = 0 and
+      ForAll(lab[2], x-> x mod 2 = 0) and
+      ForAny(lab[1], x-> x mod 2 = 1);
+end;
 
+
+# cuspidal classes
+CuspidalClasses:= function(W)
+    local   cc,  n;
+    
+    cc:= ConjugacyClasses(W);
+    n:= W.semisimpleRank;
+    return Filtered([1..Length(cc)], i-> 
+                   Size(Set(CoxeterWord(W, Representative(cc[i])))) = n);
+end;
+
+        
 
 #############################################################################
 ##
