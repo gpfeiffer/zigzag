@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: towers.g,v 1.1 2009/12/07 11:53:57 goetz Exp $
+#A  $Id: towers.g,v 1.2 2009/12/07 12:02:11 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1225,41 +1225,41 @@ end;
 ##
 ##  FOR EXAMPLE
 ##
-gen:= [];
-for i in [1..9] do l:= 0*[1..i]; l[i]:= 1; Add(gen, TowersA(l)); od;
-A:= Group(List(gen, x-> Call(x, "Permutation")), ());
-
-gen:= [TowersB([-1])];
-for i in [1..9] do l:= 0*[1..i]; l[i+1]:= 1; Add(gen, TowersB(l)); od;
-B:= Group(List(gen, x-> Call(x, "Permutation")), ());
-
-gen:= [TowersD([-2])];
-for i in [1..9] do l:= 0*[1..i]; l[i]:= 1; Add(gen, TowersD(l)); od;
-D:= Group(List(gen, x-> Call(x, "Permutation")), ());
-
-a:= function(m, k)
-    local   lis;
-    lis:= 0*[1..m];
-    lis[m]:= k;
-    return TowersD(lis);
-end;
-
-b:= function(m, k)
-    local   lis;
-    lis:= 0*[1..m];
-    lis[m]:= -k-1;
-    return TowersB(lis);
-end;
-
-d:= function(m, k)
-    local   lis;
-    lis:= 0*[1..m];
-    lis[m]:= -k-1;
-    return TowersD(lis);
-end;
-
-
-m:= function(x, y)
-    return TowersDPerm(Call(x, "Permutation") * Call(y, "Permutation"));
-end;
-
+#gen:= [];
+#for i in [1..9] do l:= 0*[1..i]; l[i]:= 1; Add(gen, TowersA(l)); od;
+#A:= Group(List(gen, x-> Call(x, "Permutation")), ());
+#
+#gen:= [TowersB([-1])];
+#for i in [1..9] do l:= 0*[1..i]; l[i+1]:= 1; Add(gen, TowersB(l)); od;
+#B:= Group(List(gen, x-> Call(x, "Permutation")), ());
+#
+#gen:= [TowersD([-2])];
+#for i in [1..9] do l:= 0*[1..i]; l[i]:= 1; Add(gen, TowersD(l)); od;
+#D:= Group(List(gen, x-> Call(x, "Permutation")), ());
+#
+#a:= function(m, k)
+#    local   lis;
+#    lis:= 0*[1..m];
+#    lis[m]:= k;
+#    return TowersD(lis);
+#end;
+#
+#b:= function(m, k)
+#    local   lis;
+#    lis:= 0*[1..m];
+#    lis[m]:= -k-1;
+#    return TowersB(lis);
+#end;
+#
+#d:= function(m, k)
+#    local   lis;
+#    lis:= 0*[1..m];
+#    lis[m]:= -k-1;
+#    return TowersD(lis);
+#end;
+#
+#
+#m:= function(x, y)
+#    return TowersDPerm(Call(x, "Permutation") * Call(y, "Permutation"));
+#end;
+#
