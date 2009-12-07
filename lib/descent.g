@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.76 2009/09/21 14:44:55 goetz Exp $
+#A  $Id: descent.g,v 1.77 2009/12/07 12:11:05 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1628,7 +1628,8 @@ QCartanMatQuiver0:= function(qr, q)
 end;
 
 QCartanMatQuiver1:= function(qr, q)
-    return List(qr.pathmat, x-> List(x, y-> Sum(y.adr{y.basis}, x-> q^x[1]))); 
+    return q^0 * 
+           List(qr.pathmat, x-> List(x, y-> Sum(y.adr{y.basis}, x-> q^x[1]))); 
 end;
 
 QCartanMatQuiver:= QCartanMatQuiver1;
@@ -1660,7 +1661,7 @@ LaTeXMatNames:= function(mat, names, blocks, list)
         fi;
         
         Print(names[i]);
-        for j in [1..l] do
+        for j in list do
             Print("&\c");
             if mat[i][j] = 0*mat[i][j] then
                 Print(".");
