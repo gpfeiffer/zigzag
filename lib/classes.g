@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: classes.g,v 1.3 2009/12/07 14:33:50 goetz Exp $
+#A  $Id: classes.g,v 1.4 2009/12/10 09:53:24 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -89,7 +89,7 @@ end;
 
 #############################################################################  
 ##  
-#F  Print( <cycsc> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
+#F  Print( <shifts> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
 CyclicShiftsOps.Print:= function(self)
     Print("CyclicShifts( ", self.W, ", ", self.w, " )");
@@ -98,17 +98,18 @@ end;
 
 #############################################################################
 ##
-#F  Representative( <cycsc> )  . . . . . . . . . . . . . . .  representative.
+#F  Representative( <shifts> ) . . . . . . . . . . . . . . .  representative.
 ##
 ##  A cyclic shift class, as a class of elements, has a representative.
 ##
-##  <#GAPDoc Label="Representative(cycsc)">
+##  <#GAPDoc Label="Representative(shifts)">
 ##  <ManSection>
-##  <Meth Name="Representative" Arg="cycsc" Label="for cyclic shift classes"/>
-##  <Returns>a representative of the cyclic shift class <A>cycsc</A>.</Returns>
-##  <Description>The representative of a shape constructed 
-##  as <C>Shape(W, J)</C> (see <Ref Label="Shape"/>) will be its
-##  initial element <C>J</C>.
+##  <Meth Name="Representative" Arg="shifts" Label="for cyclic shifts"/>
+##  <Returns>a representative of the cyclic shift class <A>shifts</A>.</Returns>
+##  <Description>
+##  The representative of a cyclic shift class constructed 
+##  as <C>CyclicShifts(W, w)</C> (see <Ref Label="CyclicShifts"/>) will be its
+##  initial element <C>w</C>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
 ##  gap> ...
@@ -124,13 +125,13 @@ end;
 
 #############################################################################  
 ##  
-#F  Elements( <cycsc> )  . . . . . . . . . . . . . . . . . . . . .  elements.
+#F  Elements( <shifts> ) . . . . . . . . . . . . . . . . . . . . .  elements.
 ##  
-##  <#GAPDoc Label="Elements(cycsc)">
+##  <#GAPDoc Label="Elements(shifts)">
 ##  <ManSection>
-##  <Meth Name="Elements" Arg="shape" Label="for cyclic shift classes"/>
+##  <Meth Name="Elements" Arg="shape" Label="for cyclic shifts"/>
 ##  <Returns>
-##    the set of elements of the cyclic shift class <A>cycsc</A>.
+##    the set of elements of the cyclic shift class <A>shifts</A>.
 ##  </Returns>
 ##  <Description>
 ##  The cyclic shift class of <M>w</M> in <M>W</M> consists of all ...
@@ -141,8 +142,6 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##
-##  TODO:  make parabolic-safe
 ##
 ##  y = s_i x s_i is a cyclic shift of x if either
 ##  l(s_i x) > l(x) and l(s_i x s_i) < l(s_i x) or
@@ -222,38 +221,26 @@ end;
 
 #############################################################################
 ##
-#F  Transversal( <shape> ) . . . . . . . . . . . . . . . . . . . transversal.
+#F  Transversal( <shifts> )  . . . . . . . . . . . . . . . . . . transversal.
 ##
 
 
 #############################################################################
 ##
-#F  Relation( <shape> ) . . . . . . . . . . . . . . . . . . . . . . relation.
+#F  Relation( <shifts> ) . . . . . . . . . . . . . . . . . . . . .  relation.
 ##
 
 
 #############################################################################
 ##
-#F  Iterator( < class > ) . . . . . . . . . . . . . . . . . . . . iterator.
+#F  Iterator( <shifts> ) . . . . . . . . . . . . . . . . . . . . .  iterator.
 ##
-##  the iterator version of a set of prefixes:
-##  it consists of a queue (linked list) of elements to be processed,
-##  pointers to the back (next element to be expanded),
-##  the focus (next element to be returned) and the head
-##  where the next prefix is to be put in the queue.
+##  the iterator version of a cyclic shift class:
+##  
 ##
-##  initially:
-##
-##    f
-##    v
-##    w -> .
-##    ^    ^
-##    b    h
-##
-##
-##  <#GAPDoc Label="Iterator(class)">
+##  <#GAPDoc Label="Iterator(shifts)">
 ##  <ManSection>
-##  <Meth Name="Iterator" Arg="prefixes" Label="for prefixes"/>
+##  <Meth Name="Iterator" Arg="shifts" Label="for cyclic shifts"/>
 ##  <Returns>
 ##    an iterator for the elements of the prefix oject <A>prefixes</A>.
 ##  </Returns>
@@ -261,23 +248,7 @@ end;
 ##    The prefixes of <M>w</M> in <M>W</M> ...
 ##  <Example>
 ##  gap> w:= PermCoxeterWord(CoxeterGroup("A", 5), [ 1, 2, 3, 4, 5, 4 ]);;
-##  gap> itr:= Iterator(Prefixes(W, w));
-##  rec(
-##    hasNext := function (  ) ... end,
-##    next := function (  ) ... end )
-##  gap> while itr.hasNext() do Print(CoxeterWord(W, itr.next()), "\n"); od;
-##  [ 1, 2, 3, 4, 5, 4 ]
-##  [ 1, 2, 3, 4, 5 ]
-##  [ 1, 2, 3, 5, 4 ]
-##  [ 1, 2, 3, 4 ]
-##  [ 1, 2, 3, 5 ]
-##  [ 1, 2, 3 ]
-##  [ 1, 2, 5 ]
-##  [ 1, 2 ]
-##  [ 1, 5 ]
-##  [ 1 ]
-##  [ 5 ]
-##  [  ]
+##  gap> ...
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -285,22 +256,22 @@ end;
 ##
 CyclicShiftsOps.Iterator:= function(self)
 
-    local   W,  S,  head,  focus,  back,  itr;
+    local   W,  S,  orb,  pos,  next,  itr;
 
     W:= self.W;
     S:= W.rootInclusion{[1 .. W.semisimpleRank]};
 
-    head:= rec();
-    focus:= rec(w:= self.w, next:= head);
-    back:= focus; 
-
+    orb:= [self.w];
+    pos:= 1;
+    next:= pos;
+    
     itr:= rec();
     
 ##    
 ##  hasNext() simply checks whether 'focus' is looking at an element.
 ##    
     itr.hasNext:= function()
-        return IsBound(focus.w);
+        return IsBound(orb[pos]);
     end;
     
 ##
@@ -310,31 +281,33 @@ CyclicShiftsOps.Iterator:= function(self)
 ##  fill it up with prefixes of elements between 'back and 'focus'.
 ##
     itr.next:= function()
-        local   w,  x,  i,  Z, y;
-        w:=  focus.w;
-        focus:= focus.next;   
-        if not IsBound(focus.w) then
-
-            # expand back.w to focus.w
-            Z:= [];
-            while not IsIdentical(back, focus) do
-                x:= back.w;
-                for i in S do
-                    #if i / x > W.parentN then
-                    if IsRightDescent(W, x, i) then
-                        y:= x * W.(W.rootRestriction[i]);
-                        if not y in Z then
-                            AddSet(Z, y);
-                            head.w:= y;
-                            head.next:= rec();
-                            head:= head.next;
+        local   x,  i,  s,  y,  z;
+        
+        while pos = Length(orb) and next <= pos do # expand next in line
+            x:= orb[next];
+            for i in S do
+                s:= W.(W.rootRestriction[i]);
+                y:= s * x;
+                z:= y * s;
+                if IsLeftDescent(W, x, i) then
+                    if not IsRightDescent(W, y, i) then
+                        if not z in orb then
+                            Add(orb, z);
                         fi;
                     fi;
-                od;
-                back:= back.next;
+                else
+                    if IsRightDescent(W, y, i) then
+                        if not z in orb then
+                            Add(orb, z);
+                        fi;
+                    fi;
+                fi;
             od;
-        fi;
-        return w;
+            next:= next + 1;
+        od;
+        x:= orb[pos];
+        pos:= pos + 1;
+        return x;
     end;
 
     return itr;
@@ -404,7 +377,8 @@ CyclicShiftsOps.Complement:= function(W, w)
     return false;
 end;
 
-CentralizerComplement:= function(W, w)
+# minimal length case.
+CentralizerComplementMinimal:= function(W, w)
     local   v,  com,  u;
     
     for v in Elements(CyclicShifts(W, w)) do
@@ -417,6 +391,9 @@ CentralizerComplement:= function(W, w)
     
     return false;
 end;
+
+# general case ...
+# FIXME: need an efficient way to conjugate w in W to an element of minimal length in its class ... based on an iterator?? ...
 
 
 # lab is a pair of partitions
