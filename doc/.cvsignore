@@ -1,3 +1,5 @@
 *.brf
 *.pnr
+*.html
+*.txt
 zigzag.tex
