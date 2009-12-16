@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: classes.xml,v 1.1 2009/12/05 01:31:44 goetz Exp $
+     $Id: classes.xml,v 1.2 2009/12/16 20:13:54 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -19,7 +19,7 @@ The functions described here are in the file <F>classes.g</F>.
 In this section I describe the functions that construct cyclic shift classes
 and work on cyclic shift classes.
 
-<#Include Label="CylicShifts">
+<#Include Label="CyclicShifts">
 
 <#Include Label="IsCyclicShifts">
 
@@ -39,9 +39,9 @@ More precisely, every cyclic shif class has as its operations record
 and overrides the methods below to make it work or to provide 
 more efficient implementations.
 
-<#Include Label="Elements(cycsc)">
+<#Include Label="Elements(shifts)">
 
-<#Include Label="Representative(cycsc)">
+<#Include Label="Representative(shifts)">
 
 </Section>
 
@@ -119,10 +119,11 @@ present.
 
 </Section>
 
-<Section Label="Sect:ShapesAsShapes">
-<Heading>Further Methods for Cyclic Shift Classes.</Heading>
+<Section Label="Sect:FurtherCyclicShifts">
+<Heading>Further Methods for Conjugacy Classes.</Heading>
 
-In this section I describe some methods for cyclic shift classes.
+In this section I describe some methods for conjugacy classes, 
+which are based on cyclic shift classes.
 
 <#Include Label="CentralizerComplement">
 
