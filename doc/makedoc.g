@@ -3,9 +3,10 @@ main:= "zigzag.xml";
 lib:= "../lib/";
 files:= [ 
           "methods.g", "iterator.g", "walker.g",
-          "subsets.g", "shapes.g", "alleys.g", "streets.g",
+          "subsets.g", "towers.g", "classes.g",
+          "shapes.g", "alleys.g", "streets.g", "forests.g",
           "descent.g", "category.g", "groupoid.g",
-        ];
+          ];
 files:= List(files, x-> Concatenation(lib, x));
 bookname:= "zigzag";
 str:= ComposedXMLString(path, main, files);
