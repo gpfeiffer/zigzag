@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  ZigZag Documentation
+     $Id: forests.xml,v 1.1 2009/12/16 20:14:53 goetz Exp $
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:forests">
+<Heading>Classical Type Descent Algebras.</Heading>
+
+<#Include Label="Intro:Forests">
+
+The functions described here are in the file <F>forests.g</F>.
+
+<Section>
+<Heading>Forest Constructors and Methods.</Heading>
+
+In this section I describe the functions that construct cyclic shift classes
+and work on cyclic shift classes.
+
+<#Include Label="Tree">
+
+<#Include Label="IsTree">
+
+</Section>
+
+</Chapter>
