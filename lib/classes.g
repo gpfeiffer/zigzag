@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: classes.g,v 1.4 2009/12/10 09:53:24 goetz Exp $
+#A  $Id: classes.g,v 1.5 2009/12/16 20:12:56 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -268,7 +268,7 @@ CyclicShiftsOps.Iterator:= function(self)
     itr:= rec();
     
 ##    
-##  hasNext() simply checks whether 'focus' is looking at an element.
+##  hasNext() simply checks whether there is more left in the orbit.
 ##    
     itr.hasNext:= function()
         return IsBound(orb[pos]);
