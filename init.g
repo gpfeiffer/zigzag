@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.34 2009/12/07 12:04:42 goetz Exp $
+#A  $Id: init.g,v 1.35 2009/12/16 20:16:20 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -11,8 +11,8 @@
 
 #############################################################################
 ZIGZAG:= rec();
-ZIGZAG.Version:= "0.76";
-ZIGZAG.Date:= "24-06-2009";
+ZIGZAG.Version:= "0.77";
+ZIGZAG.Date:= "16-12-2009";
 
 #############################################################################
 ##
@@ -42,6 +42,12 @@ fi;
 ##
 #A  AUTO . . . . . . . . . . . . . . . . . . . . . . . . . . . .  auto reads.  
 ##
+AUTO( ReadPkg( "zigzag", "lib", "forests" ), TreeOps, Tree, IsTree,
+  CompositionSubset, SubsetComposition, ForestOps, Forest, IsForest,
+  ForestAlley1, ForestLs, ForestAlley, StandardFactorizationLyndon,
+  StandardBracketingLyndon1, StandardBracketingLyndon, StandardBracketing,
+  LyndonBasis, IsCompletelyReducibleStreet, a, f);
+
 AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, Map,
   PartitionOps, Partition);
 
@@ -89,7 +95,8 @@ AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
   ProdMat);
 
 AUTO( ReadPkg( "zigzag", "lib", "classes" ), CyclicShiftsOps, CyclicShifts,
-  IsCyclicShifts, CentralizerComplement, IsNonCompliant, CuspidalClasses);
+  IsCyclicShifts, CentralizerComplementMinimal, IsNonCompliant,
+  CuspidalClasses);
 
 AUTO( ReadPkg( "zigzag", "lib", "iterator" ), IteratorList, IteratorEmpty,
   Iterator, IteratorRange, MPartitionsOps, MPartitions, NrMPartitions,
@@ -105,10 +112,10 @@ AUTO( ReadPkg( "zigzag", "lib", "groupoid" ), GroupoidOps, Groupoid,
   IsGroupoid, GroupoidEltOps, GroupoidElt, IsGroupoidElt);
 
 AUTO( ReadPkg( "zigzag", "lib", "shapes" ), ShapeOps, Shape, IsShape,
-  NormalizerComplement, NormalParabolicClosure, ShapesRank, Shapes,
-  SubsetsShapes, ComplementsShapes, IncidenceMatShapes, XCharacters,
-  ParabolicTom, YCharacters, ZCharacters, InvolutionShapes, Involutions,
-  SpecialInvolutions, OrlikSolomonCharacter, NamesShapes, LabelsShapes);
+  NormalizerComplement, ShapesRank, Shapes, SubsetsShapes, ComplementsShapes,
+  IncidenceMatShapes, XCharacters, ParabolicTom, YCharacters, ZCharacters,
+  InvolutionShapes, Involutions, SpecialInvolutions, OrlikSolomonCharacter,
+  NamesShapes, LabelsShapes);
 
 AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
   IsCategory, CategoryEltOps, CategoryElt, IsCategoryElt);
