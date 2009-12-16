@@ -1,8 +1,51 @@
-##  methods for trees and forests.
+#############################################################################
+##
+#A  $Id: forests.g,v 1.2 2009/12/16 20:12:27 goetz Exp $
+##
+#A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
+##
+#Y  Copyright (C) 2009-2010 Götz Pfeiffer
+##
+##  This file contains routines for trees and forests.
+##
+##  <#GAPDoc Label="Intro:Forests">
+##    Binary trees and forests are convenient data structures to represent alleys and streets in classical types...
+##      
+##    The functions described in this chapter are implemented in the file
+##    <F>forests.g</F>.  
+##  <#/GAPDoc>
+##
+
+#############################################################################
+##  
+#O  TreeOps  . . . . . . . . . . . . . . . . . . . operations record.
+##  
 
 ##  trees first.
 TreeOps:= OperationsRecord("TreeOps");
 
+#############################################################################
+##  
+#C  Tree( <n> )  . . . . . . . . . . . . . . . . .  constructor.
+#C  Tree( <i>, <l>, <r> )  . . . . . . . . . . . . . . . . .  constructor.
+##  
+##  <#GAPDoc Label="Tree">
+##  <ManSection>
+##  <Func Name="Tree" Arg="n"/>
+##  <Func Name="Tree" Arg="i, l, r"/>
+##  <Returns>
+##    a new tree with components ...
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for  trees ...
+##  <Example>
+##  gap> Tree(1, Tree(2), Tree(3));
+##  [2&lt;1&gt;3]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 ##  A tree is a quadruple with components
 ##    l, r:  its left and right children
 ##    i: its *index* (which is 0 if the tree is a leaf)
@@ -25,6 +68,20 @@ Tree:= function(arg)
 end;
 
 
+#############################################################################
+##
+#F  IsTree( <obj> )  . . . . . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsTree">
+##  <ManSection>
+##  <Func Name="IsTree" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a tree and <K>false</K>
+##    otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
 IsTree:= function(obj)
     return IsRec(obj) and IsBound(obj.isTree) and obj.isTree = true;
 end;
@@ -352,7 +409,7 @@ StandardFactorizationLyndon:= function(word)
     return [word{[1..l]}, word{[l+1..n]}];
 end;
     
-StandardBracketingLyndon:= function(word)
+StandardBracketingLyndon1:= function(word)
     local   lastFactor,  n,  m,  l;
 
     # The last factor is the lexicographically smallest tail of list.
