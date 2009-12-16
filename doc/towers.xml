@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  ZigZag Documentation
+     $Id: towers.xml,v 1.1 2009/12/16 20:13:36 goetz Exp $
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:towers">
+<Heading>Permutation Representations of Classical Types.</Heading>
+
+<#Include Label="Intro:Towers">
+
+The functions described here are in the file <F>towers.g</F>.
+
+<Section>
+<Heading>Towers.</Heading>
+
+In this section I describe the functions that construct towers
+for elements of Coxeter groups of classical types.
+
+</Section>
+
+</Chapter>
