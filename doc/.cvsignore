@@ -2,4 +2,6 @@
 *.pnr
 *.html
 *.txt
+tempCONV.*
 zigzag.tex
+manual.six
