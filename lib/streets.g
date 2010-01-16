@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.54 2009/09/21 14:43:08 goetz Exp $
+#A  $Id: streets.g,v 1.55 2010/01/16 14:07:15 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -9,7 +9,7 @@
 ##  This file contains support for streets.
 ##  
 ##  <#GAPDoc Label="Intro:Streets">
-##    An <E>street</E><Index>street</Index> is an orbit of alleys under the
+##    A <E>street</E><Index>street</Index> is an orbit of alleys under the
 ##    action of the free monoid <M>S^*</M>.<P/>
 ##
 ##    The functions described in this chapter are implemented in the file

@@ -6,7 +6,7 @@
 "?>
 
 <!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.39 2009/12/16 20:15:24 goetz Exp $
+     $Id: zigzag.xml,v 1.40 2010/01/16 14:02:36 goetz Exp $
 -->
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
@@ -29,7 +29,7 @@ Götz Pfeiffer
 <Date>16-12-2009</Date>
 <Address>
 Department of Mathematics<Br/> 
-National University of Ireland, Galway<Br/>
+National University of Ireland Galway<Br/>
 University Road<Br/>
 Galway, Ireland
 </Address>
