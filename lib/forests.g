@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.2 2009/12/16 20:12:27 goetz Exp $
+#A  $Id: forests.g,v 1.3 2010/01/16 14:06:34 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -20,8 +20,6 @@
 ##  
 #O  TreeOps  . . . . . . . . . . . . . . . . . . . operations record.
 ##  
-
-##  trees first.
 TreeOps:= OperationsRecord("TreeOps");
 
 #############################################################################
@@ -504,7 +502,8 @@ IsCompletelyReducibleStreet:= function(alpha)
 end;
 
 
-
-a:= [[2,3,4,5,8,9,11], [4, 5, 8, 3, 11]];
-f:= ForestAlley(12, a);
+#### for example:
+#
+# a:= [[2,3,4,5,8,9,11], [4, 5, 8, 3, 11]];
+# f:= ForestAlley(12, a);
 
