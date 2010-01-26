@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: classes.g,v 1.5 2009/12/16 20:12:56 goetz Exp $
+#A  $Id: classes.g,v 1.6 2010/01/26 19:24:23 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -16,6 +16,9 @@
 ##    <F>classes.g</F>.  
 ##  <#/GAPDoc>
 ##
+##  TODO: 
+##  CyclicShiftClasses(W)
+##  CyclicShiftClasses(ConjugacyClass(W, w))
 
 #############################################################################
 ##  
