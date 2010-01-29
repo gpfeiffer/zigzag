@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: classes.g,v 1.6 2010/01/26 19:24:23 goetz Exp $
+#A  $Id: classes.g,v 1.7 2010/01/29 16:29:28 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -419,8 +419,29 @@ CuspidalClasses:= function(W)
                    Size(Set(CoxeterWord(W, Representative(cc[i])))) = n);
 end;
 
-        
 
+
+#############################################################################
+CyclicShiftClasses:= function(C)
+    local   W,  all,  classes,  cyc;
+    
+    if not IsConjugacyClass(C) then
+        Error("<C> must be a conjugacy class");
+    fi;
+    
+    W:= C.group;
+    all:= Elements(C);
+    classes:= [];
+    while all <> [] do
+        cyc:= CyclicShifts(W, all[1]);
+        Add(classes, cyc);
+        all:= Difference(all, cyc);
+    od;
+    
+    return classes;
+end;
+
+    
 #############################################################################
 ##
 #E  Emacs  . . . . . . . . . . . . . . . . . . . . . . local emacs variables.
