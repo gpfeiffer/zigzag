@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.3 2010/01/16 14:06:34 goetz Exp $
+#A  $Id: forests.g,v 1.4 2010/01/29 16:30:13 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -483,6 +483,35 @@ LyndonBasis:= function(n)
     od;
     return basis;
 end;
+
+# a basis of paths for the descent algebra of S_n (type A_{n-1}).
+LyndonPaths:= function(n)
+    local   basis,  W,  p,  q,  a;
+    
+    basis:= [];
+    W:= CoxeterGroup("A", n-1);
+    for p in Partitions(n) do
+        for q in Arrangements(p, Length(p)) do
+            a:=  Call(StandardBracketing(q), "Alley");
+            Add(basis, List(FactorsAlley(a), x-> Street(W, x)));
+        od;
+    od;
+    return basis;
+end;
+
+
+#
+# prefers:          over:
+#
+# 6                 6                   6                    6
+#                                      / \                  / \
+# 51                42                2   4                1   5
+#                                        / \                  / \
+# 321               321                 1   3                3   2
+#                                          / \              / \
+# 2211              2211                  1   2            1   2
+#           
+
 
 
 IsCompletelyReducibleStreet:= function(alpha)
