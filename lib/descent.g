@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.77 2009/12/07 12:11:05 goetz Exp $
+#A  $Id: descent.g,v 1.78 2010/01/29 16:27:58 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1257,7 +1257,7 @@ ProjectiveCover:= function(qr, pims, basis)
         Add(com, SetComposition(d) + o);
         o:= o + Sum(d);
     od;
-    
+
     # assert that no basis elt mixes pims and attach pims to them
     ind:= List([1..N], i-> Concatenation(com{iii}[i]));
     pim:= List(basis, x-> Filtered([1..N], i-> x{ind[i]} <> 0 * ind[i]));
@@ -1268,7 +1268,7 @@ ProjectiveCover:= function(qr, pims, basis)
             pim[i]:= pim[i][1];
         fi;
     od;
-        
+
     # compute radical of the module: postmultiply edges
     space:= RowSpace(Rationals, basis);
     radical:= Subspace(space, []);
@@ -1287,43 +1287,43 @@ ProjectiveCover:= function(qr, pims, basis)
                 new{lll}{com[i][k]}:= basis{lll}{com[i][j]} * map;
             fi;
         od;
-        
+
         for k in new do
             if not k in radical then
                 radical:= radical + Subspace(space, [k]);
             fi;
         od;
-        
-        
+
+
         # express new in terms of basis
         new:= TransposedMat(Concatenation(basis, new));
         TriangulizeMat(new);
         k:= Length(basis);
         Add(eMat, TransposedMat(new{[1..k]}{k+[1..k]}));
     od;
-    
+
     # form the quotient
     ss:= Basis(space/radical).vectors;
     j:= Length(ss);
-    
+
     # assert that these are a subset of the original basis.
     ss:= List(ss, x-> Position(basis, x));
     if false in ss then
         Error("quotient basis is not a subset");
     fi;
-    
-      
-    
-#    # express ss in terms of basis
-#    ss:= TransposedMat(Concatenation(basis, ss));
-#    TriangulizeMat(ss);
-#    k:= Length(basis);
-#    ss:= TransposedMat(ss{[1..k]}{k+[1..j]});
+
+
+
+    #    # express ss in terms of basis
+    #    ss:= TransposedMat(Concatenation(basis, ss));
+    #    TriangulizeMat(ss);
+    #    k:= Length(basis);
+    #    ss:= TransposedMat(ss{[1..k]}{k+[1..j]});
 
     # identify simples (as *the* vMat that doesnt act trivially)
     simples:= pim{ss};
-    
-    
+
+
     # compute new matrix
     matrix:= [];
     for k in ss do
@@ -1339,7 +1339,7 @@ ProjectiveCover:= function(qr, pims, basis)
             od;
         od;
     od;
-             
+
 
     return rec(pim:= pim, com:= com, radical:= radical, eMat:= eMat, simples:= simples, matrix:= matrix);
 end;
@@ -1364,8 +1364,146 @@ ProjectiveResolutions:= function(qr)
         fi;
         Add(pr, new);
     od;
-    
+
     return pr;
+end;
+
+
+# given a list pims of indices, describing a projective module Q as
+# a direct sum of pims, and a matrix map, describing a surjective linear map pi from Q
+# onto some module M, find a new list pims and a new matrix, describing a minimal projective cover of the kernel of pi
+NextProjectiveCover:= function(qr, pims, map)
+    local   pathsUnderPath,  vectorUnderPath,  basis,  N,  iii,  lll,  
+            o,  com,  j,  d,  ind,  pim,  x,  fil,  space,  radical,  
+            e,  k,  new,  i,  mat,  ss,  matrix,  pi,  p;
+    
+    # compute a basis of the kernel
+    basis:= NullspaceMat(map);
+    if basis = [] then
+        return 0;
+    fi;
+        
+    N:= Length(qr.pathmat);  # nr of shapes.
+    iii:= [1..Length(pims)];
+    lll:= [1..Length(basis)];
+
+    # set up some addresses
+    # com[k][i] contains the indices of all paths from i to pims[k].
+    o:= 0; # offset;
+    com:= [];
+    for j in pims do
+        d:= List(qr.pathmat[j], x-> Length(x.basis));
+        Add(com, o + SetComposition(d));
+        o:= o + Sum(d);
+    od;
+
+    # ind[i] contains the indices of all paths coming from i.
+    ind:= List([1..N], i-> Concatenation(com{iii}[i]));
+
+    # assert that each basis elt lies in a homogeneous component.
+    pim:= [];
+    for x in basis do
+        fil:= Filtered([1..N], i-> x{ind[i]} <> 0 * ind[i]);
+        if Length(fil) <> 1 then
+            Error("basis elt does not lie in a homogeneous component");
+        else
+            Add(pim, fil[1]);
+        fi;
+    od;
+ 
+    # how to compute the effect of an edge e (from j to k) on pim i
+    # as a matrix ....
+    pathsUnderPath:= function(i, a)
+        local   pi,  j,  k,  mat,  p;
+        
+        pi:= qr.pathmat[i];
+
+        j:= Call(a[1], "Source");
+        k:= Call(a[Length(a)], "Target");
+
+        mat:= [];  # the matrix of e on a small space
+        for p in pi[j].path{pi[j].basis} do
+            Add(mat, pi[k].map[Position(pi[k].path, Concatenation(p, a))]);
+        od;
+
+        return mat;
+    end;
+    
+    vectorUnderPath:= function(b, a)
+        local   j,  k,  new,  i,  mat;
+        
+        if a = [] then
+            return b;
+        fi;
+        
+        j:= Call(a[1], "Source");
+        k:= Call(a[Length(a)], "Target");
+
+        new:= 0 * b;
+        for i in iii do
+            mat:= pathsUnderPath(pims[i], a);
+            if mat <> [] then 
+                new{com[i][k]}:= b{com[i][j]} * mat;
+            fi;
+        od;
+        
+        return new;
+    end;
+    
+    
+    # compute radical of the module: postmultiply edges
+    space:= RowSpace(Rationals, basis);
+    
+    radical:= [];
+    for e in qr.path[1] do
+        j:= Call(e[1], "Source");
+        k:= Call(e[1], "Target");
+        new:= 0*basis;
+        for i in iii do
+            mat:= pathsUnderPath(pims[i], e);
+            if mat <> [] then 
+                new{lll}{com[i][k]}:= basis{lll}{com[i][j]} * mat;
+            fi;
+        od;
+        UniteSet(radical, new);
+        
+    od;
+
+    # assert that a subset of the original basis is a basis of the quotient.
+    ss:= List(Basis(space/radical).vectors, x-> Position(basis, x));
+
+    # compute new matrix
+    matrix:= [];
+    for i in ss do
+        pi:= qr.pathmat[pim[i]];
+        for j in [1..N] do
+            for p in pi[j].path{pi[j].basis} do
+                Add(matrix, vectorUnderPath(basis[i], p));
+            od;
+        od;
+    od;
+
+    return rec(pims:= pim{ss}, map:= matrix);
+end;
+
+
+
+# compute a minimal projective resolution of the i-th simple module.
+ProjectiveResolution:= function(qr, i)
+    pi:= qr.pathmat[i];
+    n:= Sum(pi, x-> Length(x.basis));
+    a:= 0*[1..n];  a[n]:= 1;
+    p:= rec(pims:= [i], map:= TransposedMat(a));
+    
+    res:= [];
+    
+    repeat
+        pims:= p.pims;  map:= p.map;
+        Add(res, pims);
+        p:= NextProjectiveCover(qr, pims, map);
+    until p = 0;
+    
+    return res;
 end;
 
 
