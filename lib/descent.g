@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.78 2010/01/29 16:27:58 goetz Exp $
+#A  $Id: descent.g,v 1.79 2010/01/31 20:58:43 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1369,6 +1369,188 @@ ProjectiveResolutions:= function(qr)
 end;
 
 
+#  even better:  
+#  with a much slimmer, even more efficient data structure.
+#  
+##  The resulting object quiver has components:
+##  
+##  path0
+##  a list of streets of length 0, the vertices, or paths of length 0.
+##
+##  path1
+##  a list of streets chosen to represent the edges.
+##  
+##  path
+##  a list, with path[i] being the list of all? paths of length i,
+##  where a path is a list of indices in path1
+##  
+##  pathmat
+##  a matrix with one entry for each  homspace with components
+##
+##    path
+##    the list of paths in this hom-space
+##  
+##    adr
+##    the list of addresses of the paths in the above lists path0, path.
+##  
+##    mat
+##    the list of delta-values, ie. images in the descent algebra
+##  
+##    kern
+##    the nullspacemat of mat, a basis of the kernel of delta
+##  
+##    basis
+##    a list of positions in path, selecting a preimage of a basis
+##  
+##    map
+##    how to express the image of a path in terms of the basis.
+##  
+##
+##  FIXME:  move this into streets.g???
+##
+##  FIXME:  does adr need to be a list of pairs? would the index not suffice?
+##
+DescentQuiver:= function(W)
+    local   sourcePath,  targetPath,  deltaPath,  positionsProperty,  
+            pathsStreets,  path1,  path0,  s,  sh,  path,  pathmat,  
+            i,  j,  t,  delete,  ppp,  mat,  p,  kern,  line,  pos;
+    
+#    # maybe we know it already.
+#    if IsBound(W.quiver) then
+#        return W.quiver;
+#    fi;
+#        
+    # a path is a sequence of streets, with adjacent ones multiplyable:
+    # it has a source ...
+    sourcePath:= function(path)
+        return Call(path[1], "Source");
+    end;
+    
+    # ... it has a target ...
+    targetPath:= function(path)
+        return Call(path[Length(path)], "Target");
+    end;
+    
+    # ... and an associated delta-value.
+    deltaPath:= function(path)
+        local   p;
+        p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
+        return rec(support:= p.target, mat:= Sum(p.mat));
+    end;
+    
+    # how to find the positions of the elements with a given property.
+    positionsProperty:= function(list, func)
+        return Filtered([1..Length(list)], i-> func(list[i]));
+    end;
+
+    # how to generate all paths from a given set of streets.
+    pathsStreets:= function(streets)
+        local   edges,  paths,  old,  new,  a,  b;
+        
+        # ignore streets of length 0.
+        edges:= positionsProperty(streets, x-> Call(x, "Length") > 0);
+
+        paths:= [];
+        old:= List(edges, x-> [x]);
+        while old <> [] do
+            Add(paths, old);
+            new:= [];
+            for a in old do
+                for b in edges do
+                    if targetPath(streets{a}) = sourcePath([streets[b]]) then
+                        Add(new, Concatenation(a, [b]));
+                    fi;
+                od;
+            od;
+            old:= new;
+        od;
+        
+        return paths;
+    end;
+    
+    # split idempotent from nilpotent generators.
+    path1:= [];  path0:= []; 
+    for s in BasicStreets(W) do
+        if s.alley[2] = [] then
+            Add(path0, s);
+        else
+            Add(path1, s);
+        fi;
+    od;
+    InfoZigzag1("Starting with ", Length(path0) + Length(path1), " paths,\n");
+    InfoZigzag1("of which ", Length(path0), " have length 0.\n");
+        
+    sh:= Shapes(W);
+    
+    repeat 
+        path:= pathsStreets(path1);
+        
+        # distribute paths over hom-spaces
+        pathmat:= List(sh, x-> List(sh, x-> rec(path:= [])));
+        for s in [1..Length(path0)] do 
+            # path0[s] is the idempotent in pathmat[s][s]
+            Add(pathmat[s][s].path, []);
+        od;
+        for i in [1..Length(path)] do
+            for j in [1..Length(path[i])] do
+                s:= sourcePath(path1{path[i][j]});
+                t:= targetPath(path1{path[i][j]});
+                Add(pathmat[s][t].path, path[i][j]);
+            od;
+        od;
+        
+        # calculate all relations
+        delete:= [];
+        
+        for i in [1..Length(sh)] do
+            for j in [1..Length(sh)] do
+                ppp:= pathmat[i][j].path;
+                mat:= [];
+                for p in ppp do
+                    if p = [] then
+                        Add(mat, Call(path0[j], "Delta").mat);
+                    else
+                        Add(mat, deltaPath(path1{p}).mat);
+                    fi;
+                od;
+                if mat = [] then
+                    kern:= [];
+                else
+                    kern:= NullspaceMat(mat);
+                fi;
+                
+                for line in kern do
+                    pos:= PositionProperty(line, x-> x <> 0);
+                    if Length(ppp[pos]) = 1 then
+                        Add(delete, ppp[pos][1]);
+                    fi;
+                od;
+                
+                
+                pathmat[i][j].mat:= mat;
+#                pathmat[i][j].kern:= kern;
+                pathmat[i][j].basis:= Difference([1..Length(mat)], List(kern, x-> Position(x, 1)));
+                
+                # express each path in terms of chosen basis.
+                mat:= TransposedMat(Reversed(mat));
+                TriangulizeMat(mat);
+                mat:= Filtered(mat, x-> x <> 0*x);
+                pathmat[i][j].map:= Reversed(TransposedMat(Reversed(mat)));
+            od;
+        od;
+        
+        InfoZigzag1(delete, " ", delete[1], "\n");
+        
+        path1:= path1{Difference([1..Length(path1)], delete)};
+    until delete =  [];
+        
+    return rec(path0:= path0, 
+               path1:= path1, 
+#               path:= path, 
+               pathmat:= pathmat);
+end;
+
+
 # given a list pims of indices, describing a projective module Q as
 # a direct sum of pims, and a matrix map, describing a surjective linear map pi from Q
 # onto some module M, find a new list pims and a new matrix, describing a minimal projective cover of the kernel of pi
@@ -1490,6 +1672,8 @@ end;
 
 # compute a minimal projective resolution of the i-th simple module.
 ProjectiveResolution:= function(qr, i)
+    local   pi,  n,  a,  p,  res,  pims,  map;
+
     pi:= qr.pathmat[i];
     n:= Sum(pi, x-> Length(x.basis));
     a:= 0*[1..n];  a[n]:= 1;
