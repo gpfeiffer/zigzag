@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.35 2009/12/16 20:16:20 goetz Exp $
+#A  $Id: init.g,v 1.36 2010/02/01 14:46:51 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007 Götz Pfeiffer
+#Y  Copyright (C) 2001-2010 Götz Pfeiffer
 ##
 ##  This is the init file of the ZigZag package.
 ##
@@ -46,7 +46,7 @@ AUTO( ReadPkg( "zigzag", "lib", "forests" ), TreeOps, Tree, IsTree,
   CompositionSubset, SubsetComposition, ForestOps, Forest, IsForest,
   ForestAlley1, ForestLs, ForestAlley, StandardFactorizationLyndon,
   StandardBracketingLyndon1, StandardBracketingLyndon, StandardBracketing,
-  LyndonBasis, IsCompletelyReducibleStreet, a, f);
+  LyndonBasis, LyndonPaths, IsCompletelyReducibleStreet);
 
 AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, Map,
   PartitionOps, Partition);
@@ -68,7 +68,8 @@ AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
   SymmetricMatrix, ECharacters, MatQuiverSym, LyndonFactorisation,
   CartanMatrixA, QCartanMatrixA, CartanMatrixB, QuiverRelations0,
   QuiverRelations1, QuiverRelations, SyzygiesQuiver, ProjectiveCover,
-  ProjectiveResolutions, DisplayQuiver0, DisplayQuiver1, DisplayQuiver,
+  ProjectiveResolutions, DescentQuiver, NextProjectiveCover,
+  ProjectiveResolution, DisplayQuiver0, DisplayQuiver1, DisplayQuiver,
   DimensionsMatrix0, DimensionsMatrix1, DimensionsMatrix, CartanMatQuiver0,
   CartanMatQuiver1, CartanMatQuiver, QCartanMatQuiver0, QCartanMatQuiver1,
   QCartanMatQuiver, LaTeXMatNames, KernelList, LaTeXQCartan, BlocksCartan);
@@ -85,8 +86,8 @@ AUTO( ReadPkg( "zigzag", "lib", "towers" ), FallingSequence, TowersAOps,
 
 AUTO( ReadPkg( "zigzag", "lib", "streets" ), StreetOps, Street, IsStreet,
   Streets, NrStreets, ProductStreetMatrices, ProductStreetMatrixList,
-  SumStreetMatrices, BasicStreets, PathsStreets, CartanMatStreets,
-  QuiverMatStreets);
+  SumStreetMatrices, BasicStreets, PathsStreets, PathsStreets1,
+  CartanMatStreets, QuiverMatStreets);
 
 AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
   ProductLSigns, ProductRSigns, OnFaces, KernelSupportMap, FaceEltOps,
@@ -96,7 +97,7 @@ AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
 
 AUTO( ReadPkg( "zigzag", "lib", "classes" ), CyclicShiftsOps, CyclicShifts,
   IsCyclicShifts, CentralizerComplementMinimal, IsNonCompliant,
-  CuspidalClasses);
+  CuspidalClasses, CyclicShiftClasses);
 
 AUTO( ReadPkg( "zigzag", "lib", "iterator" ), IteratorList, IteratorEmpty,
   Iterator, IteratorRange, MPartitionsOps, MPartitions, NrMPartitions,
