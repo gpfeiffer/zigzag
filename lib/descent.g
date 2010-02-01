@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.79 2010/01/31 20:58:43 goetz Exp $
+#A  $Id: descent.g,v 1.80 2010/02/01 14:53:49 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1380,24 +1380,14 @@ end;
 ##  path1
 ##  a list of streets chosen to represent the edges.
 ##  
-##  path
-##  a list, with path[i] being the list of all? paths of length i,
-##  where a path is a list of indices in path1
-##  
 ##  pathmat
 ##  a matrix with one entry for each  homspace with components
 ##
 ##    path
 ##    the list of paths in this hom-space
 ##  
-##    adr
-##    the list of addresses of the paths in the above lists path0, path.
-##  
 ##    mat
 ##    the list of delta-values, ie. images in the descent algebra
-##  
-##    kern
-##    the nullspacemat of mat, a basis of the kernel of delta
 ##  
 ##    basis
 ##    a list of positions in path, selecting a preimage of a basis
@@ -1408,12 +1398,11 @@ end;
 ##
 ##  FIXME:  move this into streets.g???
 ##
-##  FIXME:  does adr need to be a list of pairs? would the index not suffice?
-##
 DescentQuiver:= function(W)
     local   sourcePath,  targetPath,  deltaPath,  positionsProperty,  
             pathsStreets,  path1,  path0,  s,  sh,  path,  pathmat,  
-            i,  j,  t,  delete,  ppp,  mat,  p,  kern,  line,  pos;
+            where,  i,  j,  t,  delete,  ij,  ppp,  mat,  p,  kern,  
+            line,  pos;
     
 #    # maybe we know it already.
 #    if IsBound(W.quiver) then
@@ -1482,10 +1471,62 @@ DescentQuiver:= function(W)
         
     sh:= Shapes(W);
     
-    repeat 
+    path:= pathsStreets(path1);
+        
+    # distribute paths over hom-spaces
+    pathmat:= List(sh, x-> List(sh, x-> rec(path:= [])));
+    for s in [1..Length(path0)] do 
+        # path0[s] is the idempotent in pathmat[s][s]
+        Add(pathmat[s][s].path, []);
+    od;
+    where:= List(path, x-> []);
+    for i in [1..Length(path)] do
+        for j in [1..Length(path[i])] do
+            s:= sourcePath(path1{path[i][j]});
+            t:= targetPath(path1{path[i][j]});
+            Add(pathmat[s][t].path, path[i][j]);
+            AddSet(where[i], [s,t]);
+        od;
+    od;
+    
+    InfoZigzag1("where = ", where[1], "\n");
+    
+    # calculate all relations
+    delete:= [];
+    for ij in where[1] do
+        i:= ij[1];  j:=  ij[2];
+    
+        ppp:= pathmat[i][j].path;
+        mat:= [];
+        for p in ppp do
+            if p = [] then
+                Add(mat, Call(path0[j], "Delta").mat);
+            else
+                Add(mat, deltaPath(path1{p}).mat);
+            fi;
+        od;
+        if mat = [] then
+            kern:= [];
+        else
+            kern:= NullspaceMat(mat);
+        fi;
+        
+        for line in kern do
+            pos:= PositionProperty(line, x-> x <> 0);
+            if Length(ppp[pos]) = 1 then
+                Add(delete, ppp[pos][1]);
+            fi;
+        od;
+    od;
+        
+    # trim edge set for ker delta to be admissible.
+    if delete <> [] then
+        
+        InfoZigzag1("delete ", delete, "\n");
+        path1:= path1{Difference([1..Length(path1)], delete)};
         path:= pathsStreets(path1);
         
-        # distribute paths over hom-spaces
+        # redistribute paths over hom-spaces
         pathmat:= List(sh, x-> List(sh, x-> rec(path:= [])));
         for s in [1..Length(path0)] do 
             # path0[s] is the idempotent in pathmat[s][s]
@@ -1498,55 +1539,54 @@ DescentQuiver:= function(W)
                 Add(pathmat[s][t].path, path[i][j]);
             od;
         od;
+    fi;
+    
         
-        # calculate all relations
-        delete:= [];
-        
-        for i in [1..Length(sh)] do
-            for j in [1..Length(sh)] do
-                ppp:= pathmat[i][j].path;
-                mat:= [];
-                for p in ppp do
-                    if p = [] then
-                        Add(mat, Call(path0[j], "Delta").mat);
-                    else
-                        Add(mat, deltaPath(path1{p}).mat);
-                    fi;
-                od;
-                if mat = [] then
-                    kern:= [];
+    # calculate all relations
+    delete:= [];
+    
+    for i in [1..Length(sh)] do
+        for j in [1..Length(sh)] do
+            ppp:= pathmat[i][j].path;
+            mat:= [];
+            for p in ppp do
+                if p = [] then
+                    Add(mat, Call(path0[j], "Delta").mat);
                 else
-                    kern:= NullspaceMat(mat);
+                    Add(mat, deltaPath(path1{p}).mat);
                 fi;
-                
-                for line in kern do
-                    pos:= PositionProperty(line, x-> x <> 0);
-                    if Length(ppp[pos]) = 1 then
-                        Add(delete, ppp[pos][1]);
-                    fi;
-                od;
-                
-                
-                pathmat[i][j].mat:= mat;
-#                pathmat[i][j].kern:= kern;
-                pathmat[i][j].basis:= Difference([1..Length(mat)], List(kern, x-> Position(x, 1)));
-                
-                # express each path in terms of chosen basis.
-                mat:= TransposedMat(Reversed(mat));
-                TriangulizeMat(mat);
-                mat:= Filtered(mat, x-> x <> 0*x);
-                pathmat[i][j].map:= Reversed(TransposedMat(Reversed(mat)));
             od;
+            if mat = [] then
+                kern:= [];
+            else
+                kern:= NullspaceMat(mat);
+            fi;
+            
+            for line in kern do
+                pos:= PositionProperty(line, x-> x <> 0);
+                if Length(ppp[pos]) = 1 then
+                    Add(delete, ppp[pos][1]);
+                fi;
+            od;
+            
+            
+            pathmat[i][j].mat:= mat;
+            pathmat[i][j].basis:= Difference([1..Length(mat)], List(kern, x-> Position(x, 1)));
+            
+            # express each path in terms of chosen basis.
+            mat:= TransposedMat(Reversed(mat));
+            TriangulizeMat(mat);
+            mat:= Filtered(mat, x-> x <> 0*x);
+            pathmat[i][j].map:= Reversed(TransposedMat(Reversed(mat)));
         od;
-        
-        InfoZigzag1(delete, " ", delete[1], "\n");
-        
-        path1:= path1{Difference([1..Length(path1)], delete)};
-    until delete =  [];
+    od;
+    
+    if delete <> [] then
+        Error("delete <> [] ", delete);
+    fi;
         
     return rec(path0:= path0, 
                path1:= path1, 
-#               path:= path, 
                pathmat:= pathmat);
 end;
 
@@ -1593,15 +1633,15 @@ NextProjectiveCover:= function(qr, pims, map)
         fi;
     od;
  
-    # how to compute the effect of an edge e (from j to k) on pim i
+    # how to compute the effect of a path a (from j to k) on pim i
     # as a matrix ....
     pathsUnderPath:= function(i, a)
         local   pi,  j,  k,  mat,  p;
         
         pi:= qr.pathmat[i];
 
-        j:= Call(a[1], "Source");
-        k:= Call(a[Length(a)], "Target");
+        j:= Call(qr.path1[a[1]], "Source");
+        k:= Call(qr.path1[a[Length(a)]], "Target");
 
         mat:= [];  # the matrix of e on a small space
         for p in pi[j].path{pi[j].basis} do
@@ -1618,8 +1658,8 @@ NextProjectiveCover:= function(qr, pims, map)
             return b;
         fi;
         
-        j:= Call(a[1], "Source");
-        k:= Call(a[Length(a)], "Target");
+        j:= Call(qr.path1[a[1]], "Source");
+        k:= Call(qr.path1[a[Length(a)]], "Target");
 
         new:= 0 * b;
         for i in iii do
@@ -1637,12 +1677,12 @@ NextProjectiveCover:= function(qr, pims, map)
     space:= RowSpace(Rationals, basis);
     
     radical:= [];
-    for e in qr.path[1] do
-        j:= Call(e[1], "Source");
-        k:= Call(e[1], "Target");
+    for e in [1..Length(qr.path1)] do
+        j:= Call(qr.path1[e], "Source");
+        k:= Call(qr.path1[e], "Target");
         new:= 0*basis;
         for i in iii do
-            mat:= pathsUnderPath(pims[i], e);
+            mat:= pathsUnderPath(pims[i], [e]);
             if mat <> [] then 
                 new{lll}{com[i][k]}:= basis{lll}{com[i][j]} * mat;
             fi;
@@ -1677,7 +1717,7 @@ ProjectiveResolution:= function(qr, i)
     pi:= qr.pathmat[i];
     n:= Sum(pi, x-> Length(x.basis));
     a:= 0*[1..n];  a[n]:= 1;
-    p:= rec(pims:= [i], map:= TransposedMat(a));
+    p:= rec(pims:= [i], map:= TransposedMat([a]));
     
     res:= [];
     
