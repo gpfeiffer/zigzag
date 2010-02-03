@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.80 2010/02/01 14:53:49 goetz Exp $
+#A  $Id: descent.g,v 1.81 2010/02/03 14:33:32 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1723,7 +1723,7 @@ ProjectiveResolution:= function(qr, i)
     
     repeat
         pims:= p.pims;  map:= p.map;
-        Add(res, pims);
+        Add(res, p);
         p:= NextProjectiveCover(qr, pims, map);
     until p = 0;
     
@@ -1731,6 +1731,56 @@ ProjectiveResolution:= function(qr, i)
 end;
 
 
+#############################################################################
+##  
+##  
+##  
+##  
+##  
+RelationsDescentQuiver:= function(q)
+    local   N,  i,  j,  rels,  pr,  basi,  pos,  path,  r,  basr,  
+            edge,  rel;
+    
+    N:= Length(q.pathmat);
+    
+    # do we really want to store them?
+    for i in [1..N] do
+        for j in [1..N] do
+            q.pathmat[i][j].relation:= [];
+        od;
+    od;
+    rels:= [];
+    
+    for i in [1..N] do
+        pr:= ProjectiveResolution(q, i);
+        if Length(pr) > 2 then
+            
+            basi:= Concatenation(List(q.pathmat[i], x-> x.path{x.basis}));
+            
+            # identify paths.
+            pos:= 0;
+            path:= [];
+            for r in pr[2].pims do
+                basr:= Concatenation(List(q.pathmat[r], x-> x.path{x.basis}));
+                pos:= pos + Length(basr);
+                edge:= basi[Position(pr[2].map[pos], 1)];
+                Append(path, List(basr, x-> Concatenation(edge, x)));
+            od;
+                
+            # find relations.
+            pos:= 0;
+            for r in pr[3].pims do
+                pos:= pos + Sum(q.pathmat[r], x-> Length(x.basis));
+                # now: pr[3].map[pos]  is the coeff vec of the relation, need to recover basis.
+                rel:= pr[3].map[pos]{List(q.pathmat[i][r].path, x-> Position(path, x))};
+                Add(q.pathmat[i][r].relation, rel);
+                Add(rels, [i, r, rel]);
+            od;
+        fi;
+    od;
+    
+    return rels;
+end;
 
 #############################################################################
 ##
