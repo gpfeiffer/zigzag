@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.81 2010/02/03 14:33:32 goetz Exp $
+#A  $Id: descent.g,v 1.82 2010/02/05 02:01:07 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1475,9 +1475,8 @@ DescentQuiver:= function(W)
         
     # distribute paths over hom-spaces
     pathmat:= List(sh, x-> List(sh, x-> rec(path:= [])));
-    for s in [1..Length(path0)] do 
-        # path0[s] is the idempotent in pathmat[s][s]
-        Add(pathmat[s][s].path, []);
+    for i in [1..Length(pathmat)] do 
+        Add(pathmat[i][i].path, []);   # path0[i] is the idempotent in pathmat[i][i]
     od;
     where:= List(path, x-> []);
     for i in [1..Length(path)] do
@@ -1528,15 +1527,13 @@ DescentQuiver:= function(W)
         
         # redistribute paths over hom-spaces
         pathmat:= List(sh, x-> List(sh, x-> rec(path:= [])));
-        for s in [1..Length(path0)] do 
-            # path0[s] is the idempotent in pathmat[s][s]
-            Add(pathmat[s][s].path, []);
+        for i in [1..Length(pathmat)] do 
+            Add(pathmat[i][i].path, []);   # path0[i] is the idempotent in pathmat[i][i]
         od;
         for i in [1..Length(path)] do
             for j in [1..Length(path[i])] do
-                s:= sourcePath(path1{path[i][j]});
-                t:= targetPath(path1{path[i][j]});
-                Add(pathmat[s][t].path, path[i][j]);
+                p:= path[i][j];
+                Add(pathmat[sourcePath(path1{p})][targetPath(path1{p})].path, p);
             od;
         od;
     fi;
@@ -1739,7 +1736,7 @@ end;
 ##  
 RelationsDescentQuiver:= function(q)
     local   N,  i,  j,  rels,  pr,  basi,  pos,  path,  r,  basr,  
-            edge,  rel;
+            edge,  rel,  p;
     
     N:= Length(q.pathmat);
     
@@ -1772,7 +1769,15 @@ RelationsDescentQuiver:= function(q)
             for r in pr[3].pims do
                 pos:= pos + Sum(q.pathmat[r], x-> Length(x.basis));
                 # now: pr[3].map[pos]  is the coeff vec of the relation, need to recover basis.
-                rel:= pr[3].map[pos]{List(q.pathmat[i][r].path, x-> Position(path, x))};
+                rel:= [];
+                for p in q.pathmat[i][r].path do
+                    j:= Position(path, p);
+                    if j = false then
+                        Add(rel, 0);
+                    else
+                        Add(rel, pr[3].map[pos][j]);
+                    fi;
+                od;                    
                 Add(q.pathmat[i][r].relation, rel);
                 Add(rels, [i, r, rel]);
             od;
