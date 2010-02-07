@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.55 2010/01/16 14:07:15 goetz Exp $
+#A  $Id: streets.g,v 1.56 2010/02/07 20:35:57 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1097,6 +1097,22 @@ StreetOps.\*:= function(l, r)
     return res;
 end;
 
+
+##  FIXME: should be an element of a street algebra:
+ProductStreets:= function(list)
+    local   pro,  i,  new,  p;
+    pro:= [list[1]];
+    for i in [2..Length(list)] do
+        new:= [];
+        for p in pro do
+            Append(new, p * list[i]);
+        od;
+        pro:= new;
+    od;
+    return pro;
+end;
+
+
 #############################################################################
 ##  
 ##  Find the last irreducible factor (actually the first when you read
@@ -1217,6 +1233,9 @@ end;
 #############################################################################
 # given a set of streets, compute all possible paths, ie, sequences of streets
 # of length up to len.
+##  why does this need to bound the length?  There are no loops, after all???
+##  except for 0 length paths of course, but can we not simply ignore them???
+##
 PathsStreets:= function(streets, len)
     local   paths,  old,  i,  new,  a,  b;
     
@@ -1229,6 +1248,32 @@ PathsStreets:= function(streets, len)
         for a in old do
             for b in streets do
                 if Call(a[Length(a)], "Target") = Call(b, "Source") then
+                    Add(new, Concatenation(a, [b]));
+                fi;
+            od;
+        od;
+        old:= new;
+    od;
+    
+    return paths;
+end;
+
+PathsStreets1:= function(streets)
+    local   paths,  edges,  old,  new,  a,  b;
+    
+    paths:= [];
+    
+    # ignore streets of length 0.
+    edges:= Filtered([1..Length(streets)], i-> Call(streets[i], "Length") > 0);
+    
+    old:= List(edges, x-> [x]);
+    while old <> [] do
+        Add(paths, old);
+        new:= [];
+        for a in old do
+            for b in edges do
+                if Call(streets[a[Length(a)]], "Target") 
+                   = Call(streets[b], "Source") then
                     Add(new, Concatenation(a, [b]));
                 fi;
             od;
