@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.4 2010/01/29 16:30:13 goetz Exp $
+#A  $Id: forests.g,v 1.5 2010/02/07 20:53:19 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -149,6 +149,24 @@ TreeOps.\^:= function(l, r)
     fi;
 end;    
 
+
+#############################################################################
+IsIncreasing:= function(obj)
+    return obj.operations.IsIncreasing(obj);
+end;
+
+
+#############################################################################
+TreeOps.IsIncreasing:= function(self)
+    # leaves are increasing; otherwise left child weighs less than right. 
+    if self.i = 0 then
+        return true;
+    elif self.l.n < self.r.n then
+        return IsIncreasing(self.l) and IsIncreasing(self.r);
+    else
+        return false;
+    fi;
+end;    
 
 
 ##  how to turn a subset of [1..n-1] into a composition of n
@@ -384,6 +402,12 @@ ForestOps.Factors:= function(self)
     n:= Sum(Call(self, "Value"));
     return List(FactorsAlley(Call(self, "Alley")), x-> ForestAlley(n, x));
 end;
+
+#############################################################################
+ForestOps.IsIncreasing:= function(self)
+    return ForAll(self.list, x-> Call(x, "IsIncreasing"));
+end;
+
 
 
 #    each Lyndon word w of length > 1 has a standard factorization
