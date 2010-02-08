@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.56 2010/02/07 20:35:57 goetz Exp $
+#A  $Id: streets.g,v 1.57 2010/02/08 08:41:41 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1307,6 +1307,60 @@ end;
 QuiverMatStreets:= function(W)
     local   c;
     c:= CartanMatStreets(W);
+    return c^0 - c^-1; # c = d^0 + d^1 + d2 + ... => d = 1 - 1/c.
+end;
+
+
+#############################################################################
+##
+##  Conjecture 2:  The increasing streets form a path algebra.
+##
+
+# this only makes sense for W of type A
+CartanMatIncreasingStreets0:= function(W)
+    local   l,  n,  mat,  b,  i,  j;
+    
+    l:= Length(Shapes(W));
+    n:= W.semisimpleRank+1;
+    mat:= NullMat(l, l);
+    for b in Streets(W) do
+        if IsIncreasing(ForestAlley(n, b.alley)) then
+            i:= Call(b, "Source");
+            j:= Call(b, "Target");
+            mat[i][j]:= mat[i][j] + 1;
+        fi;
+    od;
+    
+    return mat;
+end;
+
+# this is more generally applicable
+CartanMatIncreasingStreets:= function(W)
+    local   l,  mat,  q,  i,  j,  p;
+    
+    l:= Length(Shapes(W));
+    mat:= [];
+    q:= DescentQuiver(W);
+    for i in [1..l] do
+        mat[i]:= [];
+        for j in [1..l] do
+            mat[i][j]:= 0;
+            for p in q.pathmat[i][j].path do
+                if p = [] then
+                    mat[i][j]:= mat[i][j] + 1;
+                else
+                    mat[i][j]:= mat[i][j] + Length(ProductStreets(q.path1{p}));
+                fi;
+            od;
+        od;
+    od;
+        
+    return mat;
+end;
+
+QuiverMatIncreasingStreets:= function(W)
+    local   c;
+    c:= CartanMatIncreasingStreets(W);
     return c^0 - c^-1; # c = d^0 + d^1 + d2 + ... => d = 1 - 1/c.
 end;
 
