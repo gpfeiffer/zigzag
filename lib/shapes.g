@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.67 2009/06/22 15:14:06 goetz Exp $
+#A  $Id: shapes.g,v 1.68 2010/02/08 08:43:02 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1294,6 +1294,86 @@ LabelsShapes:= function(shapes)
 end;
 
 
+#############################################################################
+# an edge is a vertex J together with a label s not in J of an edge
+# leading out of J.
+# in a similar way, a face is a vertex J together with *two* distinct
+# labels s, t not in J of edges leading out of J, or rather a class of them
+# closed under spanning the tree inside J union s, t.
+##
+ShapeOps.Faces:= function(self)
+    local   S,  eee,  pairs,  e,  st,  inverse,  next,  fullclass,  
+            isline,  classes,  p,  class,  a;
+    
+    S:= [1..self.W.semisimpleRank];
+    
+    eee:= Elements(self);
+    
+    # make all pairs (J, {s, t}).
+    pairs:= [];
+    for e in [1..Length(eee)] do
+        for st in Combinations(Difference(S, eee[e]), 2) do
+            AddSet(pairs, [e, st]);
+            AddSet(pairs, [e, Reversed(st)]);
+        od;
+    od;
+    
+    
+    # how to find the inverse of the edge [e, s]
+    inverse:= function(e, s)
+        local   f;
+        f:= self.edges[e][s].v;        # the address of e.s 
+        return [f, Difference(Union(eee[e], [s]), eee[f])[1]];
+    end;
+        
+    # how to find the image of [e, st] under s
+    next:= function(est)
+        local   inv;
+        inv:= inverse(est[1], est[2][1]);
+        return [inv[1], [est[2][2], inv[2]]];
+    end;
+    
+    # how to grow a full class from p = [e, st]
+    fullclass:= function(p)
+        local   class,  new;
+        class:= [p];
+        new:= next(p);
+        while new <> class[1] do
+            Add(class, new);
+            p:= new;
+            new:=next(p);
+        od;
+        return class;
+    end;
+    
+    # how test whether a class is a line.
+    isline:= function(c)
+        return [c[1][1], Reversed(c[1][2])] in c;
+    end;
+
+    # form classes.
+    classes:= rec(lines:= [], cycles:= []);
+    while pairs <> [] do
+        p:= pairs[1];
+        class:= fullclass(p);
+        if isline(class) then
+            Add(classes.lines, class);
+        else
+            Add(classes.cycles, class);
+#            SubtractSet(pairs, List(class, x-> [x[1], Reversed(x[2])]));
+        fi;
+        # TODO: make S^*-orbit of p!!! === Street(W, [Union(p), [s, t]])
+        a:= Street(self.W, [Union(eee[p[1]], p[2]), p[2]]);
+        for e in Elements(a) do
+            p:= [Position(eee, Difference(e[1], e[2])), e[2]];
+            SubtractSet(pairs, fullclass(p));
+        od;
+    od;
+    
+    return classes;
+end;
+    
+    
 #############################################################################
 ##
 #E  Emacs  . . . . . . . . . . . . . . . . . . . . . . local emacs variables.
