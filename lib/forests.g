@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.5 2010/02/07 20:53:19 goetz Exp $
+#A  $Id: forests.g,v 1.6 2010/02/12 21:26:15 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -119,7 +119,11 @@ TreeOps.Indices:= function(self)
     if self.i = 0 then 
         return [];
     else
-        return Concatenation(Call(self.l, "Indices"), [self.i], Call(self.r, "Indices"));
+#        return Concatenation(Call(self.l, "Indices"), [self.i], Call(self.r, "Indices"));
+        # postfix order!
+        return Concatenation(Call(self.l, "Indices"), 
+                       Call(self.r, "Indices"),
+                       [self.i]);
     fi;
 end;
 
@@ -560,3 +564,258 @@ end;
 # a:= [[2,3,4,5,8,9,11], [4, 5, 8, 3, 11]];
 # f:= ForestAlley(12, a);
 
+#############################################################################
+##  
+#O  LeanTreeOps  . . . . . . . . . . . . . . . . . . . operations record.
+##  
+##  A lean tree is a tree w/o inner node labels.
+##
+LeanTreeOps:= OperationsRecord("TreeOps");
+
+#############################################################################
+##  
+#C  LeanTree( <n> )  . . . . . . . . . . . . . . . . .  constructor.
+#C  LeanTree( <l>, <r> )  . . . . . . . . . . . . . . . . .  constructor.
+##  
+##  <#GAPDoc Label="LeanTree">
+##  <ManSection>
+##  <Func Name="LeanTree" Arg="n"/>
+##  <Func Name="LeanTree" Arg="l, r"/>
+##  <Returns>
+##    a new lean tree with components ...
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for lean trees ...
+##  <Example>
+##  gap> LeanTree(LeanTree(2), LeanTree(3));
+##  [2^3]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+##  A tree is a triple with components
+##    l, r:  its left and right children (or 0 if its a leaf)
+##    n: its *value* (which is the sum of the values of the children)
+##
+LeanTree:= function(arg)
+    local self, usage;
+    usage:= "Usage: Tree( <n> ) or Tree( <l>, <r> )";
+    if Length(arg) = 1 then
+        self:= rec(l:= 0, r:= 0, n:= arg[1]);
+    elif Length(arg) = 2 then
+        self:= rec(l:= arg[1], r:= arg[2]);
+        self.n:= self.l.n + self.r.n;
+    else
+        Error(usage);
+    fi;
+    self.isLeanTree:= true;
+    self.operations:= LeanTreeOps;
+    return self;
+end;
+
+
+#############################################################################
+##
+#F  IsLeanTree( <obj> )  . . . . . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsLeanTree">
+##  <ManSection>
+##  <Func Name="IsLeanTree" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a lean tree and <K>false</K>
+##    otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsLeanTree:= function(obj)
+    return IsRec(obj) and IsBound(obj.isLeanTree) and obj.isLeanTree = true;
+end;
+
+#############################################################################
+LeanTreeOps.Print:= function(self)
+    if self.l = 0 then
+        Print(self.n);
+    else
+        Print("[", self.l, "^", self.r, "]");
+    fi;
+end;
+
+# the value of a tree is the sum of the values of its leaves
+LeanTreeOps.Value:= self-> self.n;
+
+# the values of a tree is the list of values of its leaves
+LeanTreeOps.Values:= function(self)
+    if self.l = 0 then
+        return [self.n];
+    else
+        return Concatenation(Call(self.l, "Values"), Call(self.r, "Values"));
+    fi;
+end;
+
+# returns the list of leaves (as lean trees)
+LeanTreeOps.Leaves:= function(self)
+    if self.l = 0 then
+        return [self];
+    else
+        return Concatenation(Call(self.l, "Leaves"), Call(self.r, "Leaves"));
+    fi;
+end;
+
+# the size of a lean tree is the number of inner nodes (= number of leaves - 1)
+LeanTreeOps.Size:= function(self)
+    if self.l = 0 then 
+        return 0;
+    else
+        return Call(self.l, "Size") + 1 + Call(self.r, "Size");
+    fi;
+end;    
+
+#############################################################################
+LeanTreeOps.IsIncreasing:= function(self)
+    # leaves are increasing; otherwise left child weighs less than right. 
+    if self.l = 0 then
+        return true;
+    elif self.l.n < self.r.n then
+        return IsIncreasing(self.l) and IsIncreasing(self.r);
+    else
+        return false;
+    fi;
+end;    
+
+##  make all lean trees of value n
+LeanTrees:= function(n)
+    local   all,  i,  a,  b;
+    
+    all:= [LeanTree(n)];
+    for i in [1..n-1] do
+        for a in LeanTrees(i) do
+            for b in LeanTrees(n-i) do
+                Add(all, LeanTree(a, b));
+            od;
+        od;
+    od;
+    return all;
+end;
+
+##  make all increasing lean trees of value n
+IncreasingLeanTrees:= function(n)
+    local   all,  i,  a,  b;
+    
+    all:= [LeanTree(n)];
+    for i in [1..Int((n-1)/2)] do
+        for a in IncreasingLeanTrees(i) do
+            for b in IncreasingLeanTrees(n-i) do
+                Add(all, LeanTree(a, b));
+            od;
+        od;
+    od;
+    return all;
+end;
+
+            
+
+#############################################################################
+TreeOps.Lean:= function(self)
+    if self.l = 0 then 
+        return LeanTree(self.n);
+    else
+        return LeanTree(Call(self.l, "Lean"), Call(self.r, "Lean"));
+    fi;
+end;
+
+##  FIXME:  conversely:  how to put the labels in a lean tree?
+##  default way;  all possible ways ....
+
+
+#############################################################################
+
+## lean forests next.
+LeanForestOps:= OperationsRecord("LeanForestOps");
+
+
+##  a lean forest is a sequence of lean trees.
+LeanForest:= function(list)
+    local   self;
+    
+    self:= rec();
+    self.list:= list;
+    self.isLeanForest:= true;
+    self.operations:= LeanForestOps;
+    return self;
+end;
+
+
+IsLeanForest:= function(obj)
+    return IsRec(obj) and IsBound(obj.isLeanForest) and obj.isLeanForest = true;
+end;
+
+#############################################################################
+LeanForestOps.Print:= function(self)
+    Print("LeanForest( ", self.list, " )");
+end;
+
+
+# the value of a forest is the list of values of its trees.
+# this produces the composition corresponding to the source of the forest.
+LeanForestOps.Value:= function(self)
+    return List(self.list, t-> Call(t, "Value"));
+end;
+
+#  the values of a forest are the values lists of its trees. 
+# this produces the composition corresponding to the target of the forest.
+LeanForestOps.Values:= function(self)
+    return Concatenation(List(self.list, t-> Call(t, "Values")));
+end;
+
+LeanForestOps.Leaves:= function(self)
+    return Concatenation(List(self.list, t-> Call(t, "Leaves")));
+end;
+
+
+LeanForestOps.Size:= function(self)
+    return Sum(self.list, x-> Call(x, "Size"));
+end;
+
+LeanForestOps.Length:= function(self)
+    return Length(self.list);
+end;
+
+
+#############################################################################
+LeanForestOps.IsIncreasing:= function(self)
+    return ForAll(self.list, x-> Call(x, "IsIncreasing"));
+end;
+
+ForestOps.Lean:= function(self)
+    return LeanForest(List(self.list, x-> Call(x, "Lean")));
+end;
+
+
+# make all lean forests of total value n
+LeanForests:= function(n)
+    local   all,  p,  q;
+    
+    all:= [];
+    for p in Partitions(n) do
+        for q in Arrangements(p, Length(p)) do
+            Append(all, List(Cartesian(List(q, LeanTrees)), LeanForest));
+        od;
+    od;
+    return all;
+end;
+
+
+# make all increasing lean forests of total value n
+IncreasingLeanForests:= function(n)
+    local   all,  p,  q;
+    
+    all:= [];
+    for p in Partitions(n) do
+        for q in Arrangements(p, Length(p)) do
+            Append(all, List(Cartesian(List(q, IncreasingLeanTrees)), LeanForest));
+        od;
+    od;
+    return all;
+end;
