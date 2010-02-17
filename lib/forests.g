@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.6 2010/02/12 21:26:15 goetz Exp $
+#A  $Id: forests.g,v 1.7 2010/02/17 19:41:27 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -594,7 +594,7 @@ LeanTreeOps:= OperationsRecord("TreeOps");
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-##  A tree is a triple with components
+##  A lean tree is a triple with components
 ##    l, r:  its left and right children (or 0 if its a leaf)
 ##    n: its *value* (which is the sum of the values of the children)
 ##
@@ -819,3 +819,28 @@ IncreasingLeanForests:= function(n)
     od;
     return all;
 end;
+
+##  Suffixes
+##  in contrast to a forest, a lean forest can have several suffixes.
+LeanForestOps.Suffixes:= function(self)
+    local   suf,  k,  t,  i;
+    
+    suf:= [];
+    k:= Call(self, "Size");   # should this be a parameter?
+    t:= self.list;
+    
+    for i in [1..Length(t)] do
+        if t[i].l <> 0 then
+            Add(suf, LeanForest(Concatenation(t{[1..i-1]}, 
+                    [t[i].l, t[i].r] , t{[i+1..Length(t)]})));
+        fi;
+    od;
+    
+    return suf;
+end;
+
+    
+    
+#############################################################################
+##
+##  how to insert labels into a lean forest
