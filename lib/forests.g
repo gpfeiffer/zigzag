@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.7 2010/02/17 19:41:27 goetz Exp $
+#A  $Id: forests.g,v 1.8 2010/02/17 21:52:30 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -823,20 +823,20 @@ end;
 ##  Suffixes
 ##  in contrast to a forest, a lean forest can have several suffixes.
 LeanForestOps.Suffixes:= function(self)
-    local   suf,  k,  t,  i;
+    local   lis,  t,  i,  suf;
     
-    suf:= [];
-    k:= Call(self, "Size");   # should this be a parameter?
+    lis:= [];
     t:= self.list;
     
     for i in [1..Length(t)] do
         if t[i].l <> 0 then
-            Add(suf, LeanForest(Concatenation(t{[1..i-1]}, 
-                    [t[i].l, t[i].r] , t{[i+1..Length(t)]})));
+            suf:= Concatenation(t{[1..i]}, [0], t{[i+1..Length(t)]});
+            suf{[i, i+1]}:= [t[i].l, t[i].r];
+            Add(lis, LeanForest(suf));
         fi;
     od;
     
-    return suf;
+    return lis;
 end;
 
     
@@ -844,3 +844,32 @@ end;
 #############################################################################
 ##
 ##  how to insert labels into a lean forest
+##
+LeanForestOps.InverseLean:= function(self)
+    local   lis,  t,  val,  flat,  i,  e,  suf;
+    
+    lis:= [];
+    t:= self.list;
+    val:= List(Call(self, "Value"), Tree);
+    
+    flat:= true;
+    for i in [1..Length(t)] do
+        if t[i].l <> 0 then
+            flat:= false;
+            e:= Copy(val);
+            e[i]:= Tree(1, Tree(Call(t[i].l, "Value")), 
+                        Tree(Call(t[i].r, "Value")));
+            e:= Forest(e);
+            suf:= Concatenation(t{[1..i]}, [0], t{[i+1..Length(t)]});
+            suf{[i, i+1]}:= [t[i].l, t[i].r];
+            Append(lis, List(Call(LeanForest(suf), "InverseLean"), 
+                    x-> e * x));
+        fi;
+    od;
+    
+    if flat then
+        Add(lis, Forest(val));
+    fi;        
+
+    return lis;
+end;
