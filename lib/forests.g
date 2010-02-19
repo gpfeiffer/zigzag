@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.8 2010/02/17 21:52:30 goetz Exp $
+#A  $Id: forests.g,v 1.9 2010/02/19 02:15:01 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -873,3 +873,41 @@ LeanForestOps.InverseLean:= function(self)
 
     return lis;
 end;
+
+# canonically labelled tree -- postfix order.
+LeanForestOps.CanonicalLabels:= function(self)
+    local   lab,  treeLabels;
+    
+    lab:= 0;
+    
+    treeLabels:= function(t)
+        local   l,  r;
+        if t.l = 0 then
+            return Tree(t.n);
+        else
+            l:= treeLabels(t.l);
+            r:= treeLabels(t.r);
+            lab:= lab + 1;
+            return Tree(lab, l, r);
+        fi;
+    end;
+    
+    return Forest(List(self.list, treeLabels));
+end;
+          
+            
+
+
+#############################################################################
+##  the multiplier of f is m = #[InverseLean(f)] / #[f]
+LeanForestOps.Multiplier:= function(self)
+    local   szStab;
+    
+    # how to find the size of the arrangement stabilizer
+    szStab:= function(obj)
+        return Product(Collected(obj.list), x-> Factorial(x[2]));
+    end;
+    
+    return szStab(self) / szStab(Call(self, "CanonicalLabels"));
+end;
+
