@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.83 2010/02/27 20:19:05 goetz Exp $
+#A  $Id: descent.g,v 1.84 2010/02/27 22:58:48 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -15,6 +15,10 @@
 ##    <F>descent.g</F>.  
 ##  <#/GAPDoc>
 ##
+##  TODO:  clean up: need only one program for the quiver!!!
+##  TODO:  elements, bases, ..., in blocks by shape, ...
+##  
+
 RequirePackage("chevie");
 
 
