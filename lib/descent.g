@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.82 2010/02/05 02:01:07 goetz Exp $
+#A  $Id: descent.g,v 1.83 2010/02/27 20:19:05 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -2146,6 +2146,101 @@ BlocksCartan:= function(car)
     od;
     return Set(equ);
 end;
+
+
+#############################################################################
+##
+##   Conjecture.  A path in the quiver is a union of streets.  If two paths
+##   intersect they are the same.  The quiver algebra is a subalgebra of
+##   the streets algebra.
+##
+##   This function answers the question:
+##   How many streets does a hom space in the quiver algebra consist of?
+##
+##   Input: a DescentQuiver(W)
+##
+MatNrStreetsQuiver:= function(quiver)
+    local   l,  mat,  i,  j,  streets,  p,  m;
+    
+    l:= Length(quiver.pathmat);
+    
+    mat:= IdentityMat(l);
+    for i in [1..l] do
+        for j in [1..i-1] do
+            streets:= [];
+            for p in quiver.pathmat[i][j].path do
+                Append(streets, ProductStreets(quiver.path1{p}));
+            od;
+            m:= Length(streets);
+            if Size(Set(streets)) = m then
+                mat[i][j]:= m;
+            else
+                Error("this conjecture is false: path do overlap!");
+            fi;
+        od;
+    od;
+    
+    return mat;
+end;
+
+#  q-version, sort by path length
+QMatNrStreetsQuiver:= function(quiver, q)
+    local   l,  mat,  i,  j,  streets,  p,  m;
+    
+    l:= Length(quiver.pathmat);
+    
+    mat:= q^0 * IdentityMat(l);
+    for i in [1..l] do
+        for j in [1..i-1] do
+            streets:= [];
+            for p in quiver.pathmat[i][j].path do
+                Append(streets, ProductStreets(quiver.path1{p}));
+            od;
+            m:= Length(streets);
+            if m > 0 then
+                mat[i][j]:= q^Length(p) * m;
+            fi;
+        od;
+    od;
+    
+    return mat;
+end;
+
+
+MatNrPathsQuiver:= function(quiver)
+    local   l,  mat,  i,  j;
+    
+    l:= Length(quiver.pathmat);
+    
+    mat:= IdentityMat(l);
+    for i in [1..l] do
+        for j in [1..i-1] do
+            mat[i][j]:= Length(quiver.pathmat[i][j].path);
+        od;
+    od;
+    
+    return mat;
+end;
+
+#  q-version, sort by path length
+QMatNrPathsQuiver:= function(quiver, q)
+    local   l,  mat,  i,  j,  m;
+    
+    l:= Length(quiver.pathmat);
+    
+    mat:= q^0 * IdentityMat(l);
+    for i in [1..l] do
+        for j in [1..i-1] do
+            m:= Length(quiver.pathmat[i][j].path);
+            if m > 0 then
+                mat[i][j]:= q^Length(quiver.pathmat[i][j].path[1]) * m;
+            fi;
+        od;
+    od;
+    
+    return mat;
+end;
+
 
 #############################################################################
 ##
