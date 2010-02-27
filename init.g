@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.36 2010/02/01 14:46:51 goetz Exp $
+#A  $Id: init.g,v 1.37 2010/02/27 22:58:21 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -42,11 +42,13 @@ fi;
 ##
 #A  AUTO . . . . . . . . . . . . . . . . . . . . . . . . . . . .  auto reads.  
 ##
-AUTO( ReadPkg( "zigzag", "lib", "forests" ), TreeOps, Tree, IsTree,
+AUTO( ReadPkg( "zigzag", "lib", "forests" ), TreeOps, Tree, IsTree, IsSlanted,
   CompositionSubset, SubsetComposition, ForestOps, Forest, IsForest,
   ForestAlley1, ForestLs, ForestAlley, StandardFactorizationLyndon,
   StandardBracketingLyndon1, StandardBracketingLyndon, StandardBracketing,
-  LyndonBasis, LyndonPaths, IsCompletelyReducibleStreet);
+  LyndonBasis, LyndonPaths, IsCompletelyReducibleStreet, LeanTreeOps,
+  LeanTree, IsLeanTree, LeanTrees, SlantedLeanTrees, LeanForestOps,
+  LeanForest, IsLeanForest, LeanForests, SlantedLeanForests);
 
 AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, Map,
   PartitionOps, Partition);
@@ -69,10 +71,12 @@ AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
   CartanMatrixA, QCartanMatrixA, CartanMatrixB, QuiverRelations0,
   QuiverRelations1, QuiverRelations, SyzygiesQuiver, ProjectiveCover,
   ProjectiveResolutions, DescentQuiver, NextProjectiveCover,
-  ProjectiveResolution, DisplayQuiver0, DisplayQuiver1, DisplayQuiver,
-  DimensionsMatrix0, DimensionsMatrix1, DimensionsMatrix, CartanMatQuiver0,
-  CartanMatQuiver1, CartanMatQuiver, QCartanMatQuiver0, QCartanMatQuiver1,
-  QCartanMatQuiver, LaTeXMatNames, KernelList, LaTeXQCartan, BlocksCartan);
+  ProjectiveResolution, RelationsDescentQuiver, DisplayQuiver0,
+  DisplayQuiver1, DisplayQuiver, DimensionsMatrix0, DimensionsMatrix1,
+  DimensionsMatrix, CartanMatQuiver0, CartanMatQuiver1, CartanMatQuiver,
+  QCartanMatQuiver0, QCartanMatQuiver1, QCartanMatQuiver, LaTeXMatNames,
+  KernelList, LaTeXQCartan, BlocksCartan, MatNrStreetsQuiver,
+  QMatNrStreetsQuiver, MatNrPathsQuiver, QMatNrPathsQuiver);
 
 AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
   IteratorBreadthFirst, PreOrder, NrPreOrder, IteratorPreOrder,
@@ -86,8 +90,9 @@ AUTO( ReadPkg( "zigzag", "lib", "towers" ), FallingSequence, TowersAOps,
 
 AUTO( ReadPkg( "zigzag", "lib", "streets" ), StreetOps, Street, IsStreet,
   Streets, NrStreets, ProductStreetMatrices, ProductStreetMatrixList,
-  SumStreetMatrices, BasicStreets, PathsStreets, PathsStreets1,
-  CartanMatStreets, QuiverMatStreets);
+  SumStreetMatrices, ProductStreets, BasicStreets, BasicStreetsNonZero,
+  PathsStreets, PathsStreets1, CartanMatStreets, QuiverMatStreets,
+  CartanMatSlantedStreets0, CartanMatSlantedStreets, QuiverMatSlantedStreets);
 
 AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
   ProductLSigns, ProductRSigns, OnFaces, KernelSupportMap, FaceEltOps,
@@ -116,7 +121,8 @@ AUTO( ReadPkg( "zigzag", "lib", "shapes" ), ShapeOps, Shape, IsShape,
   NormalizerComplement, ShapesRank, Shapes, SubsetsShapes, ComplementsShapes,
   IncidenceMatShapes, XCharacters, ParabolicTom, YCharacters, ZCharacters,
   InvolutionShapes, Involutions, SpecialInvolutions, OrlikSolomonCharacter,
-  NamesShapes, LabelsShapes);
+  NamesShapes, LabelsShapes, IncMatShapes, QIncMatShapes, FusMatShapes,
+  QFusMatShapes);
 
 AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
   IsCategory, CategoryEltOps, CategoryElt, IsCategoryElt);
