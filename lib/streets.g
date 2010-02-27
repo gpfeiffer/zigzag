@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.57 2010/02/08 08:41:41 goetz Exp $
+#A  $Id: streets.g,v 1.58 2010/02/27 22:56:15 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1228,6 +1228,28 @@ BasicStreets:= function(W)
     return basic;
 end;
 
+#  leave out irrducibility test!
+BasicStreetsNonZero:= function(W)
+    local   isNonZero,  basic,  a;
+    
+    # how to test for zero matrix.
+    isNonZero:= m -> m <> 0*m;
+
+    # start with a reasonably small set of alley classes.
+    basic:= List(Shapes(W), x-> Call(x, "Street"));
+    for a in basic do 
+        Append(basic, Call(a, "MoversPlus"));
+    od;
+    InfoZigzag1("Generated ", Length(basic), " streets\n");
+    
+    # test for Delta = 0.
+    basic:= Filtered(basic, x-> isNonZero(Call(x, "Delta").mat));
+    InfoZigzag1("Starting with ", Length(basic), " nonzero streets\n");
+    
+    # return survivors.
+    return basic;
+end;
+
 
 
 #############################################################################
@@ -1313,18 +1335,18 @@ end;
 
 #############################################################################
 ##
-##  Conjecture 2:  The increasing streets form a path algebra.
+##  Conjecture 2:  The slanted streets form a path algebra.
 ##
 
 # this only makes sense for W of type A
-CartanMatIncreasingStreets0:= function(W)
+CartanMatSlantedStreets0:= function(W)
     local   l,  n,  mat,  b,  i,  j;
     
     l:= Length(Shapes(W));
     n:= W.semisimpleRank+1;
     mat:= NullMat(l, l);
     for b in Streets(W) do
-        if IsIncreasing(ForestAlley(n, b.alley)) then
+        if IsSlanted(ForestAlley(n, b.alley)) then
             i:= Call(b, "Source");
             j:= Call(b, "Target");
             mat[i][j]:= mat[i][j] + 1;
@@ -1335,7 +1357,7 @@ CartanMatIncreasingStreets0:= function(W)
 end;
 
 # this is more generally applicable
-CartanMatIncreasingStreets:= function(W)
+CartanMatSlantedStreets:= function(W)
     local   l,  mat,  q,  i,  j,  p;
     
     l:= Length(Shapes(W));
@@ -1358,9 +1380,9 @@ CartanMatIncreasingStreets:= function(W)
     return mat;
 end;
 
-QuiverMatIncreasingStreets:= function(W)
+QuiverMatSlantedStreets:= function(W)
     local   c;
-    c:= CartanMatIncreasingStreets(W);
+    c:= CartanMatSlantedStreets(W);
     return c^0 - c^-1; # c = d^0 + d^1 + d2 + ... => d = 1 - 1/c.
 end;
 

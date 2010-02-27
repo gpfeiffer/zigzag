@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.9 2010/02/19 02:15:01 goetz Exp $
+#A  $Id: forests.g,v 1.10 2010/02/27 22:55:30 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -15,6 +15,12 @@
 ##    <F>forests.g</F>.  
 ##  <#/GAPDoc>
 ##
+##  TODO: Tree inherits operations from LeanTree
+##  TODO: rename Tree to BTree, BinTree, BinaryTree?
+##  TODO: same for Forest
+##  TODO: implement Children for the methods in walker.g to apply
+##
+
 
 #############################################################################
 ##  
@@ -155,18 +161,18 @@ end;
 
 
 #############################################################################
-IsIncreasing:= function(obj)
-    return obj.operations.IsIncreasing(obj);
+IsSlanted:= function(obj)
+    return obj.operations.IsSlanted(obj);
 end;
 
 
 #############################################################################
-TreeOps.IsIncreasing:= function(self)
-    # leaves are increasing; otherwise left child weighs less than right. 
+TreeOps.IsSlanted:= function(self)
+    # leaves are slanted; otherwise left child weighs less than right. 
     if self.i = 0 then
         return true;
     elif self.l.n < self.r.n then
-        return IsIncreasing(self.l) and IsIncreasing(self.r);
+        return IsSlanted(self.l) and IsSlanted(self.r);
     else
         return false;
     fi;
@@ -408,8 +414,8 @@ ForestOps.Factors:= function(self)
 end;
 
 #############################################################################
-ForestOps.IsIncreasing:= function(self)
-    return ForAll(self.list, x-> Call(x, "IsIncreasing"));
+ForestOps.IsSlanted:= function(self)
+    return ForAll(self.list, x-> Call(x, "IsSlanted"));
 end;
 
 
@@ -673,12 +679,12 @@ LeanTreeOps.Size:= function(self)
 end;    
 
 #############################################################################
-LeanTreeOps.IsIncreasing:= function(self)
-    # leaves are increasing; otherwise left child weighs less than right. 
+LeanTreeOps.IsSlanted:= function(self)
+    # leaves are slanted; otherwise left child weighs less than right. 
     if self.l = 0 then
         return true;
     elif self.l.n < self.r.n then
-        return IsIncreasing(self.l) and IsIncreasing(self.r);
+        return IsSlanted(self.l) and IsSlanted(self.r);
     else
         return false;
     fi;
@@ -699,14 +705,14 @@ LeanTrees:= function(n)
     return all;
 end;
 
-##  make all increasing lean trees of value n
-IncreasingLeanTrees:= function(n)
+##  make all slanted lean trees of value n
+SlantedLeanTrees:= function(n)
     local   all,  i,  a,  b;
     
     all:= [LeanTree(n)];
     for i in [1..Int((n-1)/2)] do
-        for a in IncreasingLeanTrees(i) do
-            for b in IncreasingLeanTrees(n-i) do
+        for a in SlantedLeanTrees(i) do
+            for b in SlantedLeanTrees(n-i) do
                 Add(all, LeanTree(a, b));
             od;
         od;
@@ -784,8 +790,8 @@ end;
 
 
 #############################################################################
-LeanForestOps.IsIncreasing:= function(self)
-    return ForAll(self.list, x-> Call(x, "IsIncreasing"));
+LeanForestOps.IsSlanted:= function(self)
+    return ForAll(self.list, x-> Call(x, "IsSlanted"));
 end;
 
 ForestOps.Lean:= function(self)
@@ -807,14 +813,14 @@ LeanForests:= function(n)
 end;
 
 
-# make all increasing lean forests of total value n
-IncreasingLeanForests:= function(n)
+# make all slanted lean forests of total value n
+SlantedLeanForests:= function(n)
     local   all,  p,  q;
     
     all:= [];
     for p in Partitions(n) do
         for q in Arrangements(p, Length(p)) do
-            Append(all, List(Cartesian(List(q, IncreasingLeanTrees)), LeanForest));
+            Append(all, List(Cartesian(List(q, SlantedLeanTrees)), LeanForest));
         od;
     od;
     return all;
@@ -894,8 +900,7 @@ LeanForestOps.CanonicalLabels:= function(self)
     
     return Forest(List(self.list, treeLabels));
 end;
-          
-            
+ 
 
 
 #############################################################################
