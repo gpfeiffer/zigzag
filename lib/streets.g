@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.58 2010/02/27 22:56:15 goetz Exp $
+#A  $Id: streets.g,v 1.59 2010/03/02 15:09:58 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1356,7 +1356,10 @@ CartanMatSlantedStreets0:= function(W)
     return mat;
 end;
 
-# this is more generally applicable
+# this is more generally applicable:
+# a slanted street is one that occurs as part of a
+# path of the quiver (this depends on th choice of
+# the quiver, and prefersone of a pair of negatives)
 CartanMatSlantedStreets:= function(W)
     local   l,  mat,  q,  i,  j,  p;
     
