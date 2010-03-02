@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.10 2010/02/27 22:55:30 goetz Exp $
+#A  $Id: forests.g,v 1.11 2010/03/02 15:10:14 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -98,6 +98,20 @@ TreeOps.Print:= function(self)
         Print("[", self.l, "<", self.i, ">", self.r, "]");
     fi;
 end;
+
+TreeOps.Draw:= function(self, of, ht)
+    local   ofl,  ofr;
+    if self.i = 0 then  # leaf case
+        Print("draw leaf ", self.n, " at (", of, ", ", ht, ").\n");
+        return 1;
+    else
+        ofl:= ApplyMethod(self.l, "Draw", 0, ht-1);
+        Print("draw inner ", self.i, " at (", ofl + 1, ", ", ht, ").\n");
+        ofr:= ApplyMethod(self.r, "Draw", ofl+1, ht-1);
+        return ofl + ofr + 1;
+    fi;
+end;
+
 
 # the value of a tree is the sum of the values of its leaves
 TreeOps.Value:= self-> self.n;
