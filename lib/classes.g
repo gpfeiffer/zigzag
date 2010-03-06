@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: classes.g,v 1.7 2010/01/29 16:29:28 goetz Exp $
+#A  $Id: classes.g,v 1.8 2010/03/06 21:23:32 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -132,12 +132,17 @@ end;
 ##  
 ##  <#GAPDoc Label="Elements(shifts)">
 ##  <ManSection>
-##  <Meth Name="Elements" Arg="shape" Label="for cyclic shifts"/>
+##  <Meth Name="Elements" Arg="shifts" Label="for cyclic shifts"/>
 ##  <Returns>
 ##    the set of elements of the cyclic shift class <A>shifts</A>.
 ##  </Returns>
 ##  <Description>
-##  The cyclic shift class of <M>w</M> in <M>W</M> consists of all ...
+##  An element <M>w'</M> of <M>W</M> is a cyclic shift of <M>w</M>
+##  if there are elements <M>v</M> and <M>v'</M> of<M>W</M> such that
+##  <M>w = vv'</M> with <M>\ell(w) = \ell(v) + \ell(v')</M> and
+##  <M>w' = v'v</M> with <M>\ell(w') = \ell(v') + \ell(v) = \ell(w)</M>. 
+##  The cyclic shift class of <M>w</M> in <M>W</M> consists of all cyclic 
+##  shifts of $<M>w</M>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
 ##  gap> Elements(...);
