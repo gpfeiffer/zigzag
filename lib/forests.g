@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.11 2010/03/02 15:10:14 goetz Exp $
+#A  $Id: forests.g,v 1.12 2010/03/06 16:45:02 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -100,16 +100,34 @@ TreeOps.Print:= function(self)
 end;
 
 TreeOps.Draw:= function(self, of, ht)
-    local   ofl,  ofr;
+    local   leaf,  inner,  x,  res,  xl,  xr;
+    
+    leaf:= function(x, y, label)
+        Print("\\draw (", x, ",", y, ") node (", x, ") {$_{", label, "}$};\n");
+    end;
+    
+    inner:= function(x, y, l, r, label)
+        Print("\\draw (", x, ",", y, ") node (", x, ") {$_{_{", label, "}}$} edge (", l, ") edge (", r, ");\n");
+    end;
+    
     if self.i = 0 then  # leaf case
-        Print("draw leaf ", self.n, " at (", of, ", ", ht, ").\n");
-        return 1;
+#        Print("% draw leaf ", self.n, " at (", of, ", ", ht, ").\n");
+        leaf(of, ht, self.n);
+        x:= of;
+        of:= of + 1;
     else
-        ofl:= ApplyMethod(self.l, "Draw", 0, ht-1);
-        Print("draw inner ", self.i, " at (", ofl + 1, ", ", ht, ").\n");
-        ofr:= ApplyMethod(self.r, "Draw", ofl+1, ht-1);
-        return ofl + ofr + 1;
+        res:= ApplyMethod(self.l, "Draw", of, ht-1);
+        of:= res[2];
+        xl:= res[1];
+        x:= of;
+        res:= ApplyMethod(self.r, "Draw", of+1, ht-1);
+        xr:=res[1];
+        of:= res[2];
+#        Print("% draw inner ", self.i, " at (", x, ", ", ht, ").\n");
+#        Print("% and join to ", xl, " and ", xr, ".\n");
+        inner(x, ht, xl, xr, self.i);
     fi;
+    return [x, of];
 end;
 
 
@@ -332,7 +350,38 @@ ForestOps.\^:= function(l, r)
     return Forest(List(l.list, t-> t^r));
 end;    
 
+#############################################################################
+##
+##  x.Split(i) replaces x_i = u^v by  u, v
+##
+ForestOps.Split:= function(self, i)
+    local   new;
+    
+    new:= self.list{[1..i-1]};
+    Add(new, self.list[i].l);
+    Add(new, self.list[i].r);
+    Append(new, self.list{[i+1..Length(self.list)]});
+    return Forest(new);
+end;
 
+#############################################################################
+##
+##  x.Join(i, l) replaces x_i, x_{i+1} by x_i /l\ x_{i+1}
+##
+ForestOps.Join:= function(self, i, l)
+    local   new;
+    
+    new:= self.list{[1..i-1]};
+    Add(new, Tree(l, self.list[i], self.list[i+1]));
+    Append(new, self.list{[i+2..Length(self.list)]});
+    return Forest(new);
+end;
+
+    
+#############################################################################
+##
+##  Products of forests.
+##
 ForestOps.\*:= function(l, r)
     local   prod,  leaf,  list,  i,  a;
     
@@ -369,6 +418,7 @@ end;
 
 
 #############################################################################
+##FIXME: deprecate
 ##  how to turn [L; s] into a forest:
 ##  * find complement cmp of L in [0..n]
 ##  * set com[i]:= cmp[i+1] - cmp[i] 
@@ -387,7 +437,8 @@ ForestLs:= function(n, L, s)
     return Forest(com);
 end;
 
-ForestAlley:= function(n, a)
+#FIXME  deprecate:
+ForestAlley2:= function(n, a)
     local   f,  b;
     
     f:= Forest(List(CompositionSubset(n, a[1]), Tree));
@@ -402,7 +453,38 @@ ForestAlley:= function(n, a)
     return f;
 end;
 
+#FIXME: deprecate
+ForestAlley3:= function(n, a)
+    local   L,  x,  a2,  i,  k;
+    
+    L:= ApplyFunc(Difference, a);
+    x:= Forest(List(CompositionSubset(n, L), Tree));
+    a2:= Reversed(a[2]);
+    for i in [1..Length(a2)] do
+        k:= Position(Difference([1..n-1], L), a2[i]);
+        x:= ApplyMethod(x, "Join", k, i);
+        AddSet(L, a2[i]);
+    od;
+    
+    return x;
+end;
 
+ForestAlley:= function(n, a)
+    local   s,  k;
+    
+    # trivial case first
+    if a[2] = []  then  
+        return Forest(List(CompositionSubset(n, a[1]), Tree)); 
+    fi;
+    
+    # otherwise recurse,
+    s:= a[2][1];
+    k:= s + 1 - Position(a[1], s); # = position of s in the complement of L_s
+    return ApplyMethod(ForestAlley(n, SuffixAlley(a)), "Join", k, Length(a[2]));
+
+end;
+
+#############################################################################
 ##  how to turn a forest into an alley.
 ForestOps.Alley:= function(self)
     local   l,  m,  i,  v,  n,  set,  bar,  new;
