@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.84 2010/02/27 22:58:48 goetz Exp $
+#A  $Id: descent.g,v 1.85 2010/03/06 21:25:07 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -2098,6 +2098,7 @@ LaTeXMatNames:= function(mat, names, blocks, list)
 end;
 
 # the kernel of a list is the equvalence relation 'have the same value'
+#FIXME: move into more appropriate file ...
 KernelList:= function(list)
     local   vals,  i,  v;
     vals:= rec();
