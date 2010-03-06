@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.12 2010/03/06 16:45:02 goetz Exp $
+#A  $Id: forests.g,v 1.13 2010/03/06 16:49:02 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -266,37 +266,6 @@ ForestOps.Print:= function(self)
 end;
 
 
-
-
-
-##  here is how to turn an alley into a forest.
-ForestAlley1:= function(n, a)
-    local   old,  t,  l,  i,  new,  p;
-    
-    # start at the bottom, 
-    old:= CompositionSubset(n, Difference(a[1], a[2]));
-    t:= List(old, Tree);
-    
-    # loop over the sets above
-    l:= Length(a[2]);
-    for i in [1..l] do
-        new:= CompositionSubset(n, Difference(a[1], a[2]{[1..l-i]}));
-        # there is probably a more efficient way to find p.
-        p:= First([1..n], k-> new[k] <> old[k]);
-        # so new is obtained from old by merging the parts at p and p+1
-        t:= Concatenation(
-                    t{[1..p-1]},
-                    [Tree(i, t[p], t[p+1])],
-                    t{[p+2..Length(t)]}
-                    );
-        old:= new;
-    od;
-    
-    return Forest(t);
-end;
-
-
-
 # the value of a forest is the list of values of its trees.
 # this produces the composition corresponding to the source of the forest.
 ForestOps.Value:= function(self)
@@ -416,59 +385,10 @@ ForestOps.\*:= function(l, r)
     
 end;
 
-
 #############################################################################
-##FIXME: deprecate
-##  how to turn [L; s] into a forest:
-##  * find complement cmp of L in [0..n]
-##  * set com[i]:= cmp[i+1] - cmp[i] 
-##  * let k be the number of t in cmp which are strictly smaller than s
-##  * replace com[k] by a tree with leaves s-cmp[k] and cmp[k+1]-s.
-##  this works since the complement of L-s in [0..n] differs from 
-##  the complemnt of L by an extra entry s, between cmp[k] and cmp[k+1].
 ##
-ForestLs:= function(n, L, s)
-    local   cmp,  com,  k;
-    
-    cmp:= Difference([0..n], L);
-    com:= List([2..Length(cmp)], i-> Tree(cmp[i]-cmp[i-1]));
-    k:= Number(cmp, t-> t < s);
-    com[k]:= Tree(1, Tree(s - cmp[k]), Tree(cmp[k+1] - s));
-    return Forest(com);
-end;
-
-#FIXME  deprecate:
-ForestAlley2:= function(n, a)
-    local   f,  b;
-    
-    f:= Forest(List(CompositionSubset(n, a[1]), Tree));
-    if a[2] = [] then 
-        return f; 
-    fi;
-    
-    for b in FactorsAlley(a) do
-        f:= f * ForestLs(n, b[1], b[2][1]);
-    od;
-    
-    return f;
-end;
-
-#FIXME: deprecate
-ForestAlley3:= function(n, a)
-    local   L,  x,  a2,  i,  k;
-    
-    L:= ApplyFunc(Difference, a);
-    x:= Forest(List(CompositionSubset(n, L), Tree));
-    a2:= Reversed(a[2]);
-    for i in [1..Length(a2)] do
-        k:= Position(Difference([1..n-1], L), a2[i]);
-        x:= ApplyMethod(x, "Join", k, i);
-        AddSet(L, a2[i]);
-    od;
-    
-    return x;
-end;
-
+##  how to turn an alley into a forest.
+##
 ForestAlley:= function(n, a)
     local   s,  k;
     
