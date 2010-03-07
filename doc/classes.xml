@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  ZigZag Documentation
-     $Id: classes.xml,v 1.2 2009/12/16 20:13:54 goetz Exp $
+     $Id: classes.xml,v 1.3 2010/03/07 19:51:28 goetz Exp $
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
@@ -25,8 +25,8 @@ and work on cyclic shift classes.
 
 </Section>
 
-<Section Label="Sect:ShapesAsSets">
-<Heading>Set Methods for Shapes.</Heading>
+<Section Label="Sect:CyclicShiftsAsSets">
+<Heading>Set Methods for Cylic Shift Classes.</Heading>
 
 Cyclic shift classes are domains and therefore all set theoretic functions described
 in  chapter "Domains"  are also  applicable to  shapes.   This section
