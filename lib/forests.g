@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.14 2010/03/06 21:26:32 goetz Exp $
+#A  $Id: forests.g,v 1.15 2010/03/09 09:55:37 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -916,3 +916,32 @@ end;
 # a:= [[2,3,4,5,8,9,11], [4, 5, 8, 3, 11]];
 # f:= ForestAlley(12, a);
 
+#############################################################################
+##
+##  express relations in the type A_{n-1} quiver
+##
+NiceRelationsA:= function(n)
+    local   W,  lab,  q,  r,  rel,  a,  p,  pos;
+    
+    W:= CoxeterGroup("A", n-1);
+    lab:= LabelsShapes(Shapes(W));
+    q:= DescentQuiver(W);
+    r:= RelationsDescentQuiver(q);
+    
+    rel:= [];
+    for a in r do
+        p:= q.pathmat[a[1]][a[2]].path;
+        p:= List(p, x-> q.path1{x});
+        pos:= Filtered([1..Length(a[3])], i-> a[3][i] <> 0);
+        p:= List(p{pos}, ProductStreets);
+        p:= List(p, x-> List(x, y-> ForestAlley(n, y.alley)));
+        Add(rel, rec(
+                from:= lab[a[2]], to:= lab[a[1]],
+                path:= p, coef:= a[3]{pos}));
+    od;
+    
+    return rel;
+end;
+
+
+    
