@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.15 2010/03/09 09:55:37 goetz Exp $
+#A  $Id: forests.g,v 1.16 2010/03/10 09:20:51 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -469,7 +469,7 @@ TreeOps.Draw:= function(self, of, ht)
     end;
     
     inner:= function(x, y, l, r, label)
-        Print("\\draw (", x, ",", y, ") node (", x, ") {$_{_{", label, "}}$} edge (", l, ") edge (", r, ");\n");
+        Print("\\draw (", x, ",", y, ") node[p] (", x, ") {$_{_{", label, "}}$} edge (", l, ") edge (", r, ");\n");
     end;
     
     if self.i = 0 then  # leaf case
@@ -764,6 +764,22 @@ ForestOps.Lean:= function(self)
 end;
 
 
+#############################################################################
+ForestOps.Draw:= function(self)
+    local   mittendrin,  t;
+    
+    mittendrin:= false;
+    for t in self.list do
+        if mittendrin then
+            Print("\\,\n");
+        fi;
+        Print("\\begin{tikzpicture}\n");
+        ApplyMethod(t, "Draw", 0, 1);
+        Print("\\end{tikzpicture}");
+        mittendrin:= true;
+    od;
+    Print("\n");
+end;
 
 
 #    each Lyndon word w of length > 1 has a standard factorization
@@ -943,5 +959,32 @@ NiceRelationsA:= function(n)
     return rel;
 end;
 
-
+DrawNiceRelation:= function(r)
+    local   i,  p,  c,  o,  j;
     
+    for i in [1..Length(r.path)] do
+        p:= r.path[i];
+        c:= r.coef[i];
+        o:= "+";
+        
+        # print coeff, omit 1s.
+        if c < 0 then
+            o:= "-";
+            c:= -c;
+        fi;
+
+        if c = 1 then
+            c:= "";
+        fi;
+        
+        Print(o, " ", c, "\n");
+        Print("(");
+        Call(p[1], "Draw");
+        for j in [2..Length(p)] do
+            Print("+\n");
+            Call(p[j], "Draw");
+        od;
+        Print(")\n");
+    od;    
+    Print("& = 0.\n");
+end;
