@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.16 2010/03/10 09:20:51 goetz Exp $
+#A  $Id: forests.g,v 1.17 2010/03/10 19:53:01 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -299,8 +299,18 @@ LeanForestOps.Suffixes:= function(self)
     return lis;
 end;
 
-    
-    
+
+#############################################################################
+##
+##  an orphan is a subtree that has neither children nor parents ...
+##
+LeanForestOps.Orphans:= function(self)
+    local   orp;
+    orp:= Filtered(self.list, t-> t.l = 0);
+    return List(orp, t-> t.n);
+end;
+
+        
 #############################################################################
 ##
 ##  how to insert labels into a lean forest
@@ -744,11 +754,13 @@ ForestOps.Alley:= function(self)
     return [Union(set, new), Reversed(new)];
 end;
 
+#############################################################################
 ForestOps.Factors:= function(self)
     local   n;
     n:= Sum(Call(self, "Value"));
     return List(FactorsAlley(Call(self, "Alley")), x-> ForestAlley(n, x));
 end;
+
 
 #############################################################################
 ForestOps.IsSlanted:= function(self)
@@ -936,7 +948,7 @@ end;
 ##
 ##  express relations in the type A_{n-1} quiver
 ##
-NiceRelationsA:= function(n)
+NiceRelationsSym:= function(n)
     local   W,  lab,  q,  r,  rel,  a,  p,  pos;
     
     W:= CoxeterGroup("A", n-1);
@@ -987,4 +999,14 @@ DrawNiceRelation:= function(r)
         Print(")\n");
     od;    
     Print("& = 0.\n");
+end;
+
+##  a nice relation is core if it is not obtained from a smaller n
+##  by adding parts.
+IsCoreNiceRelation:= function(r)
+    local   l;
+    
+    l:= List(r.path, p-> List(p, x-> Call(x, "Orphans")));
+    l:= List(l, Intersection);
+    return Intersection(l) = [];
 end;
