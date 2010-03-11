@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.17 2010/03/10 19:53:01 goetz Exp $
+#A  $Id: forests.g,v 1.18 2010/03/11 09:58:41 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -126,6 +126,36 @@ LeanTreeOps.Size:= function(self)
         return Call(self.l, "Size") + 1 + Call(self.r, "Size");
     fi;
 end;    
+
+
+#############################################################################
+##
+##  swap l and r.
+##
+LeanTreeOps.Flipped:= function(self)
+    local   new,  m;
+    new:= Copy(self);
+    m:= new.l;
+    new.l:= new.r;
+    new.r:= m;
+    return new;
+end;
+
+#############################################################################
+##
+##  reverse order of leaves ...
+##
+LeanTreeOps.CoTree:= function(self)
+    local   new,  m;
+    new:= Copy(self);
+    if new.l <> 0 then
+        m:= Call(new.l, "CoTree");
+        new.l:= Call(new.r, "CoTree");
+        new.r:= m;
+    fi;
+    return new;
+end;
+
 
 #############################################################################
 IsSlanted:= function(obj)
@@ -650,6 +680,35 @@ ForestOps.\^:= function(l, r)
     return Forest(List(l.list, t-> t^r));
 end;    
 
+#############################################################################
+##
+##  Reverse as Street/Alley
+##
+ForestOps.Reversed:= function(self)
+    local   pos,  max,  k,  new,  t;
+    
+    # locate highest tree.
+    pos:= 0;
+    max:= 0;
+    for k in [1..Length(self.list)] do
+        if self.list[k].i > max then
+            pos:= k;
+            max:= self.list[k].i;
+        fi;
+    od;
+    
+    if pos = 0 then
+        Error("Cannot reverse forest of size 0");
+    fi;
+    
+    new:= Copy(self.list);
+    new[pos]:= Flipped(new[pos]);
+    
+    return Forest(new);
+end;
+
+    
+    
 #############################################################################
 ##
 ##  x.Split(i) replaces x_i = u^v by  u, v
