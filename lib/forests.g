@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.18 2010/03/11 09:58:41 goetz Exp $
+#A  $Id: forests.g,v 1.19 2010/03/11 19:19:45 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -702,7 +702,7 @@ ForestOps.Reversed:= function(self)
     fi;
     
     new:= Copy(self.list);
-    new[pos]:= Flipped(new[pos]);
+    new[pos]:= Call(new[pos], "Flipped");
     
     return Forest(new);
 end;
