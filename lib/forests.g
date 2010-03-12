@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.19 2010/03/11 19:19:45 goetz Exp $
+#A  $Id: forests.g,v 1.20 2010/03/12 12:56:24 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -51,7 +51,7 @@ LeanTreeOps:= OperationsRecord("TreeOps");
 ##
 ##  A lean tree is a triple with components
 ##    l, r:  its left and right children (or 0 if its a leaf)
-##    n: its *value* (which is the sum of the values of the children)
+##    n: its *value* (or top) (which is the sum of the values of the children, ie., its bottom)
 ##
 LeanTree:= function(arg)
     local self, usage;
@@ -97,15 +97,15 @@ LeanTreeOps.Print:= function(self)
     fi;
 end;
 
-# the value of a tree is the sum of the values of its leaves
-LeanTreeOps.Value:= self-> self.n;
+# the value of a tree is the sum of its bottom
+LeanTreeOps.Top:= self-> self.n;
 
-# the values of a tree is the list of values of its leaves
-LeanTreeOps.Values:= function(self)
+# the bottom of a tree is the list of its leaves (as integers).
+LeanTreeOps.Bot:= function(self)
     if self.l = 0 then
         return [self.n];
     else
-        return Concatenation(Call(self.l, "Values"), Call(self.r, "Values"));
+        return Concatenation(Call(self.l, "Bot"), Call(self.r, "Bot"));
     fi;
 end;
 
@@ -252,16 +252,16 @@ LeanForestOps.Print:= function(self)
 end;
 
 
-# the value of a forest is the list of values of its trees.
+# the value of a forest is the list of tops of its trees.
 # this produces the composition corresponding to the source of the forest.
-LeanForestOps.Value:= function(self)
-    return List(self.list, t-> Call(t, "Value"));
+LeanForestOps.Top:= function(self)
+    return List(self.list, t-> Call(t, "Top"));
 end;
 
-#  the values of a forest are the values lists of its trees. 
+#  the bottom of a forest is the joined bottoms of its trees. 
 # this produces the composition corresponding to the target of the forest.
-LeanForestOps.Values:= function(self)
-    return Concatenation(List(self.list, t-> Call(t, "Values")));
+LeanForestOps.Bot:= function(self)
+    return Concatenation(List(self.list, t-> Call(t, "Bot")));
 end;
 
 LeanForestOps.Leaves:= function(self)
@@ -350,15 +350,15 @@ LeanForestOps.InverseLean:= function(self)
     
     lis:= [];
     t:= self.list;
-    val:= List(Call(self, "Value"), Tree);
+    val:= List(Call(self, "Top"), Tree);
     
     flat:= true;
     for i in [1..Length(t)] do
         if t[i].l <> 0 then
             flat:= false;
             e:= Copy(val);
-            e[i]:= Tree(1, Tree(Call(t[i].l, "Value")), 
-                        Tree(Call(t[i].r, "Value")));
+            e[i]:= Tree(1, Tree(Call(t[i].l, "Top")), 
+                        Tree(Call(t[i].r, "Top")));
             e:= Forest(e);
             suf:= Concatenation(t{[1..i]}, [0], t{[i+1..Length(t)]});
             suf{[i, i+1]}:= [t[i].l, t[i].r];
@@ -443,7 +443,7 @@ TreeOps:= OperationsRecord("TreeOps", LeanTreeOps);
 ##  A tree is a quadruple with components
 ##    l, r:  its left and right children
 ##    i: its *index* (which is 0 if the tree is a leaf)
-##    n: its *value* (which is the sum of the values of the children)
+##    n: its *value* (top) (which is the sum of the values of the children)
 ##
 ##  A tree is *not* a lean tree! (So we don't use a LeanTree
 ##  constructor, don't set isLeanTree property.)
@@ -805,7 +805,7 @@ ForestOps.Alley:= function(self)
             m[l[i]]:= i; 
         fi; 
     od;
-    v:= Call(self, "Values");
+    v:= Call(self, "Bot");
     n:= Sum(v);
     set:= SubsetComposition(v);
     bar:= Difference([1..n-1], set);
@@ -816,7 +816,7 @@ end;
 #############################################################################
 ForestOps.Factors:= function(self)
     local   n;
-    n:= Sum(Call(self, "Value"));
+    n:= Sum(Call(self, "Top"));
     return List(FactorsAlley(Call(self, "Alley")), x-> ForestAlley(n, x));
 end;
 
