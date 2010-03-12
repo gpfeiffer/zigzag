@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.20 2010/03/12 12:56:24 goetz Exp $
+#A  $Id: forests.g,v 1.21 2010/03/12 15:18:13 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -25,7 +25,7 @@
 ##  
 ##  A lean tree is a tree w/o inner node labels.
 ##
-LeanTreeOps:= OperationsRecord("TreeOps");
+LeanTreeOps:= OperationsRecord("LeanTreeOps");
 
 #############################################################################
 ##  
@@ -55,7 +55,7 @@ LeanTreeOps:= OperationsRecord("TreeOps");
 ##
 LeanTree:= function(arg)
     local self, usage;
-    usage:= "Usage: Tree( <n> ) or Tree( <l>, <r> )";
+    usage:= "Usage: LeanTree( <n> ) or LeanTree( <l>, <r> )";
     if Length(arg) = 1 then
         self:= rec(l:= 0, r:= 0, n:= arg[1]);
     elif Length(arg) = 2 then
