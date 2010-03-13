@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.85 2010/03/06 21:25:07 goetz Exp $
+#A  $Id: descent.g,v 1.86 2010/03/13 22:30:43 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1586,9 +1586,10 @@ DescentQuiver:= function(W)
         Error("delete <> [] ", delete);
     fi;
         
-    return rec(path0:= path0, 
+    return Quiver(rec(name:= "DescentQuiver(W)",
+               path0:= path0, 
                path1:= path1, 
-               pathmat:= pathmat);
+               pathmat:= pathmat));
 end;
 
 
