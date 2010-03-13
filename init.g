@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.37 2010/02/27 22:58:21 goetz Exp $
+#A  $Id: init.g,v 1.38 2010/03/13 22:28:01 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -42,13 +42,17 @@ fi;
 ##
 #A  AUTO . . . . . . . . . . . . . . . . . . . . . . . . . . . .  auto reads.  
 ##
-AUTO( ReadPkg( "zigzag", "lib", "forests" ), TreeOps, Tree, IsTree, IsSlanted,
-  CompositionSubset, SubsetComposition, ForestOps, Forest, IsForest,
-  ForestAlley1, ForestLs, ForestAlley, StandardFactorizationLyndon,
-  StandardBracketingLyndon1, StandardBracketingLyndon, StandardBracketing,
-  LyndonBasis, LyndonPaths, IsCompletelyReducibleStreet, LeanTreeOps,
-  LeanTree, IsLeanTree, LeanTrees, SlantedLeanTrees, LeanForestOps,
-  LeanForest, IsLeanForest, LeanForests, SlantedLeanForests);
+AUTO( ReadPkg( "zigzag", "lib", "forests" ), LeanTreeOps, LeanTree,
+  IsLeanTree, IsSlanted, LeanTrees, SlantedLeanTrees, LeanForestOps,
+  LeanForest, IsLeanForest, LeanForests, SlantedLeanForests, TreeOps, Tree,
+  IsTree, CompositionSubset, SubsetComposition, ForestOps, Forest, IsForest,
+  ForestAlley, StandardFactorizationLyndon, StandardBracketingLyndon1,
+  StandardBracketingLyndon, StandardBracketing, LyndonBasis, LyndonPaths,
+  IsCompletelyReducibleStreet, NiceRelationsSym, DrawNiceRelation,
+  IsCoreNiceRelation);
+
+AUTO( ReadPkg( "zigzag", "lib", "blocks" ), VecBlVec, BlVecVec, MatBlMat,
+  BlMatMat);
 
 AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, Map,
   PartitionOps, Partition);
@@ -87,6 +91,9 @@ AUTO( ReadPkg( "zigzag", "lib", "towers" ), FallingSequence, TowersAOps,
   TowersA, IsTowersA, TowersAPerm, TowersAWord, TowersBOps, TowersB,
   IsTowersB, TowersBPerm, TowersBWord, TowersDOps, TowersD, IsTowersD,
   TowersDPerm, TowersDWord);
+
+AUTO( ReadPkg( "zigzag", "lib", "quiver" ), QuiverEltOps, QuiverElt,
+  IsQuiverElt, QuiverOps, Quiver, IsQuiver);
 
 AUTO( ReadPkg( "zigzag", "lib", "streets" ), StreetOps, Street, IsStreet,
   Streets, NrStreets, ProductStreetMatrices, ProductStreetMatrixList,
