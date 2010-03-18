@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.21 2010/03/12 15:18:13 goetz Exp $
+#A  $Id: forests.g,v 1.22 2010/03/18 12:29:05 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -310,6 +310,41 @@ SlantedLeanForests:= function(n)
     return all;
 end;
 
+# make all sorted slanted lean forests of total value n
+SortedSlantedLeanForests:= function(n)
+    local   all,  p,  new,  q;
+    
+    all:= [];
+    for p in Partitions(n) do
+        new:= Cartesian(List(p, SlantedLeanTrees));
+        for q in new do
+            Sort(q);
+        od;
+        Append(all, List(Set(new), LeanForest));
+    od;
+    return all;
+end;
+
+#############################################################################
+CartanMatSortedSlantedLeanForests:= function(n)
+    local   W,  lab,  mat,  a,  i,  j;
+    
+    W:= CoxeterGroup("A", n-1);
+    lab:= LabelsShapes(Shapes(W));
+    mat:= 0*IdentityMat(Length(lab));
+    for a in SortedSlantedLeanForests(n) do
+        i:= Call(a, "Top");
+        Sort(i);
+        i:= Position(lab, Reversed(i));
+        j:= Call(a, "Bot");
+        Sort(j);
+        j:= Position(lab, Reversed(j));
+        mat[i][j]:= mat[i][j] + 1;
+    od;
+    return mat;
+end;
+
+
 ##  Suffixes
 ##  in contrast to a forest, a lean forest can have several suffixes.
 LeanForestOps.Suffixes:= function(self)
@@ -409,6 +444,130 @@ LeanForestOps.Multiplier:= function(self)
     
     return szStab(self) / szStab(Call(self, "CanonicalLabels"));
 end;
+
+##
+##   suppose that QuiverElt(q, c, e)
+##   represents an element of the path algebra of the quiver q
+##   with coefficients c applied to the paths e 
+##   and that we can add and multiply them ...
+##
+
+# find a linear combination of paths in the quiver q that maps to the class of this lean forest.
+# this is Marcus's factorize-adjust.
+# returns: an element of the path algebra in the form of a list of paths (as indices in q.path1) in parallel to a list of coeffs
+LeanForestOps.Path:= function(self, q)
+    local   edge,  positionMin,  l,  top,  poss,  pos,  t,  x,  z,  w,  
+            xtop,  ztop,  wtop,  xbot,  zbot,  p1,  p2,  p,  xztop,  
+            posx,  xpol,  posz,  zpol,  v,  vtop;
+    
+    # given a forest of size 1, find the corresponding edge in the quiver
+    edge:= function(f)
+        local   a,  pos;
+        a:= Call(Call(f, "CanonicalLabels"), "Alley");
+        pos:= PositionProperty(q.path1, e-> a in e);
+        if pos <> false then
+            return QuiverElt(q, [1], [[pos]]);
+        fi;
+        
+        a:= Call(Call(f, "Reversed"), "Alley");
+        pos:= PositionProperty(q.path1, e-> a in e);
+        if pos <> false then
+            return QuiverElt(q, [-1], [[pos]]);
+        fi;
+        
+        Error("Edge  not found");
+    end;
+    
+    # how to find the position of a minimal tree
+    positionMin:= function(list)
+        local   pos,  i;
+        if Length(list) = 0 then
+            Error( "<list> must contain at least one element" );
+        fi;
+        pos:= 1;
+        for i in [2..Length(list)] do
+            if list[i] < list[pos] then
+                pos:= i;
+            fi;
+        od;
+        return pos;
+    end;
+    
+    l:= Call(self, "Size");
+    if l = 0 then
+        return rec(path:= [], coef:= []); # FIXME: should this not be an idempotent?  maybe not, for paths of length 0 this question might never arise ...
+    elif l = 1 then 
+        return edge(self); # FIXME: the corresponding edge in q (or its reverse)
+    else      # l > 1
+        
+        # find minimal tree x^z and write self as x^z w
+        top:= Call(self, "Top");
+        poss:= Filtered([1..Length(self.list)], i-> self.list[i].l > 0);
+        pos:= positionMin(top{poss});
+        pos:= poss[pos];
+        
+        t:= self.list[pos];
+        x:= t.l;
+        z:= t.r;
+        
+        w:= self.list{Difference([1..Length(self.list)], [pos])};
+        
+        xtop:= LeanTree(Call(x, "Top"));
+        ztop:= LeanTree(Call(z, "Top"));
+        wtop:= List(w, t-> LeanTree(Call(t, "Top")));
+        
+        xbot:= List(Call(x, "Bot"), LeanTree);
+        zbot:= List(Call(z, "Bot"), LeanTree);
+        
+        
+        # make p
+        p1:= LeanForest(Concatenation([LeanTree(xtop, ztop)], wtop));
+        p2:= LeanForest(Concatenation([x, z], w));
+        p:= ApplyMethod(p1, "Path", q) * ApplyMethod(p2, "Path", q);
+        
+        xztop:= LeanTree(Call(x, "Top") + Call(z, "Top"));
+        
+        # check pollination status
+        posx:= Position(w, xtop);
+        xpol:=  x.l > 0  and  posx <> false;
+        
+        posz:= Position(w, ztop);
+        zpol:=  z.l > 0  and  posz <> false;
+        
+        # make px
+        if xpol then
+            v:= w{Difference([1..Length(w)], [posx])};
+            vtop:= List(v, t-> LeanTree(Call(t, "Top")));
+            
+            p1:= LeanForest(Concatenation([xztop, x], vtop));
+            p2:= LeanForest(Concatenation([LeanTree(xtop, z)], xbot, v));
+            p:= p - ApplyMethod(p1, "Path", q) * ApplyMethod(p2, "Path", q);
+        fi;
+        
+        # make pz
+        if zpol then
+            v:= w{Difference([1..Length(w)], [posz])};
+            vtop:= List(v, t-> LeanTree(Call(t, "Top")));
+            
+            p1:= LeanForest(Concatenation([xztop, z], vtop));
+            p2:= LeanForest(Concatenation([LeanTree(x, ztop)], zbot, v));
+            p:= p - ApplyMethod(p1, "Path", q) * ApplyMethod(p2, "Path", q);
+        fi;
+        
+        # make pxz
+        if xpol and zpol then
+            v:= w{Difference([1..Length(w)], [posx, posz])};
+            vtop:= List(v, t-> LeanTree(Call(t, "Top")));
+            
+            p1:= LeanForest(Concatenation([xztop, x, z], vtop));
+            p2:= LeanForest(Concatenation([LeanTree(xtop, ztop)], xbot, zbot, v));
+            p:= p - ApplyMethod(p1, "Path", q) * ApplyMethod(p2, "Path", q);
+        fi;            
+        
+        return p;
+    fi;
+end;
+
 
 #############################################################################
 ##  
