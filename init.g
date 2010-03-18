@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.38 2010/03/13 22:28:01 goetz Exp $
+#A  $Id: init.g,v 1.39 2010/03/18 18:25:45 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -44,7 +44,8 @@ fi;
 ##
 AUTO( ReadPkg( "zigzag", "lib", "forests" ), LeanTreeOps, LeanTree,
   IsLeanTree, IsSlanted, LeanTrees, SlantedLeanTrees, LeanForestOps,
-  LeanForest, IsLeanForest, LeanForests, SlantedLeanForests, TreeOps, Tree,
+  LeanForest, IsLeanForest, LeanForests, SlantedLeanForests,
+  SortedSlantedLeanForests, CartanMatSortedSlantedLeanForests, TreeOps, Tree,
   IsTree, CompositionSubset, SubsetComposition, ForestOps, Forest, IsForest,
   ForestAlley, StandardFactorizationLyndon, StandardBracketingLyndon1,
   StandardBracketingLyndon, StandardBracketing, LyndonBasis, LyndonPaths,
@@ -58,14 +59,14 @@ AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, Map,
   PartitionOps, Partition);
 
 AUTO( ReadPkg( "zigzag", "lib", "subsets" ), SetComposition, IsLeftDescent,
-  IsRightDescent, LongestElement, PrefixesOps, Prefixes, IsPrefixes,
-  WeakIntervalOps, WeakInterval, IsWeakInterval, ParabolicTransversalOps,
-  ParabolicTransversal, IsParabolicTransversal, DescentClassOps, DescentClass,
-  IsDescentClass, DescentClasses, SizesDescentConjugacyClasses,
-  LeftParabolicTransversalOps, LeftParabolicTransversal,
-  IsLeftParabolicTransversal, DoubleParabolicTransversalOps,
-  DoubleParabolicTransversal, IsDoubleParabolicTransversal, XJKLOps, XJKL,
-  IsXJKL);
+  IsRightDescent, LongestElement, ConnectedComponent, ConnectedComponents,
+  PrefixesOps, Prefixes, IsPrefixes, WeakIntervalOps, WeakInterval,
+  IsWeakInterval, ParabolicTransversalOps, ParabolicTransversal,
+  IsParabolicTransversal, DescentClassOps, DescentClass, IsDescentClass,
+  DescentClasses, SizesDescentConjugacyClasses, LeftParabolicTransversalOps,
+  LeftParabolicTransversal, IsLeftParabolicTransversal,
+  DoubleParabolicTransversalOps, DoubleParabolicTransversal,
+  IsDoubleParabolicTransversal, XJKLOps, XJKL, IsXJKL);
 
 AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
   DescentAlgebra, IsDescentAlgebra, DescentEltOps, DescentElt, IsDescentElt,
@@ -119,7 +120,7 @@ AUTO( ReadPkg( "zigzag", "lib", "alleys" ), ProductAlleys, ProductAlleyList,
   FactorsAlley, OnAlleys, StabilizerAlley, NrAlleys, LengthAlley, SourceAlley,
   TargetAlley, PrefixAlley, SuffixAlley, ActionAlley, DeltaAlley,
   BigMatrixAlley, ReversedAlley, LittleDeltaBarAlley, ReducedWordAlley,
-  AlleyAlgebraOps, AlleyAlgebra, IsAlleyAlgebra);
+  DiamondAlley, AlleyAlgebraOps, AlleyAlgebra, IsAlleyAlgebra);
 
 AUTO( ReadPkg( "zigzag", "lib", "groupoid" ), GroupoidOps, Groupoid,
   IsGroupoid, GroupoidEltOps, GroupoidElt, IsGroupoidElt);
