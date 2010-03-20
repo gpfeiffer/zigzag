@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: methods.g,v 1.11 2008/07/14 11:13:09 goetz Exp $
+#A  $Id: methods.g,v 1.12 2010/03/20 23:43:55 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -96,6 +96,21 @@ end;
 ##
 Map:= function(list, method)
     return List(list, x-> Call(x, method));
+end;
+
+
+#############################################################################
+##
+#F  Iverson  
+##
+##  not really a method but a useful general concept: maps true/false to 1/0.
+##
+Iverson:= function(bool)
+    if bool then
+        return 1;
+    else
+        return 0;
+    fi;
 end;
 
 
