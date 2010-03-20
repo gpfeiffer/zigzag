@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: classes.g,v 1.8 2010/03/06 21:23:32 goetz Exp $
+#A  $Id: classes.g,v 1.9 2010/03/20 23:50:39 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2009-2010 Götz Pfeiffer
+#Y  Copyright (C) 2010 Götz Pfeiffer
 ##
 ##  This file contains routines for conjugacy classes of Coxeter groups.
 ##

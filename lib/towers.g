@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: towers.g,v 1.2 2009/12/07 12:02:11 goetz Exp $
+#A  $Id: towers.g,v 1.3 2010/03/20 23:50:39 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2009-2010 Götz Pfeiffer
+#Y  Copyright (C) 2010 Götz Pfeiffer
 ##
 ##  This file contains routines for classical Coxeter groups as permutations.
 ##

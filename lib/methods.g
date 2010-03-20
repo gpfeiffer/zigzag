@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: methods.g,v 1.12 2010/03/20 23:43:55 goetz Exp $
+#A  $Id: methods.g,v 1.13 2010/03/20 23:50:39 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Götz Pfeiffer
+#Y  Copyright (C) 2010, Götz Pfeiffer
 ##
 ##  This file contains support for methods.
 ##  

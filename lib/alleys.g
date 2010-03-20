@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.46 2010/03/20 23:45:53 goetz Exp $
+#A  $Id: alleys.g,v 1.47 2010/03/20 23:50:39 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Götz Pfeiffer
+#Y  Copyright (C) 2010, Götz Pfeiffer
 ##
 ##  This file contains support for alleys.
 ##  
