@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: alleys.g,v 1.45 2009/06/12 09:37:45 goetz Exp $
+#A  $Id: alleys.g,v 1.46 2010/03/20 23:45:53 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -555,6 +555,35 @@ ReducedWordAlley:= function(W, alley)
     
     return CategoryElt(W, [K, z]);
 end;
+
+#############################################################################
+##
+##  the diamond relations equivalence
+##
+DiamondAlley:= function(W, alley)
+    local   diamond,  a,  i,  J,  s,  t,  new;
+    
+    diamond:= [alley];
+    for a in diamond do
+        for i in [1..Length(a[2])-1] do
+            J:= Difference(a[1], a[2]{[1..i-1]});
+            s:= a[2][i];
+            t:= a[2][i+1];
+            if not t in ConnectedComponent(W, J, s) then
+                new:= Copy(a);
+                new[2]{[i,i+1]}:= [t,s];
+                if not new in diamond then
+                    Add(diamond, new);
+                    Print(new, "\n");
+                fi;
+            fi;
+        od;
+    od;
+    
+    return diamond;
+end;
+
+    
 
 #############################################################################
 ##
