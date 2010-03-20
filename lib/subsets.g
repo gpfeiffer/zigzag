@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.41 2007/11/05 14:54:37 goetz Exp $
+#A  $Id: subsets.g,v 1.42 2010/03/20 23:44:55 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -179,6 +179,38 @@ end;
 ##  (should we cache longest elements locally???)
 LongestElement:= function(W, J)
     return LongestCoxeterElement(ReflectionSubgroup(W, J));
+end;
+
+
+#############################################################################
+##
+##  find the connected component of s in J subset S
+##
+ConnectedComponent:= function(W, J, s)
+    local   com,  u,  v;
+    com:= [s];
+    for u in com do
+        for v in J do
+            if not v in com and (W.(u) * W.(v))^2 <> () then
+                Add(com, v);
+            fi;
+        od;
+    od;
+    return Set(com);
+end;
+
+ConnectedComponents:= function(W, J)
+    local   all,  com,  s,  new;
+    all:= Copy(J);
+    com:= [];
+    while all <> [] do
+        s:= all[1];
+        new:= ConnectedComponent(W, J, s);
+        AddSet(com, new);
+        SubtractSet(all, new);
+    od;
+    
+    return com;
 end;
 
 
