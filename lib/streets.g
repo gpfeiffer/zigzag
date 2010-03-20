@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  $Id: streets.g,v 1.59 2010/03/02 15:09:58 goetz Exp $
+#A  $Id: streets.g,v 1.60 2010/03/20 23:46:30 goetz Exp $
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -1360,6 +1360,26 @@ end;
 # a slanted street is one that occurs as part of a
 # path of the quiver (this depends on th choice of
 # the quiver, and prefersone of a pair of negatives)
+SlantedStreets:= function(W)
+    local   l,  sla,  q,  i,  j,  p;
+    
+    l:= Length(Shapes(W));
+    sla:= [];
+    q:= DescentQuiver(W);
+    for i in [1..l] do
+        for j in [1..l] do
+            for p in q.pathmat[i][j].path do
+                if p <> [] then
+                    Append(sla, ProductStreets(q.path1{p}));
+                fi;
+            od;
+        od;
+    od;
+        
+    return Concatenation(q.path0, sla);
+end;
+
+
 CartanMatSlantedStreets:= function(W)
     local   l,  mat,  q,  i,  j,  p;
     
@@ -1388,6 +1408,12 @@ QuiverMatSlantedStreets:= function(W)
     c:= CartanMatSlantedStreets(W);
     return c^0 - c^-1; # c = d^0 + d^1 + d2 + ... => d = 1 - 1/c.
 end;
+
+## to mimic the concept of lean forests.
+StreetOps.Diamond:= function(self)
+    return List(DiamondAlley(self.W, self.alley), x-> Street(W, x));
+end;
+
 
 
 #############################################################################
