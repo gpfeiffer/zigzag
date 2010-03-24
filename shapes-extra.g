@@ -19,21 +19,6 @@ CollapsedIncMatShapes:= function(shapes)
 end;
 
 
-InxMatShapes:= function(shapes)
-    local   mat,  a,  row,  b;
-
-    mat:= [];
-    for a in shapes do
-        row:= [];
-        for b in shapes do
-            Add(row, Number(Elements(b), x-> IsSubset(a.J, x)));
-        od;
-        Add(mat, row);
-    od;
-    return mat;
-end;
-
-
 FusMatShapes1:= function(shapes)
     local   mat,  a,  row,  nor,  b;
 
