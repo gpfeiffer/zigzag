@@ -1295,6 +1295,28 @@ end;
 
 
 #############################################################################
+PathsShapes:= function(shapes)
+    local   verts,  edges,  paths,  p,  e,  new;
+    
+    verts:= List(shapes, x-> Call(x, "Street"));
+    edges:= Union(List(verts, x-> Call(x, "Shakers")));
+    Append(edges, Union(List(verts, x-> Call(x, "MoversPlus"))));
+    paths:= ShallowCopy(verts);
+    for p in paths do
+        for e in edges do
+            new:= p * e;
+            if Length(new) > 0 then
+                Add(paths, new[1]);
+            fi;
+        od;
+    od;
+    
+    #    return List(paths, x-> Call(x, "Shapes"));
+    return paths;
+end;
+
+
+#############################################################################
 # an edge is a vertex J together with a label s not in J of an edge
 # leading out of J.
 # in a similar way, a face is a vertex J together with *two* distinct
