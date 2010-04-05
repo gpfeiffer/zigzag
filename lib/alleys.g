@@ -603,6 +603,30 @@ end;
 
 #############################################################################
 ##
+##  Colours.
+##
+ColoursAlley:= function(W, alley)
+    local   sh,  col,  factor,  com;
+    
+    if alley[2] = [] then
+        return [];
+    fi;
+    
+    sh:= Shapes(W);
+    col:= [];
+    for factor in FactorsAlley(alley) do
+        com:= ConnectedComponent(W, factor[1], factor[2][1]);
+        Add(col, [PositionProperty(sh, s-> com in s),
+                PositionProperty(sh, s-> Difference(com, factor[2]) in s)]);
+    od;
+    
+    return Collected(col);
+end;
+
+        
+
+#############################################################################
+##
 ##  The alley algebra.
 ##
 

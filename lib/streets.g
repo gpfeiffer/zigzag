@@ -1431,6 +1431,18 @@ StreetOps.Diamond:= function(self)
     return List(DiamondAlley(self.W, self.alley), x-> Street(W, x));
 end;
 
+#  colours.
+#
+#  the colour of an alley (L; s) of length 1 is the pair of shapes 
+#  [K], [K_s], where K is the connected component of s in L.
+#
+#  the colour of a street is the multiset of colours of
+#  a factorization of one of its alleys into length 1 alleys.
+StreetOps.Colours:= function(self)
+    return ColoursAlley(self.W, self.alley);
+end;
+
+
 #############################################################################
 ##
 #E  Emacs  . . . . . . . . . . . . . . . . . . . . . . local emacs variables.
