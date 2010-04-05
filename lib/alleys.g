@@ -311,6 +311,23 @@ TargetAlley:= function(alley)
     return ApplyFunc(Difference, alley);
 end;
 
+
+#############################################################################
+##
+##  the subsets an alley passes through.
+##
+SubsetsAlley:= function(alley)
+    local   set,  sub,  s;
+    set:= Copy(alley[1]);
+    sub:= [Copy(set)];
+    for s in alley[2] do
+        RemoveSet(set, s);
+        Add(sub, Copy(set));
+    od;
+    return sub;
+end;
+
+
 #############################################################################
 ##
 #F  PrefixAlley( <alley> )  . . . . . . . . . . . . . . . . . . . . . prefix.
@@ -583,7 +600,6 @@ DiamondAlley:= function(W, alley)
     return diamond;
 end;
 
-    
 
 #############################################################################
 ##
