@@ -4,7 +4,7 @@
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2010, Götz Pfeiffer
+#Y  Copyright (C) 2010, Götz Pfeifferr
 ##
 ##  This file contains support for alleys.
 ##  
@@ -573,32 +573,6 @@ ReducedWordAlley:= function(W, alley)
     return CategoryElt(W, [K, z]);
 end;
 
-#############################################################################
-##
-##  the diamond relations equivalence
-##
-DiamondAlley:= function(W, alley)
-    local   diamond,  a,  i,  J,  s,  t,  new;
-    
-    diamond:= [alley];
-    for a in diamond do
-        for i in [1..Length(a[2])-1] do
-            J:= Difference(a[1], a[2]{[1..i-1]});
-            s:= a[2][i];
-            t:= a[2][i+1];
-            if not t in ConnectedComponent(W, J, s) then
-                new:= Copy(a);
-                new[2]{[i,i+1]}:= [t,s];
-                if not new in diamond then
-                    Add(diamond, new);
-                    Print(new, "\n");
-                fi;
-            fi;
-        od;
-    od;
-    
-    return diamond;
-end;
 
 
 #############################################################################

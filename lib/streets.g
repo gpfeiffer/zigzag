@@ -1426,10 +1426,6 @@ QuiverMatSlantedStreets:= function(W)
     return c^0 - c^-1; # c = d^0 + d^1 + d2 + ... => d = 1 - 1/c.
 end;
 
-## to mimic the concept of lean forests.
-StreetOps.Diamond:= function(self)
-    return List(DiamondAlley(self.W, self.alley), x-> Street(W, x));
-end;
 
 #############################################################################
 ##
