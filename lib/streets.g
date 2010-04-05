@@ -656,6 +656,23 @@ end;
 
 
 #############################################################################
+##
+##  compute the list of shapes a street passes trough: the shape of the street
+##
+StreetOps.Shapes:= function(self)
+    local   sh,  a,  lis,  i;
+    
+    sh:= Shapes(self.W);
+    a:= self.alley;
+    lis:= [PositionProperty(sh, x-> a[1] in x)];
+    for i in [1..Length(a[2])] do
+        Add(lis, PositionProperty(sh, x-> Difference(a[1], a[2]{[1..i]}) in x));
+    od;
+    return lis;
+end;
+      
+
+#############################################################################
 StreetOps.Transversal:= function(self)
     #  FIXME:
     return 0;
@@ -1413,8 +1430,6 @@ end;
 StreetOps.Diamond:= function(self)
     return List(DiamondAlley(self.W, self.alley), x-> Street(W, x));
 end;
-
-
 
 #############################################################################
 ##
