@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!---------------------------------------------------------------------------
+-- 
+-A  zigzag.xml                
+--
+-A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
+--
+-Y  Copyright (C) 2010, Götz Pfeiffer 
+--
+-->
+
 <?LaTeX ExtraPreamble="
 \usepackage{amsmath}
 \usepackage{parskip}

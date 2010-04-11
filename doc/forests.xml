@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--  ZigZag Documentation
-     $Id: forests.xml,v 1.1 2009/12/16 20:14:53 goetz Exp $
+<!---------------------------------------------------------------------------
+-- 
+-A  forests.xml                
+--
+-A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
+--
+-Y  Copyright (C) 2010, Götz Pfeiffer 
+--
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">

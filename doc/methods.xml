@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--  ZigZag Documentation
-     $Id: methods.xml,v 1.2 2007/10/05 17:29:54 goetz Exp $
+<!---------------------------------------------------------------------------
+-- 
+-A  methods.xml                
+--
+-A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
+--
+-Y  Copyright (C) 2010, Götz Pfeiffer 
+--
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">

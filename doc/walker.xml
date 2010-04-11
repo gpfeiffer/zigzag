@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--  ZigZag Documentation
-     $Id: walker.xml,v 1.4 2008/04/25 13:09:56 goetz Exp $
+<!---------------------------------------------------------------------------
+-- 
+-A  walker.xml                
+--
+-A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
+--
+-Y  Copyright (C) 2010, Götz Pfeiffer 
+--
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">

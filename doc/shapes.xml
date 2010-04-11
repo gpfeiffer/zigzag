@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--  ZigZag Documentation
-     $Id: shapes.xml,v 1.5 2007/10/22 09:38:11 goetz Exp $
+<!---------------------------------------------------------------------------
+-- 
+-A  shapes.xml                
+--
+-A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
+--
+-Y  Copyright (C) 2010, Götz Pfeiffer 
+--
 -->
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
