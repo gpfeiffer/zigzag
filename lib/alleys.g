@@ -4,7 +4,7 @@
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2010, Götz Pfeifferr
+#Y  Copyright (C) 2010, Götz Pfeiffer
 ##
 ##  This file contains support for alleys.
 ##  

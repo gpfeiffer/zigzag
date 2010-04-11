@@ -15,10 +15,6 @@
 \usepackage[euler-digits]{eulervm}
 "?>
 
-<!--  ZigZag Documentation
-     $Id: zigzag.xml,v 1.40 2010/01/16 14:02:36 goetz Exp $
--->
-
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
 
 <Book Name="zigzag">
