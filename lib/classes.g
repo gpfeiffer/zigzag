@@ -343,8 +343,63 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-CyclicShiftsOps.Complement:= function(W, w)
-    local   J,  WJ,  NJ,  gen,  res,  x,  new,  K,  wK,  can,  car;
+CyclicShiftsOps.Complement0:= function(self)
+    local   W,  w,  J,  WJ,  NJ,  CJ,  gen,  res,  x,  new,  K,  wK,  
+            car,  can;
+    
+    W:= self.W;
+    w:= self.w;
+    
+    # assert that w has minimal length in its class.
+    J:= Set(CoxeterWord(W, w));
+    WJ:= ReflectionSubgroup(W, J);
+    NJ:= NormalizerComplement(W, J);
+    CJ:= Centralizer(WJ, NJ);
+    gen:= Generators(NJ);
+    
+    res:= [];
+    for x in gen do
+        # don't fix what's not broken.
+        if w^x = w then
+            new:= [()];
+        else
+            new:= [];
+            for K in SubsetsShapes(Shapes(WJ)) do
+                wK:= LongestElement(W, K);
+                if wK in CJ and w^x = w^wK then
+                    Add(new, wK);
+                fi;
+            od;
+            if new = [] then
+                return false;
+            fi;
+        fi;
+        Add(res, new);
+    od;
+    
+    # try all combinations of possible generators.
+    for car in Cartesian(res) do
+        can:= List([1..Length(gen)], i-> gen[i] * car[i]);
+        can:= Subgroup(W, can);
+        can.gen:= gen;
+        can.car:= car;
+        if Size(Intersection(can, WJ)) = 1 and Size(can) = Size(NJ) then
+            return can;
+        else
+            Print("-\c");
+        fi;
+    od;
+    
+    # if everything fails ...
+    return false;
+end;
+
+CyclicShiftsOps.Complement1:= function(self)
+    local   W,  w,  J,  WJ,  NJ,  gen,  res,  x,  new,  K,  wK,  car,  
+            can;
+    
+    W:= self.W;
+    w:= self.w;
     
     # assert that w has minimal length in its class.
     J:= Set(CoxeterWord(W, w));
@@ -376,8 +431,12 @@ CyclicShiftsOps.Complement:= function(W, w)
     for car in Cartesian(res) do
         can:= List([1..Length(gen)], i-> gen[i] * car[i]);
         can:= Subgroup(W, can);
+        can.gen:= gen;
+        can.car:= car;
         if Size(Intersection(can, WJ)) = 1 and Size(can) = Size(NJ) then
             return can;
+        else
+            Print("+\c");
         fi;
     od;
     
@@ -385,12 +444,23 @@ CyclicShiftsOps.Complement:= function(W, w)
     return false;
 end;
 
+
 # minimal length case.
 CentralizerComplementMinimal:= function(W, w)
     local   v,  com,  u;
     
+    # first round: try to find wK's that centralize all of NJ
     for v in Elements(CyclicShifts(W, w)) do
-        com:= CyclicShiftsOps.Complement(W, v);
+        com:= Call(CyclicShifts(W, v), "Complement0");
+        if com <> false then
+            u:= RepresentativeOperation(W, v, w);
+            return com^u;
+        fi;
+    od;
+    
+    # second round: relax centralising condition
+    for v in Elements(CyclicShifts(W, w)) do
+        com:= Call(CyclicShifts(W, v), "Complement1");
         if com <> false then
             u:= RepresentativeOperation(W, v, w);
             return com^u;
@@ -399,6 +469,7 @@ CentralizerComplementMinimal:= function(W, w)
     
     return false;
 end;
+
 
 # general case ...
 # FIXME: need an efficient way to conjugate w in W to an element of minimal length in its class ... based on an iterator?? ...
