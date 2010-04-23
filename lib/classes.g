@@ -143,6 +143,8 @@ end;
 ##  <M>w' = v'v</M> with <M>\ell(w') = \ell(v') + \ell(v) = \ell(w)</M>. 
 ##  The cyclic shift class of <M>w</M> in <M>W</M> consists of all cyclic 
 ##  shifts of $<M>w</M>.
+##
+##  As a side effect, <F>Elements</F> also computes lists of elements immediately below or above this cyclic shift class, which can be used to decide whether tjis is a class of elements of minimal or of maximal length, or to find conjugate elements of minimal or maximal length, see ... below.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
 ##  gap> Elements(...);
@@ -158,15 +160,13 @@ end;
 ##
 CyclicShiftsOps.Elements:= function(self)
     local   W,  S,  orb,  x,  i,  s,  y,  z;
-    
+
     W:= self.W;
     S:= W.rootInclusion{[1 .. W.semisimpleRank]};
-    
-    self.isMinimal:= true;
-    self.isMaximal:= true;
-    self.above:= false;
-    self.below:= false;
-    
+
+    self.above:= [];
+    self.below:= [];
+
     orb:= [self.w];
     for x in orb do
         for i in S do
@@ -177,8 +177,7 @@ CyclicShiftsOps.Elements:= function(self)
             if IsLeftDescent(W, x, i) then
                 #if i/y > N then
                 if IsRightDescent(W, y, i) then
-                    self.isMinimal:= false;
-                    self.below:= z;
+                    AddSet(self.below, z);
                 else
                     if not z in orb then
                         Add(orb, z);
@@ -191,14 +190,57 @@ CyclicShiftsOps.Elements:= function(self)
                         Add(orb, z);
                     fi;
                 else
-                    self.isMaximal:= false;
-                    self.above:= z;
+                    AddSet(self.above, z);
                 fi;
             fi;
         od;
     od;
     return Set(orb);
 
+end;
+
+
+#############################################################################
+##
+#F  IsMinimal( <shifts> )
+##
+CyclicShiftsOps.IsMinimal:= function(self)
+    Elements(self);
+    return self.below = [];
+end;
+
+#############################################################################
+##
+#F  IsMaximal( <shifts> )
+##
+CyclicShiftsOps.IsMaximal:= function(self)
+    Elements(self);
+    return self.above = [];
+end;
+
+#############################################################################
+##
+#F  AllAbove( <shifts> )
+##
+##  compute a set of elements that contains representatives of *all* cyclic
+##  shift classes immediately above this one.
+##
+CyclicShiftsOps.AllAbove:= function(self)
+    Elements(self);
+    return self.above;
+end;
+
+
+#############################################################################
+##
+#F  AllBelow( <shifts> )
+##
+##  compute a set of elements that contains representatives of *all* cyclic
+##  shift classes immediately below this one.
+##
+CyclicShiftsOps.AllBelow:= function(self)
+    Elements(self);
+    return self.below;
 end;
 
 
@@ -319,6 +361,43 @@ CyclicShiftsOps.Iterator:= function(self)
     end;
 
     return itr;
+end;
+
+#############################################################################
+##
+#F  OneBelow( <shifts> )
+##
+##  find an element immediately below this cyclic shift class, or
+##  return false if none exists.
+##
+##  FIXME: using the iterator presumably would be faster ...
+##
+CyclicShiftsOps.OneBelow:= function(self)
+    Elements(self);
+    if self.below = [] then
+        return false;
+    else
+        return self.below[1];
+    fi;
+end;
+
+
+#############################################################################
+##
+#F  MinimalLengthConjugate:= function(W, w)
+##
+##  find a conjugate of w of minimal length.
+##
+MinimalLengthConjugate:= function(W, w)
+    local   cyc;
+    
+    cyc:= CyclicShifts(W, w);
+    while not Call(cyc, "IsMinimal") do
+        Print(Size(cyc), " \c");
+        cyc:= CyclicShifts(W, Call(cyc, "OneBelow"));
+    od;
+    Print("\n");
+    return cyc.w;
 end;
 
 
@@ -473,6 +552,13 @@ end;
 
 # general case ...
 # FIXME: need an efficient way to conjugate w in W to an element of minimal length in its class ... based on an iterator?? ...
+CentralizerComplement:= function(W, w)
+    local   m,  com,  u;
+    m:= MinimalLengthConjugate(W, w);
+    com:= CentralizerComplementMinimal(W, m);
+    u:= RepresentativeOperation(W, m, w);
+    return com^u;
+end;
 
 
 # lab is a pair of partitions
