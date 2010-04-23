@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: descent.g,v 1.86 2010/03/13 22:30:43 goetz Exp $
+#A  descent.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007, Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains the basic routines for descent algebras.
 ##

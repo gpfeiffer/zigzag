@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: shapes.g,v 1.69 2010/02/27 20:17:41 goetz Exp $
+#A  shapes.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007 Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##

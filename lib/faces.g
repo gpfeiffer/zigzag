@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: faces.g,v 1.5 2008/03/21 14:17:37 goetz Exp $
+#A  faces.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2007 Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains the routines for faces of hyperplane
 ##  arrangements of finite Coxeter groups.

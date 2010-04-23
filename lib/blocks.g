@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: blocks.g,v 1.1 2010/03/06 21:42:41 goetz Exp $
+#A  blocks.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2010, Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains support for block vectors and block matrices/
 ##  

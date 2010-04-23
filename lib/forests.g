@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: forests.g,v 1.23 2010/03/20 23:50:39 goetz Exp $
+#A  forests.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2010 Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains routines for trees and forests.
 ##

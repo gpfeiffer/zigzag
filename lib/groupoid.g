@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: groupoid.g,v 1.6 2007/10/12 15:26:44 goetz Exp $
+#A  groupoid.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2007 Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains support for the groupoid of shapes and its elements.
 ##  

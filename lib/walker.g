@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: walker.g,v 1.9 2009/01/26 16:00:23 goetz Exp $
+#A  walker.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007 Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains some tree walking and counting functions.
 ##  

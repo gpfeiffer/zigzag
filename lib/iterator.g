@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: iterator.g,v 1.14 2007/10/11 11:05:50 goetz Exp $
+#A  iterator.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2007 Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains a dispatcher for iterators on domains.
 ##  

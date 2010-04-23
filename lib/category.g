@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: category.g,v 1.6 2007/10/12 15:25:25 goetz Exp $
+#A  category.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2007 Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains support for the category of shapes and its elements.
 ##  

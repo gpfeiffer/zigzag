@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: quiver.g,v 1.1 2010/03/13 22:10:36 goetz Exp $
+#A  quiver.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2010 Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains routines for path algebras and their elements.
 ##

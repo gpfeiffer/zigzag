@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: subsets.g,v 1.43 2010/03/20 23:50:39 goetz Exp $
+#A  subsets.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2010 Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains structures and functions for certain subsets of a 
 ##  finite Coxeter group.
