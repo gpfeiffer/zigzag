@@ -1,10 +1,10 @@
 #############################################################################
 ##
-#A  $Id: init.g,v 1.39 2010/03/18 18:25:45 goetz Exp $
+#A  init.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2001-2010 Götz Pfeiffer
+#Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This is the init file of the ZigZag package.
 ##
@@ -12,7 +12,7 @@
 #############################################################################
 ZIGZAG:= rec();
 ZIGZAG.Version:= "0.77";
-ZIGZAG.Date:= "16-12-2009";
+ZIGZAG.Date:= "23-04-2010";
 
 #############################################################################
 ##
@@ -55,7 +55,7 @@ AUTO( ReadPkg( "zigzag", "lib", "forests" ), LeanTreeOps, LeanTree,
 AUTO( ReadPkg( "zigzag", "lib", "blocks" ), VecBlVec, BlVecVec, MatBlMat,
   BlMatMat);
 
-AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, Map,
+AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, Map, Iverson,
   PartitionOps, Partition);
 
 AUTO( ReadPkg( "zigzag", "lib", "subsets" ), SetComposition, IsLeftDescent,
@@ -100,7 +100,8 @@ AUTO( ReadPkg( "zigzag", "lib", "streets" ), StreetOps, Street, IsStreet,
   Streets, NrStreets, ProductStreetMatrices, ProductStreetMatrixList,
   SumStreetMatrices, ProductStreets, BasicStreets, BasicStreetsNonZero,
   PathsStreets, PathsStreets1, CartanMatStreets, QuiverMatStreets,
-  CartanMatSlantedStreets0, CartanMatSlantedStreets, QuiverMatSlantedStreets);
+  CartanMatSlantedStreets0, SlantedStreets, CartanMatSlantedStreets,
+  QuiverMatSlantedStreets);
 
 AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
   ProductLSigns, ProductRSigns, OnFaces, KernelSupportMap, FaceEltOps,
@@ -109,8 +110,8 @@ AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
   ProdMat);
 
 AUTO( ReadPkg( "zigzag", "lib", "classes" ), CyclicShiftsOps, CyclicShifts,
-  IsCyclicShifts, CentralizerComplementMinimal, IsNonCompliant,
-  CuspidalClasses, CyclicShiftClasses);
+  IsCyclicShifts, MinimalLengthConjugate, CentralizerComplementMinimal,
+  CentralizerComplement, IsNonCompliant, CuspidalClasses, CyclicShiftClasses);
 
 AUTO( ReadPkg( "zigzag", "lib", "iterator" ), IteratorList, IteratorEmpty,
   Iterator, IteratorRange, MPartitionsOps, MPartitions, NrMPartitions,
@@ -118,9 +119,10 @@ AUTO( ReadPkg( "zigzag", "lib", "iterator" ), IteratorList, IteratorEmpty,
 
 AUTO( ReadPkg( "zigzag", "lib", "alleys" ), ProductAlleys, ProductAlleyList,
   FactorsAlley, OnAlleys, StabilizerAlley, NrAlleys, LengthAlley, SourceAlley,
-  TargetAlley, PrefixAlley, SuffixAlley, ActionAlley, DeltaAlley,
-  BigMatrixAlley, ReversedAlley, LittleDeltaBarAlley, ReducedWordAlley,
-  DiamondAlley, AlleyAlgebraOps, AlleyAlgebra, IsAlleyAlgebra);
+  TargetAlley, SubsetsAlley, PrefixAlley, SuffixAlley, ActionAlley,
+  DeltaAlley, BigMatrixAlley, ReversedAlley, LittleDeltaBarAlley,
+  ReducedWordAlley, ColoursAlley, AlleyAlgebraOps, AlleyAlgebra,
+  IsAlleyAlgebra);
 
 AUTO( ReadPkg( "zigzag", "lib", "groupoid" ), GroupoidOps, Groupoid,
   IsGroupoid, GroupoidEltOps, GroupoidElt, IsGroupoidElt);
@@ -129,8 +131,8 @@ AUTO( ReadPkg( "zigzag", "lib", "shapes" ), ShapeOps, Shape, IsShape,
   NormalizerComplement, ShapesRank, Shapes, SubsetsShapes, ComplementsShapes,
   IncidenceMatShapes, XCharacters, ParabolicTom, YCharacters, ZCharacters,
   InvolutionShapes, Involutions, SpecialInvolutions, OrlikSolomonCharacter,
-  NamesShapes, LabelsShapes, IncMatShapes, QIncMatShapes, FusMatShapes,
-  QFusMatShapes);
+  NamesShapes, LabelsShapes, PathsShapes, IncMatShapes, QIncMatShapes,
+  FusMatShapes, QFusMatShapes);
 
 AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
   IsCategory, CategoryEltOps, CategoryElt, IsCategoryElt);
