@@ -62,11 +62,12 @@ AUTO( ReadPkg( "zigzag", "lib", "subsets" ), SetComposition, IsLeftDescent,
   IsRightDescent, LongestElement, ConnectedComponent, ConnectedComponents,
   PrefixesOps, Prefixes, IsPrefixes, WeakIntervalOps, WeakInterval,
   IsWeakInterval, ParabolicTransversalOps, ParabolicTransversal,
-  IsParabolicTransversal, DescentClassOps, DescentClass, IsDescentClass,
-  DescentClasses, SizesDescentConjugacyClasses, LeftParabolicTransversalOps,
-  LeftParabolicTransversal, IsLeftParabolicTransversal,
-  DoubleParabolicTransversalOps, DoubleParabolicTransversal,
-  IsDoubleParabolicTransversal, XJKLOps, XJKL, IsXJKL);
+  IsParabolicTransversal, ParabolicCoordinates, DescentClassOps, DescentClass,
+  IsDescentClass, DescentClasses, SizesDescentConjugacyClasses,
+  LeftParabolicTransversalOps, LeftParabolicTransversal,
+  IsLeftParabolicTransversal, DoubleParabolicTransversalOps,
+  DoubleParabolicTransversal, IsDoubleParabolicTransversal, XJKLOps, XJKL,
+  IsXJKL);
 
 AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
   DescentAlgebra, IsDescentAlgebra, DescentEltOps, DescentElt, IsDescentElt,
@@ -91,7 +92,7 @@ AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
 AUTO( ReadPkg( "zigzag", "lib", "towers" ), FallingSequence, TowersAOps,
   TowersA, IsTowersA, TowersAPerm, TowersAWord, TowersBOps, TowersB,
   IsTowersB, TowersBPerm, TowersBWord, TowersDOps, TowersD, IsTowersD,
-  TowersDPerm, TowersDWord);
+  TowersDPerm, TowersDWord, MajorIndex);
 
 AUTO( ReadPkg( "zigzag", "lib", "quiver" ), QuiverEltOps, QuiverElt,
   IsQuiverElt, QuiverOps, Quiver, IsQuiver);

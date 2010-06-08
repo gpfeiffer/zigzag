@@ -883,6 +883,28 @@ ParabolicTransversalOps.\in:= function(w, self)
     return true;
 end;
 
+#############################################################################
+##
+##  find u \in W_J, x in X_J such that w = u . x
+##
+##  NOTE:  the J argument might as well be any chain of subsets ...
+##
+##  FIXME:  check the algorithm used
+##
+ParabolicCoordinates:= function(W, J, w)
+    local   u,  x,  i,  s;
+    
+    u:= w^0;  x:= w;
+    while true do
+        i:= PositionProperty(J, j -> j^x > W.N);
+        if i = false then 
+            return [u, x];
+        fi;
+        s:= W.(J[i]);
+        u:= u * s;
+        x:= s * x;
+    od;
+end;
 
 #############################################################################
 ##
