@@ -1223,6 +1223,34 @@ end;
 
 #############################################################################
 ##
+##  other utiltiy functions for permutations.
+##
+
+#############################################################################
+##
+##  the major index of a permutation:
+##
+MajorIndex:= function(perm)
+    local   maj,  i;
+    
+    # trivial case first.
+    if perm = () then return 0; fi;
+    
+    maj:= 0;
+    for i in [1..LargestMovedPointPerm(perm)] do
+        if i^perm > (i+1)^perm then
+            maj:= maj + i;
+        fi;
+    od;
+    
+    return maj;
+end;
+
+
+
+
+#############################################################################
+##
 ##  FOR EXAMPLE
 ##
 #gen:= [];
