@@ -471,6 +471,24 @@ NormalizerComplement:= function(W, J)
     return new;    
 end;
 
+#############################################################################
+IsBulkyParabolic:= function(W, J)
+    local   WJ,  NJ;
+    WJ:= ReflectionSubgroup(W, J);
+    NJ:= NormalizerComplement(W, J);
+    return Size(CommutatorSubgroup(WJ, NJ)) = 1;
+end;
+
+BulkyShapes:= function(W)
+    local   bulky,  sh;
+    bulky:= [];
+    for sh in Shapes(W) do
+        if IsBulkyParabolic(W, sh.J) then
+            Add(bulky, sh);
+        fi;
+    od;
+    return bulky;
+end;
 
 #############################################################################
 ##
