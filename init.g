@@ -129,11 +129,11 @@ AUTO( ReadPkg( "zigzag", "lib", "groupoid" ), GroupoidOps, Groupoid,
   IsGroupoid, GroupoidEltOps, GroupoidElt, IsGroupoidElt);
 
 AUTO( ReadPkg( "zigzag", "lib", "shapes" ), ShapeOps, Shape, IsShape,
-  NormalizerComplement, ShapesRank, Shapes, SubsetsShapes, ComplementsShapes,
-  IncidenceMatShapes, XCharacters, ParabolicTom, YCharacters, ZCharacters,
-  InvolutionShapes, Involutions, SpecialInvolutions, OrlikSolomonCharacter,
-  NamesShapes, LabelsShapes, PathsShapes, IncMatShapes, QIncMatShapes,
-  FusMatShapes, QFusMatShapes);
+  NormalizerComplement, IsBulkyParabolic, BulkyShapes, ShapesRank, Shapes,
+  SubsetsShapes, ComplementsShapes, IncidenceMatShapes, XCharacters,
+  ParabolicTom, YCharacters, ZCharacters, InvolutionShapes, Involutions,
+  SpecialInvolutions, OrlikSolomonCharacter, NamesShapes, LabelsShapes,
+  PathsShapes, IncMatShapes, QIncMatShapes, FusMatShapes, QFusMatShapes);
 
 AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
   IsCategory, CategoryEltOps, CategoryElt, IsCategoryElt);
