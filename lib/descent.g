@@ -1593,6 +1593,12 @@ DescentQuiver:= function(W)
 end;
 
 
+#  how to find a basis of the i-th projective
+BasisProjectiveQuiver:= function(q, i)
+    return Concatenation(List(q.pathmat[i], x-> x.path{x.basis}));
+end;
+
+
 # given a list pims of indices, describing a projective module Q as
 # a direct sum of pims, and a matrix map, describing a surjective linear map pi from Q
 # onto some module M, find a new list pims and a new matrix, describing a minimal projective cover of the kernel of pi
@@ -1735,7 +1741,7 @@ end;
 
 #############################################################################
 ##  
-##  
+##  RelationsDescentQuiver
 ##  
 ##  
 ##  

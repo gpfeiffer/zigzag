@@ -35,13 +35,13 @@ QuiverEltOps:= OperationsRecord("QuiverEltOps");
 ##  <Func Name="QuiverElt" Arg="n"/>
 ##  <Func Name="QuiverElt" Arg="l, r"/>
 ##  <Returns>
-##    a new lean tree with components ...
+##    a new quiver element with components ...
 ##  </Returns>
 ##  <Description>
-##  This is the simple constructor for lean trees ...
+##  This is the simple constructor for quiver elements ...
 ##  <Example>
 ##  gap> QuiverElt(q, [1], [[3, 4]]);
-##  QuiverElt(q, [1], [[3. 4]])
+##  QuiverElt(q, [1], [[3, 4]])
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -73,6 +73,21 @@ end;
 IsQuiverElt:= function(obj)
     return IsRec(obj) and IsBound(obj.isQuiverElt) and obj.isQuiverElt = true;
 end;
+
+#############################################################################
+QuiverEltOps.\=:= function(l, r)
+    
+    if IsQuiverElt(l) then
+        if IsQuiverElt(r) then
+            return l.quiver = r.quiver and l.coef = r.coef and l.elts = r.elts;
+        else
+            return false;
+        fi;
+    else
+        return false;
+    fi;
+end;    
+
 
 #############################################################################
 QuiverEltOps.Print:= function(self)
@@ -223,6 +238,16 @@ end;
 IsQuiver:= function(obj)
     return IsRec(obj) and IsBound(obj.isQuiver) and obj.isQuiver = true;
 end;
+
+#############################################################################
+QuiverOps.\=:= function(l, r)
+    if IsQuiver(l) and IsQuiver(r) then
+        return l.path0 = r.path0 and l.path1 = r.path1 and l.pathmat = r.pathmat;
+    else
+        return false;
+    fi;
+end;
+    
 
 #############################################################################
 QuiverOps.Edges:= function(self)
