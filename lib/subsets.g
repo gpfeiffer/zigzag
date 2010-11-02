@@ -959,11 +959,11 @@ DescentClassOps:= OperationsRecord("DescentClassOps", WeakIntervalOps);
 ##??? ReflectionSubgroup safe?
 ##
 DescentClass:= function(W, K)
-    local   n,  w1,  w2,  self;
+    local   S,  w1,  w2,  self;
     ##??? need to check the arguments?
     
-    n:= W.semisimpleRank;   
-    w1:= LongestElement(W, Difference([1..n], K));
+    S:= W.rootInclusion{[1..W.semisimpleRank]};   
+    w1:= LongestElement(W, Difference(S, K));
     w2:= LongestElement(W, K) * LongestCoxeterElement(W);
     self:= WeakInterval(W, w1, w2);   
     self.operations:= DescentClassOps;
@@ -1041,16 +1041,28 @@ end;
 ##  |Y_K| = \sum_{J contains K} (-1)^{|J - K|} |X_J|
 ##
 DescentClassOps.Size:= function(self)
-    local   sum,  L;
-
+    local   W,  S,  sum,  L;
+    
+    W:= self.W;
+    S:= W.rootInclusion{[1..W.semisimpleRank]};   
+    
     sum:= 0;    # loop over all J above K.
-    for L in Combinations(Difference([1..self.W.semisimpleRank], self.K)) do
+    for L in Combinations(Difference(S, self.K)) do
         sum:= sum + (-1)^Size(L) 
-              * Size(ParabolicTransversal(self.W, Union(self.K, L)));
+              * Size(ParabolicTransversal(W, Union(self.K, L)));
     od;
     return sum;
 end;
 
+#  the descent set of the elements in this class.
+DescentClassOps.DescentSet:= function(self)
+    return self.K;
+end;
+
+#  the size of the descent set of the elements in this class
+DescentClassOps.Rank:= function(self)
+    return Size(self.K);
+end;
     
 #############################################################################
 ##
@@ -1098,7 +1110,7 @@ end;
 ##    are studied by Gessel and Reutenauer <Cite Key="GesselReut1993"/>.
 ##    This function lists all these numbers for a finite Coxeter group
 ##    <M>W</M> in a matrix, with rows corresponding to the descent classes of
-##    <M>W</M> in in shape order (see <Ref Func="SubsetsShapes"/>) and
+##    <M>W</M> in shape order (see <Ref Func="SubsetsShapes"/>) and
 ##    columns corresponding to the conjugacy classes of elements of <M>W</M>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
