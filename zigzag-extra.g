@@ -44,7 +44,7 @@ SlowCombine:= function(list, sum, index)
     # trivial case first ...
     if list = [] then
         if Sum(sum) = 0 then
-            Print("+\n");
+#            Print("+\n");
             return [[]]; 
         else
             return [];
@@ -79,7 +79,7 @@ SlowCombine:= function(list, sum, index)
     od;
 #    if min = 1 then Print("!\c"); fi;
     
-    Print(SlowLog, "\r");
+#    Print(SlowLog, "\r");
 #    Print("+\c");
     d:= Length(SlowLog) + 1;
     SlowLog[d]:= min;
@@ -865,9 +865,9 @@ CartanMatDescent:= function(D)
         car[i]:= [];
         for j in [1..l] do
             car[i][j]:= RankMat(List(xxx, x-> EEE[i][ll] * x) * EEE[j]);
-            Print(".\c");
+#            Print(".\c");
         od; 
-        Print("!\n");
+#        Print("!\n");
     od;  
     return car;
 end;
