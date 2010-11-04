@@ -466,24 +466,24 @@ end;
 #F  RightRegularX( <D> )
 ##  
 RightRegularX:= function(D)
-    local   W,  n,  subsets,  complmt,  xxx,  d,  m,  c,  e,  p,  WJ;
+    local   W,  S,  subsets,  complmt,  xxx,  d,  m,  c,  e,  p,  WJ;
     
     if IsBound(D.rightRegularX) then
         return D.rightRegularX;
     fi;
     
     W:= D.W;
-    n:= W.semisimpleRank;
+    S:= W.rootInclusion{[1..W.semisimpleRank]};
     subsets:= SubsetsShapes(Shapes(W));
-    complmt:= List(subsets, x-> Position(subsets, Difference([1..n], x)));
+    complmt:= List(subsets, x-> Position(subsets, Difference(S, x)));
     xxx:= [];
     for d in subsets do
         if d = [] then
             m:= MaximalAJKL(W, 0);
         else
-            c:= Difference([1..n], d);
+            c:= Difference(S, d);
             e:= Union(c, [d[Length(d)]]);
-            p:= Position(subsets, Difference([1..n], e));
+            p:= Position(subsets, Difference(S, e));
             WJ:= ReflectionSubgroup(W, e);
             m:= MaximalAJKL(WJ, d[Length(d)]);
             m:= ProductCompressedAJKL(xxx[p], m);
