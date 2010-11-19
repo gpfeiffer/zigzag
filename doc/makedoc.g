@@ -3,7 +3,7 @@ main:= "zigzag.xml";
 lib:= "../lib/";
 files:= [ 
           "methods.g", "iterator.g", "walker.g",
-          "subsets.g", "towers.g", "classes.g",
+          "subsets.g", "skyline.g", "classes.g",
           "shapes.g", "alleys.g", "streets.g", "forests.g",
           "descent.g", "category.g", "groupoid.g",
           ];

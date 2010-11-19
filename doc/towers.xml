@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!---------------------------------------------------------------------------
 -- 
--A  towers.xml                
+-A  skyline.xml                
 --
 -A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 --
@@ -11,17 +11,17 @@
 
 <!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
 
-<Chapter Label="ch:towers">
+<Chapter Label="ch:skyline">
 <Heading>Permutation Representations of Classical Types.</Heading>
 
-<#Include Label="Intro:Towers">
+<#Include Label="Intro:Skyline">
 
-The functions described here are in the file <F>towers.g</F>.
+The functions described here are in the file <F>skyline.g</F>.
 
 <Section>
-<Heading>Towers.</Heading>
+<Heading>Skyline.</Heading>
 
-In this section I describe the functions that construct towers
+In this section I describe the functions that construct skyline
 for elements of Coxeter groups of classical types.
 
 </Section>

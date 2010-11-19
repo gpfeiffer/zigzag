@@ -1,6 +1,6 @@
 #############################################################################
 ##
-#A  towers.g
+#A  skyline.g
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
@@ -8,11 +8,11 @@
 ##
 ##  This file contains routines for classical Coxeter groups as permutations.
 ##
-##  <#GAPDoc Label="Intro:Towers">
+##  <#GAPDoc Label="Intro:Skyline">
 ##    A finite Coxeter group <M>W</M> of classical type ...
 ##      
 ##    The functions described in this chapter are implemented in the file
-##    <F>towers.g</F>.  
+##    <F>skyline.g</F>.  
 ##  <#/GAPDoc>
 ##
 
@@ -34,7 +34,7 @@ end;
 #############################################################################
 #############################################################################
 ##
-##  new data structure: TowersA
+##  new data structure: SkylineA
 ##
 ##  represent an element of W(A_n) as a tower, ie, a sequence of
 ##  n integers tower[1] ... tower[n], with 0 <= tower[i] <= i.
@@ -45,16 +45,16 @@ end;
 
 #############################################################################
 ##  
-#O  TowersAOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
+#O  SkylineAOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
 ##  
-TowersAOps:= OperationsRecord("TowersAOps", GroupElementOps);
+SkylineAOps:= OperationsRecord("SkylineAOps", GroupElementOps);
 
 
 #############################################################################
 ##  
-#C  TowersA( <list> )  . . . . . . . . . . . . . . . . . . . . . constructor.
+#C  SkylineA( <list> )  . . . . . . . . . . . . . . . . . . . . . constructor.
 ##  
-TowersA:= function(list)
+SkylineA:= function(list)
     local   n;
     
     # expect a list of numbers.
@@ -69,44 +69,44 @@ TowersA:= function(list)
     # construct object.
     return rec(
              isGroupElt:= true,
-             isTowersA:= true,
+             isSkylineA:= true,
              tower:= list,
-             operations:= TowersAOps);
+             operations:= SkylineAOps);
 end;
 
 
 #############################################################################
 ##
-#F  IsTowersA( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
+#F  IsSkylineA( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
 ##
-IsTowersA:= function(obj)
-    return IsRec(obj) and IsBound(obj.isTowersA) 
-           and obj.isTowersA = true;
+IsSkylineA:= function(obj)
+    return IsRec(obj) and IsBound(obj.isSkylineA) 
+           and obj.isSkylineA = true;
 end;
 
 
 #############################################################################  
 ##  
-#M  Print( <towers> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
+#M  Print( <skyline> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-TowersAOps.Print:= function(self)
-    Print("TowersA( ", self.tower, " )");
+SkylineAOps.Print:= function(self)
+    Print("SkylineA( ", self.tower, " )");
 end;
 
 
 #############################################################################
-TowersAOps.\=:= function(l, r)
-    if not IsTowersA(r) or not IsTowersA(l) then return false; fi;
+SkylineAOps.\=:= function(l, r)
+    if not IsSkylineA(r) or not IsSkylineA(l) then return false; fi;
     return l.tower = r.tower;
 end;
 
 #############################################################################
-TowersAOps.CoxeterLength:= function(self)
+SkylineAOps.CoxeterLength:= function(self)
     return Sum(self.tower);
 end;
 
 #############################################################################
-TowersAOps.Permutation:= function(self)
+SkylineAOps.Permutation:= function(self)
     local   perm,  i;
     
     perm:= ();
@@ -117,11 +117,11 @@ TowersAOps.Permutation:= function(self)
 end;
 
 #############################################################################
-TowersAPerm:= function(pi)
+SkylineAPerm:= function(pi)
     local   n,  set,  k;
     
     # trivial case first.
-    if pi = () then return TowersA([]); fi;
+    if pi = () then return SkylineA([]); fi;
     
     n:= LargestMovedPointPerm(pi);
     
@@ -133,11 +133,11 @@ TowersAPerm:= function(pi)
         pi:= pi / FallingSequence(n-1, n-k);
         n:= n - 1;
     od;
-    return TowersA(set);
+    return SkylineA(set);
 end;
 
 #############################################################################
-TowersAOps.Word:= function(self)
+SkylineAOps.Word:= function(self)
     local   word,  i;
     
     word:= [];
@@ -148,7 +148,7 @@ TowersAOps.Word:= function(self)
 end;
 
 #############################################################################
-TowersAOps.Descents:= function(self)
+SkylineAOps.Descents:= function(self)
     local   old,  des,  i,  new;
     
     old:= 0;
@@ -165,16 +165,16 @@ end;
 
 
 #############################################################################
-TowersAOps.SmallestDescent:= function(self)
+SkylineAOps.SmallestDescent:= function(self)
     return PositionProperty(self.tower, x-> x > 0);
 end;
 
 #############################################################################
-TowersAOps.\*:= function(lft, rgt)
+SkylineAOps.\*:= function(lft, rgt)
     local   product,  j,  l,  m,  k;
     
     # check arguments.
-    if not IsTowersA(rgt) or not IsTowersA(lft) then
+    if not IsSkylineA(rgt) or not IsSkylineA(lft) then
         Error("don't know how to compute the product of <lft> and <rgt>");
     fi;
     
@@ -213,12 +213,12 @@ TowersAOps.\*:= function(lft, rgt)
     
     od;
     
-    return TowersA(product);
+    return SkylineA(product);
 end;
 
     
 #############################################################################
-TowersAOps.Inverse:= function(self)
+SkylineAOps.Inverse:= function(self)
     local   inverse,  l,  n,  i,  j;
     
     inverse:= Copy(self.tower);
@@ -246,25 +246,25 @@ TowersAOps.Inverse:= function(self)
         
     od;
     
-    return TowersA(inverse);
+    return SkylineA(inverse);
 end;
 
 #############################################################################
-TowersAWord:= function(word)
+SkylineAWord:= function(word)
     local   prod,  a,  l;
     
-    prod:= TowersA([]);
+    prod:= SkylineA([]);
     for a in word do
         l:= 0*[1..a];
         l[a]:= 1;
-        prod:= prod * TowersA(l);
+        prod:= prod * SkylineA(l);
     od;
     return prod;
 end;
 
     
 #############################################################################
-TowersAOps.IsDescent:= function(self, i)
+SkylineAOps.IsDescent:= function(self, i)
     if i = 1 then
         return self.tower[1] > 0;
     else
@@ -277,7 +277,7 @@ end;
 #############################################################################
 #############################################################################
 ##
-##  new data structure: TowersB
+##  new data structure: SkylineB
 ##
 ##  represent an element of W(B_n) as a tower, ie, a sequence of
 ##  n integers tower[1], ..., tower[n], with -i <= tower[i] < i.
@@ -294,16 +294,16 @@ end;
 
 #############################################################################
 ##  
-#O  TowersBOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
+#O  SkylineBOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
 ##  
-TowersBOps:= OperationsRecord("TowersBOps", GroupElementOps);
+SkylineBOps:= OperationsRecord("SkylineBOps", GroupElementOps);
 
 
 #############################################################################
 ##  
-#C  TowersB( <list> )  . . . . . . . . . . . . . . . . . . . . . constructor.
+#C  SkylineB( <list> )  . . . . . . . . . . . . . . . . . . . . . constructor.
 ##  
-TowersB:= function(list)
+SkylineB:= function(list)
     local   n;
     
     # expect a list of numbers.
@@ -318,39 +318,39 @@ TowersB:= function(list)
     # construct object.
     return rec(
              isGroupElt:= true,
-             isTowersB:= true,
+             isSkylineB:= true,
              tower:= list,
-             operations:= TowersBOps);
+             operations:= SkylineBOps);
 end;
 
 
 #############################################################################
 ##
-#F  IsTowersB( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
+#F  IsSkylineB( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
 ##
-IsTowersB:= function(obj)
-    return IsRec(obj) and IsBound(obj.isTowersB) 
-           and obj.isTowersB = true;
+IsSkylineB:= function(obj)
+    return IsRec(obj) and IsBound(obj.isSkylineB) 
+           and obj.isSkylineB = true;
 end;
 
 
 #############################################################################  
 ##  
-#M  Print( <towers> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
+#M  Print( <skyline> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-TowersBOps.Print:= function(self)
-    Print("TowersB( ", self.tower, " )");
+SkylineBOps.Print:= function(self)
+    Print("SkylineB( ", self.tower, " )");
 end;
 
 
 #############################################################################
-TowersBOps.\=:= function(l, r)
-    if not IsTowersB(r) or not IsTowersB(l) then return false; fi;
+SkylineBOps.\=:= function(l, r)
+    if not IsSkylineB(r) or not IsSkylineB(l) then return false; fi;
     return l.tower = r.tower;
 end;
 
 #############################################################################
-TowersBOps.CoxeterLength:= function(self)
+SkylineBOps.CoxeterLength:= function(self)
     return Sum([1..Length(self.tower)], i-> self.tower[i] mod (2*i));
 end;
 
@@ -358,7 +358,7 @@ end;
 ##
 ##  as words in [0, 1, .., n-1]!  CHEVIE uses [1..n]!
 ##
-TowersBOps.Word:= function(self)
+SkylineBOps.Word:= function(self)
     local   word,  i,  k;
     
     word:= [];
@@ -381,7 +381,7 @@ end;
 
 # how to turn tower[i] = -(k+1) < 0 into a permutation:
 # the long cycle (i-k, i-k+1, ..., i, followed by the negatives in the same order)
-TowersBOps.permN:= function(i, k)
+SkylineBOps.permN:= function(i, k)
     local   lis;
     
     lis:= [1..2*i];
@@ -394,7 +394,7 @@ end;
     
 # how to turn tower[i] = k >= 0 into a permutation:
 # the double cycle (i-k, i-k+1, ..., i) and its negative copy
-TowersBOps.permP:= function(i, k)
+SkylineBOps.permP:= function(i, k)
     local   lis;
     
     lis:= [1..2*i];
@@ -412,27 +412,27 @@ end;
 ##  ie.,  i -> 2i;  -i -> 2i-1  for i > 0,
 ##  hence:   -: n -> n + 2(n mod 2) - 1.
 ##
-TowersBOps.Permutation:= function(self)
+SkylineBOps.Permutation:= function(self)
     local   perm,  i,  k;
     
     perm:= ();
     for i in [1..Length(self.tower)] do
         k:= self.tower[i];
         if k < 0 then
-            perm:= perm * TowersBOps.permN(i, -k-1);
+            perm:= perm * SkylineBOps.permN(i, -k-1);
         else
-            perm:= perm * TowersBOps.permP(i, k);
+            perm:= perm * SkylineBOps.permP(i, k);
         fi;
     od;
     return perm;
 end;
 
 #############################################################################
-TowersBPerm:= function(pi)
+SkylineBPerm:= function(pi)
     local   n,  set,  k;
     
     # trivial case first.
-    if pi = () then return TowersB([]); fi;
+    if pi = () then return SkylineB([]); fi;
     
     n:= LargestMovedPointPerm(pi)/2;  # is always even!
     
@@ -442,22 +442,22 @@ TowersBPerm:= function(pi)
         k:= (2*n)^pi;
         if k mod 2 = 0 then
             set[n]:= n-k/2;
-            pi:= pi / TowersBOps.permP(n, n-k/2);
+            pi:= pi / SkylineBOps.permP(n, n-k/2);
         else
             set[n]:= (k-1)/2-n;
-            pi:= pi / TowersBOps.permN(n, n-(k+1)/2);
+            pi:= pi / SkylineBOps.permN(n, n-(k+1)/2);
         fi;
         n:= n - 1;
     od;
-    return TowersB(set);
+    return SkylineB(set);
 end;
 
 #############################################################################
-TowersBOps.\*:= function(lft, rgt)
+SkylineBOps.\*:= function(lft, rgt)
     local   product,  j,  l,  m,  k,  del,  eps;
     
     # check arguments.
-    if not IsTowersB(rgt) or not IsTowersB(lft) then
+    if not IsSkylineB(rgt) or not IsSkylineB(lft) then
         Error("don't know how to compute the product of <lft> and <rgt>");
     fi;
     
@@ -522,14 +522,14 @@ TowersBOps.\*:= function(lft, rgt)
     
     od;
     
-    return TowersB(product);
+    return SkylineB(product);
 end;
 
 #############################################################################
-TowersBWord:= function(word)
+SkylineBWord:= function(word)
     local   prod,  a,  l;
     
-    prod:= TowersB([]);
+    prod:= SkylineB([]);
     for a in word do
         l:= 0*[1..a];
         if a = 0 then
@@ -537,13 +537,13 @@ TowersBWord:= function(word)
         else
             l[a+1]:= 1;
         fi;
-        prod:= prod * TowersB(l);
+        prod:= prod * SkylineB(l);
     od;
     return prod;
 end;
 
 #############################################################################
-TowersBOps.Inverse:= function(self)
+SkylineBOps.Inverse:= function(self)
     local   inverse,  l,  n,  i,  j,  new;
     
     inverse:= Copy(self.tower);
@@ -575,12 +575,12 @@ TowersBOps.Inverse:= function(self)
         
     od;
     
-    return TowersB(inverse);
+    return SkylineB(inverse);
 end;
 
     
 #############################################################################
-TowersBOps.Descents:= function(self)
+SkylineBOps.Descents:= function(self)
     local   old,  des,  n,  i,  new;
     
     old:= 0;
@@ -610,13 +610,13 @@ end;
 
 
 #############################################################################
-TowersBOps.SmallestDescent:= function(self)
+SkylineBOps.SmallestDescent:= function(self)
     return PositionProperty(self.tower, x-> x <> 0) - 1;
 end;
 
     
 #############################################################################
-TowersBOps.IsDescent:= function(self, i)
+SkylineBOps.IsDescent:= function(self, i)
     if i = 0 then
         return self.tower[1] <> 0;
     else
@@ -631,7 +631,7 @@ end;
 #############################################################################
 #############################################################################
 ##
-##  new data structure: TowersD
+##  new data structure: SkylineD
 ##
 ##  represent an element of W(D_n) as a tower, ie, a sequence of
 ##  n integers tower[1], ..., tower[n-1], with -i-1 <= tower[i] <= i.
@@ -648,16 +648,16 @@ end;
 
 #############################################################################
 ##  
-#O  TowersDOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
+#O  SkylineDOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
 ##  
-TowersDOps:= OperationsRecord("TowersDOps", GroupElementOps);
+SkylineDOps:= OperationsRecord("SkylineDOps", GroupElementOps);
 
 
 #############################################################################
 ##  
-#C  TowersD( <list> )  . . . . . . . . . . . . . . . . . . . . . constructor.
+#C  SkylineD( <list> )  . . . . . . . . . . . . . . . . . . . . . constructor.
 ##  
-TowersD:= function(list)
+SkylineD:= function(list)
     local   n;
     
     # expect a list of numbers.
@@ -672,39 +672,39 @@ TowersD:= function(list)
     # construct object.
     return rec(
              isGroupElt:= true,
-             isTowersD:= true,
+             isSkylineD:= true,
              tower:= list,
-             operations:= TowersDOps);
+             operations:= SkylineDOps);
 end;
 
 
 #############################################################################
 ##
-#F  IsTowersD( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
+#F  IsSkylineD( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
 ##
-IsTowersD:= function(obj)
-    return IsRec(obj) and IsBound(obj.isTowersD) 
-           and obj.isTowersD = true;
+IsSkylineD:= function(obj)
+    return IsRec(obj) and IsBound(obj.isSkylineD) 
+           and obj.isSkylineD = true;
 end;
 
 
 #############################################################################  
 ##  
-#M  Print( <towers> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
+#M  Print( <skyline> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
-TowersDOps.Print:= function(self)
-    Print("TowersD( ", self.tower, " )");
+SkylineDOps.Print:= function(self)
+    Print("SkylineD( ", self.tower, " )");
 end;
 
 
 #############################################################################
-TowersDOps.\=:= function(l, r)
-    if not IsTowersD(r) or not IsTowersD(l) then return false; fi;
+SkylineDOps.\=:= function(l, r)
+    if not IsSkylineD(r) or not IsSkylineD(l) then return false; fi;
     return l.tower = r.tower;
 end;
 
 #############################################################################
-TowersDOps.CoxeterLength:= function(self)
+SkylineDOps.CoxeterLength:= function(self)
     return Sum([1..Length(self.tower)], i-> self.tower[i] mod (2*i+1));
 end;
 
@@ -712,7 +712,7 @@ end;
 ##
 ##  as words in [0, 1, .., n-1]!  CHEVIE uses [1..n]!
 ##
-TowersDOps.Word:= function(self)
+SkylineDOps.Word:= function(self)
     local   word,  i,  k;
     
     word:= [];
@@ -735,7 +735,7 @@ end;
 
 # how to turn tower[i] = -(k+1) < 0 into a permutation:
 # the long cycle (1,-1)(i-k+1, i-k+2, ..., i+1, followed by the negatives in the same order)
-TowersDOps.permN:= function(i, k)
+SkylineDOps.permN:= function(i, k)
     local   lis;
     
     lis:= [1..2*i+2];
@@ -748,7 +748,7 @@ end;
     
 # how to turn tower[i] = k >= 0 into a permutation:
 # the double cycle (i-k+1, i-k+2, ..., i+1) and its negative copy
-TowersDOps.permP:= function(i, k)
+SkylineDOps.permP:= function(i, k)
     local   lis;
     
     lis:= [1..2*i+2];
@@ -766,27 +766,27 @@ end;
 ##  ie.,  i -> 2i;  -i -> 2i-1  for i > 0,
 ##  hence:   -: n -> n + 2(n mod 2) - 1.
 ##
-TowersDOps.Permutation:= function(self)
+SkylineDOps.Permutation:= function(self)
     local   perm,  i,  k;
     
     perm:= ();
     for i in [1..Length(self.tower)] do
         k:= self.tower[i];
         if k < 0 then
-            perm:= perm * TowersDOps.permN(i, -k-1);
+            perm:= perm * SkylineDOps.permN(i, -k-1);
         else
-            perm:= perm * TowersDOps.permP(i, k);
+            perm:= perm * SkylineDOps.permP(i, k);
         fi;
     od;
     return perm;
 end;
 
 #############################################################################
-TowersDPerm:= function(pi)
+SkylineDPerm:= function(pi)
     local   n,  set,  k;
     
     # trivial case first.
-    if pi = () then return TowersD([]); fi;
+    if pi = () then return SkylineD([]); fi;
     
     n:= LargestMovedPointPerm(pi)/2;  # is always even!
     
@@ -796,22 +796,22 @@ TowersDPerm:= function(pi)
         k:= (2*n)^pi;
         if k mod 2 = 0 then
             set[n-1]:= n-k/2;
-            pi:= pi / TowersDOps.permP(n-1, n-k/2);
+            pi:= pi / SkylineDOps.permP(n-1, n-k/2);
         else
             set[n-1]:= (k-1)/2-n;
-            pi:= pi / TowersDOps.permN(n-1, n-(k+1)/2);
+            pi:= pi / SkylineDOps.permN(n-1, n-(k+1)/2);
         fi;
         n:= n - 1;
     od;
-    return TowersD(set);
+    return SkylineD(set);
 end;
 
 #############################################################################
-TowersDOps.\*:= function(lft, rgt)
+SkylineDOps.\*:= function(lft, rgt)
     local   product,  j,  l,  n,  k;
     
     # check arguments.
-    if not IsTowersD(rgt) or not IsTowersD(lft) then
+    if not IsSkylineD(rgt) or not IsSkylineD(lft) then
         Error("don't know how to compute the product of <lft> and <rgt>");
     fi;
     
@@ -894,14 +894,14 @@ TowersDOps.\*:= function(lft, rgt)
     
     od;
     
-    return TowersD(product);
+    return SkylineD(product);
 end;
 
-TowersDOps.\*:= function(lft, rgt)
+SkylineDOps.\*:= function(lft, rgt)
     local   product,  j,  l,  m,  k,  del,  eps;
     
     # check arguments.
-    if not IsTowersD(rgt) or not IsTowersD(lft) then
+    if not IsSkylineD(rgt) or not IsSkylineD(lft) then
         Error("don't know how to compute the product of <lft> and <rgt>");
     fi;
     
@@ -1021,14 +1021,14 @@ TowersDOps.\*:= function(lft, rgt)
     
     od;
     
-    return TowersD(product);
+    return SkylineD(product);
 end;
     
-TowersDOps.\*:= function(lft, rgt)
+SkylineDOps.\*:= function(lft, rgt)
     local   product,  j,  l,  m,  k,  del,  eps;
     
     # check arguments.
-    if not IsTowersD(rgt) or not IsTowersD(lft) then
+    if not IsSkylineD(rgt) or not IsSkylineD(lft) then
         Error("don't know how to compute the product of <lft> and <rgt>");
     fi;
     
@@ -1096,14 +1096,14 @@ TowersDOps.\*:= function(lft, rgt)
     
     od;
     
-    return TowersD(product);
+    return SkylineD(product);
 end;
 
 #############################################################################
-TowersDWord:= function(word)
+SkylineDWord:= function(word)
     local   prod,  a,  l;
     
-    prod:= TowersD([]);
+    prod:= SkylineD([]);
     for a in word do
         l:= 0*[1..a];
         if a = 0 then
@@ -1111,14 +1111,14 @@ TowersDWord:= function(word)
         else
             l[a]:= 1;
         fi;
-        prod:= prod * TowersD(l);
+        prod:= prod * SkylineD(l);
     od;
     return prod;
 end;
 
 
 #############################################################################
-TowersDOps.Inverse:= function(self)
+SkylineDOps.Inverse:= function(self)
     local   inverse,  l,  n,  k,  j,  new;
     
     inverse:= Copy(self.tower);
@@ -1164,7 +1164,7 @@ TowersDOps.Inverse:= function(self)
         
     od;
     
-    return TowersD(inverse);
+    return SkylineD(inverse);
 end;
 
 #### HOPEFULLY CORRECT UP TO HERE #####
@@ -1172,7 +1172,7 @@ end;
 
     
 #############################################################################
-TowersDOps.Descents:= function(self)
+SkylineDOps.Descents:= function(self)
     local   old,  des,  n,  i,  new;
     
     old:= 0;
@@ -1202,13 +1202,13 @@ end;
 
 
 #############################################################################
-TowersDOps.SmallestDescent:= function(self)
+SkylineDOps.SmallestDescent:= function(self)
     return PositionProperty(self.tower, x-> x <> 0) - 1;
 end;
 
     
 #############################################################################
-TowersDOps.IsDescent:= function(self, i)
+SkylineDOps.IsDescent:= function(self, i)
     if i = 0 then
         return self.tower[1] <> 0;
     else
@@ -1254,40 +1254,40 @@ end;
 ##  FOR EXAMPLE
 ##
 #gen:= [];
-#for i in [1..9] do l:= 0*[1..i]; l[i]:= 1; Add(gen, TowersA(l)); od;
+#for i in [1..9] do l:= 0*[1..i]; l[i]:= 1; Add(gen, SkylineA(l)); od;
 #A:= Group(List(gen, x-> Call(x, "Permutation")), ());
 #
-#gen:= [TowersB([-1])];
-#for i in [1..9] do l:= 0*[1..i]; l[i+1]:= 1; Add(gen, TowersB(l)); od;
+#gen:= [SkylineB([-1])];
+#for i in [1..9] do l:= 0*[1..i]; l[i+1]:= 1; Add(gen, SkylineB(l)); od;
 #B:= Group(List(gen, x-> Call(x, "Permutation")), ());
 #
-#gen:= [TowersD([-2])];
-#for i in [1..9] do l:= 0*[1..i]; l[i]:= 1; Add(gen, TowersD(l)); od;
+#gen:= [SkylineD([-2])];
+#for i in [1..9] do l:= 0*[1..i]; l[i]:= 1; Add(gen, SkylineD(l)); od;
 #D:= Group(List(gen, x-> Call(x, "Permutation")), ());
 #
 #a:= function(m, k)
 #    local   lis;
 #    lis:= 0*[1..m];
 #    lis[m]:= k;
-#    return TowersD(lis);
+#    return SkylineD(lis);
 #end;
 #
 #b:= function(m, k)
 #    local   lis;
 #    lis:= 0*[1..m];
 #    lis[m]:= -k-1;
-#    return TowersB(lis);
+#    return SkylineB(lis);
 #end;
 #
 #d:= function(m, k)
 #    local   lis;
 #    lis:= 0*[1..m];
 #    lis[m]:= -k-1;
-#    return TowersD(lis);
+#    return SkylineD(lis);
 #end;
 #
 #
 #m:= function(x, y)
-#    return TowersDPerm(Call(x, "Permutation") * Call(y, "Permutation"));
+#    return SkylineDPerm(Call(x, "Permutation") * Call(y, "Permutation"));
 #end;
 #

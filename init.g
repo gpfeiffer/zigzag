@@ -89,10 +89,10 @@ AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
   PreOrderProperty, NrPreOrderProperty, PostOrder, PostOrderProperty,
   NrPostOrderProperty, BinomialTreeOps, BinomialTree);
 
-AUTO( ReadPkg( "zigzag", "lib", "towers" ), FallingSequence, TowersAOps,
-  TowersA, IsTowersA, TowersAPerm, TowersAWord, TowersBOps, TowersB,
-  IsTowersB, TowersBPerm, TowersBWord, TowersDOps, TowersD, IsTowersD,
-  TowersDPerm, TowersDWord, MajorIndex);
+AUTO( ReadPkg( "zigzag", "lib", "skyline" ), FallingSequence, SkylineAOps,
+  SkylineA, IsSkylineA, SkylineAPerm, SkylineAWord, SkylineBOps, SkylineB,
+  IsSkylineB, SkylineBPerm, SkylineBWord, SkylineDOps, SkylineD, IsSkylineD,
+  SkylineDPerm, SkylineDWord, MajorIndex);
 
 AUTO( ReadPkg( "zigzag", "lib", "quiver" ), QuiverEltOps, QuiverElt,
   IsQuiverElt, QuiverOps, Quiver, IsQuiver);
