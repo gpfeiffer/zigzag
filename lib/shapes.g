@@ -567,6 +567,7 @@ end;
 #############################################################################
 ##  
 #F  Shapes( <W> ) . . . . . . . . . . . . . . . . . . . . . . . . . . shapes.
+#F  ShapesRank( <W>, <l> )  . . . . . . . . . . . . . . . . . . . . . shapes.
 ##  
 ##  contains: a list of subsets of [1..n], sorted by rank, index, conjugacy;
 ##            a list of Coxeter classes;
