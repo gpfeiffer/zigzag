@@ -1220,14 +1220,20 @@ ShapeOps.CartanName:= function(sh)
     Append(name, "_{");
     for t in typ do
         if t[2] > 9 then
-            Add(name, '.');
+            Add(name, '(');
             Append(name, String(t[2]));
-            Add(name, '.');
+            Add(name, ')');
         else
             Append(name, String(t[2]));
         fi;
     od;
     Append(name, "}");
+    t:= typ[1];
+    if Length(t) = 3 then
+        Add(name, '(');
+        Append(name, String(t[3]));
+        Add(name, ')');
+    fi;
     IsString(name);
 
     return name;
