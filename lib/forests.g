@@ -97,6 +97,21 @@ LeanTreeOps.Print:= function(self)
     fi;
 end;
 
+#############################################################################
+#  sort lean trees by value
+LeanTreeOps.\<:= function(l, r)
+    if not IsLeanTree(l) then return true; fi;
+    if not IsLeanTree(r) then return false; fi;
+    if l.n = r.n then 
+        return l.l < r.l or (l.l = r.l and l.r < r.r);
+    else
+        return l.n < r.n;
+    fi;
+end;
+
+
+#############################################################################
+
 # the value of a tree is the sum of its bottom
 LeanTreeOps.Top:= self-> self.n;
 
@@ -251,9 +266,11 @@ LeanForestOps.Print:= function(self)
     Print("LeanForest( ", self.list, " )");
 end;
 
-
-# the value of a forest is the list of tops of its trees.
-# this produces the composition corresponding to the source of the forest.
+#############################################################################
+##
+##  the top of a forest is the list of tops of its trees.
+##  this produces the composition corresponding to the source of the forest.
+##
 LeanForestOps.Top:= function(self)
     return List(self.list, t-> Call(t, "Top"));
 end;
