@@ -1441,6 +1441,160 @@ end;
 
 #############################################################################
 ##
+##  Street Algebra
+##
+
+#############################################################################
+##  
+#O  StreetAlgebraEltOps . . . . . . . . . . . . . . . . operations record.
+##  
+##  A joint is a linear combination of traversals of a partitions quiver.
+##
+StreetAlgebraEltOps:= OperationsRecord("StreetAlgebraEltOps");
+
+#############################################################################
+##  
+#C  StreetAlgebraElt( <coef>, <elts> ) . . . . . . . . . . .  constructor.
+##  
+##  <#GAPDoc Label="StreetAlgebraElt">
+##  <ManSection>
+##  <Func Name="StreetAlgebraElt" Arg="n"/>
+##  <Func Name="StreetAlgebraElt" Arg="l, r"/>
+##  <Returns>
+##    a new joint with components ...
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for quiver elements ...
+##  <Example>
+##  gap> StreetAlgebraElt([1], [[3, 4]]);
+##  StreetAlgebraElt([1], [[3, 4]])
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+StreetAlgebraElt:= function(coef, elts)
+    local self;
+    self:= rec(coef:= coef, elts:= elts);
+    self.isStreetAlgebraElt:= true;
+    self.operations:= StreetAlgebraEltOps;
+    return self;
+end;
+
+
+#############################################################################
+##
+#F  IsStreetAlgebraElt( <obj> )  . . . . . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsStreetAlgebraElt">
+##  <ManSection>
+##  <Func Name="IsStreetAlgebraElt" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a joinnt and <K>false</K>
+##    otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsStreetAlgebraElt:= function(obj)
+    return IsRec(obj) and IsBound(obj.isStreetAlgebraElt) and obj.isStreetAlgebraElt = true;
+end;
+
+#############################################################################
+StreetAlgebraEltOps.Print:= function(self)
+    Print("StreetAlgebraElt( ", self.coef, ", ", self.elts, " )");
+end;
+
+# how to normalize a list e of elements with coefficients c
+StreetAlgebraEltOps.Normalize:= function(self)
+    local   e,  c,  eee,  ccc,  i,  elt,  coe;
+
+    e:= self.elts;
+    c:= self.coef;
+    SortParallel(e, c);
+    eee:= [];
+    ccc:= [];
+    i:= 1;
+    while i <= Length(e) do
+        elt:= e[i];
+        coe:= c[i];
+        i:= i+1;
+        while i <= Length(e) and e[i] = elt do
+            coe:= coe + c[i];
+            i:= i+1;
+        od;
+        if coe <> 0*coe then
+            Add(eee, elt);
+            Add(ccc, coe);
+        fi;
+    od;
+    
+    # copy normalized lists back into originals.
+    self.elts:= eee;
+    self.coef:= ccc;
+end;
+    
+
+
+#############################################################################
+StreetAlgebraEltOps.\*:= function(l, r)
+    local   c,  e,  i,  j,  a,  s,  pro;
+ 
+    if IsStreetAlgebraElt(l) then
+        if IsStreetAlgebraElt(r) then
+            c:= [];
+            e:= [];
+            for i in [1..Length(l.elts)] do
+                for j in [1..Length(r.elts)] do
+                    a:=  l.coef[i] * r.coef[j];
+                    for s in l.elts[i] * r.elts[j] do
+                        Add(c, a);
+                        Add(e, s);
+                    od;
+                od;
+            od;
+            pro:= StreetAlgebraElt(c, e);
+        else
+            pro:= StreetAlgebraElt(l.coef * r, l.elts);
+        fi;
+    else
+        pro:= StreetAlgebraElt(l * r.coef, r.elts);
+    fi;
+    
+    Normalize(pro);
+    return pro;
+end;    
+
+#############################################################################
+StreetAlgebraEltOps.\+:= function(l, r)
+    local   q,  sum;
+    
+    if IsStreetAlgebraElt(l) then
+        if IsStreetAlgebraElt(r) then
+            sum:= StreetAlgebraElt(Concatenation(l.coef, r.coef), 
+                          Concatenation(l.elts, r.elts));
+            Normalize(sum);
+            return sum;
+        else
+            Error("<r> is not a StreetAlgebraElt");
+        fi;
+    else
+        Error("<l> is not a StreetAlgebraElt");
+    fi;
+end;    
+
+
+#############################################################################
+StreetAlgebraEltOps.\-:= function(l, r)
+    return l + (-1)*r;
+end;
+
+
+
+
+
+#############################################################################
+##
 #E  Emacs  . . . . . . . . . . . . . . . . . . . . . . local emacs variables.
 ##
 ##  Local Variables:
