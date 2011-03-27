@@ -16,8 +16,6 @@
 
 <#Include Label="Intro:Shapes">
 
-The functions described here are in the file <F>shapes.g</F>.
-
 <Section>
 <Heading>Shape Constructors and Methods.</Heading>
 
