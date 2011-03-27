@@ -2253,6 +2253,44 @@ QMatNrPathsQuiver:= function(quiver, q)
     return mat;
 end;
 
+#############################################################################
+##
+##  report on all redundant relations.
+##
+##  a redundant relation between s and t is an essential relation
+##  between i and j, extended by a path a from s to i on the left,
+##  and a path b from j to t on the right, in all possible ways.
+##  
+RedundantRelations:= function(quiver, s, t)
+    local   rel,  inf,  i,  a,  j,  b,  poss,  r,  new;
+    
+    rel:= [];
+    inf:= [];
+
+    for i in [s..t] do
+        for a in quiver.pathmat[i][s].path do
+            for j in [i..t]  do
+                for b in quiver.pathmat[t][j].path do
+                    poss:= List(quiver.pathmat[j][i].path,
+                                x-> Position(quiver.pathmat[t][s].path, Concatenation(b, x, a)));
+                    for r in quiver.pathmat[j][i].relation do
+                        new:= List(quiver.pathmat[t][s].path, x-> 0);
+                        new{poss}:= r;
+                        Add(rel, new);
+                        Add(inf, [i, j, a, b]);
+                        Print(".\c");
+                    od;
+                    Print(poss, "\n");
+                od;
+            od;
+        od;
+    od;
+    
+    return rec(rel:= rel, inf:= inf);
+end;
+
+      
+
 
 #############################################################################
 ##
