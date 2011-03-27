@@ -4,5 +4,7 @@
 *.ilg
 *.log
 *.toc
+*.tgz
 doc/*.txt
 doc/*.html
+doc/manual.six
