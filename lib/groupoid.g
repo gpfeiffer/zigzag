@@ -27,6 +27,25 @@ GroupoidOps:= OperationsRecord("GroupoidOps", DomainOps);
 ##  
 #C  Groupoid( <W> ) . . . . . . . . . . . . . . . . . . . . . .  constructor.
 ##  
+##  <#GAPDoc Label="Groupoid">
+##  <ManSection>
+##  <Func Name="Groupoid" Arg="W"/>
+##  <Returns>
+##    a new groupoid, an object that represents the groupoid of <A>W</A>. 
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for groupoids.  It constructs and
+##  returns the groupoid of <A>W</A>.  Here <A>W</A> is a finite
+##  Coxeter group of rank.
+##  <Example>
+##  gap> W:= CoxeterGroup("E", 6);; 
+##  gap> Groupoid(W);
+##  Groupoid( CoxeterGroup("E", 6) )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 Groupoid:= function(W)
     return 
       rec(
@@ -46,7 +65,7 @@ end;
 ##  <ManSection>
 ##  <Func Name="IsGroupoid" Arg="obj"/>
 ##  <Returns>
-##    <K>true</K> if <A>obj</A> is a shape and <K>false</K> otherwise.
+##    <K>true</K> if <A>obj</A> is a groupoid and <K>false</K> otherwise.
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -76,6 +95,29 @@ GroupoidEltOps:= OperationsRecord("GroupoidEltOps");
 ##  
 #C  GroupoidElt( <W>, <elt> ) . . . . . . . . . . . . . . . . .  constructor.
 ##  
+##  <#GAPDoc Label="GroupoidElt">
+##  <ManSection>
+##  <Func Name="GroupoidElt" Arg="W, elt"/>
+##  <Returns>
+##    a new groupoid element.
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for groupoid elements.  It constructs and
+##  returns the groupoid element <A>elt</A> of <A>W</A>.  Here <A>W</A> is 
+##  a finite Coxeter, and <A>elt</A> is the pair <M>(J, x)</M>, where 
+##  <M>J</M> is a subset of <M>S</M> and <M>x \in X_J</M> is such that
+##  <M>J^x</M> is a subset of <M>S</M>, too.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> J:= [1, 2];;
+##  gap> GroupoidElt(W, [J, LongestElement(W, J) * LongestElement(W, [1..3])]);
+##  GroupoidElt( CoxeterGroup("A", 3), 
+##  [ [ 1, 2 ], ( 1, 2, 3,12)( 4, 5,10,11)( 6, 7, 8, 9) ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 GroupoidElt:= function(W, elt)
     return 
       rec(
@@ -142,23 +184,48 @@ end;
 
 #############################################################################
 ##
+#F  CategoryElt( <gelt> )
+##
 ##  find a reduced expression and turn into category element.
 ##
+##  <#GAPDoc Label="CategoryElt(gelt)">
+##  <ManSection>
+##  <Meth Name="CategoryElt" Arg="gelt" Label="for groupoid elements"/>
+##  <Returns>
+##  a category element corresponding to the groupoid element <A>gelt</A>.
+##  </Returns>
+##  <Description>
+##  Each groupoid element is a product of longest coset representatives.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> J:= [1, 2];;
+##  gap> GroupoidElt(W, [J, LongestElement(W, J) * LongestElement(W, [1..3])]);
+##  GroupoidElt( CoxeterGroup("A", 3), 
+##  [ [ 1, 2 ], ( 1, 2, 3,12)( 4, 5,10,11)( 6, 7, 8, 9) ] )
+##  gap> Call(last, "CategoryElt");
+##  CategoryElt( CoxeterGroup("A", 3), [ [ 1, 2 ], [ 3 ] ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
 GroupoidEltOps.CategoryElt:= function(self)
-    local   seq,  J,  d,  des,  L,  a;
+    local   seq,  W,  J,  d,  des,  L,  a;
     
     seq:= [];
+    W:= self.W;
     J:= self.elt[1];
     d:= self.elt[2];
     while d <> () do
-        des:= LeftDescentSet(self.W, d);
+        #FIXME: SmallestLeftDescent would suffice here.
+        des:= LeftDescentSet(W, d);
         Add(seq, des[1]);
         L:= Union(J, des{[1]});
         a:= LongestElement(W, J) * LongestElement(W, L);
         J:= OnSets(J, a);
         d:= a^-1 * d;
     od;
-    return CategoryElt(self.W, [self.elt[1], seq]);
+    return CategoryElt(W, [self.elt[1], seq]);
 end;
 
 

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!---------------------------------------------------------------------------
 -- 
 -A  groupoid.xml                
@@ -7,3 +8,41 @@
 -Y  Copyright (C) 2010, Götz Pfeiffer 
 --
 -->
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:groupoid">
+<Heading>Groupoid and Groupoid Elements.</Heading>
+
+<#Include Label="Intro:Groupoid">
+
+<Section>
+<Heading>Groupoid Constructors and Methods.</Heading>
+
+<#Include Label="Groupoid">
+
+<#Include Label="IsGroupoid">
+
+<!--
+<Include Label="Elements(groupoid)">
+-->
+
+</Section>
+
+<Section>
+<Heading>Groupoid Elements.</Heading>
+
+<#Include Label="GroupoidElt">
+
+<#Include Label="IsGroupoidElt">
+
+<!--
+<Include Label="Source(gelt)">
+
+<Include Label="Target(gelt)">
+-->
+
+<#Include Label="CategoryElt(gelt)">
+
+</Section>
+
+</Chapter>
