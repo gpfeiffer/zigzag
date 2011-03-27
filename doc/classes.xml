@@ -16,8 +16,6 @@
 
 <#Include Label="Intro:Classes">
 
-The functions described here are in the file <F>classes.g</F>.
-
 <Section>
 <Heading>Cyclic Shift Class Constructors and Methods.</Heading>
 
@@ -33,20 +31,23 @@ and work on cyclic shift classes.
 <Section Label="Sect:CyclicShiftsAsSets">
 <Heading>Set Methods for Cylic Shift Classes.</Heading>
 
-Cyclic shift classes are domains and therefore all set theoretic functions described
-in  chapter "Domains"  are also  applicable to  shapes.   This section
-describes  which  functions  are  implemented  specially  for  cyclic shift classes.
-Functions  not  mentioned here  are  handled  by  the default  methods
-described in the respective sections of chapter "Domains".
+Cyclic shift classes are domains and therefore all set theoretic
+functions described in chapter "Domains" are also applicable to
+shapes.  This section describes which functions are implemented
+specially for cyclic shift classes.  Functions not mentioned here are
+handled by the default methods described in the respective sections of
+chapter "Domains".
 
-More precisely, every cyclic shif class has as its operations record
+More precisely, every cyclic shift class has as its operations record
 <C>CyclicShiftsOps</C> which inherits from <C>DomainOps</C>
 and overrides the methods below to make it work or to provide 
 more efficient implementations.
 
+<#Include Label="Representative(shifts)">
+
 <#Include Label="Elements(shifts)">
 
-<#Include Label="Representative(shifts)">
+<#Include Label="Iterator(shifts)">
 
 </Section>
 
@@ -108,6 +109,7 @@ present.
 <Item> is the set of elements of  the cyclic shift class and can be obtained from the
         method <Ref Meth="Elements" Label="for cyclic shift classes"/>.
 </Item>
+<!--
 <Mark><C>edges</C>:</Mark>
 <Item> is the  set of edges  of the shape  and can be obtained through the
         method <Ref Meth="Edges" Label="for shapes"/>.
@@ -116,11 +118,14 @@ present.
 <Item> is  the transversal of  the shape  and can  be obtained  through the
         method <Ref Meth="Transversal" Label="for shapes"/>.
 </Item>
+-->
 </List>
 
+<!--
 <#Include Label="Edges(shape)">
 
 <#Include Label="Transversal(shape)">
+-->
 
 </Section>
 

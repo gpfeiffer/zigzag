@@ -4,14 +4,23 @@
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2010  Götz Pfeiffer
+#Y  Copyright (C) 2011  Götz Pfeiffer
 ##
 ##  This file contains routines for conjugacy classes of Coxeter groups.
 ##
 ##  <#GAPDoc Label="Intro:Classes">
 ##    The conjugacy classes of a finite Coxeter group <M>W</M> are naturally
-##    partitioned into cyclic shift classes ...
-##      
+##    partitioned into cyclic shift classes.<P/>
+##
+##    The stabilizer in <M>W</M> of the fixed point space of an element
+##    <M>w \in W</M> is a parabolic subgroup <M>P</M> of <M>W</M>.
+##    According to Konvalinka,  Pfeiffer and Röver <Cite Key="KoPfRo2011"/>,
+##    the centralizer of <M>w</M> in <M>P</M> usually has a complement
+##    (isomorphic to the complement of <M>P</M> in its normalizer; see 
+##    <Ref Func="NormalizerComplement"/>) in the full centralizer of
+##    <M>w</M> in <M>W</M>.  This complement, if it exists, is computed by
+##    the function <Ref Func="CentralizerComplement"/>.<P/>
+##    
 ##    The functions described in this chapter are implemented in the file
 ##    <F>classes.g</F>.  
 ##  <#/GAPDoc>
@@ -45,8 +54,11 @@ CyclicShiftsOps:= OperationsRecord("CyclicShiftsOps", DomainOps);
 ##  Coxeter group and <A>w</A> is an element of
 ##  <M>W</M>.
 ##  <Example>
-##  gap> W:= CoxeterGroup("E", 6);; 
-##  ...
+##  gap> W:= CoxeterGroup("A", 4);
+##  CoxeterGroup("A", 4)
+##  gap> cyc:=  CyclicShifts(W, PermCoxeterWord(W, [1..4]));
+##  CyclicShifts( CoxeterGroup("A", 4), ( 1,20, 4, 3, 2)( 5,19,18, 7, 6)
+##  ( 8,17,16,15, 9)(10,14,13,12,11) )
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -114,8 +126,13 @@ end;
 ##  as <C>CyclicShifts(W, w)</C> (see <Ref Label="CyclicShifts"/>) will be its
 ##  initial element <C>w</C>.
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 3);;
-##  gap> ...
+##  gap> W:= CoxeterGroup("A", 4);
+##  CoxeterGroup("A", 4)
+##  gap> cyc:=  CyclicShifts(W, PermCoxeterWord(W, [1..4]));
+##  CyclicShifts( CoxeterGroup("A", 4), ( 1,20, 4, 3, 2)( 5,19,18, 7, 6)
+##  ( 8,17,16,15, 9)(10,14,13,12,11) )
+##  gap> Representative(cyc);
+##  ( 1,20, 4, 3, 2)( 5,19,18, 7, 6)( 8,17,16,15, 9)(10,14,13,12,11)
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -144,10 +161,20 @@ end;
 ##  The cyclic shift class of <M>w</M> in <M>W</M> consists of all cyclic 
 ##  shifts of $<M>w</M>.
 ##
-##  As a side effect, <F>Elements</F> also computes lists of elements immediately below or above this cyclic shift class, which can be used to decide whether tjis is a class of elements of minimal or of maximal length, or to find conjugate elements of minimal or maximal length, see ... below.
+##  As a side effect, <C>Elements</C> also computes lists of elements
+##  immediately below or above this cyclic shift class, which can be used
+##  to decide whether this is a class of elements of minimal or of maximal
+##  length, or to find conjugate elements of minimal or maximal length,
+##  see ... below.
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 3);;
-##  gap> Elements(...);
+##  gap> W:= CoxeterGroup("A", 4);
+##  CoxeterGroup("A", 4)
+##  gap> cyc:=  CyclicShifts(W, PermCoxeterWord(W, [1..4]));
+##  CyclicShifts( CoxeterGroup("A", 4), ( 1,20, 4, 3, 2)( 5,19,18, 7, 6)
+##  ( 8,17,16,15, 9)(10,14,13,12,11) )
+##  gap> List(Elements(cyc), x-> CoxeterWord(W, x));
+##  [ [ 4, 3, 2, 1 ], [ 3, 2, 1, 4 ], [ 2, 1, 4, 3 ], [ 2, 1, 3, 4 ], 
+##    [ 1, 4, 3, 2 ], [ 1, 3, 2, 4 ], [ 1, 2, 4, 3 ], [ 1, 2, 3, 4 ] ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
