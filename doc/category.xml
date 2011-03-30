@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!---------------------------------------------------------------------------
 -- 
 -A  category.xml                
@@ -7,3 +8,41 @@
 -Y  Copyright (C) 2010, Götz Pfeiffer 
 --
 -->
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:category">
+<Heading>Category and Category Elements.</Heading>
+
+<#Include Label="Intro:Category">
+
+<Section>
+<Heading>Category Constructors and Methods.</Heading>
+
+<#Include Label="Category">
+
+<#Include Label="IsCategory">
+
+<!--
+<Include Label="Elements(category)">
+-->
+
+</Section>
+
+<Section>
+<Heading>Category Elements.</Heading>
+
+<#Include Label="CategoryElt">
+
+<#Include Label="IsCategoryElt">
+
+<!--
+<Include Label="Source(celt)">
+
+<Include Label="Target(celt)">
+-->
+
+<#Include Label="GroupoidElt(celt)">
+
+</Section>
+
+</Chapter>

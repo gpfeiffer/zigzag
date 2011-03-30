@@ -13,7 +13,7 @@
 ##    multiplication ...
 ##  <#/GAPDoc>
 ##
-##  ??? better name than Category
+##  FIXME??? better name than Category
 ##
 
 
@@ -27,6 +27,25 @@ CategoryOps:= OperationsRecord("CategoryOps", DomainOps);
 ##  
 #C  Category( <W> ) . . . . . . . . . . . . . . . . . . . . . .  constructor.
 ##  
+##  <#GAPDoc Label="Category">
+##  <ManSection>
+##  <Func Name="Category" Arg="W"/>
+##  <Returns>
+##    a new category, an object that represents the category of <A>W</A>. 
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for categories.  It constructs and
+##  returns the category of <A>W</A>.  Here <A>W</A> is a finite
+##  Coxeter group of rank.
+##  <Example>
+##  gap> W:= CoxeterGroup("E", 6);; 
+##  gap> Category(W);
+##  Category( CoxeterGroup("E", 6) )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 Category:= function(W)
     return 
       rec(
@@ -76,6 +95,27 @@ CategoryEltOps:= OperationsRecord("CategoryEltOps");
 ##  
 #C  CategoryElt( <W>, <elt> ) . . . . . . . . . . . . . . . . .  constructor.
 ##  
+##  <#GAPDoc Label="CategoryElt">
+##  <ManSection>
+##  <Func Name="CategoryElt" Arg="W, elt"/>
+##  <Returns>
+##    a new category element.
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for category elements.  It constructs and
+##  returns the category element <A>elt</A> of <A>W</A>.  Here <A>W</A> is 
+##  a finite Coxeter, and <A>elt</A> is the pair <M>(J, x)</M>, where 
+##  <M>J</M> is a subset of <M>S</M> and <M>x \in X_J</M> is such that
+##  <M>J^x</M> is a subset of <M>S</M>, too.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> J:= [1, 2];;
+##  gap> CategoryElt(W, [J, [1, 2, 3]]);
+##  CategoryElt( CoxeterGroup("A", 3), [ [ 1, 2 ], [ 1, 2, 3 ] ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 CategoryElt:= function(W, elt)
     return 
       rec(
@@ -127,6 +167,31 @@ CategoryEltOps.Target:= function(self)
 end;
 
 #############################################################################
+##
+#F  GroupoidElt( <celt> )
+##
+##  find a reduced expression and turn into groupoid element.
+##
+##  <#GAPDoc Label="GroupoidElt(celt)">
+##  <ManSection>
+##  <Meth Name="GroupoidElt" Arg="celt" Label="for category elements"/>
+##  <Returns>
+##  a groupoid element corresponding to the category element <A>celt</A>.
+##  </Returns>
+##  <Description>
+##  Each category element is a product of longest coset representatives.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 3);;
+##  gap> J:= [1, 2];;
+##  gap> CategoryElt(W, [J, [3, 2, 1]]);
+##  CategoryElt( CoxeterGroup("A", 3), [ [ 1, 2 ], [ 3, 2, 1 ] ] )
+##  gap> Call(last, "GroupoidElt");
+##  GroupoidElt( CoxeterGroup("A", 3), [ [ 1, 2 ], () ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
 CategoryEltOps.GroupoidElt:= function(self)
     local   w,  d,  J,  s,  L,  a;
     
