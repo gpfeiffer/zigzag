@@ -297,7 +297,7 @@ end;
 ##    initial vertex of a directed edge with label <C>k</C>.  In that case
 ##    the record <C>r</C> has two components, <C>v</C> for the (address of
 ##    the) terminal vertex of the edge and <C>d</C> for the conjugating
-##    element $d_J^M = w_J w_M \in W$ that maps the intial vertex to the
+##    element <M>d_J^M = w_J w_M \in W</M> that maps the intial vertex to the
 ##    terminal vertex.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 2);;
@@ -483,7 +483,7 @@ end;
 ##    and <C>false</C> otherwise.
 ##  </Returns>
 ##  <Description>
-##    According to Pfeiffer and R&ouml;hrle <Cite Key="PfeifferRoehrle2005"/>,
+##    According to Pfeiffer and Röhrle <Cite Key="PfeifferRoehrle2005"/>,
 ##    a parabolic subgroup <M>W_J</M> of <M>W</M> is bulky in <M>W</M> if its
 ##    normalizer complement <M>N_J</M> (see <Ref Label="NormalizerComplement"/>
 ##    acts trivially on <M>J</M> by conjugation, i.e., if <M>[W_J, N_J] = 1</M>.
@@ -516,6 +516,24 @@ end;
 ##    Hence entire shapes are bulky or not.
 ##    <C>BulkyShapes(W)</C> computes and returns the list of bulky shapes 
 ##    of <M>W</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);
+##  CoxeterGroup("A", 5)
+##  gap> BulkyShapes(W);
+##  [ Shape( CoxeterGroup("A", 5), [  ] ), Shape( CoxeterGroup("A", 5), [ 1 ] ), 
+##    Shape( CoxeterGroup("A", 5), [ 1, 2 ] ), 
+##    Shape( CoxeterGroup("A", 5), [ 1, 2, 4 ] ), 
+##    Shape( CoxeterGroup("A", 5), [ 1, 2, 3 ] ), 
+##    Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 5 ] ), 
+##    Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 4 ] ), 
+##    Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 4, 5 ] ) ]
+##  gap> List(last, x-> Call(x, "Label"));
+##  [ [ 1, 1, 1, 1, 1, 1 ], [ 2, 1, 1, 1, 1 ], [ 3, 1, 1, 1 ], [ 3, 2, 1 ], 
+##    [ 4, 1, 1 ], [ 4, 2 ], [ 5, 1 ], [ 6 ] ]
+##  </Example>
+##    In a Coxeter group of type <M>A_{n-1}</M>, the bulky shapes correspond to
+##    those partitions of <M>n</M> that have no repeated parts larger 
+##    than <M>1</M>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -572,8 +590,8 @@ end;
 ##  <Meth Name="ConjugacyClasses" Arg="shape" Label="for shapes"/>
 ##  <Meth Name="ShapeOps.ConjugacyClasses" Arg="shape"/>
 ##  <Returns>
-##    the list of addresses of conjugacy classes of elements of $W$ of shape
-##    <A>shape</A>.
+##    the list of addresses of conjugacy classes of elements of <M>W</M> of
+##    shape <A>shape</A>.
 ##  </Returns>
 ##  <Description>
 ##  ...
@@ -1141,8 +1159,8 @@ end;
 ##  <Description>
 ##    An involution is called special, according to Felder and Veselov <Cite
 ##    Key="FelderVeselov2005"/>, if there is a root whose projection on the
-##    $1$-eigenspace or on the $(-1)$-eigenspace is proportional to a root
-##    contained in this eigenspace.  An alternative characterization of
+##    <M>1</M>-eigenspace or on the <M>(-1)</M>-eigenspace is proportional to
+##    a root contained in this eigenspace.  An alternative characterization of
 ##    special involutions in terms of the action of the normalizer complement
 ##    (see <Ref Func="NormalizerComplement"/> has been given by Pfeiffer and
 ##    Röhrle <Cite Key="PfeifferRoehrle2005"/>.

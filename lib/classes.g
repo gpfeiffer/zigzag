@@ -159,7 +159,7 @@ end;
 ##  <M>w = vv'</M> with <M>\ell(w) = \ell(v) + \ell(v')</M> and
 ##  <M>w' = v'v</M> with <M>\ell(w') = \ell(v') + \ell(v) = \ell(w)</M>. 
 ##  The cyclic shift class of <M>w</M> in <M>W</M> consists of all cyclic 
-##  shifts of $<M>w</M>.
+##  shifts of <M>w</M>.
 ##
 ##  As a side effect, <C>Elements</C> also computes lists of elements
 ##  immediately below or above this cyclic shift class, which can be used

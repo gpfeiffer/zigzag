@@ -1328,9 +1328,9 @@ end;
 ##  Double Coset Reps.
 ##
 ##  <#GAPDoc Label="Intro:DoubleParabolicTransversal">
-##    For subsets $J, K \subseteq S$, the set $X_{JK} = X_J \cap X_K^{-1}$ is
-##    a set of double coset representatives of the parabolic subgroups $W_J$
-##    and $W_K$ in $W$.
+##    For subsets <M>J, K \subseteq S</M>, the set <M>X_{JK} = X_J \cap
+##    X_K^{-1}</M> is a set of double coset representatives of the parabolic
+##    subgroups <M>W_J</M> and <M>W_K</M> in <M>W</M>.
 ##  <#/GAPDoc>
 
 #############################################################################
@@ -1439,9 +1439,9 @@ end;
 ##  XJKLs.
 ##
 ##  <#GAPDoc Label="Intro:XJKL">
-##    For all subsets $J, K \subseteq S$, the set $X_{JK}$ of double coset
-##    representatives is partitioned into sets $X_{JKL} = \{x \in X_{JK} :
-##    J^x \cap K = L\}$, $L \subseteq S$.
+##    For all subsets <M>J, K \subseteq S</M>, the set <M>X_{JK}</M> of
+##    double coset representatives is partitioned into sets <M>X_{JKL} = 
+##    \{x \in X_{JK} : J^x \cap K = L\}</M>, <M>L \subseteq S</M>.
 ##  <#/GAPDoc>
 
 
