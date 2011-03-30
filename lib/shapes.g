@@ -472,6 +472,26 @@ NormalizerComplement:= function(W, J)
 end;
 
 #############################################################################
+##
+#F  IsBulkyParabolic( <W>, <J> ) . . . . . . . . . . . . . . . . .  property.
+##
+##  <#GAPDoc Label="IsBulkyParabolic">
+##  <ManSection>
+##  <Func Name="IsBulkyParabolic" Arg="W, J"/>
+##  <Returns>
+##    <C>true</C> if <M>W_J</M> is a bulky parabolic subgroup of <M>W</M>, 
+##    and <C>false</C> otherwise.
+##  </Returns>
+##  <Description>
+##    According to Pfeiffer and R&ouml;hrle <Cite Key="PfeifferRoehrle2005"/>,
+##    a parabolic subgroup <M>W_J</M> of <M>W</M> is bulky in <M>W</M> if its
+##    normalizer complement <M>N_J</M> (see <Ref Label="NormalizerComplement"/>
+##    acts trivially on <M>J</M> by conjugation, i.e., if <M>[W_J, N_J] = 1</M>.
+##    <C>IsBulkyParabolic(W, J)</C> checks whether <M>W_J</M> has this property.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 IsBulkyParabolic:= function(W, J)
     local   WJ,  NJ;
     WJ:= ReflectionSubgroup(W, J);
@@ -479,6 +499,27 @@ IsBulkyParabolic:= function(W, J)
     return Size(CommutatorSubgroup(WJ, NJ)) = 1;
 end;
 
+#############################################################################
+##
+#F  BulkyShapes( <W> ) . . . . . . . . . . . . . . . . . . . .  bulky shapes.
+##
+##  <#GAPDoc Label="BulkyShapes">
+##  <ManSection>
+##  <Func Name="BulkyShapes" Arg="W"/>
+##  <Returns>
+##    the list of those shapes of <M>W</M> that consist of bulky parabolic
+##    subgroups.
+##  </Returns>
+##  <Description>
+##    A parabolic subgroup of <M>W</M> is bulky in <M>W</M> if and only if
+##    all of its conjugates are bulky (see <Ref Label="IsBulkyParabolic"/>).
+##    Hence entire shapes are bulky or not.
+##    <C>BulkyShapes(W)</C> computes and returns the list of bulky shapes 
+##    of <M>W</M>.
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 BulkyShapes:= function(W)
     local   bulky,  sh;
     bulky:= [];

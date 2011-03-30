@@ -129,7 +129,8 @@ In this section I describe some methods for shapes.
 <#Include Label="Relation(shape)">
 
 <#Include Label="NormalizerComplement">
-
+<#Include Label="IsBulkyParabolic">
+<#Include Label="BulkyShapes">
 <#Include Label="ConjugacyClasses(shape)">
 
 </Section>
