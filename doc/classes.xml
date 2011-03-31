@@ -107,7 +107,7 @@ present.
 </Item>
 <Mark><C>elements</C>:</Mark>
 <Item> is the set of elements of  the cyclic shift class and can be obtained from the
-        method <Ref Meth="Elements" Label="for cyclic shift classes"/>.
+        method <Ref Meth="Elements" Label="for cyclic shifts"/>.
 </Item>
 <!--
 <Mark><C>edges</C>:</Mark>

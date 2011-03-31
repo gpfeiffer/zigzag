@@ -39,6 +39,7 @@ descent.bib: ~/text/descent/descent.bib
 clean:
 	rm -fv *.aux *.log *.blg *.ilg
 	rm -fv *.bbl *.brf *.ind *.pnr *.toc *.out *.idx
+	rm -fv tempCONV.*
 
 install: zigzag.pdf
 	scp $< schmidt:www/zigzag
