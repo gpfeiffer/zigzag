@@ -36,9 +36,9 @@ end;
 ##
 ##  new data structure: SkylineA
 ##
-##  represent an element of W(A_n) as a tower, ie, a sequence of
-##  n integers tower[1] ... tower[n], with 0 <= tower[i] <= i.
-##  Here a value tower[i] = k stands for a coset rep of length k,
+##  represent an element of W(A_n) as a skyline, ie, a sequence of
+##  n integers skyline[1] ... skyline[n], with 0 <= skyline[i] <= i.
+##  Here a value skyline[i] = k stands for a coset rep of length k,
 ##  ie., s_i s_{i-1} \dotsm s_{i-k+1}, or, in terms of permutations
 ##  of n + 1 points, the cycle (i-k+1, i-k+2, ... i+1).
 ##
@@ -70,7 +70,7 @@ SkylineA:= function(list)
     return rec(
              isGroupElt:= true,
              isSkylineA:= true,
-             tower:= list,
+             skyline:= list,
              operations:= SkylineAOps);
 end;
 
@@ -90,19 +90,19 @@ end;
 #M  Print( <skyline> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
 SkylineAOps.Print:= function(self)
-    Print("SkylineA( ", self.tower, " )");
+    Print("SkylineA( ", self.skyline, " )");
 end;
 
 
 #############################################################################
 SkylineAOps.\=:= function(l, r)
     if not IsSkylineA(r) or not IsSkylineA(l) then return false; fi;
-    return l.tower = r.tower;
+    return l.skyline = r.skyline;
 end;
 
 #############################################################################
 SkylineAOps.CoxeterLength:= function(self)
-    return Sum(self.tower);
+    return Sum(self.skyline);
 end;
 
 #############################################################################
@@ -110,8 +110,8 @@ SkylineAOps.Permutation:= function(self)
     local   perm,  i;
     
     perm:= ();
-    for i in [1..Length(self.tower)] do
-        perm:= perm * FallingSequence(i, self.tower[i]);
+    for i in [1..Length(self.skyline)] do
+        perm:= perm * FallingSequence(i, self.skyline[i]);
     od;
     return perm;
 end;
@@ -141,8 +141,8 @@ SkylineAOps.Word:= function(self)
     local   word,  i;
     
     word:= [];
-    for i in [1..Length(self.tower)] do
-        Append(word, [i, i-1 .. i - self.tower[i] + 1]);
+    for i in [1..Length(self.skyline)] do
+        Append(word, [i, i-1 .. i - self.skyline[i] + 1]);
     od;
     return word;
 end;
@@ -153,8 +153,8 @@ SkylineAOps.Descents:= function(self)
     
     old:= 0;
     des:= [];
-    for i in [1..Length(self.tower)] do
-        new:= self.tower[i];
+    for i in [1..Length(self.skyline)] do
+        new:= self.skyline[i];
         if new > old then
             Add(des, i);
         fi;
@@ -166,7 +166,7 @@ end;
 
 #############################################################################
 SkylineAOps.SmallestDescent:= function(self)
-    return PositionProperty(self.tower, x-> x > 0);
+    return PositionProperty(self.skyline, x-> x > 0);
 end;
 
 #############################################################################
@@ -179,23 +179,23 @@ SkylineAOps.\*:= function(lft, rgt)
     fi;
     
     # trivial case.
-    if rgt.tower = [] then  return lft;  fi;
+    if rgt.skyline = [] then  return lft;  fi;
     
-    # make a fresh copy of lft tower, extend if necessary.
-    product:= Copy(lft.tower);
-    Append(product, 0*[Length(lft.tower) + 1 .. Length(rgt.tower)]);
+    # make a fresh copy of lft skyline, extend if necessary.
+    product:= Copy(lft.skyline);
+    Append(product, 0*[Length(lft.skyline) + 1 .. Length(rgt.skyline)]);
     
     # loop over factors of rgt
-    for j in [1..Length(rgt.tower)] do
+    for j in [1..Length(rgt.skyline)] do
         
-        # multiply product with factor rgt.tower[j] = l
-        l:= rgt.tower[j];
+        # multiply product with factor rgt.skyline[j] = l
+        l:= rgt.skyline[j];
         m:= Length(product);
         
         while l > 0 do
             k:= product[m];
             
-            # multiply product.tower[m] = k by tower[j] = l
+            # multiply product.skyline[m] = k by skyline[j] = l
             if j > m - k + l then  # shift
                 j:= j - 1;
             elif j > m - k then    # cancel
@@ -221,7 +221,7 @@ end;
 SkylineAOps.Inverse:= function(self)
     local   inverse,  l,  n,  i,  j;
     
-    inverse:= Copy(self.tower);
+    inverse:= Copy(self.skyline);
     l:= Length(inverse);
     
     for n in [l, l-1 .. 1] do
@@ -266,9 +266,9 @@ end;
 #############################################################################
 SkylineAOps.IsDescent:= function(self, i)
     if i = 1 then
-        return self.tower[1] > 0;
+        return self.skyline[1] > 0;
     else
-        return self.tower[i] > self.tower[i-1];
+        return self.skyline[i] > self.skyline[i-1];
     fi;
 end;
 
@@ -279,13 +279,13 @@ end;
 ##
 ##  new data structure: SkylineB
 ##
-##  represent an element of W(B_n) as a tower, ie, a sequence of
-##  n integers tower[1], ..., tower[n], with -i <= tower[i] < i.
-##  Here a value tower[i] = k >=0  stands for a coset rep of length k,
+##  represent an element of W(B_n) as a skyline, ie, a sequence of
+##  n integers skyline[1], ..., skyline[n], with -i <= skyline[i] < i.
+##  Here a value skyline[i] = k >=0  stands for a coset rep of length k,
 ##  ie., s_{i-1} ... s_{i-k}, or, in terms of permutations
 ##  of 2n points, the double cycle (i-k, i-k+1, ..., i) and its
 ##  negative copy.
-##  And a value tower[i] = -(k+1) < 0 stands for a coset rep of length 2i-k,
+##  And a value skyline[i] = -(k+1) < 0 stands for a coset rep of length 2i-k,
 ##  ie., s_{i-1} ... s_{i-k} s_{i-k-1} ... s_1 t s_1 ... s_{i-k-1},
 ##  or in terms of permutations of 2n points, the long cycle
 ##  (i-k, i-k+1, ..., i, followed by the negatives in the same order)
@@ -319,7 +319,7 @@ SkylineB:= function(list)
     return rec(
              isGroupElt:= true,
              isSkylineB:= true,
-             tower:= list,
+             skyline:= list,
              operations:= SkylineBOps);
 end;
 
@@ -339,19 +339,19 @@ end;
 #M  Print( <skyline> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
 SkylineBOps.Print:= function(self)
-    Print("SkylineB( ", self.tower, " )");
+    Print("SkylineB( ", self.skyline, " )");
 end;
 
 
 #############################################################################
 SkylineBOps.\=:= function(l, r)
     if not IsSkylineB(r) or not IsSkylineB(l) then return false; fi;
-    return l.tower = r.tower;
+    return l.skyline = r.skyline;
 end;
 
 #############################################################################
 SkylineBOps.CoxeterLength:= function(self)
-    return Sum([1..Length(self.tower)], i-> self.tower[i] mod (2*i));
+    return Sum([1..Length(self.skyline)], i-> self.skyline[i] mod (2*i));
 end;
 
 #############################################################################
@@ -362,8 +362,8 @@ SkylineBOps.Word:= function(self)
     local   word,  i,  k;
     
     word:= [];
-    for i in [1..Length(self.tower)] do
-        k:= self.tower[i];
+    for i in [1..Length(self.skyline)] do
+        k:= self.skyline[i];
         if k < 0 then
             Append(word, [i-1, i-2 .. 0]);
             Append(word, [1..i+k]);
@@ -379,7 +379,7 @@ end;
 ##  utility functions.
 ##
 
-# how to turn tower[i] = -(k+1) < 0 into a permutation:
+# how to turn skyline[i] = -(k+1) < 0 into a permutation:
 # the long cycle (i-k, i-k+1, ..., i, followed by the negatives in the same order)
 SkylineBOps.permN:= function(i, k)
     local   lis;
@@ -392,7 +392,7 @@ SkylineBOps.permN:= function(i, k)
     return PermList(lis);
 end;
     
-# how to turn tower[i] = k >= 0 into a permutation:
+# how to turn skyline[i] = k >= 0 into a permutation:
 # the double cycle (i-k, i-k+1, ..., i) and its negative copy
 SkylineBOps.permP:= function(i, k)
     local   lis;
@@ -416,8 +416,8 @@ SkylineBOps.Permutation:= function(self)
     local   perm,  i,  k;
     
     perm:= ();
-    for i in [1..Length(self.tower)] do
-        k:= self.tower[i];
+    for i in [1..Length(self.skyline)] do
+        k:= self.skyline[i];
         if k < 0 then
             perm:= perm * SkylineBOps.permN(i, -k-1);
         else
@@ -462,17 +462,17 @@ SkylineBOps.\*:= function(lft, rgt)
     fi;
     
     # trivial case.
-    if rgt.tower = [] then  return lft;  fi;
+    if rgt.skyline = [] then  return lft;  fi;
     
-    # make a fresh copy of lft tower, extend if necessary.
-    product:= Copy(lft.tower);
-    Append(product, 0*[Length(lft.tower) + 1 .. Length(rgt.tower)]);
+    # make a fresh copy of lft skyline, extend if necessary.
+    product:= Copy(lft.skyline);
+    Append(product, 0*[Length(lft.skyline) + 1 .. Length(rgt.skyline)]);
     
     # loop over factors of rgt
-    for j in [1..Length(rgt.tower)] do
+    for j in [1..Length(rgt.skyline)] do
         
-        # multiply product with factor rgt.tower[j] = l
-        l:= rgt.tower[j];
+        # multiply product with factor rgt.skyline[j] = l
+        l:= rgt.skyline[j];
         
         # adjust possible sign
         if l < 0 then
@@ -486,7 +486,7 @@ SkylineBOps.\*:= function(lft, rgt)
         m:= Length(product);
         while l > 0 or del = -1 do
             
-            # multiply product.tower[m] = k by tower[j] = l
+            # multiply product.skyline[m] = k by skyline[j] = l
             k:= product[m];
             
             # adjust possible sign
@@ -546,7 +546,7 @@ end;
 SkylineBOps.Inverse:= function(self)
     local   inverse,  l,  n,  i,  j,  new;
     
-    inverse:= Copy(self.tower);
+    inverse:= Copy(self.skyline);
     l:= Length(inverse);
     
     for n in [l, l-1 .. 1] do
@@ -585,9 +585,9 @@ SkylineBOps.Descents:= function(self)
     
     old:= 0;
     des:= [];
-    n:= Length(self.tower);
+    n:= Length(self.skyline);
     for i in [1..n] do
-        new:= self.tower[i];
+        new:= self.skyline[i];
         if new < 0 then
             if old >= 0 then
                 Add(des, i-1);
@@ -611,19 +611,19 @@ end;
 
 #############################################################################
 SkylineBOps.SmallestDescent:= function(self)
-    return PositionProperty(self.tower, x-> x <> 0) - 1;
+    return PositionProperty(self.skyline, x-> x <> 0) - 1;
 end;
 
     
 #############################################################################
 SkylineBOps.IsDescent:= function(self, i)
     if i = 0 then
-        return self.tower[1] <> 0;
+        return self.skyline[1] <> 0;
     else
-        if self.tower[i+1] < 0 then
-            return self.tower[i] >= 0 or self.tower[i+1] >= self.tower[i];
+        if self.skyline[i+1] < 0 then
+            return self.skyline[i] >= 0 or self.skyline[i+1] >= self.skyline[i];
         else
-            return self.tower[i] >= 0 and self.tower[i+1] > self.tower[i];
+            return self.skyline[i] >= 0 and self.skyline[i+1] > self.skyline[i];
         fi;
     fi;
 end;
@@ -633,13 +633,13 @@ end;
 ##
 ##  new data structure: SkylineD
 ##
-##  represent an element of W(D_n) as a tower, ie, a sequence of
-##  n integers tower[1], ..., tower[n-1], with -i-1 <= tower[i] <= i.
-##  Here a value tower[i] = k >=0  stands for a coset rep of length k,
+##  represent an element of W(D_n) as a skyline, ie, a sequence of
+##  n integers skyline[1], ..., skyline[n-1], with -i-1 <= skyline[i] <= i.
+##  Here a value skyline[i] = k >=0  stands for a coset rep of length k,
 ##  ie., s_{i} ... s_{i-k+1}, or, in terms of permutations
 ##  of 2n points, the double cycle (i-k, i-k+1, ..., i) and its
 ##  negative copy.
-##  And a value tower[i] = -(k+1) < 0 stands for a coset rep of length 2i-k,
+##  And a value skyline[i] = -(k+1) < 0 stands for a coset rep of length 2i-k,
 ##  ie., s_{i} ... s_{i-k} s_{i-k-1} ... s_2 u s_1 ... s_{i-k-1},
 ##  or in terms of permutations of 2n points, the long cycle
 ##  (i-k, i-k+1, ..., i, followed by the negatives in the same order)
@@ -673,7 +673,7 @@ SkylineD:= function(list)
     return rec(
              isGroupElt:= true,
              isSkylineD:= true,
-             tower:= list,
+             skyline:= list,
              operations:= SkylineDOps);
 end;
 
@@ -693,19 +693,19 @@ end;
 #M  Print( <skyline> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
 ##  
 SkylineDOps.Print:= function(self)
-    Print("SkylineD( ", self.tower, " )");
+    Print("SkylineD( ", self.skyline, " )");
 end;
 
 
 #############################################################################
 SkylineDOps.\=:= function(l, r)
     if not IsSkylineD(r) or not IsSkylineD(l) then return false; fi;
-    return l.tower = r.tower;
+    return l.skyline = r.skyline;
 end;
 
 #############################################################################
 SkylineDOps.CoxeterLength:= function(self)
-    return Sum([1..Length(self.tower)], i-> self.tower[i] mod (2*i+1));
+    return Sum([1..Length(self.skyline)], i-> self.skyline[i] mod (2*i+1));
 end;
 
 #############################################################################
@@ -716,8 +716,8 @@ SkylineDOps.Word:= function(self)
     local   word,  i,  k;
     
     word:= [];
-    for i in [1..Length(self.tower)] do
-        k:= self.tower[i];
+    for i in [1..Length(self.skyline)] do
+        k:= self.skyline[i];
         if k < 0 then
             Append(word, [i, i-1 .. 2]);
             Append(word, [0 .. i+k+1]);
@@ -733,7 +733,7 @@ end;
 ##  utility functions.
 ##
 
-# how to turn tower[i] = -(k+1) < 0 into a permutation:
+# how to turn skyline[i] = -(k+1) < 0 into a permutation:
 # the long cycle (1,-1)(i-k+1, i-k+2, ..., i+1, followed by the negatives in the same order)
 SkylineDOps.permN:= function(i, k)
     local   lis;
@@ -746,7 +746,7 @@ SkylineDOps.permN:= function(i, k)
     return (1,2)*PermList(lis);
 end;
     
-# how to turn tower[i] = k >= 0 into a permutation:
+# how to turn skyline[i] = k >= 0 into a permutation:
 # the double cycle (i-k+1, i-k+2, ..., i+1) and its negative copy
 SkylineDOps.permP:= function(i, k)
     local   lis;
@@ -770,8 +770,8 @@ SkylineDOps.Permutation:= function(self)
     local   perm,  i,  k;
     
     perm:= ();
-    for i in [1..Length(self.tower)] do
-        k:= self.tower[i];
+    for i in [1..Length(self.skyline)] do
+        k:= self.skyline[i];
         if k < 0 then
             perm:= perm * SkylineDOps.permN(i, -k-1);
         else
@@ -816,23 +816,23 @@ SkylineDOps.\*:= function(lft, rgt)
     fi;
     
     # trivial case.
-    if rgt.tower = [] then  return lft;  fi;
+    if rgt.skyline = [] then  return lft;  fi;
     
-    # make a fresh copy of lft tower, extend if necessary.
-    product:= Copy(lft.tower);
-    Append(product, 0*[Length(lft.tower) + 1 .. Length(rgt.tower)]);
+    # make a fresh copy of lft skyline, extend if necessary.
+    product:= Copy(lft.skyline);
+    Append(product, 0*[Length(lft.skyline) + 1 .. Length(rgt.skyline)]);
     
     # loop over factors of rgt
-    for j in [1..Length(rgt.tower)] do
+    for j in [1..Length(rgt.skyline)] do
         
-        # multiply product with factor rgt.tower[j] = l
-        l:= rgt.tower[j];
+        # multiply product with factor rgt.skyline[j] = l
+        l:= rgt.skyline[j];
         n:= Length(product);
         
         while l <> 0 do
             k:= product[n];
             
-            # multiply product.tower[n] = k by tower[j] = l
+            # multiply product.skyline[n] = k by skyline[j] = l
             if l < 0 then
                 l:= -l-1;
                 if k < 0 then
@@ -906,17 +906,17 @@ SkylineDOps.\*:= function(lft, rgt)
     fi;
     
     # trivial case.
-    if rgt.tower = [] then  return lft;  fi;
+    if rgt.skyline = [] then  return lft;  fi;
     
-    # make a fresh copy of lft tower, extend if necessary.
-    product:= Copy(lft.tower);
-    Append(product, 0*[Length(lft.tower) + 1 .. Length(rgt.tower)]);
+    # make a fresh copy of lft skyline, extend if necessary.
+    product:= Copy(lft.skyline);
+    Append(product, 0*[Length(lft.skyline) + 1 .. Length(rgt.skyline)]);
     
     # loop over factors of rgt
-    for j in [1..Length(rgt.tower)] do
+    for j in [1..Length(rgt.skyline)] do
         
-        # multiply product with factor rgt.tower[j] = l
-        l:= rgt.tower[j];
+        # multiply product with factor rgt.skyline[j] = l
+        l:= rgt.skyline[j];
         
         m:= Length(product);
         
@@ -924,7 +924,7 @@ SkylineDOps.\*:= function(lft, rgt)
         while l <> 0 and m > 0 do
             k:= product[m];
             
-            # multiply product.tower[m] = k by tower[j] = l
+            # multiply product.skyline[m] = k by skyline[j] = l
             if l < 0 then
                 del:= -1;
                 l:= -l-1;
@@ -1033,17 +1033,17 @@ SkylineDOps.\*:= function(lft, rgt)
     fi;
     
     # trivial case.
-    if rgt.tower = [] then  return lft;  fi;
+    if rgt.skyline = [] then  return lft;  fi;
     
-    # make a fresh copy of lft tower, extend if necessary.
-    product:= Copy(lft.tower);
-    Append(product, 0*[Length(lft.tower) + 1 .. Length(rgt.tower)]);
+    # make a fresh copy of lft skyline, extend if necessary.
+    product:= Copy(lft.skyline);
+    Append(product, 0*[Length(lft.skyline) + 1 .. Length(rgt.skyline)]);
     
     # loop over factors of rgt
-    for j in [1..Length(rgt.tower)] do
+    for j in [1..Length(rgt.skyline)] do
         
-        # multiply product with factor rgt.tower[j] = l
-        l:= rgt.tower[j];
+        # multiply product with factor rgt.skyline[j] = l
+        l:= rgt.skyline[j];
         if l < 0 then
             del:= -1;
             l:= -l-1;
@@ -1067,7 +1067,7 @@ SkylineDOps.\*:= function(lft, rgt)
                 eps:= -eps;
             fi;
                         
-            # multiply product.tower[m] = k by tower[j] = l
+            # multiply product.skyline[m] = k by skyline[j] = l
             if j > m - k + l then  # shift
                 j:= j - 1;
             elif j > m - k then    # cancel
@@ -1121,7 +1121,7 @@ end;
 SkylineDOps.Inverse:= function(self)
     local   inverse,  l,  n,  k,  j,  new;
     
-    inverse:= Copy(self.tower);
+    inverse:= Copy(self.skyline);
     l:= Length(inverse);
     
     for n in [l, l-1 .. 1] do
@@ -1177,9 +1177,9 @@ SkylineDOps.Descents:= function(self)
     
     old:= 0;
     des:= [];
-    n:= Length(self.tower);
+    n:= Length(self.skyline);
     for i in [1..n] do
-        new:= self.tower[i];
+        new:= self.skyline[i];
         if new < 0 then
             if old >= 0 then
                 Add(des, i-1);
@@ -1203,19 +1203,19 @@ end;
 
 #############################################################################
 SkylineDOps.SmallestDescent:= function(self)
-    return PositionProperty(self.tower, x-> x <> 0) - 1;
+    return PositionProperty(self.skyline, x-> x <> 0) - 1;
 end;
 
     
 #############################################################################
 SkylineDOps.IsDescent:= function(self, i)
     if i = 0 then
-        return self.tower[1] <> 0;
+        return self.skyline[1] <> 0;
     else
-        if self.tower[i+1] < 0 then
-            return self.tower[i] >= 0 or self.tower[i+1] >= self.tower[i];
+        if self.skyline[i+1] < 0 then
+            return self.skyline[i] >= 0 or self.skyline[i+1] >= self.skyline[i];
         else
-            return self.tower[i] >= 0 and self.tower[i+1] > self.tower[i];
+            return self.skyline[i] >= 0 and self.skyline[i+1] > self.skyline[i];
         fi;
     fi;
 end;
