@@ -420,10 +420,8 @@ MinimalLengthConjugate:= function(W, w)
     
     cyc:= CyclicShifts(W, w);
     while not Call(cyc, "IsMinimal") do
-        Print(Size(cyc), " \c");
         cyc:= CyclicShifts(W, Call(cyc, "OneBelow"));
     od;
-    Print("\n");
     return cyc.w;
 end;
 
@@ -493,8 +491,8 @@ CyclicShiftsOps.Complement0:= function(self)
         can.car:= car;
         if Size(Intersection(can, WJ)) = 1 and Size(can) = Size(NJ) then
             return can;
-        else
-            Print("-\c");
+#        else
+#            Print("-\c");
         fi;
     od;
     
@@ -543,8 +541,8 @@ CyclicShiftsOps.Complement1:= function(self)
         can.car:= car;
         if Size(Intersection(can, WJ)) = 1 and Size(can) = Size(NJ) then
             return can;
-        else
-            Print("+\c");
+#        else
+#            Print("+\c");
         fi;
     od;
     
@@ -584,6 +582,9 @@ CentralizerComplement:= function(W, w)
     local   m,  com,  u;
     m:= MinimalLengthConjugate(W, w);
     com:= CentralizerComplementMinimal(W, m);
+    if com = false then
+        return false;
+    fi;
     u:= RepresentativeOperation(W, m, w);
     return com^u;
 end;
