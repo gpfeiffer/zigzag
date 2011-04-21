@@ -45,14 +45,38 @@ end;
 
 #############################################################################
 ##  
-#O  SkylineAOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
+#O  SkylineAOps . . . . . . . . . . . . . . . . . . . . .  operations record.
 ##  
 SkylineAOps:= OperationsRecord("SkylineAOps", GroupElementOps);
 
 
 #############################################################################
 ##  
-#C  SkylineA( <list> )  . . . . . . . . . . . . . . . . . . . . . constructor.
+#C  SkylineA( <list> )  . . . . . . . . . . . . . . . . . . . .  constructor.
+##  
+##  <#GAPDoc Label="SkylineA">
+##  <ManSection>
+##  <Func Name="SkylineA" Arg="list"/>
+##  <Returns>
+##    a new skyline, representing an element of a Coxeter group of type
+##    <M>A</M>.
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for the skyline class of type <M>A</M>.
+##  It constructs and
+##  returns the skyline described by the list <A>list</A> of integers.
+##  No checks on the argument are done, but trailing zeros are deleted 
+##  from <A>list</A>.
+##  <Example>
+##  gap> SkylineA([1,0,3,0]);
+##  SkylineA( [ 1, 0, 3 ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+##  public fields:
+##    skylinw, the list of integers
 ##  
 SkylineA:= function(list)
     local   n;

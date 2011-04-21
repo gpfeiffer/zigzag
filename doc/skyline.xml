@@ -17,10 +17,13 @@
 <#Include Label="Intro:Skyline">
 
 <Section>
-<Heading>Skyline.</Heading>
+<Heading>Skylines of type <M>A</M>.</Heading>
 
 In this section I describe the functions that construct skyline
-for elements of Coxeter groups of classical types.
+for elements of Coxeter groups of type <M>A_n</M> for some <M>n \geq 0</M>.
+
+<#Include Label="SkylineA">
+
 
 </Section>
 

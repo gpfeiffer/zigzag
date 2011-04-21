@@ -18,5 +18,7 @@ bookname:= "zigzag";
 ##h:= GAPDoc2HTML(r, "Tth");
 #GAPDoc2HTMLPrintHTMLFiles(h, path);
 
-MakeGAPDocDoc(path, main, files, bookname);
+#MakeGAPDocDoc(path, main, files, bookname);
+MakeGAPDocDoc(path, main, files, bookname, "Tth");
 #MakeGAPDocDoc(path, main, files, bookname, "MathML");
+#MakeGAPDocDoc(path, main, files, bookname, "MathJax");

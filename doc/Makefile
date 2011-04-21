@@ -4,13 +4,15 @@ LIB = ../lib
 DOC = .
 
 GAPFILES = $(LIB)/descent.g $(LIB)/methods.g $(LIB)/iterator.g\
-           $(LIB)/walker.g $(LIB)/subsets.g $(LIB)/shapes.g\
+           $(LIB)/walker.g $(LIB)/subsets.g $(LIB)/skyline.g\
+           $(LIB)/shapes.g\
            $(LIB)/alleys.g $(LIB)/streets.g $(LIB)/category.g\
 	   $(LIB)/groupoid.g
 
 XMLFILES = $(DOC)/zigzag.xml  $(DOC)/introduc.xml\
 	   $(DOC)/descent.xml $(DOC)/methods.xml $(DOC)/iterator.xml\
-           $(DOC)/walker.xml $(DOC)/subsets.xml $(DOC)/shapes.xml\
+           $(DOC)/walker.xml $(DOC)/subsets.xml $(DOC)/skyline.xml\
+           $(DOC)/shapes.xml\
            $(DOC)/alleys.xml $(DOC)/streets.xml $(DOC)/category.xml\
 	   $(DOC)/groupoid.xml
 
