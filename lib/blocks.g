@@ -72,7 +72,7 @@ MatBlMat:= function(bm, com)
     mat:= NullMat(n, n);
     for i in [1..l] do
         for j in [1..l] do
-            if IsMat(bm[i][j] then 
+            if IsMat(bm[i][j]) then 
                 mat{set[i]}{set[j]}:= bm[i][j];
             else
                 if bm[i][j] <> 0 then
@@ -94,6 +94,7 @@ end;
 ## FIXME: can we abbreviate an off diagonal multiple of an identity matrix???
 ##
 BlMatMat:= function(m, com)
+    local   new,  l,  set,  i,  j,  b;
     
     new:= [];
     l:= Length(com);
