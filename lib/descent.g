@@ -183,15 +183,65 @@ DescentAlgebraOps.Basis:= function(arg)
         od;
         return basis;
     elif Length(arg) = 2 then
-        if arg[2] = "x" then 
+        if arg[2] in ["x", "y", "z", "e"] then 
+            d:= arg[2];
             return function(arg)
                 new:= 0 * [1..Dimension(self)];
                 new[self.pos[self.encodeSet(arg)]]:= 1;
-                return DescentElt(self, "x", new);
+                return DescentElt(self, d, new);
             end;
         else
             Error("not yet implemented");
         fi;
+    else
+        Error("not yet implemented");
+    fi;
+end;
+
+##  base changes ...
+DescentEltOps.x:= function(self)
+    local   mat;
+    
+    if self.basis = "x" then
+        return self;
+    elif self.basis = "y" then
+        mat:= IncidenceMatShapes(Shapes(W));
+        return DescentElt(self.D, "x", self.coeff / mat);
+    elif self.basis = "e" then
+        mat:= Call(self.D, "Mu");
+        return DescentElt(self.D, "x", self.coeff / mat);
+    else
+        Error("not yet implemented");
+    fi;
+end;
+    
+DescentEltOps.y:= function(self)
+    local   mat;
+    
+    if self.basis = "y" then
+        return self;
+    elif self.basis = "x" then
+        mat:= IncidenceMatShapes(Shapes(W));
+        return DescentElt(self.D, "y", self.coeff * mat);
+    elif self.basis = "e" then
+        mat:= Call(self.D, "Mu")^-1 * IncidenceMatShapes(Shapes(W));
+        return DescentElt(self.D, "y", self.coeff * mat);
+    else
+        Error("not yet implemented");
+    fi;
+end;
+    
+DescentEltOps.e:= function(self)
+    local   mat;
+    
+    if self.basis = "e" then
+        return self;
+    elif self.basis = "x" then
+        mat:= Call(self.D, "Mu");
+        return DescentElt(self.D, "e", self.coeff * mat);
+    elif self.basis = "y" then
+        mat:= IncidenceMatShapes(Shapes(W))^-1 * Call(self.D, "Mu");
+        return DescentElt(self.D, "e", self.coeff * mat);
     else
         Error("not yet implemented");
     fi;
