@@ -885,6 +885,17 @@ end;
 
 #############################################################################
 ##
+##  X_J^{\sharp}
+##
+##  there must be a more efficient realization in terms of X_JKLs ...
+##
+ParabolicTransversalOps.Hash:= function(self)
+    return Filtered(Elements(self), x-> ForAll(OnSets(self.J, x), i-> i <= self.W.semisimpleRank));
+end;
+
+
+#############################################################################
+##
 ##  find u \in W_J, x in X_J such that w = u . x
 ##
 ##  NOTE:  the J argument might as well be any chain of subsets ...
