@@ -45,12 +45,23 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-BreadthFirst:= function(tree)
-    local   list,  next;
+BreadthFirst:= function(arg)
+    local   usage,  children,  list,  next;
     
-    list:= [tree];
+    usage:= "usage: BreadthFirst( tree [, children] )";
+    if Length(arg) < 1 or Length(arg) > 2 then
+        Error(usage);
+    fi;
+    
+    if Length(arg) = 2 then
+        children:= arg[2];
+    else
+        children:= "Children";         
+    fi;
+        
+    list:= [arg[1]];
     for next in list do
-        Append(list, Call(next, "Children"));
+        Append(list, Call(next, children));
     od;
     return list;
 end;
