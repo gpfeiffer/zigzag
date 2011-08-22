@@ -48,23 +48,24 @@
 BreadthFirst:= function(arg)
     local   usage,  children,  list,  next;
     
+    # check arguments.
     usage:= "usage: BreadthFirst( tree [, children] )";
     if Length(arg) < 1 or Length(arg) > 2 then
         Error(usage);
-    fi;
-    
-    if Length(arg) = 2 then
+    elif Length(arg) = 2 then
         children:= arg[2];
     else
         children:= "Children";         
     fi;
-        
+    
+    # recurse.
     list:= [arg[1]];
     for next in list do
         Append(list, Call(next, children));
     od;
     return list;
 end;
+
 
 #############################################################################
 ##
@@ -108,11 +109,22 @@ end;
 ##    ^    ^
 ##    b    h
 ##
-IteratorBreadthFirst:= function(tree)
-    local   head,  focus,  back,  itr;
+IteratorBreadthFirst:= function(arg)
+    local   usage,  children,  head,  focus,  back,  itr,  w,  x,  c;
     
+    # check arguments.
+    usage:= "usage: IteratorBreadthFirst( tree [, children] )";
+    if Length(arg) < 1 or Length(arg) > 2 then
+        Error(usage);
+    elif Length(arg) = 2 then
+        children:= arg[2];
+    else
+        children:= "Children";         
+    fi;
+    
+    # initialize.
     head:= rec();
-    focus:= rec(w:= tree, next:= head);
+    focus:= rec(w:= arg[1], next:= head);
     back:= focus; 
 
     itr:= rec();
@@ -134,7 +146,7 @@ IteratorBreadthFirst:= function(tree)
         # expand back.w to focus.w
         while not IsIdentical(back, focus) do
             x:= back.w;
-            for c in Call(x, "Children") do
+            for c in Call(x, children) do
                 head.w:= c;
                 head.next:= rec();
                 head:= head.next;
@@ -169,15 +181,33 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-PreOrder:= function(tree)
-    local   list,  c;
+PreOrderNC:= function(tree, children)
+    local   usage,  children,  list,  c;
     
     list:= [tree];
-    for c in Call(tree, "Children") do
-        Append(list, PreOrder(c));
+    for c in Call(list[1], children) do
+        Append(list, PreOrderNC(c, children));
     od;
     return list;
 end;
+
+PreOrder:= function(arg)
+    local   usage,  children;
+    
+    # check arguments.
+    usage:= "usage: PreOrder( tree [, children] )";
+    if Length(arg) < 1 or Length(arg) > 2 then
+        Error(usage);
+    elif Length(arg) = 2 then
+        children:= arg[2];
+    else
+        children:= "Children";         
+    fi;
+    
+    # recurse.
+    return PreOrderNC(arg[1], children);
+end;
+
 
 #############################################################################
 ##
@@ -200,8 +230,25 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-NrPreOrder:= function(tree)
-    return 1 + Sum(Call(tree, "Children"), NrPreOrder);
+NrPreOrderNC:= function(tree, children)
+    return 1 + Sum(Call(arg[1], children), x-> NrPreOrderNC(x, children));
+end;
+
+NrPreOrder:= function(arg)
+    local   usage,  children;
+    
+    # check arguments.
+    usage:= "usage: NrPreOrder( tree [, children] )";
+    if Length(arg) < 1 or Length(arg) > 2 then
+        Error(usage);
+    elif Length(arg) = 2 then
+        children:= arg[2];
+    else
+        children:= "Children";         
+    fi;
+    
+    # recurse.
+    return NrPreOrderNC(arg[1], children));
 end;
 
 
@@ -231,21 +278,36 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-IteratorPreOrder:= function(tree)
-    local   stack,  len,  push,  pop,  itr;
+IteratorPreOrder:= function(arg)
+    local   usage,  children,  stack,  len,  push,  pop,  itr;
     
+    # check arguments.
+    usage:= "usage: IteratorPreOrder( tree [, children] )";
+    if Length(arg) < 1 or Length(arg) > 2 then
+        Error(usage);
+    elif Length(arg) = 2 then
+        children:= arg[2];
+    else
+        children:= "Children";         
+    fi;
+    
+    # initialize stack.
     stack:= [];  len:= 0;
+    
+    # how to push an item.
     push:= function(obj)
         len:= len + 1;
         stack[len]:= obj;
     end;
     
+    # how to pop.
     pop:= function()
         len:= len - 1;
         return stack[len+1];
     end;
     
-    push(tree);
+    # push the tree.
+    push(arg[1]);
     
     itr:= rec();
     
@@ -290,20 +352,36 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-PreOrderProperty:= function(tree, property)
+PreOrderPropertyNC:= function(tree, property, children)
     local   list,  c;
     
     list:= [];
     if property(tree) then
         Add(list, tree);
-        InfoZigzag1(".\c");
     fi;
     
-    for c in Call(tree, "Children") do
-        Append(list, PreOrderProperty(c, property));
+    for c in Call(tree, children) do
+        Append(list, PreOrderPropertyNC(c, property, children));
     od;
     return list;
 end;
+
+PreOrderProperty:= function(arg)
+    local   usage,  children;
+    
+    # check arguments.
+    usage:= "usage: PreOrderProperty( tree, property [, children] )";
+    if Length(arg) < 2 or Length(arg) > 3 then
+        Error(usage);
+    elif Length(arg) = 3 then
+        children:= arg[3];
+    else
+        children:= "Children";         
+    fi;
+    
+    return PreOrderPropertyNC(arg[1], arg[2], children);
+end;
+
 
 #############################################################################
 ##
@@ -328,11 +406,30 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-NrPreOrderProperty:= function(tree, pro)
+NrPreOrderPropertyNC:= function(tree, property, children)
     local a;
-    a:= 0;  if pro(tree) then a:= 1; fi;
-    return a + Sum(Call(tree, "Children"), c-> NrPreOrderProperty(c, pro));
+    
+    a:= 0;  if property(tree)  then a:= 1;  fi;
+    return a + Sum(Call(tree, children), 
+                   c-> NrPreOrderPropertyNC(c, property, children));
 end;
+
+NrPreOrderProperty:= function(arg)
+    local   usage,  children;
+    
+    # check arguments.
+    usage:= "usage: NrPreOrderProperty( tree, property [, children] )";
+    if Length(arg) < 2 or Length(arg) > 3 then
+        Error(usage);
+    elif Length(arg) = 3 then
+        children:= arg[3];
+    else
+        children:= "Children";         
+    fi;
+    
+    return NrPreOrderPropertyNC(arg[1], arg[2], children);
+end;
+
 
 #############################################################################
 ##
@@ -355,15 +452,31 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-PostOrder:= function(tree)
+PostOrderNC:= function(tree, children)
     local   list,  c;
     
     list:= [];
-    for c in Call(tree, "Children") do
-        Append(list, PostOrder(c));
+    for c in Call(tree, children) do
+        Append(list, PostOrderNC(c, children));
     od;
     Add(list, tree);
     return list;
+end;
+
+PostOrder:= function(arg)
+    local   usage,  children;
+    
+    # check arguments.
+    usage:= "usage: PostOrder( tree [, children] )";
+    if Length(arg) < 1 or Length(arg) > 2 then
+        Error(usage);
+    elif Length(arg) = 2 then
+        children:= arg[2];
+    else
+        children:= "Children";         
+    fi;
+    
+    return PostOrderNC(arg[1], children);
 end;
 
 
@@ -393,12 +506,12 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-PostOrderProperty:= function(tree, property)
+PostOrderPropertyNC:= function(tree, property, children)
     local   list,  c;
     
     list:= [];
-    for c in Call(tree, "Children") do
-        Append(list, PostOrderProperty(c, property));
+    for c in Call(tree, children) do
+        Append(list, PostOrderPropertyNC(c, property));
     od;
     if list <> [] or property(tree) then
         Add(list, tree);
@@ -407,6 +520,22 @@ PostOrderProperty:= function(tree, property)
     return list;
 end;
 
+PostOrderProperty:= function(arg)
+    local   usage,  children;
+    
+    # check arguments.
+    usage:= "usage: PostOrderProperty( tree, property [, children] )";
+    if Length(arg) < 2 or Length(arg) > 3 then
+        Error(usage);
+    elif Length(arg) = 3 then
+        children:= arg[3];
+    else
+        children:= "Children";         
+    fi;
+    
+    return PostOrderPropertyNC(tree, property, children);
+end;
+    
 
 #############################################################################
 ##
@@ -434,16 +563,34 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-NrPostOrderProperty:= function(tree, pro)
+NrPostOrderPropertyNC:= function(tree, property, children)
     local   sum;
     
-    sum:= Sum(Call(tree, "Children"), x-> NrPostOrderProperty(x, pro));
-    if sum > 0 or pro(tree) then
+    sum:= Sum(Call(tree, children), 
+              x-> NrPostOrderPropertyNC(x, property, children));
+    if sum > 0 or property(tree) then
         sum:= sum + 1;
     fi;
     
     return sum;
 end;
+
+NrPostOrderProperty:= function(arg)
+    local   usage,  children;
+    
+    # check arguments.
+    usage:= "usage: NrPostOrderProperty( tree, property [, children] )";
+    if Length(arg) < 2 or Length(arg) > 3 then
+        Error(usage);
+    elif Length(arg) = 3 then
+        children:= arg[3];
+    else
+        children:= "Children";         
+    fi;
+    
+    return NrPostOrderPropertyNC(tree, property, children);
+end;
+    
 
 #############################################################################
 ##
