@@ -231,7 +231,7 @@ end;
 ##  <#/GAPDoc>
 ##
 NrPreOrderNC:= function(tree, children)
-    return 1 + Sum(Call(arg[1], children), x-> NrPreOrderNC(x, children));
+    return 1 + Sum(Call(tree, children), x-> NrPreOrderNC(x, children));
 end;
 
 NrPreOrder:= function(arg)
@@ -248,7 +248,7 @@ NrPreOrder:= function(arg)
     fi;
     
     # recurse.
-    return NrPreOrderNC(arg[1], children));
+    return NrPreOrderNC(arg[1], children);
 end;
 
 
@@ -511,7 +511,7 @@ PostOrderPropertyNC:= function(tree, property, children)
     
     list:= [];
     for c in Call(tree, children) do
-        Append(list, PostOrderPropertyNC(c, property));
+        Append(list, PostOrderPropertyNC(c, property, children));
     od;
     if list <> [] or property(tree) then
         Add(list, tree);
@@ -533,7 +533,7 @@ PostOrderProperty:= function(arg)
         children:= "Children";         
     fi;
     
-    return PostOrderPropertyNC(tree, property, children);
+    return PostOrderPropertyNC(arg[1], arg[2], children);
 end;
     
 
@@ -588,7 +588,7 @@ NrPostOrderProperty:= function(arg)
         children:= "Children";         
     fi;
     
-    return NrPostOrderPropertyNC(tree, property, children);
+    return NrPostOrderPropertyNC(arg[1], arg[2], children);
 end;
     
 
