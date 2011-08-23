@@ -28,7 +28,7 @@
 ##
 ##  <#GAPDoc Label="BreadthFirst">
 ##  <ManSection>
-##  <Func Name="BreadthFirst" Arg="tree"/>
+##  <Func Name="BreadthFirst" Arg="tree[, children]"/>
 ##  <Returns>
 ##    the list of vertices of the tree <A>tree</A> in breadth first order.
 ##  </Returns>
@@ -73,7 +73,7 @@ end;
 ##
 ##  <#GAPDoc Label="IteratorBreadthFirst">
 ##  <ManSection>
-##  <Func Name="IteratorBreadthFirst" Arg="tree"/>
+##  <Func Name="IteratorBreadthFirst" Arg="tree[, children]"/>
 ##  <Returns>
 ##    an iterator for the vertices of the tree <A>tree</A>.
 ##  </Returns>
@@ -166,7 +166,7 @@ end;
 ##
 ##  <#GAPDoc Label="PreOrder">
 ##  <ManSection>
-##  <Func Name="PreOrder" Arg="tree"/>
+##  <Func Name="PreOrder" Arg="tree[, children]"/>
 ##  <Returns>
 ##    the list of vertices of the tree <A>tree</A> in pre-order.
 ##  </Returns>
@@ -215,7 +215,7 @@ end;
 ##
 ##  <#GAPDoc Label="NrPreOrder">
 ##  <ManSection>
-##  <Func Name="NrPreOrder" Arg="tree"/>
+##  <Func Name="NrPreOrder" Arg="tree[, children]"/>
 ##  <Returns>
 ##    the number of vertices of the tree <A>tree</A>.
 ##  </Returns>
@@ -258,7 +258,7 @@ end;
 ##
 ##  <#GAPDoc Label="IteratorPreOrder">
 ##  <ManSection>
-##  <Func Name="IteratorPreOrder" Arg="tree"/>
+##  <Func Name="IteratorPreOrder" Arg="tree[, children]"/>
 ##  <Returns>
 ##    an iterator for the vertices of the tree <A>tree</A>.
 ##  </Returns>
@@ -335,7 +335,7 @@ end;
 ##
 ##  <#GAPDoc Label="PreOrderProperty">
 ##  <ManSection>
-##  <Func Name="PreOrderProperty" Arg="tree, property"/>
+##  <Func Name="PreOrderProperty" Arg="tree, property[, children]"/>
 ##  <Returns>
 ##    the list of vertices of the tree <A>tree</A> having the given
 ##    property <A>property</A> in pre-order.
@@ -389,7 +389,7 @@ end;
 ##
 ##  <#GAPDoc Label="NrPreOrderProperty">
 ##  <ManSection>
-##  <Func Name="NrPreOrderProperty" Arg="tree, property"/>
+##  <Func Name="NrPreOrderProperty" Arg="tree, property[, children]"/>
 ##  <Returns>
 ##    the number of vertices of the tree <A>tree</A> having the given
 ##    property <A>property</A>.
@@ -437,7 +437,7 @@ end;
 ##
 ##  <#GAPDoc Label="PostOrder">
 ##  <ManSection>
-##  <Func Name="PostOrder" Arg="tree"/>
+##  <Func Name="PostOrder" Arg="tree[, children]"/>
 ##  <Returns>
 ##    the list of vertices of the tree <A>tree</A> in post-order.
 ##  </Returns>
@@ -486,7 +486,7 @@ end;
 ##
 ##  <#GAPDoc Label="PostOrderProperty">
 ##  <ManSection>
-##  <Func Name="PostOrderProperty" Arg="tree, property"/>
+##  <Func Name="PostOrderProperty" Arg="tree, property[, children]"/>
 ##  <Returns>
 ##    the list of vertices of the tree <A>tree</A> having descendants
 ##    with the given property <A>property</A> in post-order.
@@ -543,7 +543,7 @@ end;
 ##
 ##  <#GAPDoc Label="NrPostOrderProperty">
 ##  <ManSection>
-##  <Func Name="NrPostOrderProperty" Arg="tree, property"/>
+##  <Func Name="NrPostOrderProperty" Arg="tree, property[, children]"/>
 ##  <Returns>
 ##    the list of vertices of the tree <A>tree</A> having descendants
 ##    with the given property <A>property</A> in post-order.
