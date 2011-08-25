@@ -4,7 +4,7 @@
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2010  Götz Pfeiffer
+#Y  Copyright (C) 2010-2011  Götz Pfeiffer
 ##
 ##  This file contains the routines for shapes of Coxeter groups.
 ##
@@ -1205,8 +1205,6 @@ end;
 ##  </Returns>
 ##  <Description>
 ##  <Example>
-##  gap> W:= CoxeterGroup("E", 6);;  W.name:= "W";;
-##  gap> inv:= SpecialInvolutions(W);              
 ##  gap> OrlikSolomonCharacter(CoxeterGroup("E", 6));
 ##  [ 51840, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1440, 0, 0, 0, 0, 0, 0, 0, 
 ##    0, 0 ]
@@ -1220,7 +1218,7 @@ OrlikSolomonCharacter:= function(W)
     cc:= ConjugacyClasses(W);
     sum:= List(SpecialInvolutions(W), s-> Position(cc, s));
     sum:= InducedCyclic(CharTable(W), sum);
-    #  the regular character is the last one in this list.
+    #  the regular character is the last one in this sorted list.
     return 2*Sum(sum) - Length(sum) * sum[Length(sum)];
 end;
 
