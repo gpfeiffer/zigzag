@@ -40,6 +40,15 @@
 ##  <Example>
 ##  gap> BreadthFirst(BinomialTree(4));
 ##  [ 4, 0, 1, 2, 3, 0, 0, 1, 0, 1, 2, 0, 0, 0, 1, 0 ]
+##  gap> Display(BinomialTree(4));
+##  -4-0
+##    -1-0
+##    -2-0
+##      -1-0
+##    -3-0
+##      -1-0
+##      -2-0
+##        -1-0
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -176,6 +185,15 @@ end;
 ##  <Example>
 ##  gap> PreOrder(BinomialTree(4));
 ##  [ 4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0 ]
+##  gap> Display(BinomialTree(4));
+##  -4-0
+##    -1-0
+##    -2-0
+##      -1-0
+##    -3-0
+##      -1-0
+##      -2-0
+##        -1-0
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
@@ -447,6 +465,15 @@ end;
 ##  <Example>
 ##  gap> PostOrder(BinomialTree(4));
 ##  [ 0, 0, 1, 0, 0, 1, 2, 0, 0, 1, 0, 0, 1, 2, 3, 4 ]
+##  gap> Display(BinomialTree(4));
+##  -4-0
+##    -1-0
+##    -2-0
+##      -1-0
+##    -3-0
+##      -1-0
+##      -2-0
+##        -1-0
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
