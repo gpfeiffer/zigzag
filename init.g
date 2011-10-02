@@ -95,7 +95,9 @@ AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
   IteratorPreOrder, PreOrderPropertyNC, PreOrderProperty,
   NrPreOrderPropertyNC, NrPreOrderProperty, PostOrderNC, PostOrder,
   PostOrderPropertyNC, PostOrderProperty, NrPostOrderPropertyNC,
-  NrPostOrderProperty, BinomialTreeOps, BinomialTree);
+  NrPostOrderProperty, BinomialTreeOps, BinomialTree, AlgorithmM,
+  ProductsAlgorithmM, AlgorithmH, ProductsAlgorithmH, ExactPackings, FunCon,
+  RestrictCon1, RestrictCon2);
 
 AUTO( ReadPkg( "zigzag", "lib", "quiver" ), QuiverEltOps, QuiverElt,
   IsQuiverElt, QuiverOps, Quiver, IsQuiver);

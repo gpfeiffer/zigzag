@@ -657,6 +657,338 @@ BinomialTreeOps.Display:= function(self, dummy)
     BinomialTreeOps.indent:= BinomialTreeOps.indent - 2;
 end;
 
+##  General combinatorial tools.
+
+#############################################################################
+##
+##  Generating all tuples, mixed radix
+##
+#############################################################################
+
+#############################################################################
+##
+##  Algorithm M (mixed-radix generation)  [Knuth, TAOCP 7.2.1.1]
+##
+##  given a list of Lists, form (and visit) all possible combinations
+##  of one from each list.
+##
+AlgorithmM:= function(list, visit)
+    local   n,  m,  a,  c,  j;
+    
+    n:= Length(list);
+    m:= List(list, Length);
+    a:= List(list, x-> 1);
+    c:= list{[1..n]}[1];
+    
+    while true do
+        visit(c);
+        j:= n;
+        
+        while a[j] = m[j] do
+            if  j = 1  then  return;  fi;
+            a[j]:= 1;
+            c[j]:= list[j][1];
+            j:= j - 1;
+        od;
+        
+        a[j]:= a[j] + 1;
+        c[j]:= list[j][a[j]];
+    od;
+end;
+
+
+#############################################################################
+##
+##  Application: generate all elements of a finite abelian group.
+##
+##  given list gens of (images of) independent generators of an abelian group
+##  and their orders m, generate all elements
+##
+ProductsAlgorithmM:= function(gens, m)
+    local   n,  a,  c,  all,  j;
+    
+    n:= Length(gens);
+    a:= List(gens, x-> 1);
+    c:= Product(gens, x-> x^0);  # or c:= gens[1]^0;
+    
+    all:= [];
+    while true do
+        Add(all, c);
+        j:= n;
+        
+        while a[j] = m[j] do
+            if j = 1 then
+                return all;
+            fi;
+            a[j]:= 1;
+            c:= c * gens[j];
+            j:= j - 1;
+        od;
+        
+        a[j]:= a[j] + 1;
+        c:= c * gens[j];
+    od;
+end;
+
+
+#############################################################################
+##
+##  Algorithm H (Loopless reflected mixed-radix Gray generation)
+##  [Knuth, TAOCP, 7.2.1.1]
+##
+##  given a list of Lists, form (and visit) all possible combinations
+##  of one from each list, changing only one component at each step.
+##
+AlgorithmH:= function(list, visit)
+    local   n,  m,  a,  c,  f,  o,  j;
+
+    n:= Length(list);
+    m:= List(list, Length);
+    a:= List(list, x-> 1);
+    c:= list{[1..n]}[1];
+    
+    f:= [0..n];
+    o:= List(list, x-> 1);
+    
+    while true do
+        visit(c);
+        
+        if f[1] = n then 
+            return;
+        fi;
+        
+        j:= f[1]+1;
+        f[1]:= 0;
+        
+        a[j]:= a[j] + o[j];
+        c[j]:= list[j][a[j]];
+        
+        if a[j] = 1 or a[j] = m[j] then
+            o[j]:= -o[j];
+            f[j]:= f[j+1];
+            f[j+1]:= j;
+        fi;
+    od;
+end;
+
+#############################################################################
+##
+##  Application: generate all elements of a finite abelian group.
+##
+##  given list gens of (images of) independent generators of an abelian group
+##  and their orders m, generate all elements; this time by multiplying with 
+##  a single generator only (or its inverse) in each step.
+##
+ProductsAlgorithmH:= function(gens, m)
+    local   n,  a,  c,  f,  o,  all,  j;
+    
+    n:= Length(gens);
+    a:= List(gens, x-> 1);
+    c:= Product(gens, x-> x^0);  # or c:= gens[1]^0;
+    
+    f:= [0..n];
+    o:= List(gens, x-> 1);
+    
+    all:= [];
+    
+    while true do
+        Add(all, c);
+        
+        if f[1] = n then 
+            return all;
+        fi;
+        
+        j:= f[1]+1;
+        f[1]:= 0;
+        
+        a[j]:= a[j] + o[j];
+        c:= c * gens[j]^o[j];
+        
+        if a[j] = 1 or a[j] = m[j] then
+            o[j]:= -o[j];
+            f[j]:= f[j+1];
+            f[j+1]:= j;
+        fi;
+    od;
+end;
+
+#############################################################################
+##
+##  Packings
+##
+#############################################################################
+
+#############################################################################
+##
+##  ExactPackings
+##
+##  given a list 'sum' of integers >= 0, and a list 'con'
+##  of lists of constituents, find one/all ways to pick
+##  one of each so that the picks add up to the given sum.
+##
+##  Example:
+##
+##  gap> sum:= [ 1, 2, 1 ];;
+##  gap> con:= [
+##  > [ [ 1, 0, 0 ], [ 0, 0, 1 ] ], 
+##  > [ [ 1, 1, 0 ], [ 0, 1, 1 ] ], 
+##  > [ [ 0, 1, 0 ], [ 1, 0, 1 ] ]  
+##  > ];;
+##  gap> ExactPackings(sum, con);
+##  [ [ 2, 1, 1 ], [ 1, 2, 1 ] ]
+##
+##
+##  recursive solution:
+##
+##  if Length(con) = 1:
+##     locate sum in con[1]
+##  else:
+##     return fail
+##
+##  l = Length(con);
+##  for each i in [1..Length(con[l])]:
+##     if con[l][i] < sum:
+##        for each sol in A(sum - con[l][i], con{[1..l-1]}):
+##            append i to sol
+##
+##
+##  FIXME: add parameter for single solution find.
+##
+ExactPackings:= function(sum, con) 
+    local   isPositive,  log,  idx,  cmp,  cur,  all,  zero,  search;
+    
+    # how to test if a list has no negative entries.
+    isPositive:= a-> ForAll(a, x-> x >= 0);
+    
+    # keep track of where we are.
+    log:= [];
+    idx:= [];  
+    cmp:= [1..Length(con)];   # idx \disjoint cmp = [1..Length(con)]
+    cur:= 0 * cmp; # current solution
+    all:= []; # all solutions found
+    
+    zero:= 0*sum;
+    
+    # how to recurse
+    search:= function(sum, pos)
+        local   l,  qos,  k,  wgt,  sub,  j,  i;
+        
+        if cmp = [] then
+            if sum = zero then
+                Add(all, Copy(cur));  # one solution found.
+            fi;
+            return;
+        fi;
+        
+        #  compute positions of subtractable constituents.
+        l:= Length(pos);
+        pos:= List([1..l], i-> Filtered(pos[i], j-> isPositive(sum - con[cmp[i]][j])));
+        
+        # stop if dead end.
+        if [] in pos then  return;  fi;
+        
+        # sort out uniq choices.
+        k:= PositionProperty(pos, x-> Length(x) = 1);
+        
+        # otherwise go for largest contribution
+        if k = false then
+            wgt:= List([1..l], i-> Sum(con[cmp[i]][pos[i][1]]));
+            k:= Position(wgt, Maximum(wgt));
+        fi;
+        
+        sub:= Difference([1..l], [k]);
+        
+        Add(log, Length(pos[k]));
+        j:= cmp[k];
+        Add(idx, j); 
+        RemoveSet(cmp, j);
+        for i in pos[k] do
+            log[Length(log)]:= log[Length(log)] - 1;
+            cur[j]:= i;
+            Print(log, "\r");
+            search(sum - con[j][i], pos{sub});
+        od;
+        Unbind(log[Length(log)]);
+        AddSet(cmp, idx[Length(idx)]);
+        Unbind(idx[Length(idx)]);
+        cur[j]:= 0;
+    end;
+    
+    # recurse and return all solutions found.
+    search(sum, List(con, x-> [1..Length(x)])); 
+    return all;
+end;
+    
+
+#############################################################################
+FunCon:= function(con, fun)
+    return List([1..Length(con[1])], i-> fun(con{[1..Length(con)]}[i]));
+end;
+
+#############################################################################
+##
+##  RestrictCon1
+##
+##  given a list sum of rationals and a list con of lists of constituents
+##  filter out from con those who potentially participate in a transversal
+##  adding up to sum, using attainable maxima and minima.
+RestrictCon1:= function(sum, con)
+    local   N,  new,  old,  i,  lis,  min,  max;
+
+    N:= Length(sum);
+
+    # restrict choices.
+    new:= Sum(con, Length);  old:= new + 1;
+    while new < old do
+        for i in Reversed([1..N]) do
+
+            # pick values in i-th position.
+            lis:= List(con, x-> List(x, y-> y[i]));  
+
+            # do we have to take minimal values throughout?
+            min:= List(lis, Minimum);
+            if Sum(min) = sum[i] then
+                con:= List(con, x-> Filtered(x, 
+                              z-> z[i] = Minimum(List(x, y-> y[i]))));
+            fi;
+
+            # do we have to take maximal values throughout?
+            max:= List(lis, Maximum);
+            if Sum(max) = sum[i] then
+                con:= List(con, x-> Filtered(x, 
+                              z-> z[i] = Maximum(List(x, y-> y[i]))));
+            fi;
+        od;
+        old:= new;
+        new:= Sum(con, Length);
+        Print(".\n");
+    od;
+
+    return con;
+end;
+
+#############################################################################
+RestrictCon2:= function(sum, con)
+    local   N,  i,  lis,  new,  j;
+
+    N:= Length(con);
+
+    # another way to restrict choices.
+    for i in Reversed([1..N]) do
+        lis:= List(con, x-> Set(List(x, y-> y[i]))); 
+        new:= Filtered(Cartesian(lis), x-> Sum(x) = sum[i]);
+        new:= List(TransposedMat(new), Set);
+        if new <> lis then
+            for j in [1..N] do
+                con[j]:= Filtered(con[j], z-> z[i] in new[j]);
+            od;
+            Print("+\n");
+        fi;
+    od;
+
+    return con;
+end;
+
 
 #############################################################################
 ##

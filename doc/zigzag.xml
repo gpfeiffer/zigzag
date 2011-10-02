@@ -28,7 +28,7 @@ Version 0.78
     </Version>
     <TitleComment>WARNING: This is a badly documented alpha version of the ZigZag package.  Future versions of the package will most likely be incompatible with this version.</TitleComment>
     <Author>
-Götz Pfeiffer
+Götz Pfeiffer<Br/>
 <Email>goetz.pfeiffer@nuigalway.ie</Email>
 <Homepage>http://schmidt.nuigalway.ie/zigzag</Homepage>
 </Author>
