@@ -108,6 +108,89 @@ SignCharacter:= function(W)
 end;
 
 
+##  Computing Linear Characters.
+
+#############################################################################
+##
+##  GeneratorsAbelianGroup
+##
+##  how to find a set of independent generators of an abelian group
+##
+GeneratorsAbelianGroup:= function(grp)
+    local   all,  gens,  sub,  i,  a;
+
+    all:= Elements(grp);
+    gens:= [];
+    sub:= TrivialSubgroup(grp);
+    for i in Reversed(AbelianInvariants(grp)) do
+        a:= First(all, x-> Order(grp, x) = i  and
+                  Size(Intersection(Subgroup(grp, [x]), sub)) = 1);
+        Add(gens, a);
+        sub:= Closure(sub, a);
+        all:= Difference(all, sub);
+    od;
+
+    return gens;
+end;
+
+
+#############################################################################
+##
+##  LinearCharactersAbelianGroup
+##
+##  how to compute all linear characters of an abelian group.
+##  This implementation uses ProductsAlgorithmH to first list the elements
+##  of the group, and later compute the values of a particular character on
+##  each element, and it uses AlgorithmM to generate all linear characters,
+##  by prescribing images of the generators in all possible ways.
+##
+LinearCharactersAbelianGroup:= function(A)
+    local   gens,  ords,  n,  elts,  fus,  lin,  fun;
+    
+    #  trivial case first.
+    if Size(A) = 1 then
+        return [Character(A, [1])];
+    fi;
+
+    # find a nice generating set for A
+    gens:= GeneratorsAbelianGroup(A);
+    ords:= List(gens, x-> Order(A, x));  # = abelian invariants.
+    n:= Length(gens);
+    
+    # force elements to be listed in a particular way?
+    elts:= ProductsAlgorithmH(gens, ords);
+    fus:= List(ConjugacyClasses(A), c-> Position(elts, Representative(c)));
+    
+    # generate linear characters
+    lin:= [];
+    fun:= function(l)
+        Add(lin, ProductsAlgorithmH(l, ords));
+    end;
+    AlgorithmM(List(ords, i-> List([0..i-1], j-> E(i)^j)), fun);
+    
+    return List(lin, x-> Character(A, x{fus}));
+end;
+
+
+#############################################################################
+##
+#F  LinearCharacters( <G> ) . . . . . . . . . . . . .  characters of degree 1
+##
+##  compute the linear characters of G as those of the abelian quotient
+##  G/G' and then lift back to G.
+##
+LinearCharacters:= function(G)
+    
+    # maybe we know them  already.
+    if IsBound(G.charTable) then
+        return Filtered(Irr(G), x-> Degree(x) = 1);
+    fi;
+        
+    # compute them as characters of G/G' and inflate.
+    return Inflated(LinearCharactersAbelianGroup(CommutatorFactorGroup(G)), G);
+end;
+
+
 #############################################################################
 ##
 #E  Emacs  . . . . . . . . . . . . . . . . . . . . . . local emacs variables.
