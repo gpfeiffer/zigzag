@@ -35,7 +35,7 @@
 ##  <Description>
 ##    The breadth first order of the vertices of a tree starts with
 ##    the root, followed by the vertices at depth 1, followed by the
-##    vertices at depth 2, \ldots\
+##    vertices at depth 2, etc.
 ##    The usual orbit algorithm is an example of a breadth first search.
 ##  <Example>
 ##  gap> BreadthFirst(BinomialTree(4));
