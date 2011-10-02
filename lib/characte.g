@@ -190,6 +190,80 @@ LinearCharacters:= function(G)
     return Inflated(LinearCharactersAbelianGroup(CommutatorFactorGroup(G)), G);
 end;
 
+##  Other special characters.
+
+
+#############################################################################
+##
+#F  ECharacters( <W> )  . . . . . . . . . . . . . . . . . . . . . characters.
+##
+##  <#GAPDoc Label="ECharacters">
+##  <ManSection>
+##  <Func Name="ECharacters" Arg="W"/>
+##  <Returns>
+##    the list of characters corresponding to the primitive idempotents of
+##    the descent algebra of <A>W</A>.
+##  </Returns>
+##  <Description>
+##    Each idempotent <M>e</M> in the group algebra <M>KW</M> of a finite
+##    Coxeter <M>W</M> generates a submodule <M>eKW</M> of the regular
+##    module <M>KW</M>.  This function computes the characters of the
+##    modules generated in this way by the primitive idempotents of the
+##    descent algebra of <M>W</M>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> ech:= ECharacters(W);
+##  [ [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ], 
+##    [ 15, 5, -1, -3, 3, -1, 0, 1, -1, 0, 0 ], 
+##    [ 45, -3, 1, 9, 0, 0, 0, -1, -1, 0, 0 ], 
+##    [ 40, 8, 0, 0, 1, -1, -2, 0, 0, 0, 0 ], 
+##    [ 15, -3, 3, -7, 0, 0, 3, -1, 1, 0, -1 ], 
+##    [ 120, -8, 0, 0, -3, 1, 0, 0, 0, 0, 0 ], 
+##    [ 90, 6, -2, -6, 0, 0, 0, 0, 0, 0, 0 ], 
+##    [ 40, 0, 0, 8, -2, 0, 1, 0, 0, 0, -1 ], 
+##    [ 90, -6, -2, 6, 0, 0, 0, 0, 0, 0, 0 ], 
+##    [ 144, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0 ], 
+##    [ 120, 0, 0, -8, 0, 0, -3, 0, 0, 0, 1 ] ]
+##  </Example>
+##    These characters can be displayed in the form of a character table
+##    as follows.
+##  <Example>
+##  gap> ct:= CharTable(W);;  Unbind(ct.irredinfo);
+##  gap> Display(ct, rec(chars:= ech, letter:= "E", powermap:= false,
+##  >            centralizers:= false));
+##  W( A5 )
+##  
+##          111111 21111 2211 222 3111 321 33 411 42 51  6
+##  
+##  E.1          1     1    1   1    1   1  1   1  1  1  1
+##  E.2         15     5   -1  -3    3  -1  .   1 -1  .  .
+##  E.3         45    -3    1   9    .   .  .  -1 -1  .  .
+##  E.4         40     8    .   .    1  -1 -2   .  .  .  .
+##  E.5         15    -3    3  -7    .   .  3  -1  1  . -1
+##  E.6        120    -8    .   .   -3   1  .   .  .  .  .
+##  E.7         90     6   -2  -6    .   .  .   .  .  .  .
+##  E.8         40     .    .   8   -2   .  1   .  .  . -1
+##  E.9         90    -6   -2   6    .   .  .   .  .  .  .
+##  E.10       144     .    .   .    .   .  .   .  . -1  .
+##  E.11       120     .    .  -8    .   . -3   .  .  .  1
+##  
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
+ECharacters:= function(W)
+    local   mat,  dia;
+    
+    mat:= Call(DescentAlgebra(W), "Mu")^-1;
+    mat:= List(SetComposition(List(Shapes(W), Size)), x-> Sum(mat{x}));
+    mat:= mat * IncidenceMatShapes(Shapes(W)) * SizesDescentConjugacyClasses(W);
+    dia:= List(ConjugacyClasses(W), x-> Size(W)/Size(x));
+    return List(mat, x-> List([1..Length(x)], i-> x[i] * dia[i]));    
+end;
+
+
+
 
 #############################################################################
 ##

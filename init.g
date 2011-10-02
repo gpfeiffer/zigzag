@@ -78,15 +78,15 @@ AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
   DescentAlgebra, IsDescentAlgebra, DescentEltOps, DescentElt, IsDescentElt,
   CharacterDescentElt, MaximalAJKL, MatCompressedAJKL, ProductCompressedAJKL,
   RightRegularX, LeftRegularX, LeftRegularY, LeftRegularZ, LeftRegularE,
-  SymmetricMatrix, ECharacters, MatQuiverSym, LyndonFactorisation,
-  CartanMatrixA, QCartanMatrixA, CartanMatrixB, QuiverRelations0,
-  QuiverRelations1, QuiverRelations, SyzygiesQuiver, ProjectiveCover,
-  ProjectiveResolutions, DescentQuiver, BasisProjectiveQuiver,
-  NextProjectiveCover, ProjectiveResolution, RelationsDescentQuiver,
-  DisplayQuiver0, DisplayQuiver1, DisplayQuiver, DimensionsMatrix0,
-  DimensionsMatrix1, DimensionsMatrix, CartanMatQuiver0, CartanMatQuiver1,
-  CartanMatQuiver, QCartanMatQuiver0, QCartanMatQuiver1, QCartanMatQuiver,
-  LaTeXMatNames, KernelList, LaTeXQCartan, BlocksCartan, MatNrStreetsQuiver,
+  SymmetricMatrix, MatQuiverSym, LyndonFactorisation, CartanMatrixA,
+  QCartanMatrixA, CartanMatrixB, QuiverRelations0, QuiverRelations1,
+  QuiverRelations, SyzygiesQuiver, ProjectiveCover, ProjectiveResolutions,
+  DescentQuiver, BasisProjectiveQuiver, NextProjectiveCover,
+  ProjectiveResolution, RelationsDescentQuiver, DisplayQuiver0,
+  DisplayQuiver1, DisplayQuiver, DimensionsMatrix0, DimensionsMatrix1,
+  DimensionsMatrix, CartanMatQuiver0, CartanMatQuiver1, CartanMatQuiver,
+  QCartanMatQuiver0, QCartanMatQuiver1, QCartanMatQuiver, LaTeXMatNames,
+  KernelList, LaTeXQCartan, BlocksCartan, MatNrStreetsQuiver,
   QMatNrStreetsQuiver, MatNrPathsQuiver, QMatNrPathsQuiver,
   RedundantRelations);
 
@@ -147,5 +147,5 @@ AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
 
 AUTO( ReadPkg( "zigzag", "lib", "characte" ), RegularCharacter,
   TrivialCharacter, SignCharacter, GeneratorsAbelianGroup,
-  LinearCharactersAbelianGroup, LinearCharacters);
+  LinearCharactersAbelianGroup, LinearCharacters, ECharacters);
 
