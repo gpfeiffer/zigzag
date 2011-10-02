@@ -85,7 +85,8 @@ gap> Display(BinomialTree(4));
     -2-0
       -1-0
 </Example>
-We will use binomial trees as examples in the following sections.
+We will use binomial trees, in particular the above <C>BinomialTree(4)</C>,
+as examples in the following sections.
 
 </Section>
 
