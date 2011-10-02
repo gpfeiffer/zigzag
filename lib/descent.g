@@ -1454,9 +1454,9 @@ end;
 ##
 DescentQuiver:= function(W)
     local   sourcePath,  targetPath,  deltaPath,  positionsProperty,  
-            pathsStreets,  path1,  path0,  s,  sh,  path,  pathmat,  
-            where,  i,  j,  t,  delete,  ij,  ppp,  mat,  p,  kern,  
-            line,  pos;
+            pathsStreets,  line,  cleanUp,  path1,  path0,  s,  path,  
+            sh,  pathmat,  i,  where,  j,  t,  delete,  ij,  ppp,  
+            mat,  p,  kern,  pos;
     
 #    # maybe we know it already.
 #    if IsBound(W.quiver) then
@@ -1511,6 +1511,86 @@ DescentQuiver:= function(W)
         return paths;
     end;
     
+
+    # how to find a std gen of a line
+    line:= v-> v/v[PositionProperty(v, x-> x<>0)];
+    
+
+    # how to remove those streets which are in line with a product.
+    cleanUp:= function(bbb)
+        local   lin,  cls,  a,  delta,  l,  pos,  poss,  b,  p,  hom,  
+                grp,  i,  all,  aaa,  mat,  sha,  len,  sol,  wgt,  r,  
+                sub;
+    
+        # sort streets into classes.
+        lin:= [];  cls:= [];
+        for a in bbb do
+            delta:= Call(a, "Delta");
+            l:= [delta.support, line(delta.mat)];
+            pos:= Position(lin, l);
+            if pos = false then
+                Add(lin, l);  Add(cls, [a]);
+            else
+                Add(cls[pos], a);
+            fi;
+        od;
+        
+        # use a transversal, form all products, find their positions.
+        poss:= [];
+        for a in cls do
+            a:= Call(a[1], "Matrix");
+            for b in cls do
+                b:= Call(b[1], "Matrix");
+                
+                p:= ProductStreetMatrices(a, b);
+                if p <> 0 then
+                    delta:= rec(support:= p.target, mat:= Sum(p.mat));
+                    if delta.mat <> 0 * delta.mat then
+                        l:= [delta.support, line(delta.mat)];
+                        AddSet(poss, Position(lin, l));
+                    fi;
+                fi;
+            od;
+        od;
+        
+        # now group into hom spaces.
+        hom:= [];
+        grp:= [];
+        for i in Difference([1..Length(cls)], poss) do
+            l:= [cls[i][1].source, cls[i][1].target];
+            pos:= Position(hom, l);
+            if pos = false then
+                Add(hom, l);
+                Add(grp, cls[i]);
+            else
+                Append(grp[pos], cls[i]);
+            fi;
+        od;
+        
+        # for each hom space, find a lightweight basis.
+        all:= [];
+        for aaa in grp do
+            mat:= List(aaa, x-> Call(x, "Delta").mat);
+            sha:= List(aaa, x-> Call(x, "Shapes"));
+            len:= List(mat, x-> x*x);
+            sol:= [];  wgt:= [];
+            r:= RankMat(mat);
+            for sub in Combinations([1..Length(mat)], r) do
+                if RankMat(mat{sub}) = r and Size(Set(sha{sub})) = r then
+                    Add(sol, sub);
+                    Add(wgt, Sum(len{sub}));
+                fi;
+            od;
+            pos:= Position(wgt, Minimum(wgt));
+            
+#            Append(all, aaa{sol[pos]});
+            Append(all, aaa{Random(sol)});
+        od;
+        
+        # return survivors
+        return all;
+    end;
+
     # split idempotent from nilpotent generators.
     path1:= [];  path0:= []; 
     for s in BasicStreets(W) do
@@ -1523,11 +1603,13 @@ DescentQuiver:= function(W)
     InfoZigzag1("Starting with ", Length(path0) + Length(path1), " paths,\n");
     InfoZigzag1("of which ", Length(path0), " have length 0.\n");
         
-    sh:= Shapes(W);
+    path1:= cleanUp(path1);
+    InfoZigzag1("remaining edges: ", Length(path1), "\n");
     
     path:= pathsStreets(path1);
         
     # distribute paths over hom-spaces
+    sh:= Shapes(W);
     pathmat:= List(sh, x-> List(sh, x-> rec(path:= [])));
     for i in [1..Length(pathmat)] do 
         Add(pathmat[i][i].path, []);   # path0[i] is the idempotent in pathmat[i][i]
@@ -1541,8 +1623,6 @@ DescentQuiver:= function(W)
             AddSet(where[i], [s,t]);
         od;
     od;
-    
-    InfoZigzag1("where = ", where[1], "\n");
     
     # calculate all relations
     delete:= [];
