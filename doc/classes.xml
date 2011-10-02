@@ -26,6 +26,8 @@ and work on cyclic shift classes.
 
 <#Include Label="IsCyclicShifts">
 
+<#Include Label="CyclicShiftClasses">
+
 </Section>
 
 <Section Label="Sect:CyclicShiftsAsSets">
