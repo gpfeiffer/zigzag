@@ -146,5 +146,6 @@ AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
   IsCategory, CategoryEltOps, CategoryElt, IsCategoryElt);
 
 AUTO( ReadPkg( "zigzag", "lib", "characte" ), RegularCharacter,
-  TrivialCharacter, SignCharacter);
+  TrivialCharacter, SignCharacter, GeneratorsAbelianGroup,
+  LinearCharactersAbelianGroup, LinearCharacters);
 
