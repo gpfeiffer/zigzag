@@ -55,6 +55,11 @@ AUTO( ReadPkg( "zigzag", "lib", "forests" ), LeanTreeOps, LeanTree,
 AUTO( ReadPkg( "zigzag", "lib", "blocks" ), VecBlVec, BlVecVec, MatBlMat,
   BlMatMat);
 
+AUTO( ReadPkg( "zigzag", "lib", "skyline" ), FallingSequence, SkylineAOps,
+  SkylineA, IsSkylineA, SkylineAPerm, SkylineAWord, SkylineBOps, SkylineB,
+  IsSkylineB, SkylineBPerm, SkylineBWord, SkylineDOps, SkylineD, IsSkylineD,
+  SkylineDPerm, SkylineDWord, MajorIndex);
+
 AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, Map, Iverson,
   PartitionOps, Partition);
 
@@ -76,23 +81,21 @@ AUTO( ReadPkg( "zigzag", "lib", "descent" ), DescentAlgebraOps,
   SymmetricMatrix, ECharacters, MatQuiverSym, LyndonFactorisation,
   CartanMatrixA, QCartanMatrixA, CartanMatrixB, QuiverRelations0,
   QuiverRelations1, QuiverRelations, SyzygiesQuiver, ProjectiveCover,
-  ProjectiveResolutions, DescentQuiver, NextProjectiveCover,
-  ProjectiveResolution, RelationsDescentQuiver, DisplayQuiver0,
-  DisplayQuiver1, DisplayQuiver, DimensionsMatrix0, DimensionsMatrix1,
-  DimensionsMatrix, CartanMatQuiver0, CartanMatQuiver1, CartanMatQuiver,
-  QCartanMatQuiver0, QCartanMatQuiver1, QCartanMatQuiver, LaTeXMatNames,
-  KernelList, LaTeXQCartan, BlocksCartan, MatNrStreetsQuiver,
-  QMatNrStreetsQuiver, MatNrPathsQuiver, QMatNrPathsQuiver);
+  ProjectiveResolutions, DescentQuiver, BasisProjectiveQuiver,
+  NextProjectiveCover, ProjectiveResolution, RelationsDescentQuiver,
+  DisplayQuiver0, DisplayQuiver1, DisplayQuiver, DimensionsMatrix0,
+  DimensionsMatrix1, DimensionsMatrix, CartanMatQuiver0, CartanMatQuiver1,
+  CartanMatQuiver, QCartanMatQuiver0, QCartanMatQuiver1, QCartanMatQuiver,
+  LaTeXMatNames, KernelList, LaTeXQCartan, BlocksCartan, MatNrStreetsQuiver,
+  QMatNrStreetsQuiver, MatNrPathsQuiver, QMatNrPathsQuiver,
+  RedundantRelations);
 
 AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
-  IteratorBreadthFirst, PreOrder, NrPreOrder, IteratorPreOrder,
-  PreOrderProperty, NrPreOrderProperty, PostOrder, PostOrderProperty,
+  IteratorBreadthFirst, PreOrderNC, PreOrder, NrPreOrderNC, NrPreOrder,
+  IteratorPreOrder, PreOrderPropertyNC, PreOrderProperty,
+  NrPreOrderPropertyNC, NrPreOrderProperty, PostOrderNC, PostOrder,
+  PostOrderPropertyNC, PostOrderProperty, NrPostOrderPropertyNC,
   NrPostOrderProperty, BinomialTreeOps, BinomialTree);
-
-AUTO( ReadPkg( "zigzag", "lib", "skyline" ), FallingSequence, SkylineAOps,
-  SkylineA, IsSkylineA, SkylineAPerm, SkylineAWord, SkylineBOps, SkylineB,
-  IsSkylineB, SkylineBPerm, SkylineBWord, SkylineDOps, SkylineD, IsSkylineD,
-  SkylineDPerm, SkylineDWord, MajorIndex);
 
 AUTO( ReadPkg( "zigzag", "lib", "quiver" ), QuiverEltOps, QuiverElt,
   IsQuiverElt, QuiverOps, Quiver, IsQuiver);
@@ -102,7 +105,8 @@ AUTO( ReadPkg( "zigzag", "lib", "streets" ), StreetOps, Street, IsStreet,
   SumStreetMatrices, ProductStreets, BasicStreets, BasicStreetsNonZero,
   PathsStreets, PathsStreets1, CartanMatStreets, QuiverMatStreets,
   CartanMatSlantedStreets0, SlantedStreets, CartanMatSlantedStreets,
-  QuiverMatSlantedStreets);
+  QuiverMatSlantedStreets, StreetAlgebraEltOps, StreetAlgebraElt,
+  IsStreetAlgebraElt);
 
 AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
   ProductLSigns, ProductRSigns, OnFaces, KernelSupportMap, FaceEltOps,
@@ -111,8 +115,9 @@ AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
   ProdMat);
 
 AUTO( ReadPkg( "zigzag", "lib", "classes" ), CyclicShiftsOps, CyclicShifts,
-  IsCyclicShifts, MinimalLengthConjugate, CentralizerComplementMinimal,
-  CentralizerComplement, IsNonCompliant, CuspidalClasses, CyclicShiftClasses);
+  IsCyclicShifts, MinimalLengthConjugate, MaximalLengthConjugate,
+  CentralizerComplementMinimal, CentralizerComplement, IsNonCompliant,
+  CuspidalClasses, CyclicShiftClasses);
 
 AUTO( ReadPkg( "zigzag", "lib", "iterator" ), IteratorList, IteratorEmpty,
   Iterator, IteratorRange, MPartitionsOps, MPartitions, NrMPartitions,
@@ -137,4 +142,7 @@ AUTO( ReadPkg( "zigzag", "lib", "shapes" ), ShapeOps, Shape, IsShape,
 
 AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
   IsCategory, CategoryEltOps, CategoryElt, IsCategoryElt);
+
+AUTO( ReadPkg( "zigzag", "lib", "characte" ), RegularCharacter,
+  TrivialCharacter, SignCharacter);
 

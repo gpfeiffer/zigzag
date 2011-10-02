@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!---------------------------------------------------------------------------
+-- 
+-A  characte.xml                
+--
+-A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
+--
+-Y  Copyright (C) 2010, Götz Pfeiffer 
+--
+-->
+
+<!DOCTYPE Chapter SYSTEM "gapdoc.dtd">
+
+<Chapter Label="ch:characters">
+<Heading>Characters.</Heading>
+
+<#Include Label="Intro:Characters">
+
+<Section Label="Sect:NamedChar">
+<Heading>Named Characters.</Heading>
+
+In this section I describe the functions that construct 
+particular named characters.
+
+<#Include Label="TrivialCharacter">
+
+<#Include Label="RegularCharacter">
+
+<#Include Label="SignCharacter">
+
+</Section>
+
+</Chapter>
