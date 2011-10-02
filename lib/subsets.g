@@ -42,11 +42,13 @@
 ##  <Description>
 ##    A set composition of <M>I = \{1, \dots, n\}</M> is an ordered partition
 ##    of the set <M>I</M>.  The sizes of the parts of a set composition of
-##    <M>I</M> determine a composition of the integer <M>n</M>.  This
-##    function computes for a given composition of <M>n</M> the unique set
-##    composition of <M>I</M> in which the part <M>[i]</M> of <M>i \in I</M>
-##    precedes the part <M>[k]</M> of <M>k \in I</M> whenever <M>i \leq
-##    k</M>
+##    <M>I</M> determine a composition of the integer <M>n</M>.  Denote
+##    by <M>[i]</M> the unique part containing <M>i \in I</M>.  The function 
+##    <C>SetComposition</C> computes for a given composition of the integer 
+##    <M>n</M> the unique set composition of <M>I</M> with parts of sizes as
+##    in the composition and in which the part <M>[i]</M> of <M>i \in I</M>
+##    precedes the part <M>[k]</M> of <M>k \in I</M> whenever <M>i &lt;
+##    k</M>.
 ##  <Example>
 ##  gap> l:= List(Shapes(CoxeterGroup("A", 5)), Size);
 ##  [ 1, 5, 6, 4, 1, 6, 3, 1, 2, 2, 1 ]
