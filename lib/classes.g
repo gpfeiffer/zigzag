@@ -652,59 +652,59 @@ end;
 ##
 ##  <#GAPDoc Label="CyclicShiftClasses">
 ##  <ManSection>
-##  <Func Name="CyclicShiftClasses" Arg="W"/>
-##  <Func Name="CyclicShiftClasses" Arg="C"/>
+##  <Func Name="CyclicShiftClasses" Arg="W, w"/>
 ##  <Returns>
-##    the set of all cyclic shift classes of a finite Coxeter group <A>W</A>,
-##    or a conjugacy class <A>C</A> of it.
+##    the set of all cyclic shift classes in the conjugacy class of
+##    the element <A>w</A> of the finite Coxeter group <A>W</A>.
 ##  </Returns>
 ##  <Description>
-##  This function computes the partition of a finite Coxeter group <A>W</A>
-##  or one of its conjugacy classes into cyclic shift classes;
+##  This function computes the partition of the conjugacy class of
+##  the element <A>w</A> in the finite Coxeter group <A>W</A>
+##  into cyclic shift classes;
 ##  see <Ref Func="CyclicShifts"/>.
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 4);
-##  CoxeterGroup("A", 4)
-##  gap> cyc:=  CyclicShifts(W, PermCoxeterWord(W, [1..4]));
-##  gap> W:= CoxeterGroup("A", 2);;  W.name:= "W";;
-##  gap> CyclicShiftClasses(W);
-##  [ CyclicShifts( W, () ), CyclicShifts( W, (1,3)(2,5)(4,6) ), 
-##    CyclicShifts( W, (1,4)(2,3)(5,6) ), CyclicShifts( W, (1,5)(2,4)(3,6) ), 
-##    CyclicShifts( W, (1,2,6)(3,4,5) ) ]
-##  gap> List(last, Size);
-##  [ 1, 1, 1, 1, 2 ]
+##  gap> W:= CoxeterGroup("A", 3);;  W.name:= "W";;
+##  gap> cyc:= CyclicShiftClasses(W, PermCoxeterWord(W, [1..3]));
+##  [ CyclicShifts( W, ( 1,12, 3, 2)( 4,11,10, 5)( 6, 9, 8, 7) ), 
+##    CyclicShifts( W, ( 1, 3, 7, 9)( 2,11, 6,10)( 4, 8, 5,12) ) ]
+##  gap> List(cyc, Size);
+##  [ 4, 2 ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-##  FIXME: a more sophisticated implementation starts with the
-##  cyclic shift classes of elements of minimal length 
-##  (corresponding to the shape of w) and grows the rest
-##  via an orbit algorithm upwards, using the AllAbove method!
-##  and thereby also constructs the graph!
-##
-CyclicShiftClasses:= function(obj)
-    local   W,  all,  classes,  cyc;
+CyclicShiftClasses:= function(W, w)
+    local   classes,  a,  old,  new,  all,  cyc;
     
-    if IsConjugacyClass(obj) then
-        W:= obj.group;
-        all:= Elements(obj);
-        classes:= [];
+    # make sure w has minimal length in its class
+    w:= MinimalLengthConjugate(W, w);
+    
+    # initialize list with minimal length cyclic shift classes.
+    classes:= [];
+    for a in Call(Shape(W, Set(CoxeterWord(W, w))), "Transversal") do
+        Add(classes, CyclicShifts(W, w^a));
+    od;
+    
+    # grow to completion.
+    old:= classes;
+    while old <> [] do
+        new:= [];
+        all:= Union(List(old, x-> Call(x, "AllAbove")));
         while all <> [] do
             cyc:= CyclicShifts(W, all[1]);
-            Add(classes, cyc);
+            Add(new, cyc);
             all:= Difference(all, cyc);
         od;
-    elif IsBound(obj.isCoxeterGroup) and obj.isCoxeterGroup = true then
-        classes:= Concatenation(List(ConjugacyClasses(obj), CyclicShiftClasses));
-    else
-        Error("<obj> must be a Coxeter group or a conjugacy class");
-    fi;
+        Append(classes, new);
+        old:= new;
+    od;
+    
+    # return result.
     return classes;
 end;
-
     
+
 #############################################################################
 ##
 #E  Emacs  . . . . . . . . . . . . . . . . . . . . . . local emacs variables.
