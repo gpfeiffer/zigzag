@@ -9,8 +9,11 @@
 ##  This file contains routines for conjugacy classes of Coxeter groups.
 ##
 ##  <#GAPDoc Label="Intro:Classes">
-##    The conjugacy classes of a finite Coxeter group <M>W</M> are naturally
-##    partitioned into cyclic shift classes.<P/>
+##    The conjugation action of a finite group on itself naturally
+##    partitions the group into conjugacy classes.
+##    The conjugacy classes of a finite Coxeter group <M>W</M> are 
+##    further partitioned into cyclic shift classes, see
+##    <Ref Func="CyclicShifts"/> and <Ref Func="CyclicShiftClasses"/>.<P/>
 ##
 ##    The stabilizer in <M>W</M> of the fixed point space of an element
 ##    <M>w \in W</M> is a parabolic subgroup <M>P</M> of <M>W</M>.
@@ -25,9 +28,7 @@
 ##    <F>classes.g</F>.  
 ##  <#/GAPDoc>
 ##
-##  TODO: 
-##  CyclicShiftClasses(W)
-##  CyclicShiftClasses(ConjugacyClass(W, w))
+
 
 #############################################################################
 ##  
@@ -292,7 +293,7 @@ end;
 
 #############################################################################
 ##
-#F  Edges( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . edges.
+#F  Edges( <shifts> )  . . . . . . . . . . . . . . . . . . . . . . . . edges.
 ##
 
 
@@ -314,7 +315,6 @@ end;
 ##
 ##  the iterator version of a cyclic shift class:
 ##  
-##
 ##  <#GAPDoc Label="Iterator(shifts)">
 ##  <ManSection>
 ##  <Meth Name="Iterator" Arg="shifts" Label="for cyclic shifts"/>
@@ -411,6 +411,25 @@ end;
 
 #############################################################################
 ##
+#F  OneAbove( <shifts> )
+##
+##  find an element immediately above this cyclic shift class, or
+##  return false if none exists.
+##
+##  FIXME: using the iterator presumably would be faster ...
+##
+CyclicShiftsOps.OneAbove:= function(self)
+    Elements(self);
+    if self.above = [] then
+        return false;
+    else
+        return self.above[1];
+    fi;
+end;
+
+
+#############################################################################
+##
 #F  MinimalLengthConjugate:= function(W, w)
 ##
 ##  find a conjugate of w of minimal length.
@@ -421,6 +440,23 @@ MinimalLengthConjugate:= function(W, w)
     cyc:= CyclicShifts(W, w);
     while not Call(cyc, "IsMinimal") do
         cyc:= CyclicShifts(W, Call(cyc, "OneBelow"));
+    od;
+    return cyc.w;
+end;
+
+
+#############################################################################
+##
+#F  MaximalLengthConjugate:= function(W, w)
+##
+##  find a conjugate of w of maximal length.
+##
+MaximalLengthConjugate:= function(W, w)
+    local   cyc;
+    
+    cyc:= CyclicShifts(W, w);
+    while not Call(cyc, "IsMaximal") do
+        cyc:= CyclicShifts(W, Call(cyc, "OneAbove"));
     od;
     return cyc.w;
 end;
@@ -613,22 +649,58 @@ end;
 
 
 #############################################################################
-CyclicShiftClasses:= function(C)
+##
+##  <#GAPDoc Label="CyclicShiftClasses">
+##  <ManSection>
+##  <Func Name="CyclicShiftClasses" Arg="W"/>
+##  <Func Name="CyclicShiftClasses" Arg="C"/>
+##  <Returns>
+##    the set of all cyclic shift classes of a finite Coxeter group <A>W</A>,
+##    or a conjugacy class <A>C</A> of it.
+##  </Returns>
+##  <Description>
+##  This function computes the partition of a finite Coxeter group <A>W</A>
+##  or one of its conjugacy classes into cyclic shift classes;
+##  see <Ref Func="CyclicShifts"/>.
+##  <Example>
+##  gap> W:= CoxeterGroup("A", 4);
+##  CoxeterGroup("A", 4)
+##  gap> cyc:=  CyclicShifts(W, PermCoxeterWord(W, [1..4]));
+##  gap> W:= CoxeterGroup("A", 2);;  W.name:= "W";;
+##  gap> CyclicShiftClasses(W);
+##  [ CyclicShifts( W, () ), CyclicShifts( W, (1,3)(2,5)(4,6) ), 
+##    CyclicShifts( W, (1,4)(2,3)(5,6) ), CyclicShifts( W, (1,5)(2,4)(3,6) ), 
+##    CyclicShifts( W, (1,2,6)(3,4,5) ) ]
+##  gap> List(last, Size);
+##  [ 1, 1, 1, 1, 2 ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+##  FIXME: a more sophisticated implementation starts with the
+##  cyclic shift classes of elements of minimal length 
+##  (corresponding to the shape of w) and grows the rest
+##  via an orbit algorithm upwards, using the AllAbove method!
+##  and thereby also constructs the graph!
+##
+CyclicShiftClasses:= function(obj)
     local   W,  all,  classes,  cyc;
     
-    if not IsConjugacyClass(C) then
-        Error("<C> must be a conjugacy class");
+    if IsConjugacyClass(obj) then
+        W:= obj.group;
+        all:= Elements(obj);
+        classes:= [];
+        while all <> [] do
+            cyc:= CyclicShifts(W, all[1]);
+            Add(classes, cyc);
+            all:= Difference(all, cyc);
+        od;
+    elif IsBound(obj.isCoxeterGroup) and obj.isCoxeterGroup = true then
+        classes:= Concatenation(List(ConjugacyClasses(obj), CyclicShiftClasses));
+    else
+        Error("<obj> must be a Coxeter group or a conjugacy class");
     fi;
-    
-    W:= C.group;
-    all:= Elements(C);
-    classes:= [];
-    while all <> [] do
-        cyc:= CyclicShifts(W, all[1]);
-        Add(classes, cyc);
-        all:= Difference(all, cyc);
-    od;
-    
     return classes;
 end;
 
