@@ -11,6 +11,15 @@
 ##  <#GAPDoc Label="Intro:Characters">
 ##    Characters ...<P/>
 ##
+##    This chapter describes functions which compute certain named
+##    characters of a finite group <M>G</M>, or a finite Coxeter group 
+##    <M>W</M>; see <Ref Func="RegularCharacter"/>, 
+##    <Ref Func="TrivialCharacter"/>, and <Ref Func="SignCharacter"/>.
+##    Moreover, there is a function to compute all linear characters
+##    of a finite group; see <Ref Func="LinearCharacters"/>.
+##    And there are various list of characters of some importance
+##    for a finite Coxeter group; see <Ref Func="ECharacters"/>.
+##
 ##    The functions described in this chapter are implemented in the file
 ##    <F>characte.g</F>.  
 ##  <#/GAPDoc>
@@ -18,7 +27,7 @@
 
 #############################################################################
 ##
-##  RegularCharacter
+#F  RegularCharacter( <grp> ) . . . . . . . . . . . . . .  regular character.
 ##
 ##  the regular character (|G|, 0, ..., 0) of G
 ##
@@ -50,9 +59,9 @@ end;
 
 #############################################################################
 ##
-##  TrivialCharacter
+#F  TrivialCharacter( <grp> ) . . . . . . . . . . . . . .  trivial character.
 ##  
-##  the trivial character (1, 1, .... 1) of G
+##  the trivial character (1, 1, ..., 1) of G
 ##
 ##  <#GAPDoc Label="TrivialCharacter">
 ##  <ManSection>
@@ -79,7 +88,7 @@ end;
 
 #############################################################################
 ##
-##  SignCharacter
+#F  SignCharacter( <W> )  . . . . . . . . . . . . . . . . . . sign character.
 ##
 ##  the sign character w \mapsto (-1)^{\ell(w)} of W
 ##
@@ -112,7 +121,7 @@ end;
 
 #############################################################################
 ##
-##  GeneratorsAbelianGroup
+#F  GeneratorsAbelianGroup( <grp> )  . . . . . . . . . . . . . .  generators.
 ##
 ##  how to find a set of independent generators of an abelian group
 ##
@@ -136,7 +145,7 @@ end;
 
 #############################################################################
 ##
-##  LinearCharactersAbelianGroup
+#F  LinearCharactersAbelianGroup( <A> )  . . . . . . . . . linear characters. 
 ##
 ##  how to compute all linear characters of an abelian group.
 ##  This implementation uses Algorithm H to first list the elements
@@ -299,8 +308,6 @@ ECharacters:= function(W)
     dia:= List(ConjugacyClasses(W), x-> Size(W)/Size(x));
     return List(mat, x-> List([1..Length(x)], i-> x[i] * dia[i]));    
 end;
-
-
 
 
 #############################################################################
