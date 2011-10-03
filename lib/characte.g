@@ -299,6 +299,13 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
+##  this table can be computed as product of the following matrices:
+##    sha:= [Iverson(lambda contains J)]_{lambda in Lambda, J \subseteq S}
+##    nu:= mu^-1
+##    inc:= IncidenceMatShapes(Shapes(W))
+##    sdc:= SizesDescentConjugacyClasses(W)
+##    dia:= DiagonalMat(List(ConjugacyClasses(W), x-> Size(W)/Size(x)))
+##
 ECharacters:= function(W)
     local   mat,  dia;
     
