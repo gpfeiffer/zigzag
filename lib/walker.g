@@ -667,12 +667,14 @@ end;
 
 #############################################################################
 ##
-##  Algorithm M (mixed-radix generation)  [Knuth, TAOCP 7.2.1.1]
+#F  VisitMixedTuplesM( <list>, <visit> )
+##
+##  (mixed-radix generation)  [Knuth, TAOCP 7.2.1.1, Algorithm M]
 ##
 ##  given a list of Lists, form (and visit) all possible combinations
 ##  of one from each list.
 ##
-AlgorithmM:= function(list, visit)
+VisitMixedTuplesM:= function(list, visit)
     local   n,  m,  a,  c,  j;
     
     n:= Length(list);
@@ -704,7 +706,7 @@ end;
 ##  given list gens of (images of) independent generators of an abelian group
 ##  and their orders m, generate all elements
 ##
-ProductsAlgorithmM:= function(gens, m)
+ProductsMixedTuplesM:= function(gens, m)
     local   n,  a,  c,  all,  j;
     
     n:= Length(gens);
@@ -739,7 +741,7 @@ end;
 ##  given a list of Lists, form (and visit) all possible combinations
 ##  of one from each list, changing only one component at each step.
 ##
-AlgorithmH:= function(list, visit)
+VisitMixedTuplesH:= function(list, visit)
     local   n,  m,  a,  c,  f,  o,  j;
 
     n:= Length(list);
@@ -779,7 +781,7 @@ end;
 ##  and their orders m, generate all elements; this time by multiplying with 
 ##  a single generator only (or its inverse) in each step.
 ##
-ProductsAlgorithmH:= function(gens, m)
+ProductsMixedTuplesH:= function(gens, m)
     local   n,  a,  c,  f,  o,  all,  j;
     
     n:= Length(gens);

@@ -139,9 +139,9 @@ end;
 ##  LinearCharactersAbelianGroup
 ##
 ##  how to compute all linear characters of an abelian group.
-##  This implementation uses ProductsAlgorithmH to first list the elements
+##  This implementation uses Algorithm H to first list the elements
 ##  of the group, and later compute the values of a particular character on
-##  each element, and it uses AlgorithmM to generate all linear characters,
+##  each element, and it uses Algorithm M to generate all linear characters,
 ##  by prescribing images of the generators in all possible ways.
 ##
 LinearCharactersAbelianGroup:= function(A)
@@ -158,15 +158,15 @@ LinearCharactersAbelianGroup:= function(A)
     n:= Length(gens);
     
     # force elements to be listed in a particular way?
-    elts:= ProductsAlgorithmH(gens, ords);
+    elts:= ProductsMixedTuplesH(gens, ords);
     fus:= List(ConjugacyClasses(A), c-> Position(elts, Representative(c)));
     
     # generate linear characters
     lin:= [];
     fun:= function(l)
-        Add(lin, ProductsAlgorithmH(l, ords));
+        Add(lin, ProductsMixedTuplesH(l, ords));
     end;
-    AlgorithmM(List(ords, i-> List([0..i-1], j-> E(i)^j)), fun);
+    VisitMixedTuplesM(List(ords, i-> List([0..i-1], j-> E(i)^j)), fun);
     
     return List(lin, x-> Character(A, x{fus}));
 end;
@@ -178,6 +178,44 @@ end;
 ##
 ##  compute the linear characters of G as those of the abelian quotient
 ##  G/G' and then lift back to G.
+##
+##  <#GAPDoc Label="LinearCharacters">
+##  <ManSection>
+##  <Func Name="LinearCharacters" Arg="G"/>
+##  <Returns>
+##    the list of linear characters of the group <A>G</A>.
+##  </Returns>
+##  <Description>
+##    A character of a finite group <M>G</M> is called <E>linear</E> 
+##    if it has degree 1, that
+##    is, if it is a representation of <M>G</M>.
+##    The linear characters of <M>G</M> form a group 
+##    under multiplication, which is isomorphic to the commutator
+##    quotient, the largest abelian quotient of <M>G</M>.
+##  <Example>
+##  gap> g:= Group((1,5,2,6)(3,8,4,7), (1,3,2,4)(5,7,6,8));;
+##  gap> g.name:= "Q8";;
+##  gap> lin:= LinearCharacters(g);
+##  [ Character( Q8, [ 1, 1, 1, 1, 1 ] ), Character( Q8, [ 1, 1, 1, -1, -1 ] ), 
+##    Character( Q8, [ 1, 1, -1, 1, -1 ] ), Character( Q8, [ 1, 1, -1, -1, 1 ] ) ]
+##  </Example>
+##    These characters can be displayed as follows.
+##  <Example>
+##  gap> Display(CharTable(g), rec(chars:= List(lin, x-> x.values), 
+##  >            letter:= "L", powermap:= false, centralizers:= false));
+##  Q8
+##  
+##         1a 2a 4a 4b 4c
+##  
+##  L.1     1  1  1  1  1
+##  L.2     1  1  1 -1 -1
+##  L.3     1  1 -1  1 -1
+##  L.4     1  1 -1 -1  1
+##  
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 LinearCharacters:= function(G)
     
