@@ -30,4 +30,17 @@ particular named characters.
 
 </Section>
 
+<Section Label="Sect:LinearChars">
+<Heading>Linear Characters.</Heading>
+
+<#Include Label="LinearCharacters">
+
+</Section>
+
+<Section Label="Sect:CharLists">
+<Heading>Lists of Characters.</Heading>
+
+<#Include Label="ECharacters">
+
+</Section>
 </Chapter>

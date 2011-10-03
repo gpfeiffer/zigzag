@@ -26,7 +26,6 @@
 <Heading>Properties of Descent Algebras.</Heading>
 
 <#Include Label="SymmetricMatrix">
-<#Include Label="ECharacters">
 </Section>
 
 <Section>
