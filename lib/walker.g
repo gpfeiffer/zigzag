@@ -9,13 +9,27 @@
 ##  This file contains some tree walking and counting functions.
 ##  
 ##  <#GAPDoc Label="Intro:Walker">
-##    An <E>tree</E> <Index>tree</Index>, or more precisely an ordered
+##    An <E>tree</E><Index>tree</Index>, or more precisely an ordered
 ##    rooted tree, is a collection of nodes, each of which has a list
 ##    of nodes as children.  Here, a tree is an object that implements
 ##    the <K>Children()</K> method in such a way that it returns a
 ##    (possibly empty) list of trees.  Several strategies for walking
 ##    over the nodes of a tree for processing or just counting them
 ##    are provided.<P/>
+##
+##    Frequently, the search tree is given implicitly, rather than
+##    through an explicit notion of child nodes.  Examples of this include
+##    the task of visiting all the elements of the Cartesian product
+##    <M>X_1 \times X_2 \times X_r</M> of <M>r</M> finite sets
+##    <M>X_1, X_2,\dots, X_r</M>.  Here the children of the root node
+##    are the elements of <M>X_1</>, each such node has children
+##    corresponding to the elements of <M>X_2</M>, etc.  This chapter
+##    contains two efficient algorithms for the traveral of such a tree;
+##    see <Ref Func="VisitMixedTuplesM"/> and <Ref Func="VisitMixedTuplesH"/>.
+##    As an application, we get two efficient function for the 
+##    enumeration of the elements of a finite abelian group,
+##    regarded as a direct product of cyclic groups; see
+##    <Ref Func="ProductsMixedTuplesM"/> and <Ref Func="ProductsMixedTuplesH"/>.
 ##
 ##    The functions described in this chapter are implemented in the file
 ##    <F>walker.g</F>.  
