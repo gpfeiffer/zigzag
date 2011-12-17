@@ -1151,23 +1151,32 @@ end;
 ##  G.8       1   .  .  . .
 ##  
 ##  </Example>
+##    SizesDescentConjugacyClasses attempts to locate the data in ZigZag's
+##    data library (see ...).
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##  
-##  Application:  to calculate the symmetric matrix  \theta(x_J)(x_K)
+##  Applications:  to calculate the symmetric matrix  \theta(x_J)(x_K)
+##                 to calculate ECharacters
 ##  
 SizesDescentConjugacyClasses:= function(W)
-    local   subsets,  cc,  sec,  csp,  per,  J,  row,  des,  w,  p,  
+    local   subsets,  cc,  sdc,  csp,  per,  J,  row,  des,  w,  p,  
             class;
     
     if IsBound(W.sizesDescentConjugacyClasses) then
         return W.sizesDescentConjugacyClasses;
     fi;
     
+    sdc:= ZIGZAG.Data(W, "sdc");
+    if sdc <> false then
+        W.sizesDescentConjugacyClasses:= sdc;
+        return sdc;
+    fi;
+    
     subsets:= SubsetsShapes(Shapes(W));
     cc:= ConjugacyClasses(W);
-    sec:= [];
+    sdc:= [];
     
     csp:= List(cc, x-> CycleStructurePerm(Representative(x)));
     per:= Sortex(csp);
@@ -1184,7 +1193,7 @@ SizesDescentConjugacyClasses:= function(W)
                p:= PositionSorted(csp, CycleStructurePerm(w))/per;
                row[p]:= row[p] + 1;
            od;
-           Add(sec, row);
+           Add(sdc, row);
            InfoZigzag2(".\c");
        od;
        InfoZigzag2("\n");
@@ -1197,14 +1206,14 @@ SizesDescentConjugacyClasses:= function(W)
                p:= PositionProperty(cc, x-> w in x);
                row[p]:= row[p] + 1;
            od;
-           Add(sec, row);
+           Add(sdc, row);
            InfoZigzag2(",\c");
        od;
        InfoZigzag2("\n");
    fi;
    
-   W.sizesDescentConjugacyClasses:= sec;
-   return sec;
+   W.sizesDescentConjugacyClasses:= sdc;
+   return sdc;
 end;
 
 

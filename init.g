@@ -13,6 +13,7 @@
 ZIGZAG:= rec();
 ZIGZAG.Version:= "0.78";
 ZIGZAG.Date:= "09-03-2011";
+ReadPkg("zigzag", "dat", "admin");
 
 #############################################################################
 ##
@@ -148,4 +149,3 @@ AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
 AUTO( ReadPkg( "zigzag", "lib", "characte" ), RegularCharacter,
   TrivialCharacter, SignCharacter, GeneratorsAbelianGroup,
   LinearCharactersAbelianGroup, LinearCharacters, ECharacters);
-

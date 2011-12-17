@@ -13,7 +13,7 @@ import glob, re
 funcs = {}
 for name in glob.glob("lib/*.g"):
     text = open(name)
-    list = 'AUTO( ReadPkg( "zigzag", "lib", "%s" )' %  name[4:-2]
+    list = 'AUTO( ReadPkg( "zigzag", "%s", "%s" )' %  (name[:3], name[4:-2])
     for line in text:
         m = re.match('(^[a-zA-z0-9_]+ *):=', line)
         if m:
