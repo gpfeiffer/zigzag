@@ -133,6 +133,26 @@ LeanTreeOps.Leaves:= function(self)
     fi;
 end;
 
+# returns the (sorted) list of all subtrees (as lean trees)
+LeanTreeOps.SubTrees:= function(self)
+    local list;
+    list:= [self];
+    if self.l <> 0 then
+        Append(list, Call(self.l, "SubTrees"));
+        Append(list, Call(self.r, "SubTrees"));
+    fi;
+    Sort(list);
+    return list;
+end;
+
+# the profile of a tree is the partition obtained as values of all subtree.
+# (this is a partition of what number?)
+# (note that paths in the partition quiver have profiles, too)
+LeanTreeOps.Profile:= function(self)
+    return List(Call(self, "SubTrees"), x-> Call(x, "Top"));
+end;
+
+
 # the size of a lean tree is the number of inner nodes (= number of leaves - 1)
 LeanTreeOps.Size:= function(self)
     if self.l = 0 then 
@@ -283,6 +303,17 @@ end;
 
 LeanForestOps.Leaves:= function(self)
     return Concatenation(List(self.list, t-> Call(t, "Leaves")));
+end;
+
+LeanForestOps.SubTrees:= function(self)
+    local list;
+    list:= Concatenation(List(self.list, x-> Call(x, "SubTrees")));
+    Sort(list);
+    return list;
+end;
+
+LeanForestOps.Profile:= function(self)
+    return List(Call(self, "SubTrees"), x-> Call(x, "Top"));
 end;
 
 
