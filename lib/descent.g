@@ -205,7 +205,7 @@ DescentEltOps.x:= function(self)
     if self.basis = "x" then
         return self;
     elif self.basis = "y" then
-        mat:= IncidenceMatShapes(Shapes(W));
+        mat:= IncidenceMatShapes(Shapes(self.W));
         return DescentElt(self.D, "x", self.coeff / mat);
     elif self.basis = "e" then
         mat:= Call(self.D, "Mu");
@@ -221,10 +221,10 @@ DescentEltOps.y:= function(self)
     if self.basis = "y" then
         return self;
     elif self.basis = "x" then
-        mat:= IncidenceMatShapes(Shapes(W));
+        mat:= IncidenceMatShapes(Shapes(self.W));
         return DescentElt(self.D, "y", self.coeff * mat);
     elif self.basis = "e" then
-        mat:= Call(self.D, "Mu")^-1 * IncidenceMatShapes(Shapes(W));
+        mat:= Call(self.D, "Mu")^-1 * IncidenceMatShapes(Shapes(self.W));
         return DescentElt(self.D, "y", self.coeff * mat);
     else
         Error("not yet implemented");
@@ -240,7 +240,7 @@ DescentEltOps.e:= function(self)
         mat:= Call(self.D, "Mu");
         return DescentElt(self.D, "e", self.coeff * mat);
     elif self.basis = "y" then
-        mat:= IncidenceMatShapes(Shapes(W))^-1 * Call(self.D, "Mu");
+        mat:= IncidenceMatShapes(Shapes(self.W))^-1 * Call(self.D, "Mu");
         return DescentElt(self.D, "e", self.coeff * mat);
     else
         Error("not yet implemented");
