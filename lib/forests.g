@@ -1016,6 +1016,7 @@ end;
 
 #############################################################################
 ##  how to turn a forest into an alley.
+##FIXME: this doesn't work!
 ForestOps.Alley:= function(self)
     local   l,  m,  i,  v,  n,  set,  bar,  new;
     l:= Call(self, "IndicesPostfix");
@@ -1039,6 +1040,35 @@ ForestOps.Factors:= function(self)
     n:= Sum(Call(self, "Top"));
     return List(FactorsAlley(Call(self, "Alley")), x-> ForestAlley(n, x));
 end;
+
+ForestOps.Factors:= function(self)
+    local   pos,  max,  i,  new,  one;
+    
+    # short forests only have one factor.
+    if Call(self, "Size") < 2 then
+        return [self];
+    fi;
+    
+    # otherwise, locate maximum and split.
+    pos:= 1;
+    max:= self.list[pos].i;
+    for i in [2..Length(self.list)] do
+        if self.list[i].i > max then
+            pos:= i;
+            max:= self.list[pos].i;
+        fi;
+    od;
+    
+    new:= Forest(Concatenation(self.list{[1..pos-1]},
+            [self.list[pos].l, self.list[pos].r],
+                  self.list{[pos+1..Length(self.list)]}));
+    
+    one:= Forest(List(self.list, x-> Tree(x.n)));
+    one.list[pos]:= Tree(1, Tree(self.list[pos].l.n), Tree(self.list[pos].r.n));
+    
+    return Concatenation([one], Call(new, "Factors"));            
+end;
+
 
 
 #############################################################################
