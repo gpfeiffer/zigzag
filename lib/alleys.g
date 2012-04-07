@@ -327,6 +327,16 @@ SubsetsAlley:= function(alley)
     return sub;
 end;
 
+# conversely
+AlleySubsets:= function(sets)
+    local   alley,  i;
+    alley:= [sets[1], []];
+    for i in [2..Length(sets)] do
+        Append(alley[2], Difference(sets[i-1], sets[i]));
+    od;
+    return alley;
+end;
+
 
 #############################################################################
 ##

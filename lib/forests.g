@@ -1005,6 +1005,21 @@ ForestOps.Split:= function(self, i)
     return Forest(new);
 end;
 
+# a labelled forest has a unique suffix.
+# (note this depends on ordering of labels.)
+ForestOps.Suffix:= function(self)
+    local   i;
+    i:= Call(self, "Size");
+    i:= PositionProperty(self.list, t-> t.i = i);
+    return ApplyMethod(self, "Split", i);
+end;
+
+##  Suffixes
+##  replaces method inherited from LeanForestOps
+ForestOps.Suffixes:= function(self)
+    return [Call(self, "Suffix")];
+end;
+
 #############################################################################
 ##
 ##  x.Join(i, l) replaces x_i, x_{i+1} by x_i /l\ x_{i+1}
@@ -1076,24 +1091,23 @@ ForestAlley:= function(n, a)
 
 end;
 
+
+#############################################################################
+##  the list of compositions travelled trough by a forest.
+ForestOps.Compositions:= function(self)
+    local   list;
+    list:= [Call(self, "Top")];
+    if Call(self, "Size") = 0 then
+        return list;
+    fi;
+    Append(list, Call(Call(self, "Suffix"), "Compositions"));
+    return list;
+end;
+
 #############################################################################
 ##  how to turn a forest into an alley.
-##FIXME: this doesn't work!
 ForestOps.Alley:= function(self)
-    local   l,  m,  i,  v,  n,  set,  bar,  new;
-    l:= Call(self, "IndicesPostfix");
-    m:= [];
-    for i in [1..Length(l)] do
-        if l[i] > 0 then 
-            m[l[i]]:= i; 
-        fi; 
-    od;
-    v:= Call(self, "Bot");
-    n:= Sum(v);
-    set:= SubsetComposition(v);
-    bar:= Difference([1..n-1], set);
-    new:= bar{m};
-    return [Union(set, new), Reversed(new)];
+    return AlleySubsets(List(Call(self, "Compositions"), SubsetComposition));
 end;
 
 #############################################################################
