@@ -447,6 +447,27 @@ LeanForestOps.CanonicalLabels:= function(self)
     return Forest(List(self.list, treeLabels));
 end;
  
+# favorably labelled tree -- prefix order.
+LeanForestOps.FavoriteLabels:= function(self)
+    local   lab,  treeLabels;
+    
+    lab:= 0;
+    
+    treeLabels:= function(t)
+        local   l,  r;
+        if t.l = 0 then
+            return Tree(t.n);
+        else
+            r:= treeLabels(t.r);
+            l:= treeLabels(t.l);
+            lab:= lab + 1;
+            return Tree(lab, l, r);
+        fi;
+    end;
+    
+    return Forest(Reversed(List(Reversed(self.list), treeLabels)));
+end;
+ 
 
 
 #############################################################################
