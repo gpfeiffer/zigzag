@@ -244,6 +244,13 @@ LeanTrees:= function(n)
     return all;
 end;
 
+
+##  number of lean trees.  This is A007317 in the OEIS.
+NrLeanTrees:= function(n)
+    return Sum([1..n-1], i->  NrLeanTrees(i) * NrLeanTrees(n-i)) + 1;
+end;
+
+
 ##  make all slanted lean trees of value n
 SlantedLeanTrees:= function(n)
     local   all,  i,  a,  b;
@@ -258,6 +265,12 @@ SlantedLeanTrees:= function(n)
     od;
     Sort(all);
     return all;
+end;
+
+
+##  number of slanted lean trees.  this sequence is not in the OEIS!!
+NrSlantedLeanTrees:= function(n)
+    return Sum([1..Int((n-1)/2)], i-> NrSlantedLeanTrees(i) * NrSlantedLeanTrees(n-i)) + 1;
 end;
 
 
