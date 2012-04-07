@@ -240,6 +240,7 @@ LeanTrees:= function(n)
             od;
         od;
     od;
+    Sort(all);
     return all;
 end;
 
@@ -255,6 +256,7 @@ SlantedLeanTrees:= function(n)
             od;
         od;
     od;
+    Sort(all);
     return all;
 end;
 
@@ -355,6 +357,7 @@ LeanForests:= function(n)
             Append(all, List(Cartesian(List(q, LeanTrees)), LeanForest));
         od;
     od;
+    Sort(all);
     return all;
 end;
 
@@ -369,6 +372,7 @@ SlantedLeanForests:= function(n)
             Append(all, List(Cartesian(List(q, SlantedLeanTrees)), LeanForest));
         od;
     od;
+    Sort(all);
     return all;
 end;
 
