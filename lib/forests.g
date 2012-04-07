@@ -714,15 +714,27 @@ end;
 ##  Trees also have indices ...
 ##
 # the list of indices on the inner nodes.
+TreeOps.IndicesPostfix:= function(self)
+    if self.i = 0 then 
+        return [];
+    else
+        # postfix order!
+        return Concatenation(Call(self.l, "IndicesPostfix"), 
+                       Call(self.r, "IndicesPostfix"),
+                       [self.i]);
+    fi;
+end;
+
 TreeOps.Indices:= function(self)
     if self.i = 0 then 
         return [];
     else
-#        return Concatenation(Call(self.l, "Indices"), [self.i], Call(self.r, "Indices"));
-        # postfix order!
-        return Concatenation(Call(self.l, "Indices"), 
-                       Call(self.r, "Indices"),
-                       [self.i]);
+        # prefix order!
+        return Concatenation(
+                       [self.i],
+                       Call(self.l, "Indices"), 
+                       Call(self.r, "Indices")
+                       );
     fi;
 end;
 
@@ -832,6 +844,17 @@ ForestOps.Index:= function(self)
     return Concatenation(List(self.list, t-> Call(t, "Indices")));
 end;
 
+
+ForestOps.IndicesPostfix:= function(self)
+    local   ind,  l;
+    
+    ind:= [];
+    for l in List(self.list, t-> Call(t, "IndicesPostfix")) do
+        Append(ind, l);
+        Add(ind, 0);
+    od;
+    return ind;
+end;
 
 ForestOps.Indices:= function(self)
     local   ind,  l;
@@ -974,7 +997,7 @@ end;
 ##  how to turn a forest into an alley.
 ForestOps.Alley:= function(self)
     local   l,  m,  i,  v,  n,  set,  bar,  new;
-    l:= Call(self, "Indices");
+    l:= Call(self, "IndicesPostfix");
     m:= [];
     for i in [1..Length(l)] do
         if l[i] > 0 then 
