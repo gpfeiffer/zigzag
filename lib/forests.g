@@ -109,6 +109,20 @@ LeanTreeOps.\<:= function(l, r)
     fi;
 end;
 
+LeanTreeOps.\<:= function(l, r)
+    if not IsLeanTree(l) then return true; fi;
+    if not IsLeanTree(r) then return false; fi;
+    if l.n = r.n then 
+        if Call(l, "Size") = Call(r, "Size") then
+            return l.l < r.l or (l.l = r.l and l.r < r.r);
+        else
+            return Call(l, "Size") > Call(r, "Size");
+        fi;
+    else
+        return l.n < r.n;
+    fi;
+end;
+
 
 #############################################################################
 
