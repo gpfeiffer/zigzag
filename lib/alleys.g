@@ -81,10 +81,10 @@ ProductAlleyList:= function(list)
     
     product:= list[1];
     for i in [2..Length(list)] do
+        product:= ProductAlleys(product, list[i]);
         if product = 0 then
             return 0;
         fi;
-        product:= ProductAlleys(product, list[i]);
     od;
     
     return product;
