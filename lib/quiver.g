@@ -253,3 +253,200 @@ end;
 QuiverOps.Edges:= function(self)
     return List([1..Length(self.path1)], i-> QuiverElt(self, [1], [[i]]));
 end;
+
+
+#############################################################################
+##
+##  Edges.  (of quivers)
+##
+    
+    
+#############################################################################
+##  
+#O  EdgeOps  . . . . . . . . . . . . . . . . . . . operations record.
+##  
+##  An edge is an operator, capable of turning one vertex into the next
+##  through the function stored in its 'nextVertex' component.
+##
+EdgeOps:= OperationsRecord("EdgeOps");
+
+#############################################################################
+##
+##  constructor
+##
+Edge:= function(data, nextVertex)
+    local   self;
+    self:= rec();
+    self.data:= data;
+    self.nextVertex:= nextVertex;
+    self.isEdge:= true;
+    self.operations:= EdgeOps;
+    return self;
+end;
+    
+
+#############################################################################
+##
+#F  IsEdge( <obj> )  . . . . . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsEdge">
+##  <ManSection>
+##  <Func Name="IsEdge" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a edge  and <K>false</K>
+##    otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsEdge:= function(obj)
+    return IsRec(obj) and IsBound(obj.isEdge) and obj.isEdge = true;
+end;
+
+
+EdgeOps.Print:= function(self)
+    Print(self.data);
+end;
+
+
+#############################################################################
+##
+#F  <l> = <r>  . . . . . . . . . . . . . . . . . . . . . . . . equality test.
+##
+EdgeOps.\= := function(l, r)
+    if not IsEdge(l) then return false; fi;
+    if not IsEdge(r) then return false; fi;
+    return l.data = r.data;
+end;
+
+#############################################################################
+##
+#F  <l> < <r>  . . . . . . . . . . . . . . . . . . . . . . . . .  comparison.
+##
+EdgeOps.\< := function(l, r)
+    if not IsEdge(l) then return false; fi;
+    if not IsEdge(r) then return true; fi;
+    return l.data < r.data;
+end;
+
+EdgeOps.\^:= function(vertex, self)
+    return self.nextVertex(vertex, self);
+end;
+
+
+#############################################################################
+NextPartition:= function(vertex, edge)
+    local   a,  b,  i,  new;
+    a:= edge.data[1];
+    b:= edge.data[2];
+    i:= Position(vertex, a+b);
+    if i = false then return false; fi;
+    new:= Copy(vertex);
+    new[i]:= a;
+    Add(new, b);
+    Sort(new);
+    return new;
+end;
+    
+PartitionEdge:= function(a, b)
+    return Edge([a,b], NextPartition);
+end;
+
+
+#############################################################################
+NextSubset:= function(vertex, edge)
+    local   a,  set;
+    a:= edge.data;
+    set:= Copy(vertex);
+    if not a in set then
+        return false;
+    fi;
+    RemoveSet(set, a);
+    return set;
+end;
+
+TakeAwayEdge:= function(a)
+    return Edge(a, NextSubset);
+end;
+
+
+#############################################################################
+##
+##  Paths.  (of quivers)
+##
+
+#############################################################################
+##  
+#O  PathOps  . . . . . . . . . . . . . . . . . . . operations record.
+##  
+##  A path is a pair, consisting of a vertex 'source' and a (possibly empty)
+##  list of edges.
+##
+PathOps:= OperationsRecord("PathOps");
+
+#############################################################################
+##
+##  constructor
+##
+Path:= function(source, edges)
+    local   target,  edge,  self;
+    
+    # compute target.
+    target:= source;
+    for edge in edges do
+        target:= target^edge;
+        if target = false then
+            return false;
+        fi;
+    od;
+    
+    # construct new object.
+    self:= rec();
+    self.source:= source;
+    self.edges:= edges;
+    self.target:= target;
+    self.isPath:= true;
+    self.operations:= PathOps;
+    return self;
+end;
+    
+
+#############################################################################
+##
+#F  IsPath( <obj> )  . . . . . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsPath">
+##  <ManSection>
+##  <Func Name="IsPath" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a path  and <K>false</K>
+##    otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsPath:= function(obj)
+    return IsRec(obj) and IsBound(obj.isPath) and obj.isPath = true;
+end;
+
+
+PathOps.Print:= function(self)
+    Print("Path( ", self.source, ", ", self.edges, " )");
+end;
+
+PathOps.Source:= function(self)
+    return self.source;
+end;
+
+PathOps.Target:= function(self)
+    return self.target;
+end;
+
+
+PathOps.\*:= function(l, r)
+    if l.target <> r.source then
+        return false;
+    fi;
+    return Path(l.source, Concatenation(l.edges, r.edges));
+end;
+
