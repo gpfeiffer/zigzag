@@ -273,6 +273,16 @@ end;
 
 
 #############################################################################
+AddPartPartitionPath:= function(path, part)
+    local   source;
+    source:= Copy(path.source);
+    Add(source, part);
+    Sort(source);
+    return Path(source, path.edges);
+end;
+    
+
+#############################################################################
 ##  
 #O  QuiverEltOps  . . . . . . . . . . . . . . . . . . . operations record.
 ##  
@@ -431,3 +441,11 @@ end;
 QuiverEltOps.\-:= function(l, r)
     return l + (-1)*r;
 end;
+
+
+#############################################################################
+AddPartPartitionQuiverElt:= function(qe, part)
+    return QuiverElt(qe.coef, List(qe.elts, x-> AddPartPartitionPath(x, part)));
+end;
+    
+
