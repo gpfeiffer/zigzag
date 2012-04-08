@@ -19,185 +19,6 @@
 ##
 
 #############################################################################
-##  
-#O  QuiverEltOps  . . . . . . . . . . . . . . . . . . . operations record.
-##  
-##  A quiver element is a linear combination of paths in a quiver.
-##
-QuiverEltOps:= OperationsRecord("QuiverEltOps");
-
-#############################################################################
-##  
-#C  QuiverElt( <quiver>, <coef>, <elts> ) . . . . . . . . . . .  constructor.
-##  
-##  <#GAPDoc Label="QuiverElt">
-##  <ManSection>
-##  <Func Name="QuiverElt" Arg="n"/>
-##  <Func Name="QuiverElt" Arg="l, r"/>
-##  <Returns>
-##    a new quiver element with components ...
-##  </Returns>
-##  <Description>
-##  This is the simple constructor for quiver elements ...
-##  <Example>
-##  gap> QuiverElt(q, [1], [[3, 4]]);
-##  QuiverElt(q, [1], [[3, 4]])
-##  </Example>
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-QuiverElt:= function(quiver, coef, elts)
-    local   self;
-    self:= rec(quiver:= quiver, coef:= coef, elts:= elts);
-    self.isQuiverElt:= true;
-    self.operations:= QuiverEltOps;
-    return self;
-end;
-
-
-#############################################################################
-##
-#F  IsQuiverElt( <obj> )  . . . . . . . . . . . . . . . . . .  type check.
-##
-##  <#GAPDoc Label="IsQuiverElt">
-##  <ManSection>
-##  <Func Name="IsQuiverElt" Arg="obj"/>
-##  <Returns>
-##    <K>true</K> if <A>obj</A> is a quiver element and <K>false</K>
-##    otherwise.
-##  </Returns>
-##  </ManSection>
-##  <#/GAPDoc>
-##                   
-IsQuiverElt:= function(obj)
-    return IsRec(obj) and IsBound(obj.isQuiverElt) and obj.isQuiverElt = true;
-end;
-
-#############################################################################
-QuiverEltOps.\=:= function(l, r)
-    
-    if IsQuiverElt(l) then
-        if IsQuiverElt(r) then
-            return l.quiver = r.quiver and l.coef = r.coef and l.elts = r.elts;
-        else
-            return false;
-        fi;
-    else
-        return false;
-    fi;
-end;    
-
-
-#############################################################################
-QuiverEltOps.Print:= function(self)
-    Print("QuiverElt( ", self.quiver, ", ", self.coef, ", ", self.elts, " )");
-end;
-
-# how to normalize a list e of elements with coefficients c
-QuiverEltOps.Normalize:= function(self)
-    local   e,  c,  eee,  ccc,  i,  elt,  coe;
-
-    e:= self.elts;
-    c:= self.coef;
-    SortParallel(e, c);
-    eee:= [];
-    ccc:= [];
-    i:= 1;
-    while i <= Length(e) do
-        elt:= e[i];
-        coe:= c[i];
-        i:= i+1;
-        while i <= Length(e) and e[i] = elt do
-            coe:= coe + c[i];
-            i:= i+1;
-        od;
-        if coe <> 0*coe then
-            Add(eee, elt);
-            Add(ccc, coe);
-        fi;
-    od;
-    
-    # copy normalized lists back into originals.
-    self.elts:= eee;
-    self.coef:= ccc;
-end;
-    
-
-
-#############################################################################
-QuiverEltOps.\*:= function(l, r)
-    local   q,  c,  e,  i,  pathL,  t,  j,  pathR,  s,  pro;
- 
-    if IsQuiverElt(l) then
-        if IsQuiverElt(r) then
-            if l.quiver <> r.quiver then
-                Error("factors must belong to the same quiver");
-            fi;
-            
-            q:= l.quiver;
-            c:= [];
-            e:= [];
-            
-            for i in [1..Length(l.elts)] do
-                pathL:= l.elts[i];
-                t:= Call(q.path1[pathL[Length(pathL)]], "Target");
-                for j in [1..Length(r.elts)] do
-                    pathR:= r.elts[j];
-                    s:= Call(q.path1[pathR[1]], "Source");
-                    
-                    if s = t then
-                        Add(c, l.coef[i] * r.coef[j]);
-                        Add(e, Concatenation(pathL, pathR));
-                    fi;
-                od;
-            od;
-            
-            pro:= QuiverElt(q, c, e);
-        else
-            pro:= QuiverElt(l.quiver, l.coef * r, l.elts);
-        fi;
-    else
-        pro:= QuiverElt(r.quiver, l * r.coef, r.elts);
-    fi;
-    
-    Normalize(pro);
-    return pro;
-end;    
-
-#############################################################################
-QuiverEltOps.\+:= function(l, r)
-    local   q,  sum;
-    
-    if IsQuiverElt(l) then
-        if IsQuiverElt(r) then
-            if l.quiver <> r.quiver then
-                Error("factors must belong to the same quiver");
-            fi;
-            
-            q:= l.quiver;
-            
-            sum:= QuiverElt(q, Concatenation(l.coef, r.coef), 
-                          Concatenation(l.elts, r.elts));
-            Normalize(sum);
-            return sum;
-        else
-            Error("<r> is not a QuiverElt");
-        fi;
-    else
-        Error("<l> is not a QuiverElt");
-    fi;
-end;    
-
-
-#############################################################################
-QuiverEltOps.\-:= function(l, r)
-    return l + (-1)*r;
-end;
-
-    
-    
-#############################################################################
 ##
 ##  Quivers.  (As path algebras)
 ##
@@ -450,3 +271,163 @@ PathOps.\*:= function(l, r)
     return Path(l.source, Concatenation(l.edges, r.edges));
 end;
 
+
+#############################################################################
+##  
+#O  QuiverEltOps  . . . . . . . . . . . . . . . . . . . operations record.
+##  
+##  A quiver element is a linear combination of paths
+##
+QuiverEltOps:= OperationsRecord("QuiverEltOps");
+
+#############################################################################
+##  
+#C  QuiverElt( <coef>, <elts> ) . . . . . . . . . . .  constructor.
+##  
+##  <#GAPDoc Label="QuiverElt">
+##  <ManSection>
+##  <Func Name="QuiverElt" Arg="coef, elts"/>
+##  <Returns>
+##    a new quiver element with components ...
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for quiver elements ...
+##  <Example>
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+QuiverElt:= function(coef, elts)
+    local   self;
+    self:= rec();
+    self.coef:= coef;
+    self.elts:= elts;
+    self.isQuiverElt:= true;
+    self.operations:= QuiverEltOps;
+    return self;
+end;
+
+
+#############################################################################
+##
+#F  IsQuiverElt( <obj> )  . . . . . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsQuiverElt">
+##  <ManSection>
+##  <Func Name="IsQuiverElt" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a quiver element and <K>false</K>
+##    otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsQuiverElt:= function(obj)
+    return IsRec(obj) and IsBound(obj.isQuiverElt) and obj.isQuiverElt = true;
+end;
+
+#############################################################################
+QuiverEltOps.\=:= function(l, r)
+    
+    if IsQuiverElt(l) then
+        if IsQuiverElt(r) then
+            return l.coef = r.coef and l.elts = r.elts;
+        else
+            return false;
+        fi;
+    else
+        return false;
+    fi;
+end;    
+
+
+#############################################################################
+QuiverEltOps.Print:= function(self)
+    Print("QuiverElt( ", self.coef, ", ", self.elts, " )");
+end;
+
+# how to normalize a list e of elements with coefficients c
+QuiverEltOps.Normalize:= function(self)
+    local   e,  c,  eee,  ccc,  i,  elt,  coe;
+
+    e:= self.elts;
+    c:= self.coef;
+    SortParallel(e, c);
+    eee:= [];
+    ccc:= [];
+    i:= 1;
+    while i <= Length(e) do
+        elt:= e[i];
+        coe:= c[i];
+        i:= i+1;
+        while i <= Length(e) and e[i] = elt do
+            coe:= coe + c[i];
+            i:= i+1;
+        od;
+        if coe <> 0*coe then
+            Add(eee, elt);
+            Add(ccc, coe);
+        fi;
+    od;
+    
+    # copy normalized lists back into originals.
+    self.elts:= eee;
+    self.coef:= ccc;
+end;
+    
+
+
+#############################################################################
+QuiverEltOps.\*:= function(l, r)
+    local   c,  e,  i,  j,  path,  pro;
+ 
+    if IsQuiverElt(l) then
+        if IsQuiverElt(r) then
+            c:= [];
+            e:= [];
+            for i in [1..Length(l.elts)] do
+                for j in [1..Length(r.elts)] do
+                    path:= l.elts[i] * r.elts[j];
+                    if path <> false then
+                        Add(c, l.coef[i] * r.coef[j]);
+                        Add(e, path);
+                    fi;
+                od;
+            od;
+            pro:= QuiverElt(c, e);
+        else
+            pro:= QuiverElt(l.coef * r, l.elts);
+        fi;
+    else
+        pro:= QuiverElt(l * r.coef, r.elts);
+    fi;
+    
+    Call(pro, "Normalize");
+    return pro;
+end;    
+
+#############################################################################
+QuiverEltOps.\+:= function(l, r)
+    local   sum;
+    
+    # check arguments.
+    if not IsQuiverElt(r) then
+        Error("<r> is not a QuiverElt");
+    fi;
+    if not IsQuiverElt(l) then
+        Error("<l> is not a QuiverElt");
+    fi;
+    
+    # form the sum.
+    sum:= QuiverElt(Concatenation(l.coef, r.coef), 
+                  Concatenation(l.elts, r.elts));
+    Call(sum, "Normalize");
+    return sum;
+end;    
+
+
+#############################################################################
+QuiverEltOps.\-:= function(l, r)
+    return l + (-1)*r;
+end;
