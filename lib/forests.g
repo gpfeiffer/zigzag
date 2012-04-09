@@ -1572,22 +1572,48 @@ LeanForestClassOps.Elements:= function(self)
 end;
 
 #############################################################################
+##  FIXME: use formula for efficiency
 LeanForestClassOps.\*:= function(l, r)
-    local   pro,  forestL,  forestR,  new;
+    local   pro,  cnt,  forestL,  forestR,  new,  pos,  result,  i;
     
     if not IsLeanForestClass(l) or not IsLeanForestClass(r) then
         Error("don't know how to multiply <l> and <r>");
     fi;
     
+    # compute all products
     pro:= [];
-    forestL:= Representative(l);
-    for forestR in Elements(r) do
-        new:= forestL * forestR;
-        if new <> false then
-            Add(pro, LeanForestClass(new));
-        fi;
+    cnt:= [];
+    for forestL in Elements(l) do
+        for forestR in Elements(r) do
+            new:= forestL * forestR;
+            if new <> false then
+                pos:= Position(pro, new);
+                if pos = false then
+                    Add(pro, new);
+                    Add(cnt, 1);
+                else
+                    cnt[pos]:= cnt[pos] + 1;
+                fi;
+            fi;
+        od;
     od;
-    return pro;    
+    
+    SortParallel(pro, cnt);
+    
+    # split into classes.
+    result:= [];
+    while pro <> [] do
+        new:= LeanForestClass(pro[1]);
+        for i in [1..cnt[1]] do
+            Add(result, new);
+        od;
+        pos:= List(Elements(new), x-> Position(pro, x));
+        pos:= Difference([1..Length(pro)], pos);
+        pro:= pro{pos};
+        cnt:= cnt{pos};
+    od;
+        
+    return result;    
 end;
 
 
@@ -1734,7 +1760,7 @@ end;
 #############################################################################
 ##  FIXME: use double coset formula for efficient computation.
 ForestClassOps.\*:= function(l,  r)
-    local   pro,  forestL,  forestR,  new;
+    local   pro,  forestL,  forestR,  new,  result;
     
     if not IsForestClass(l) or not IsForestClass(r) then
         Error("don't know how to multiply <l> and <r>");
