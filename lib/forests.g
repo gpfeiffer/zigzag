@@ -1791,16 +1791,182 @@ end;
 
 #############################################################################
 ##
+##  Lean Forest Algebra Elements.
+##
+##  A lean forest algebra element is a linear combination of forest classes.
+##
+
+#############################################################################
+##  
+#O  LeanForestAlgebraEltOps  . . . . . . . . . . . . . . . operations record.
+##  
+LeanForestAlgebraEltOps:= OperationsRecord("LeanForestAlgebraEltOps");
+
+#############################################################################
+##  
+#C  LeanForestAlgebraElt( <coef>, <elts> )  . . . . . . . . . .  constructor.
+##  
+##  <#GAPDoc Label="LeanForestAlgebraElt">
+##  <ManSection>
+##  <Func Name="LeanForestAlgebraElt" Arg="coef, elts"/>
+##  <Returns>
+##    a new quiver element with components ...
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for quiver elements ...
+##  <Example>
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+LeanForestAlgebraElt:= function(coef, elts)
+    local   self;
+    self:= rec();
+    self.coef:= coef;
+    self.elts:= elts;
+    self.isLeanForestAlgebraElt:= true;
+    self.operations:= LeanForestAlgebraEltOps;
+    return self;
+end;
+
+
+#############################################################################
+##
+#F  IsLeanForestAlgebraElt( <obj> )  . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsLeanForestAlgebraElt">
+##  <ManSection>
+##  <Func Name="IsLeanForestAlgebraElt" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a quiver element and <K>false</K>
+##    otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsLeanForestAlgebraElt:= function(obj)
+    return IsRec(obj) and IsBound(obj.isLeanForestAlgebraElt) 
+           and obj.isLeanForestAlgebraElt = true;
+end;
+
+#############################################################################
+LeanForestAlgebraEltOps.\=:= function(l, r)
+    
+    if IsLeanForestAlgebraElt(l) then
+        if IsLeanForestAlgebraElt(r) then
+            return l.coef = r.coef and l.elts = r.elts;
+        else
+            return false;
+        fi;
+    else
+        return false;
+    fi;
+end;    
+
+
+#############################################################################
+LeanForestAlgebraEltOps.Print:= function(self)
+    Print("LeanForestAlgebraElt( ", self.coef, ", ", self.elts, " )");
+end;
+
+# how to normalize a list e of elements with coefficients c
+LeanForestAlgebraEltOps.Normalize:= function(self)
+    local   e,  c,  eee,  ccc,  i,  elt,  coe;
+
+    e:= self.elts;
+    c:= self.coef;
+    SortParallel(e, c);
+    eee:= [];
+    ccc:= [];
+    i:= 1;
+    while i <= Length(e) do
+        elt:= e[i];
+        coe:= c[i];
+        i:= i+1;
+        while i <= Length(e) and e[i] = elt do
+            coe:= coe + c[i];
+            i:= i+1;
+        od;
+        if coe <> 0*coe then
+            Add(eee, elt);
+            Add(ccc, coe);
+        fi;
+    od;
+    
+    # copy normalized lists back into originals.
+    self.elts:= eee;
+    self.coef:= ccc;
+end;
+    
+
+
+#############################################################################
+LeanForestAlgebraEltOps.\*:= function(l, r)
+    local   c,  e,  i,  j,  class,  pro;
+ 
+    if IsLeanForestAlgebraElt(l) then
+        if IsLeanForestAlgebraElt(r) then
+            c:= [];
+            e:= [];
+            for i in [1..Length(l.elts)] do
+                for j in [1..Length(r.elts)] do
+                    for class in l.elts[i] * r.elts[j] do
+                        Add(c, l.coef[i] * r.coef[j]);
+                        Add(e, class);
+                    od;
+                od;
+            od;
+            pro:= LeanForestAlgebraElt(c, e);
+        else
+            pro:= LeanForestAlgebraElt(l.coef * r, l.elts);
+        fi;
+    else
+        pro:= LeanForestAlgebraElt(l * r.coef, r.elts);
+    fi;
+    
+    Call(pro, "Normalize");
+    return pro;
+end;    
+
+#############################################################################
+LeanForestAlgebraEltOps.\+:= function(l, r)
+    local   sum;
+    
+    # check arguments.
+    if not IsLeanForestAlgebraElt(r) then
+        Error("<r> is not a LeanForestAlgebraElt");
+    fi;
+    if not IsLeanForestAlgebraElt(l) then
+        Error("<l> is not a LeanForestAlgebraElt");
+    fi;
+    
+    # form the sum.
+    sum:= LeanForestAlgebraElt(Concatenation(l.coef, r.coef), 
+                  Concatenation(l.elts, r.elts));
+    Call(sum, "Normalize");
+    return sum;
+end;    
+
+
+#############################################################################
+LeanForestAlgebraEltOps.\-:= function(l, r)
+    return l + (-1)*r;
+end;
+
+
+#############################################################################
+##
 ##  Forest Algebra Elements.
 ##
 ##  A forest algebra element is a linear combination of forest classes.
 ##
 
-###############################################################################
+#############################################################################
 ##  
-#O  ForestAlgebraEltOps  . . . . . . . . . . . . . . . . . . . operations record.
+#O  ForestAlgebraEltOps  . . . . . . . . . . . . . . . . . operations record.
 ##  
-ForestAlgebraEltOps:= OperationsRecord("ForestAlgebraEltOps");
+ForestAlgebraEltOps:= OperationsRecord("ForestAlgebraEltOps", LeanForestAlgebraEltOps);
 
 #############################################################################
 ##  
@@ -1833,7 +1999,7 @@ end;
 
 #############################################################################
 ##
-#F  IsForestAlgebraElt( <obj> )  . . . . . . . . . . . . . . . . . .  type check.
+#F  IsForestAlgebraElt( <obj> )  . . . . . . . . . . . . . . . .  type check.
 ##
 ##  <#GAPDoc Label="IsForestAlgebraElt">
 ##  <ManSection>
@@ -1868,36 +2034,6 @@ end;
 ForestAlgebraEltOps.Print:= function(self)
     Print("ForestAlgebraElt( ", self.coef, ", ", self.elts, " )");
 end;
-
-# how to normalize a list e of elements with coefficients c
-ForestAlgebraEltOps.Normalize:= function(self)
-    local   e,  c,  eee,  ccc,  i,  elt,  coe;
-
-    e:= self.elts;
-    c:= self.coef;
-    SortParallel(e, c);
-    eee:= [];
-    ccc:= [];
-    i:= 1;
-    while i <= Length(e) do
-        elt:= e[i];
-        coe:= c[i];
-        i:= i+1;
-        while i <= Length(e) and e[i] = elt do
-            coe:= coe + c[i];
-            i:= i+1;
-        od;
-        if coe <> 0*coe then
-            Add(eee, elt);
-            Add(ccc, coe);
-        fi;
-    od;
-    
-    # copy normalized lists back into originals.
-    self.elts:= eee;
-    self.coef:= ccc;
-end;
-    
 
 
 #############################################################################
@@ -1946,11 +2082,5 @@ ForestAlgebraEltOps.\+:= function(l, r)
     Call(sum, "Normalize");
     return sum;
 end;    
-
-
-#############################################################################
-ForestAlgebraEltOps.\-:= function(l, r)
-    return l + (-1)*r;
-end;
 
 
