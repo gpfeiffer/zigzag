@@ -1052,13 +1052,13 @@ ForestOps.\*:= function(l, r)
     leaf:= Call(prod, "Leaves");
     list:= r.list;
     if Length(leaf) <> Length(list) then
-        return 0;
+        return false;
     fi;
     
     # loop over the leaf nodes.
     for i in [1..Length(leaf)] do
         if leaf[i].n <> list[i].n then
-            return 0;
+            return false;
         fi;
         
         # attach tree to leaf node with same n-value.
@@ -1631,6 +1631,24 @@ ForestClassOps.Elements:= function(self)
 end;
 
 
+#############################################################################
+ForestClassOps.\*:= function(l,  r)
+    local   pro,  forestL,  forestR,  new;
+    
+    if not IsForestClass(l) or not IsForestClass(r) then
+        Error("don't know how to multiply <l> and <r>");
+    fi;
+    
+    pro:= [];
+    forestL:= Representative(l);
+    for forestR in Elements(r) do
+        new:= forestL * forestR;
+        if new <> false then
+            Add(pro, ForestClass(new));
+        fi;
+    od;
+    return pro;    
+end;
 
 
 #############################################################################
