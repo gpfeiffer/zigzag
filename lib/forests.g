@@ -1395,3 +1395,171 @@ IsCoreNiceRelation:= function(r)
     l:= List(l, Intersection);
     return Intersection(l) = [];
 end;
+
+
+#############################################################################
+##
+##  Forest Algebra Elements.
+##
+##  A forest algebra element is a linear combination of forest classes.
+##
+
+###############################################################################
+##  
+#O  ForestAlgebraEltOps  . . . . . . . . . . . . . . . . . . . operations record.
+##  
+ForestAlgebraEltOps:= OperationsRecord("ForestAlgebraEltOps");
+
+#############################################################################
+##  
+#C  ForestAlgebraElt( <coef>, <elts> ) . . . . . . . . . . .  constructor.
+##  
+##  <#GAPDoc Label="ForestAlgebraElt">
+##  <ManSection>
+##  <Func Name="ForestAlgebraElt" Arg="coef, elts"/>
+##  <Returns>
+##    a new quiver element with components ...
+##  </Returns>
+##  <Description>
+##  This is the simple constructor for quiver elements ...
+##  <Example>
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+ForestAlgebraElt:= function(coef, elts)
+    local   self;
+    self:= rec();
+    self.coef:= coef;
+    self.elts:= elts;
+    self.isForestAlgebraElt:= true;
+    self.operations:= ForestAlgebraEltOps;
+    return self;
+end;
+
+
+#############################################################################
+##
+#F  IsForestAlgebraElt( <obj> )  . . . . . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsForestAlgebraElt">
+##  <ManSection>
+##  <Func Name="IsForestAlgebraElt" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a quiver element and <K>false</K>
+##    otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsForestAlgebraElt:= function(obj)
+    return IsRec(obj) and IsBound(obj.isForestAlgebraElt) and obj.isForestAlgebraElt = true;
+end;
+
+#############################################################################
+ForestAlgebraEltOps.\=:= function(l, r)
+    
+    if IsForestAlgebraElt(l) then
+        if IsForestAlgebraElt(r) then
+            return l.coef = r.coef and l.elts = r.elts;
+        else
+            return false;
+        fi;
+    else
+        return false;
+    fi;
+end;    
+
+
+#############################################################################
+ForestAlgebraEltOps.Print:= function(self)
+    Print("ForestAlgebraElt( ", self.coef, ", ", self.elts, " )");
+end;
+
+# how to normalize a list e of elements with coefficients c
+ForestAlgebraEltOps.Normalize:= function(self)
+    local   e,  c,  eee,  ccc,  i,  elt,  coe;
+
+    e:= self.elts;
+    c:= self.coef;
+    SortParallel(e, c);
+    eee:= [];
+    ccc:= [];
+    i:= 1;
+    while i <= Length(e) do
+        elt:= e[i];
+        coe:= c[i];
+        i:= i+1;
+        while i <= Length(e) and e[i] = elt do
+            coe:= coe + c[i];
+            i:= i+1;
+        od;
+        if coe <> 0*coe then
+            Add(eee, elt);
+            Add(ccc, coe);
+        fi;
+    od;
+    
+    # copy normalized lists back into originals.
+    self.elts:= eee;
+    self.coef:= ccc;
+end;
+    
+
+
+#############################################################################
+ForestAlgebraEltOps.\*:= function(l, r)
+    local   c,  e,  i,  j,  path,  pro;
+ 
+    if IsForestAlgebraElt(l) then
+        if IsForestAlgebraElt(r) then
+            c:= [];
+            e:= [];
+            for i in [1..Length(l.elts)] do
+                for j in [1..Length(r.elts)] do
+                    path:= l.elts[i] * r.elts[j];
+                    if path <> false then
+                        Add(c, l.coef[i] * r.coef[j]);
+                        Add(e, path);
+                    fi;
+                od;
+            od;
+            pro:= ForestAlgebraElt(c, e);
+        else
+            pro:= ForestAlgebraElt(l.coef * r, l.elts);
+        fi;
+    else
+        pro:= ForestAlgebraElt(l * r.coef, r.elts);
+    fi;
+    
+    Call(pro, "Normalize");
+    return pro;
+end;    
+
+#############################################################################
+ForestAlgebraEltOps.\+:= function(l, r)
+    local   sum;
+    
+    # check arguments.
+    if not IsForestAlgebraElt(r) then
+        Error("<r> is not a ForestAlgebraElt");
+    fi;
+    if not IsForestAlgebraElt(l) then
+        Error("<l> is not a ForestAlgebraElt");
+    fi;
+    
+    # form the sum.
+    sum:= ForestAlgebraElt(Concatenation(l.coef, r.coef), 
+                  Concatenation(l.elts, r.elts));
+    Call(sum, "Normalize");
+    return sum;
+end;    
+
+
+#############################################################################
+ForestAlgebraEltOps.\-:= function(l, r)
+    return l + (-1)*r;
+end;
+
+
