@@ -356,6 +356,43 @@ end;
 
 
 #############################################################################
+##
+##  Products of lean forests.
+##
+LeanForestOps.\*:= function(l, r)
+    local   prod,  leaf,  list,  i,  a;
+    
+    if not IsLeanForest(l) or not IsLeanForest(r) then
+        Error("don't know how to multiply <l> and <r>");
+    fi;
+    
+    prod:= Copy(l);
+    
+    # replace leaves of l by trees of r if possible.
+    leaf:= Call(prod, "Leaves");
+    list:= r.list;
+    if Length(leaf) <> Length(list) then
+        return false;
+    fi;
+    
+    # loop over the leaf nodes.
+    for i in [1..Length(leaf)] do
+        if leaf[i].n <> list[i].n then
+            return false;
+        fi;
+        
+        # attach tree to leaf node with same n-value.
+        for a in "rl" do
+            leaf[i].([a]):= list[i].([a]);      #;-)
+        od;
+    od;
+    
+    # return result.
+    return prod;
+end;
+
+
+#############################################################################
 LeanForestOps.IsSlanted:= function(self)
     return ForAll(self.list, x-> Call(x, "IsSlanted"));
 end;
@@ -1514,6 +1551,24 @@ LeanForestClassOps.Elements:= function(self)
     return list;
 end;
 
+#############################################################################
+LeanForestClassOps.\*:= function(l, r)
+    local   pro,  forestL,  forestR,  new;
+    
+    if not IsLeanForestClass(l) or not IsLeanForestClass(r) then
+        Error("don't know how to multiply <l> and <r>");
+    fi;
+    
+    pro:= [];
+    forestL:= Representative(l);
+    for forestR in Elements(r) do
+        new:= forestL * forestR;
+        if new <> false then
+            Add(pro, LeanForestClass(new));
+        fi;
+    od;
+    return pro;    
+end;
 
 
 
