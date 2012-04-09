@@ -1441,15 +1441,15 @@ end;
 
 #############################################################################
 ##
-##  Street Algebra
+##  Street Algebra Elements.
+##
+##  A street algebra element is a linear combination of streets.
 ##
 
 #############################################################################
 ##  
 #O  StreetAlgebraEltOps . . . . . . . . . . . . . . . . operations record.
 ##  
-##  A joint is a linear combination of traversals of a partitions quiver.
-##
 StreetAlgebraEltOps:= OperationsRecord("StreetAlgebraEltOps");
 
 #############################################################################
@@ -1458,10 +1458,9 @@ StreetAlgebraEltOps:= OperationsRecord("StreetAlgebraEltOps");
 ##  
 ##  <#GAPDoc Label="StreetAlgebraElt">
 ##  <ManSection>
-##  <Func Name="StreetAlgebraElt" Arg="n"/>
-##  <Func Name="StreetAlgebraElt" Arg="l, r"/>
+##  <Func Name="StreetAlgebraElt" Arg="coef, elts"/>
 ##  <Returns>
-##    a new joint with components ...
+##    a new street algebra element with components ...
 ##  </Returns>
 ##  <Description>
 ##  This is the simple constructor for quiver elements ...
@@ -1561,7 +1560,7 @@ StreetAlgebraEltOps.\*:= function(l, r)
         pro:= StreetAlgebraElt(l * r.coef, r.elts);
     fi;
     
-    Normalize(pro);
+    Call(pro, "Normalize");
     return pro;
 end;    
 
@@ -1569,18 +1568,19 @@ end;
 StreetAlgebraEltOps.\+:= function(l, r)
     local   q,  sum;
     
-    if IsStreetAlgebraElt(l) then
-        if IsStreetAlgebraElt(r) then
-            sum:= StreetAlgebraElt(Concatenation(l.coef, r.coef), 
-                          Concatenation(l.elts, r.elts));
-            Normalize(sum);
-            return sum;
-        else
-            Error("<r> is not a StreetAlgebraElt");
-        fi;
-    else
+    # check arguments.
+    if not IsStreetAlgebraElt(r) then
+        Error("<r> is not a StreetAlgebraElt");
+    fi;
+    if not IsStreetAlgebraElt(l) then
         Error("<l> is not a StreetAlgebraElt");
     fi;
+    
+    # from the sum and normalize.
+    sum:= StreetAlgebraElt(Concatenation(l.coef, r.coef), 
+                          Concatenation(l.elts, r.elts));
+    Call(sum, "Normalize");
+    return sum;
 end;    
 
 
