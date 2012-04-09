@@ -1420,18 +1420,19 @@ LeanForestClassOps:= OperationsRecord("LeanForestClassOps", DomainOps);
 ##  FIXME: check arguments?
 ##
 LeanForestClass:= function(forest)
-    local   self;
-    self:= rec();
+    local   self,  list;
+
     if IsLeanForest(forest) then
         list:= Copy(forest.list);
     else
         list:= Copy(forest);
     fi;
     Sort(list);
-    self.list:= list;
+    self:= rec(list:= list);
     self.isDomain:= true;
     self.isLeanForestClass:= true;
     self.operations:= LeanForestClassOps;
+    
     return self;
 end;
 
@@ -1506,6 +1507,7 @@ end;
 ##  <#/GAPDoc>
 ##
 LeanForestClassOps.Elements:= function(self)
+    local   list;
     list:= self.list;
     list:= List(Arrangements(list, Length(list)), LeanForest);
     Sort(list);
@@ -1538,18 +1540,19 @@ ForestClassOps:= OperationsRecord("ForestClassOps", DomainOps);
 ##  FIXME: check arguments?
 ##
 ForestClass:= function(forest)
-    local   self;
-    self:= rec();
+    local   self,  list;
+
     if IsForest(forest) then
         list:= Copy(forest.list);
     else
         list:= Copy(forest);
     fi;
     Sort(list);
-    self.list:= list;
+    self:= rec(list:= list);
     self.isDomain:= true;
     self.isForestClass:= true;
     self.operations:= ForestClassOps;
+    
     return self;
 end;
 
@@ -1624,6 +1627,7 @@ end;
 ##  <#/GAPDoc>
 ##
 ForestClassOps.Elements:= function(self)
+    local   list;
     list:= self.list;
     list:= List(Arrangements(list, Length(list)), Forest);
     Sort(list);
