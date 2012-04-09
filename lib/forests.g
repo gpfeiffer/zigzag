@@ -98,17 +98,7 @@ LeanTreeOps.Print:= function(self)
 end;
 
 #############################################################################
-#  sort lean trees by value
-LeanTreeOps.\<:= function(l, r)
-    if not IsLeanTree(l) then return true; fi;
-    if not IsLeanTree(r) then return false; fi;
-    if l.n = r.n then 
-        return l.l < r.l or (l.l = r.l and l.r < r.r);
-    else
-        return l.n < r.n;
-    fi;
-end;
-
+#  how to sort lean trees.
 LeanTreeOps.\<:= function(l, r)
     if not IsLeanTree(l) then return true; fi;
     if not IsLeanTree(r) then return false; fi;
@@ -790,6 +780,36 @@ TreeOps.Print:= function(self)
         Print("[", self.l, "<", self.i, ">", self.r, "]");
     fi;
 end;
+
+
+
+#############################################################################
+TreeOps.\=:= function(l, r)
+    if not (IsTree(l) and IsTree(r)) then return false; fi;
+    return l.n = r.n and l.i = r.i and l.l = r.l and l.r = r.r;
+end;
+
+
+#############################################################################
+#  how to sort trees.
+TreeOps.\<:= function(l, r)
+    if not IsTree(l) then return true; fi;
+    if not IsTree(r) then return false; fi;
+    if l.n = r.n then 
+        if Call(l, "Size") = Call(r, "Size") then
+            if l.i = r.i then
+                return l.l < r.l or (l.l = r.l and l.r < r.r);
+            else
+                return l.i < r.i;
+            fi;
+        else
+            return Call(l, "Size") > Call(r, "Size");
+        fi;
+    else
+        return l.n < r.n;
+    fi;
+end;
+
 
 #############################################################################
 ##
@@ -1689,8 +1709,30 @@ ForestClassOps.Elements:= function(self)
     return list;
 end;
 
+#############################################################################
+ForestClassOps.\= := function(l, r)
+    if IsForestClass(l) then
+        if IsForestClass(r) then
+            return l.list = r.list;
+        else
+            return false;
+        fi;
+    else
+        return false;
+    fi;
+end;
 
 #############################################################################
+ForestClassOps.\< := function(l, r)
+    if not IsForestClass(l) then  return false; fi;
+    if not IsForestClass(r) then  return true; fi;
+    return l.list < r.list;
+end;
+
+
+
+#############################################################################
+##  FIXME: use double coset formula for efficient computation.
 ForestClassOps.\*:= function(l,  r)
     local   pro,  forestL,  forestR,  new;
     
@@ -1698,15 +1740,26 @@ ForestClassOps.\*:= function(l,  r)
         Error("don't know how to multiply <l> and <r>");
     fi;
     
+    # compute all products
     pro:= [];
-    forestL:= Representative(l);
-    for forestR in Elements(r) do
-        new:= forestL * forestR;
-        if new <> false then
-            Add(pro, ForestClass(new));
-        fi;
+    for forestL in Elements(l) do
+        for forestR in Elements(r) do
+            new:= forestL * forestR;
+            if new <> false then
+                AddSet(pro, new);
+            fi;
+        od;
     od;
-    return pro;    
+    
+    # split into classes.
+    result:= [];
+    while pro <> [] do
+        new:= ForestClass(pro[1]);
+        Add(result, new);
+        pro:= Difference(pro, new);
+    od;
+        
+    return result;    
 end;
 
 
@@ -1823,7 +1876,7 @@ end;
 
 #############################################################################
 ForestAlgebraEltOps.\*:= function(l, r)
-    local   c,  e,  i,  j,  path,  pro;
+    local   c,  e,  i,  j,  class,  pro;
  
     if IsForestAlgebraElt(l) then
         if IsForestAlgebraElt(r) then
@@ -1831,11 +1884,10 @@ ForestAlgebraEltOps.\*:= function(l, r)
             e:= [];
             for i in [1..Length(l.elts)] do
                 for j in [1..Length(r.elts)] do
-                    path:= l.elts[i] * r.elts[j];
-                    if path <> false then
+                    for class in l.elts[i] * r.elts[j] do
                         Add(c, l.coef[i] * r.coef[j]);
-                        Add(e, path);
-                    fi;
+                        Add(e, class);
+                    od;
                 od;
             od;
             pro:= ForestAlgebraElt(c, e);
