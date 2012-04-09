@@ -1399,6 +1399,242 @@ end;
 
 #############################################################################
 ##
+##  LeanForest Classes.
+##
+##  the class of a lean forest consists of all of its rearrangements.
+##
+
+###############################################################################
+##  
+#O  LeanForestClassOps  . . . . . . . . . . . . . . . . . . . operations record.
+##  
+##  inherit from Domain so that set operations apply ...
+##
+LeanForestClassOps:= OperationsRecord("LeanForestClassOps", DomainOps);
+
+#############################################################################
+##
+#C  LeanForestClass( <forest> ) . . . . . . . . . . . . . . . .  constructor.
+##
+##  stores the sorted list of trees!
+##  FIXME: check arguments?
+##
+LeanForestClass:= function(forest)
+    local   self;
+    self:= rec();
+    if IsLeanForest(forest) then
+        list:= Copy(forest.list);
+    else
+        list:= Copy(forest);
+    fi;
+    Sort(list);
+    self.list:= list;
+    self.isDomain:= true;
+    self.isLeanForestClass:= true;
+    self.operations:= LeanForestClassOps;
+    return self;
+end;
+
+
+#############################################################################
+##
+#F  IsLeanForestClass( <obj> ) . . . . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsLeanForestClass">
+##  <ManSection>
+##  <Func Name="IsLeanForestClass" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a lean forest class and <K>false</K>
+##    otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsLeanForestClass:= function(obj)
+    return IsRec(obj) and IsBound(obj.isLeanForestClass) 
+           and obj.isLeanForestClass = true;
+end;
+
+
+#############################################################################  
+##  
+#M  Print( <lfcl> )  . . . . . . . . . . . . . . . . . . . . . . . . . print.
+##  
+LeanForestClassOps.Print:= function(self)
+    Print("LeanForestClass( ", self.list, " )");
+end;
+
+
+#############################################################################
+##
+#F  Representative( <lfcl> ) . . . . . . . . . . . . . . . .  representative.
+##
+##  <#GAPDoc Label="Representative(lean forest class)">
+##  <ManSection>
+##  <Meth Name="Representative" Arg="lfcl" Label="for lean forest classes"/>
+##  <Returns>a representative of the leanForest class <A>fcl</A>.</Returns>
+##  <Description>The representative of a lean forest class constructed as
+##  <C>LeanForestClass(forest)</C> (see <Ref Label="LeanForestClass"/>) will be one
+##  of its elements, that is a rearrangement of <C>forest</C>.
+##  <Example>
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
+LeanForestClassOps.Representative:= function(self)
+    return LeanForest(self.list);
+end;
+
+#############################################################################  
+##  
+#M  Elements( <fcl> ) . . . . . . . . . . . . . . . . . . . . . . . elements.
+##  
+##  <#GAPDoc Label="Elements(leanForest class)">
+##  <ManSection>
+##  <Meth Name="Elements" Arg="fcl" Label="for leanForest classes"/>
+##  <Returns>
+##    the set of elements of the leanForest class <A>fcl</A>.
+##  </Returns>
+##  <Description>
+##    The class of the leanForest <M>(t_1, \dots, t_l)</M> is its orbit under the
+##    action of <M>S_l</M>.
+##  <Example>
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+LeanForestClassOps.Elements:= function(self)
+    list:= self.list;
+    list:= List(Arrangements(list, Length(list)), LeanForest);
+    Sort(list);
+    return list;
+end;
+
+
+
+
+#############################################################################
+##
+##  Forest Classes.
+##
+##  the class of a forest consists of all of its rearrangements.
+##
+
+#############################################################################
+##  
+#O  ForestClassOps . . . . . . . . . . . . . . . . . . . . operations record.
+##  
+##  inherit from Domain so that set operations apply ...
+##
+ForestClassOps:= OperationsRecord("ForestClassOps", DomainOps);
+
+#############################################################################
+##
+#C  ForestClass( <forest> ) . . . . . . . . . . . . . . . . . .  constructor.
+##
+##  stores the sorted list of trees!
+##  FIXME: check arguments?
+##
+ForestClass:= function(forest)
+    local   self;
+    self:= rec();
+    if IsForest(forest) then
+        list:= Copy(forest.list);
+    else
+        list:= Copy(forest);
+    fi;
+    Sort(list);
+    self.list:= list;
+    self.isDomain:= true;
+    self.isForestClass:= true;
+    self.operations:= ForestClassOps;
+    return self;
+end;
+
+
+#############################################################################
+##
+#F  IsForestClass( <obj> ) . . . . . . . . . . . . . . . . .  type check.
+##
+##  <#GAPDoc Label="IsForestClass">
+##  <ManSection>
+##  <Func Name="IsForestClass" Arg="obj"/>
+##  <Returns>
+##    <K>true</K> if <A>obj</A> is a  forest class and <K>false</K>
+##    otherwise.
+##  </Returns>
+##  </ManSection>
+##  <#/GAPDoc>
+##                   
+IsForestClass:= function(obj)
+    return IsRec(obj) and IsBound(obj.isForestClass) 
+           and obj.isForestClass = true;
+end;
+
+
+#############################################################################  
+##  
+#M  Print( <fcl> ) . . . . . . . . . . . . . . . . . . . . . . . . . . print.
+##  
+ForestClassOps.Print:= function(self)
+    Print("ForestClass( ", self.list, " )");
+end;
+
+
+#############################################################################
+##
+#F  Representative( <fcl> )  . . . . . . . . . . . . . . . .  representative.
+##
+##  <#GAPDoc Label="Representative(forest class)">
+##  <ManSection>
+##  <Meth Name="Representative" Arg="fcl" Label="for forest classes"/>
+##  <Returns>a representative of the Forest class <A>fcl</A>.</Returns>
+##  <Description>The representative of a forest class constructed as
+##  <C>ForestClass(forest)</C> (see <Ref Label="ForestClass"/>) will be one
+##  of its elements, that is a rearrangement of <C>forest</C>.
+##  <Example>
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##  
+ForestClassOps.Representative:= function(self)
+    return Forest(self.list);
+end;
+
+#############################################################################  
+##  
+#M  Elements( <fcl> ) . . . . . . . . . . . . . . . . . . . . . . . elements.
+##  
+##  <#GAPDoc Label="Elements(Forest class)">
+##  <ManSection>
+##  <Meth Name="Elements" Arg="fcl" Label="for Forest classes"/>
+##  <Returns>
+##    the set of elements of the Forest class <A>fcl</A>.
+##  </Returns>
+##  <Description>
+##    The class of the Forest <M>(t_1, \dots, t_l)</M> is its orbit under the
+##    action of <M>S_l</M>.
+##  <Example>
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+ForestClassOps.Elements:= function(self)
+    list:= self.list;
+    list:= List(Arrangements(list, Length(list)), Forest);
+    Sort(list);
+    return list;
+end;
+
+
+
+
+#############################################################################
+##
 ##  Forest Algebra Elements.
 ##
 ##  A forest algebra element is a linear combination of forest classes.
