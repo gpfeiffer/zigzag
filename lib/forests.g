@@ -1597,6 +1597,20 @@ LeanForestClassOps.Elements:= function(self)
 end;
 
 #############################################################################
+##
+##  The co-length of a (lean) forest class is the size of its stabilizer.
+##
+LeanForestClassOps.CoLength:= function(self)
+    return Product(Collected(self.list), x-> Factorial(x[2]));
+end;    
+
+#############################################################################
+LeanForestClassOps.Size:= function(self)
+    return Factorial(Length(self.list))/Call(self, "CoLength");
+end;
+
+
+#############################################################################
 ##  FIXME: use formula for efficiency
 LeanForestClassOps.\*:= function(l, r)
     local   pro,  cnt,  forestL,  forestR,  new,  pos,  result,  i;
@@ -1656,7 +1670,7 @@ end;
 ##  
 ##  inherit from Domain so that set operations apply ...
 ##
-ForestClassOps:= OperationsRecord("ForestClassOps", DomainOps);
+ForestClassOps:= OperationsRecord("ForestClassOps", LeanForestClassOps);
 
 #############################################################################
 ##
@@ -2113,12 +2127,9 @@ end;
 ##
 ##  The homomorphism from L to M.
 ##
-##  FIXME: where to hang Multiplier??
-##
 ForestClassOps.Lean:= function(self)
-    local   forest;
-    forest:= Representative(self);
-    forest:= Call(forest, "Lean");
-    return LeanForestAlgebraElt([Call(forest, "Multiplier")],
-                   [LeanForestClass(forest)]);
+    local   lean,  mult;
+    lean:= LeanForestClass(Call(Representative(self), "Lean"));
+    mult:= Call(lean, "CoLength")/Call(self, "CoLength");
+    return LeanForestAlgebraElt([mult], [lean]);
 end;
