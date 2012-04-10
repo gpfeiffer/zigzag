@@ -300,6 +300,19 @@ IsLeanForest:= function(obj)
     return IsRec(obj) and IsBound(obj.isLeanForest) and obj.isLeanForest = true;
 end;
 
+
+LeanForestOps.\=:= function(l, r)
+    if not (IsLeanForest(l) and IsLeanForest(r)) then return false; fi;
+    return l.list = r.list;
+end;
+
+LeanForestOps.\<:= function(l, r)
+    if not IsLeanForest(r) then return true; fi;
+    if not IsLeanForest(l) then return false; fi;
+    return l.list < r.list;
+end;
+
+
 #############################################################################
 LeanForestOps.Print:= function(self)
     Print("LeanForest( ", self.list, " )");
@@ -969,6 +982,18 @@ end;
 IsForest:= function(obj)
     return IsRec(obj) and IsBound(obj.isForest) and obj.isForest = true;
 end;
+
+ForestOps.\=:= function(l, r)
+    if not (IsForest(l) and IsForest(r)) then return false; fi;
+    return l.list = r.list;
+end;
+
+ForestOps.\<:= function(l, r)
+    if not IsForest(r) then return true; fi;
+    if not IsForest(l) then return false; fi;
+    return l.list < r.list;
+end;
+
 
 #############################################################################
 ForestOps.Print:= function(self)
@@ -2084,3 +2109,16 @@ ForestAlgebraEltOps.\+:= function(l, r)
 end;    
 
 
+#############################################################################
+##
+##  The homomorphism from L to M.
+##
+##  FIXME: where to hang Multiplier??
+##
+ForestClassOps.Lean:= function(self)
+    local   forest;
+    forest:= Representative(self);
+    forest:= Call(forest, "Lean");
+    return LeanForestAlgebraElt([Call(forest, "Multiplier")],
+                   [LeanForestClass(forest)]);
+end;
