@@ -44,14 +44,19 @@ fi;
 #A  AUTO . . . . . . . . . . . . . . . . . . . . . . . . . . . .  auto reads.  
 ##
 AUTO( ReadPkg( "zigzag", "lib", "forests" ), LeanTreeOps, LeanTree,
-  IsLeanTree, IsSlanted, LeanTrees, SlantedLeanTrees, LeanForestOps,
-  LeanForest, IsLeanForest, LeanForests, SlantedLeanForests,
-  SortedSlantedLeanForests, CartanMatSortedSlantedLeanForests, TreeOps, Tree,
-  IsTree, CompositionSubset, SubsetComposition, ForestOps, Forest, IsForest,
+  IsLeanTree, IsSlanted, LeanTrees, NrLeanTrees, SlantedLeanTrees,
+  NrSlantedLeanTrees, LeanForestOps, LeanForest, IsLeanForest, LeanForests,
+  SlantedLeanForests, SortedSlantedLeanForests,
+  CartanMatSortedSlantedLeanForests, TreeOps, Tree, IsTree, SimpleTree,
+  CompositionSubset, SubsetComposition, ForestOps, Forest, IsForest,
   ForestAlley, StandardFactorizationLyndon, StandardBracketingLyndon1,
   StandardBracketingLyndon, StandardBracketing, LyndonBasis, LyndonPaths,
   IsCompletelyReducibleStreet, NiceRelationsSym, DrawNiceRelation,
-  IsCoreNiceRelation);
+  IsCoreNiceRelation, LeanForestClassOps, LeanForestClass, IsLeanForestClass,
+  ForestClassOps, ForestClass, IsForestClass, LeanForestAlgebraEltOps,
+  LeanForestAlgebraElt, IsLeanForestAlgebraElt, ForestAlgebraEltOps,
+  ForestAlgebraElt, IsForestAlgebraElt, ForestClassPartition,
+  ForestAlgebraEltPartitionPath);
 
 AUTO( ReadPkg( "zigzag", "lib", "blocks" ), VecBlVec, BlVecVec, MatBlMat,
   BlMatMat);
@@ -100,8 +105,10 @@ AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
   ProductsMixedTuplesM, VisitMixedTuplesH, ProductsMixedTuplesH,
   ExactPackings, FunCon, RestrictCon1, RestrictCon2);
 
-AUTO( ReadPkg( "zigzag", "lib", "quiver" ), QuiverEltOps, QuiverElt,
-  IsQuiverElt, QuiverOps, Quiver, IsQuiver);
+AUTO( ReadPkg( "zigzag", "lib", "quiver" ), QuiverOps, Quiver, IsQuiver,
+  EdgeOps, Edge, IsEdge, NextPartition, PartitionEdge, NextSubset,
+  TakeAwayEdge, PathOps, Path, IsPath, AddPartPartitionPath, QuiverEltOps,
+  QuiverElt, IsQuiverElt, AddPartPartitionQuiverElt, PathsPartitionQuiver);
 
 AUTO( ReadPkg( "zigzag", "lib", "streets" ), StreetOps, Street, IsStreet,
   Streets, NrStreets, ProductStreetMatrices, ProductStreetMatrixList,
@@ -128,8 +135,8 @@ AUTO( ReadPkg( "zigzag", "lib", "iterator" ), IteratorList, IteratorEmpty,
 
 AUTO( ReadPkg( "zigzag", "lib", "alleys" ), ProductAlleys, ProductAlleyList,
   FactorsAlley, OnAlleys, StabilizerAlley, NrAlleys, LengthAlley, SourceAlley,
-  TargetAlley, SubsetsAlley, PrefixAlley, SuffixAlley, ActionAlley,
-  DeltaAlley, BigMatrixAlley, ReversedAlley, LittleDeltaBarAlley,
+  TargetAlley, SubsetsAlley, AlleySubsets, PrefixAlley, SuffixAlley,
+  ActionAlley, DeltaAlley, BigMatrixAlley, ReversedAlley, LittleDeltaBarAlley,
   ReducedWordAlley, ColoursAlley, AlleyAlgebraOps, AlleyAlgebra,
   IsAlleyAlgebra);
 
@@ -149,3 +156,4 @@ AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
 AUTO( ReadPkg( "zigzag", "lib", "characte" ), RegularCharacter,
   TrivialCharacter, SignCharacter, GeneratorsAbelianGroup,
   LinearCharactersAbelianGroup, LinearCharacters, ECharacters);
+
