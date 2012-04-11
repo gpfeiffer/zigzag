@@ -906,7 +906,16 @@ TreeOps.\^:= function(l, r)
     else
         return Tree(l.i + r, l.l^r, l.r^r);
     fi;
-end;   
+end; 
+
+#############################################################################
+##
+##  a simple tree consists of two leaves, a and b, joined by a node with 
+##  label 1.
+##
+SimpleTree:= function(a, b)
+    return Tree(1, Tree(a), Tree(b));
+end;
 
 
 #############################################################################
@@ -1175,6 +1184,29 @@ end;
 
 
 #############################################################################
+##
+##  apply a node splitter in all possible ways.
+##  (the action of the joint monoid ...)
+##
+ForestOps.Expansions:= function(self, a, b)
+    local   tree,  leaves,  exp,  i,  new;
+    
+    tree:= SimpleTree(a, b);
+    leaves:= Call(self, "Leaves");
+
+    exp:= [];
+    for i in [1..Length(leaves)] do
+        if leaves[i].n = tree.n then
+            new:= Copy(leaves);
+            new[i]:= Copy(tree);
+            Add(exp, self * Forest(new));
+        fi;
+    od;
+
+    return exp;
+end;
+
+#############################################################################
 ##  the list of compositions travelled trough by a forest.
 ForestOps.Compositions:= function(self)
     local   list;
@@ -1201,12 +1233,12 @@ end;
 
 ForestOps.Factors:= function(self)
     local   pos,  max,  i,  new,  one;
-    
+
     # short forests only have one factor.
     if Call(self, "Size") < 2 then
         return [self];
     fi;
-    
+
     # otherwise, locate maximum and split.
     pos:= 1;
     max:= self.list[pos].i;
@@ -1216,14 +1248,14 @@ ForestOps.Factors:= function(self)
             max:= self.list[pos].i;
         fi;
     od;
-    
+
     new:= Forest(Concatenation(self.list{[1..pos-1]},
-            [self.list[pos].l, self.list[pos].r],
+                  [self.list[pos].l, self.list[pos].r],
                   self.list{[pos+1..Length(self.list)]}));
-    
+
     one:= Forest(List(self.list, x-> Tree(x.n)));
     one.list[pos]:= Tree(1, Tree(self.list[pos].l.n), Tree(self.list[pos].r.n));
-    
+
     return Concatenation([one], Call(new, "Factors"));            
 end;
 
@@ -1246,7 +1278,7 @@ end;
 #############################################################################
 ForestOps.Draw:= function(self)
     local   mittendrin,  t;
-    
+
     mittendrin:= false;
     for t in self.list do
         if mittendrin then
@@ -1274,14 +1306,14 @@ StandardFactorizationLyndon:= function(word)
         Sort(tail);
         return tail[1];
     end;
-    
+
     n:= Length(word);
     if n < 2 then  return word;  fi;
     m:= Length(lastFactor(word{[2..n]}));
     l:= n-m;
     return [word{[1..l]}, word{[l+1..n]}];
 end;
-    
+
 StandardBracketingLyndon1:= function(word)
     local   lastFactor,  n,  m,  l;
 
@@ -1293,7 +1325,7 @@ StandardBracketingLyndon1:= function(word)
         Sort(tail);
         return tail[1];
     end;
-    
+
     n:= Length(word);
     if n = 0 then  return word;  fi;
     if n = 1 then  return word[1];  fi;
@@ -1315,22 +1347,22 @@ StandardBracketingLyndon:= function(word, index)
         Sort(tail);
         return tail[1];
     end;
-    
+
     n:= Length(word);
     if n = 1 then  return Tree(word[1]);  fi;
     m:= n - Length(lastFactor(word{[2..n]}));
-    
+
     l:= StandardBracketingLyndon(word{[1..m]}, index);
     if l.i > 0 then  index:= l.i;  fi;
     r:= StandardBracketingLyndon(word{[m+1..n]}, index);
     if r.i > 0 then  index:= r.i;  fi;
-    
+
     return Tree(index+1, l, r);
 end;
 
 StandardBracketing:= function(word)
     local   index,  lyndon,  list,  factor,  tree;
-    
+
     index:= 0;
     lyndon:= LyndonFactorisation(word);
     list:= [];
@@ -1348,7 +1380,7 @@ end;
 # a basis for the descent algebra of S_n (type A_{n-1}).
 LyndonBasis:= function(n)
     local   basis,  W,  p,  q;
-    
+
     basis:= [];
     W:= CoxeterGroup("A", n-1);
     for p in Partitions(n) do
@@ -1362,7 +1394,7 @@ end;
 # a basis of paths for the descent algebra of S_n (type A_{n-1}).
 LyndonPaths:= function(n)
     local   basis,  W,  p,  q,  a;
-    
+
     basis:= [];
     W:= CoxeterGroup("A", n-1);
     for p in Partitions(n) do
@@ -1417,12 +1449,12 @@ end;
 ##
 NiceRelationsSym:= function(n)
     local   W,  lab,  q,  r,  rel,  a,  p,  pos;
-    
+
     W:= CoxeterGroup("A", n-1);
     lab:= LabelsShapes(Shapes(W));
     q:= DescentQuiver(W);
     r:= RelationsDescentQuiver(q);
-    
+
     rel:= [];
     for a in r do
         p:= q.pathmat[a[1]][a[2]].path;
@@ -1432,20 +1464,20 @@ NiceRelationsSym:= function(n)
         p:= List(p, x-> List(x, y-> ForestAlley(n, y.alley)));
         Add(rel, rec(
                 from:= lab[a[2]], to:= lab[a[1]],
-                path:= p, coef:= a[3]{pos}));
+                       path:= p, coef:= a[3]{pos}));
     od;
-    
+
     return rel;
 end;
 
 DrawNiceRelation:= function(r)
     local   i,  p,  c,  o,  j;
-    
+
     for i in [1..Length(r.path)] do
         p:= r.path[i];
         c:= r.coef[i];
         o:= "+";
-        
+
         # print coeff, omit 1s.
         if c < 0 then
             o:= "-";
@@ -1455,7 +1487,7 @@ DrawNiceRelation:= function(r)
         if c = 1 then
             c:= "";
         fi;
-        
+
         Print(o, " ", c, "\n");
         Print("(");
         Call(p[1], "Draw");
@@ -1472,7 +1504,7 @@ end;
 ##  by adding parts.
 IsCoreNiceRelation:= function(r)
     local   l;
-    
+
     l:= List(r.path, p-> List(p, x-> Call(x, "Orphans")));
     l:= List(l, Intersection);
     return Intersection(l) = [];
@@ -1514,7 +1546,7 @@ LeanForestClass:= function(forest)
     self.isDomain:= true;
     self.isLeanForestClass:= true;
     self.operations:= LeanForestClassOps;
-    
+
     return self;
 end;
 
@@ -1614,11 +1646,11 @@ end;
 ##  FIXME: use formula for efficiency
 LeanForestClassOps.\*:= function(l, r)
     local   pro,  cnt,  forestL,  forestR,  new,  pos,  result,  i;
-    
+
     if not IsLeanForestClass(l) or not IsLeanForestClass(r) then
         Error("don't know how to multiply <l> and <r>");
     fi;
-    
+
     # compute all products
     pro:= [];
     cnt:= [];
@@ -1636,9 +1668,9 @@ LeanForestClassOps.\*:= function(l, r)
             fi;
         od;
     od;
-    
+
     SortParallel(pro, cnt);
-    
+
     # split into classes.
     result:= [];
     while pro <> [] do
@@ -1651,7 +1683,7 @@ LeanForestClassOps.\*:= function(l, r)
         pro:= pro{pos};
         cnt:= cnt{pos};
     od;
-        
+
     return result;    
 end;
 
@@ -1692,7 +1724,7 @@ ForestClass:= function(forest)
     self.isDomain:= true;
     self.isForestClass:= true;
     self.operations:= ForestClassOps;
-    
+
     return self;
 end;
 
@@ -1800,11 +1832,11 @@ end;
 ##  FIXME: use double coset formula for efficient computation.
 ForestClassOps.\*:= function(l,  r)
     local   pro,  forestL,  forestR,  new,  result;
-    
+
     if not IsForestClass(l) or not IsForestClass(r) then
         Error("don't know how to multiply <l> and <r>");
     fi;
-    
+
     # compute all products
     pro:= [];
     for forestL in Elements(l) do
@@ -1815,7 +1847,7 @@ ForestClassOps.\*:= function(l,  r)
             fi;
         od;
     od;
-    
+
     # split into classes.
     result:= [];
     while pro <> [] do
@@ -1823,7 +1855,7 @@ ForestClassOps.\*:= function(l,  r)
         Add(result, new);
         pro:= Difference(pro, new);
     od;
-        
+
     return result;    
 end;
 
@@ -1891,7 +1923,7 @@ end;
 
 #############################################################################
 LeanForestAlgebraEltOps.\=:= function(l, r)
-    
+
     if IsLeanForestAlgebraElt(l) then
         if IsLeanForestAlgebraElt(r) then
             return l.coef = r.coef and l.elts = r.elts;
@@ -1932,18 +1964,18 @@ LeanForestAlgebraEltOps.Normalize:= function(self)
             Add(ccc, coe);
         fi;
     od;
-    
+
     # copy normalized lists back into originals.
     self.elts:= eee;
     self.coef:= ccc;
 end;
-    
+
 
 
 #############################################################################
 LeanForestAlgebraEltOps.\*:= function(l, r)
     local   c,  e,  i,  j,  class,  pro;
- 
+
     if IsLeanForestAlgebraElt(l) then
         if IsLeanForestAlgebraElt(r) then
             c:= [];
@@ -1963,7 +1995,7 @@ LeanForestAlgebraEltOps.\*:= function(l, r)
     else
         pro:= LeanForestAlgebraElt(l * r.coef, r.elts);
     fi;
-    
+
     Call(pro, "Normalize");
     return pro;
 end;    
@@ -1971,7 +2003,7 @@ end;
 #############################################################################
 LeanForestAlgebraEltOps.\+:= function(l, r)
     local   sum;
-    
+
     # check arguments.
     if not IsLeanForestAlgebraElt(r) then
         Error("<r> is not a LeanForestAlgebraElt");
@@ -1979,7 +2011,7 @@ LeanForestAlgebraEltOps.\+:= function(l, r)
     if not IsLeanForestAlgebraElt(l) then
         Error("<l> is not a LeanForestAlgebraElt");
     fi;
-    
+
     # form the sum.
     sum:= LeanForestAlgebraElt(Concatenation(l.coef, r.coef), 
                   Concatenation(l.elts, r.elts));
@@ -2056,7 +2088,7 @@ end;
 
 #############################################################################
 ForestAlgebraEltOps.\=:= function(l, r)
-    
+
     if IsForestAlgebraElt(l) then
         if IsForestAlgebraElt(r) then
             return l.coef = r.coef and l.elts = r.elts;
@@ -2078,7 +2110,7 @@ end;
 #############################################################################
 ForestAlgebraEltOps.\*:= function(l, r)
     local   c,  e,  i,  j,  class,  pro;
- 
+
     if IsForestAlgebraElt(l) then
         if IsForestAlgebraElt(r) then
             c:= [];
@@ -2098,7 +2130,7 @@ ForestAlgebraEltOps.\*:= function(l, r)
     else
         pro:= ForestAlgebraElt(l * r.coef, r.elts);
     fi;
-    
+
     Call(pro, "Normalize");
     return pro;
 end;    
@@ -2106,7 +2138,7 @@ end;
 #############################################################################
 ForestAlgebraEltOps.\+:= function(l, r)
     local   sum;
-    
+
     # check arguments.
     if not IsForestAlgebraElt(r) then
         Error("<r> is not a ForestAlgebraElt");
@@ -2114,7 +2146,7 @@ ForestAlgebraEltOps.\+:= function(l, r)
     if not IsForestAlgebraElt(l) then
         Error("<l> is not a ForestAlgebraElt");
     fi;
-    
+
     # form the sum.
     sum:= ForestAlgebraElt(Concatenation(l.coef, r.coef), 
                   Concatenation(l.elts, r.elts));
@@ -2132,4 +2164,61 @@ ForestClassOps.Lean:= function(self)
     lean:= LeanForestClass(Call(Representative(self), "Lean"));
     mult:= Call(lean, "CoLength")/Call(self, "CoLength");
     return LeanForestAlgebraElt([mult], [lean]);
+end;
+
+ForestAlgebraEltOps.Lean:= function(self)
+    local   lean,  i;
+    lean:= LeanForestAlgebraElt([], []);  # zero.
+    for i in [1..Length(self.coef)] do
+        lean:= lean + self.coef[i] * Call(self.elts[i], "Lean");
+    od;
+    return lean;
+end;
+
+    
+
+#############################################################################
+ForestClassPartition:= function(partition)
+    return ForestClass(List(partition, Tree));
+end;
+
+#############################################################################
+ForestClassOps.Expansions:= function(self, a, b)
+    local   tree,  forest,  leaves,  i;
+
+    tree:= SimpleTree(a, b);
+    forest:= Representative(self);
+    leaves:= Call(forest, "Leaves");
+    i:= PositionProperty(leaves, x-> x.n = tree.n);
+    if i = false then 
+        return [];
+    fi;
+    leaves:= Copy(leaves);
+    leaves[i]:= tree;
+    return self  * ForestClass(leaves);
+end;
+
+ForestAlgebraEltOps.Expansions:= function(self, a, b)
+    local   sum,  i;
+    sum:= ForestAlgebraElt([], []);  # zero
+    for i in [1..Length(self.coef)] do
+        sum:= sum + self.coef[i] * 
+              Sum(ApplyMethod(self.elts[i], "Expansions", a, b),
+                      x -> ForestAlgebraElt([1], [x]));
+    od;
+    return sum;
+end;
+
+
+#############################################################################
+##
+##  iota: kQ -> kL
+##
+ForestAlgebraEltPartitionPath:= function(path)
+    local   a,  e;
+    a:= ForestAlgebraElt([1], [ForestClassPartition(path.source)]);
+    for e in path.edges do
+        a:= ApplyMethod(a, "Expansions", e.data[1], e.data[2]);
+    od;
+    return a;
 end;
