@@ -856,17 +856,21 @@ end;
 ##
 ##  recursive solution:
 ##
-##  if Length(con) = 1:
-##     locate sum in con[1]
-##  else:
-##     return fail
+##  if Length(con) = 0:
+##     if sum = 0:
+##        return [[]]
+##     else:
+##        return []
 ##
+##  solutions = []
 ##  l = Length(con);
 ##  for each i in [1..Length(con[l])]:
 ##     if con[l][i] < sum:
 ##        for each sol in A(sum - con[l][i], con{[1..l-1]}):
 ##            append i to sol
+##            append sol to solutions
 ##
+##  return solutions
 ##
 ##  FIXME: add parameter for single solution find.
 ##
