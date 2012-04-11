@@ -265,6 +265,12 @@ end;
 
 
 PathOps.\*:= function(l, r)
+    # path * edge
+    if IsEdge(r) then
+        return Path(l.source, Concatenation(l.edges, [r]));
+    fi;
+    
+    # path * path
     if l.target <> r.source then
         return false;
     fi;
@@ -448,4 +454,37 @@ AddPartPartitionQuiverElt:= function(qe, part)
     return QuiverElt(qe.coef, List(qe.elts, x-> AddPartPartitionPath(x, part)));
 end;
     
-
+#############################################################################
+PathsPartitionQuiver:= function(n)
+    local   vertices,  edges,  j,  i,  paths,  v,  p,  e;
+    
+    vertices:= List(Partitions(n), Reversed);
+    edges:= [];
+    for j in [2..n-1] do
+        for i in [1..Minimum(j-1, n-j)] do 
+            Add(edges, PartitionEdge(i, j));
+        od;
+    od;
+    
+    paths:= [];
+    
+    for v in vertices do
+        p:= Path(v, []);
+        if p <> false then
+            Add(paths, p);
+        fi;
+    od;
+    
+    # orbit algorithm.
+    for p in paths do
+        for e in edges do
+            v:= p * e;
+            if v <> false then
+                Add(paths, v);
+            fi;
+        od;
+    od;
+    
+    return paths;
+    
+end;
