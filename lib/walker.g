@@ -22,7 +22,7 @@
 ##    the task of visiting all the elements of the Cartesian product
 ##    <M>X_1 \times X_2 \times X_r</M> of <M>r</M> finite sets
 ##    <M>X_1, X_2,\dots, X_r</M>.  Here the children of the root node
-##    are the elements of <M>X_1</>, each such node has children
+##    are the elements of <M>X_1</M>, each such node has children
 ##    corresponding to the elements of <M>X_2</M>, etc.  This chapter
 ##    contains two efficient algorithms for the traveral of such a tree;
 ##    see <Ref Func="VisitMixedTuplesM"/> and <Ref Func="VisitMixedTuplesH"/>.
