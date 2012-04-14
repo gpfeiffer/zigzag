@@ -30,6 +30,7 @@
 ##    enumeration of the elements of a finite abelian group,
 ##    regarded as a direct product of cyclic groups; see
 ##    <Ref Func="ProductsMixedTuplesM"/> and <Ref Func="ProductsMixedTuplesH"/>.
+##    <P/>
 ##
 ##    The functions described in this chapter are implemented in the file
 ##    <F>walker.g</F>.  
@@ -688,6 +689,25 @@ end;
 ##  given a list of Lists, form (and visit) all possible combinations
 ##  of one from each list.
 ##
+##  <#GAPDoc Label="VisitMixedTuplesM">
+##  <ManSection>
+##  <Func Name="VisitMixedTuplesM" Arg="list, visit"/>
+##  <Description>
+##    Given a list <A>list</A> of lists, and a function <A>visit</A>,
+##    this procedure forms all possible combinations of one from each list
+##    and applies the <A>visit</A> function,
+##    using the strategy of Algorithm M in [Knuth, TAOCP 7.2.1.1]
+##  <Example>
+##  gap> l1:= "12";;  l2:= "abc";;  all:= [];;
+##  gap> v:= function(x)  Add(all, String(Copy(x)));  end;;
+##  gap> VisitMixedTuplesM([l1, l2], v);
+##  gap> all;
+##  [ "1a", "1b", "1c", "2a", "2b", "2c" ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
 VisitMixedTuplesM:= function(list, visit)
     local   n,  m,  a,  c,  j;
     
@@ -719,6 +739,23 @@ end;
 ##
 ##  given list gens of (images of) independent generators of an abelian group
 ##  and their orders m, generate all elements
+##
+##  <#GAPDoc Label="ProductsMixedTuplesM">
+##  <ManSection>
+##  <Func Name="ProductsMixedTuplesM" Arg="gens, m"/>
+##  <Description>
+##    Given a list <A>gens</A> of elements of an abelian group, together with
+##    a list <A>m</A> of their orders,
+##    this function computes all products of all the distinct powers of
+##    the elements in <A>gens</A>,
+##    using the strategy of Algorithm M in [Knuth, TAOCP 7.2.1.1].
+##  <Example>
+##  gap> ProductsMixedTuplesM([(1,2),(3,4,5)], [2,3]);
+##  [ (), (3,4,5), (3,5,4), (1,2), (1,2)(3,4,5), (1,2)(3,5,4) ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 ProductsMixedTuplesM:= function(gens, m)
     local   n,  a,  c,  all,  j;
@@ -754,6 +791,25 @@ end;
 ##
 ##  given a list of Lists, form (and visit) all possible combinations
 ##  of one from each list, changing only one component at each step.
+##
+##  <#GAPDoc Label="VisitMixedTuplesH">
+##  <ManSection>
+##  <Func Name="VisitMixedTuplesH" Arg="list, visit"/>
+##  <Description>
+##    Given a list <A>list</A> of lists, and a function <A>visit</A>,
+##    this procedure forms all possible combinations of one from each list
+##    and applies the <A>visit</A> function,
+##    using the strategy of Algorithm H in [Knuth, TAOCP 7.2.1.1]
+##  <Example>
+##  gap> l1:= "12";;  l2:= "abc";;  all:= [];;
+##  gap> v:= function(x)  Add(all, String(Copy(x)));  end;;
+##  gap> VisitMixedTuplesH([l1, l2], v);
+##  gap> all;
+##  [ "1a", "2a", "2b", "1b", "1c", "2c" ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 VisitMixedTuplesH:= function(list, visit)
     local   n,  m,  a,  c,  f,  o,  j;
@@ -794,6 +850,23 @@ end;
 ##  given list gens of (images of) independent generators of an abelian group
 ##  and their orders m, generate all elements; this time by multiplying with 
 ##  a single generator only (or its inverse) in each step.
+##
+##  <#GAPDoc Label="ProductsMixedTuplesH">
+##  <ManSection>
+##  <Func Name="ProductsMixedTuplesH" Arg="gens, m"/>
+##  <Description>
+##    Given a list <A>gens</A> of elements of an abelian group, together with
+##    a list <A>m</A> of their orders,
+##    this function computes all products of all the distinct powers of
+##    the elements in <A>gens</A>,
+##    using the strategy of Algorithm H in [Knuth, TAOCP 7.2.1.1].
+##  <Example>
+##  gap> ProductsMixedTuplesH([(1,2),(3,4,5)], [2,3]);
+##  [ (), (1,2), (1,2)(3,4,5), (3,4,5), (3,5,4), (1,2)(3,5,4) ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 ProductsMixedTuplesH:= function(gens, m)
     local   n,  a,  c,  f,  o,  all,  j;
@@ -873,6 +946,28 @@ end;
 ##  return solutions
 ##
 ##  FIXME: add parameter for single solution find.
+##
+##  <#GAPDoc Label="ExactPackings">
+##  <ManSection>
+##  <Func Name="ExactPackings" Arg="sum, con"/>
+##  <Description>
+##    Given a target tuple <A>sum</A>, and a list <A>con</A>
+##    of list of tuples of nonnegative integers,
+##    this function determines all possible combinations of one from each list
+##    that add up to the tuple <A>sum</A>.
+##  <Example>
+##  gap> sum:= [ 1, 2, 1 ];;
+##  gap> con:= [
+##  > [ [ 1, 0, 0 ], [ 0, 0, 1 ] ], 
+##  > [ [ 1, 1, 0 ], [ 0, 1, 1 ] ], 
+##  > [ [ 0, 1, 0 ], [ 1, 0, 1 ] ]  
+##  > ];;
+##  gap> ExactPackings(sum, con);
+##  [ [ 2, 1, 1 ], [ 1, 2, 1 ] ]
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
 ##
 ExactPackings:= function(sum, con) 
     local   isPositive,  log,  idx,  cmp,  cur,  all,  zero,  search;

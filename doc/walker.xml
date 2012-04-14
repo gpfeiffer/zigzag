@@ -128,4 +128,28 @@ as examples in the following sections.
 
 </Section>
 
+<Section>
+<Heading>
+Mixed Tuples.
+</Heading>
+
+<#Include Label="VisitMixedTuplesM">
+
+<#Include Label="VisitMixedTuplesH">
+
+<#Include Label="ProductsMixedTuplesM">
+
+<#Include Label="ProductsMixedTuplesH">
+
+</Section>
+
+<Section>
+<Heading>
+Exact Packings.
+</Heading>
+
+<#Include Label="ExactPackings">
+
+</Section>
+
 </Chapter>
