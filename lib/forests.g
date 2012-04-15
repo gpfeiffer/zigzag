@@ -1643,6 +1643,28 @@ end;
 
 
 #############################################################################
+##
+##  Top and Bot
+##
+##  return *sorted* lists.
+##
+LeanForestClassOps.Top:= function(self)
+    local   top;
+    top:= List(self.list, t-> Call(t, "Top"));
+    Sort(top); # <- this should not be necessary.
+    return top;
+end;
+
+#############################################################################
+LeanForestClassOps.Bot:= function(self)
+    local   bot;
+    bot:= Concatenation(List(self.list, t-> Call(t, "Bot")));
+    Sort(bot); # <- this should not be necessary.
+    return bot;
+end;
+
+
+#############################################################################
 ##  FIXME: use formula for efficiency
 LeanForestClassOps.\*:= function(l, r)
     local   pro,  cnt,  forestL,  forestR,  new,  pos,  result,  i;
@@ -2221,4 +2243,68 @@ ForestAlgebraEltPartitionPath:= function(path)
         a:= ApplyMethod(a, "Expansions", e.data[1], e.data[2]);
     od;
     return a;
+end;
+
+ForestAlgebraEltPartitionQuiverElt:= function(qelt)
+    local   felt,  i;
+    felt:= ForestAlgebraElt([], []); # zero
+    for i in [1..Length(qelt.elts)] do
+        felt:= felt + qelt.coef[i] * ForestAlgebraEltPartitionPath(qelt.elts[i]);
+    od;
+    return felt;
+end;
+
+
+#############################################################################
+##
+##  F: kM \to kQ
+##
+LeanForestClassOps.QuiverElt:= function(self)
+    local   head,  tail,  qelt,  rest,  mult;
+    
+    # trivial case first
+    if self.list = [] then
+        return QuiverElt([1], [Path([], [])]);  # empty partition
+    fi;
+    
+    # otherwise Length(self.list) > 1: distinguish between orphans and trees.
+    head:= self.list[1];
+    tail:= self.list{[2..Length(self.list)]};
+    
+    # orphan case
+    if Call(head, "Size") = 0 then 
+        
+        # remove orphan, recurse and bring it back in
+        qelt:= Call(LeanForestClass(tail), "QuiverElt");
+        qelt:= AddPartPartitionQuiverElt(qelt, head.n);
+        
+        # live with the consequences.
+        rest:= Call(ForestAlgebraEltPartitionQuiverElt(qelt), "Lean");
+        rest:= Call(rest - LeanForestAlgebraElt([1], [self]), "QuiverElt");
+        return qelt - rest;        
+        
+    # tree case    
+    else 
+        
+        #
+        rest:= LeanForestClass(Concatenation([head.l, head.r], tail));
+        mult:= List([rest, self], x-> Call(Representative(x), "Multiplier"));
+        rest:= Call(rest, "QuiverElt");
+        
+        qelt:= Path(Call(self, "Top"), []);
+        qelt:= qelt * PartitionEdge(head.l.n, head.r.n);
+        qelt:= QuiverElt([mult[1]/mult[2]], [qelt]);
+        return qelt * rest;
+    fi;
+end;
+
+LeanForestAlgebraEltOps.QuiverElt:= function(self)
+    local   qelt,  i;
+    
+    qelt:= QuiverElt([], []);  # zero
+    for i in [1..Length(self.elts)] do
+        qelt:= qelt + self.coef[i] * Call(self.elts[i], "QuiverElt");
+    od;
+    
+    return qelt;
 end;
