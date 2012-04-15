@@ -412,6 +412,8 @@ QuiverEltOps.\*:= function(l, r)
                 od;
             od;
             pro:= QuiverElt(c, e);
+        elif IsEdge(r) then
+            pro:= QuiverElt(l.coef, List(l.elts, x-> x * r));
         else
             pro:= QuiverElt(l.coef * r, l.elts);
         fi;
