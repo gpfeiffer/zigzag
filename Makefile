@@ -51,7 +51,7 @@ zigzag-${VERSION}.tgz:
 	sed -i 's/^ZIGZAG.Date:= .*/ZIGZAG.Date:= "${DATE}";/' init.g
 	cd doc; make
 	cd doc; make clean
-	tar zcvf $@ -C .. zigzag/doc zigzag/lib zigzag/init.g zigzag/COPYING
+	tar zcvf $@ -C .. zigzag/dat zigzag/doc zigzag/lib zigzag/init.g zigzag/COPYING
 
 
 
