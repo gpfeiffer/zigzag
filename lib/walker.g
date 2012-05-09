@@ -970,13 +970,13 @@ end;
 ##  <#/GAPDoc>
 ##
 ExactPackings:= function(sum, con) 
-    local   isPositive,  log,  idx,  cmp,  cur,  all,  zero,  search;
+    local   isPositive,  log,  count,  idx,  cmp,  cur,  all,  zero,  search;
     
     # how to test if a list has no negative entries.
     isPositive:= a-> ForAll(a, x-> x >= 0);
     
     # keep track of where we are.
-    log:= [];
+    log:= []; count:= 0;
     idx:= [];  
     cmp:= [1..Length(con)];   # idx \disjoint cmp = [1..Length(con)]
     cur:= 0 * cmp; # current solution
@@ -1020,7 +1020,8 @@ ExactPackings:= function(sum, con)
         for i in pos[k] do
             log[Length(log)]:= log[Length(log)] - 1;
             cur[j]:= i;
-            Print(log, "\r");
+            count:= count + 1;
+            InfoZigzag2(log, "\r");
             search(sum - con[j][i], pos{sub});
         od;
         Unbind(log[Length(log)]);
@@ -1031,6 +1032,7 @@ ExactPackings:= function(sum, con)
     
     # recurse and return all solutions found.
     search(sum, List(con, x-> [1..Length(x)])); 
+    InfoZigzag1(count, " partial solutions considered in total.\n");
     return all;
 end;
     
