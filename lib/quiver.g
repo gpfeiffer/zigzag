@@ -490,3 +490,76 @@ PathsPartitionQuiver:= function(n)
     return paths;
     
 end;
+
+#############################################################################
+##
+##  how to split a word of PartitionEdges into segments (corresponding to trees)
+##
+SegmentsWord:= function(word)
+    local   isLessPartitionEdges,  i,  l;
+    
+    # how to compare two PartitionEdges. (return true only if a < b)
+    isLessPartitionEdges:= function(a, b)
+        local   sumA,  sumB;
+        sumA:= Sum(a.data);
+        sumB:= Sum(b.data);
+        if sumA = sumB then
+            return a.data[1] < b.data[1];
+        else
+            return sumA < sumB;
+        fi;
+    end;
+    
+    # trivial case first.
+    if word = [] then
+        return [];
+    fi;
+    
+    # locate first letter >= word[1]
+    i:= 2;  l:= Length(word);
+    while i <= l and isLessPartitionEdges(word[i], word[1]) do
+        i:= i+1;
+    od;
+    
+    return Concatenation([word{[1..i-1]}], SegmentsWord(word{[i..l]}));
+end;
+                   
+
+#  how to turn a segment into a tree (or fail) with label offset o
+TreeSegment:= function(segment, o)
+    local   ab,  tree,  segments,  next,  s,  sum,  child;
+    
+    ab:= segment[1].data;
+    tree:=  SimpleTree(ab[1], ab[2])^o;
+    segments:= SegmentsWord(segment{[2..Length(segment)]});
+    
+    # next child to try
+    next:= 1;
+    
+    # loop over the segments
+    for s in segments do
+        sum:= Sum(s[1].data);
+        while next < 3 and sum <> ab[next] do
+            next:= next + 1;
+        od;
+        
+        if next < 3 then
+            o:= o + 1;
+            child:= TreeSegment(s, o);
+            if child = false then
+                return false;
+            else
+                if next = 1 then
+                    tree.l:= child;
+                else
+                    tree.r:= child;
+                fi;
+            fi;
+        else
+            return false;
+        fi;
+    od;
+                
+    return tree;
+end;
+
