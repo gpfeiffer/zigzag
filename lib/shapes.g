@@ -380,6 +380,7 @@ end;
 #############################################################################
 ##
 #F  NormalizerComplement( <W>, <J> ) . . . . . . . . . . . . . .  normalizer.
+#F  NormalizerParabolic( <W>, <J> ) . . . . . . . . . . . . . .  normalizer.
 ##
 ##  <#GAPDoc Label="NormalizerComplement">
 ##  <ManSection>
@@ -469,6 +470,10 @@ NormalizerComplement:= function(W, J)
     new.eyes:= OnTuples(com.eyes, x);
     
     return new;    
+end;
+
+NormalizerParabolic:= function(W, J)
+    return Closure(ReflectionSubgroup(W, J), NormalizerComplement(W, J));
 end;
 
 #############################################################################
