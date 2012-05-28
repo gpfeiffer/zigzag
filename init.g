@@ -66,8 +66,8 @@ AUTO( ReadPkg( "zigzag", "lib", "skyline" ), FallingSequence, SkylineAOps,
   IsSkylineB, SkylineBPerm, SkylineBWord, SkylineDOps, SkylineD, IsSkylineD,
   SkylineDPerm, SkylineDWord, MajorIndex);
 
-AUTO( ReadPkg( "zigzag", "lib", "methods" ), Call, ApplyMethod, Map, Iverson,
-  PartitionOps, Partition);
+AUTO( ReadPkg( "zigzag", "lib", "methods" ), OPERATIONS, Ops, Object,
+  TypeCheck, Call, ApplyMethod, Map, Iverson, PartitionOps, Partition);
 
 AUTO( ReadPkg( "zigzag", "lib", "subsets" ), SetComposition, IsLeftDescent,
   IsRightDescent, LongestElement, ConnectedComponent, ConnectedComponents,

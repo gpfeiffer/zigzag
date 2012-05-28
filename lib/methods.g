@@ -23,6 +23,49 @@
 
 #############################################################################
 ##
+##  a global repository of operations records.
+##
+OPERATIONS:= rec();
+
+Ops:= function(arg)
+    local  ops;
+    if Length(arg) = 1  then
+        ops:= rec();
+    else
+        ops:= Copy(arg[2]);
+    fi;
+    ops.name := Concatenation(arg[1], "Ops");
+    ops.operations := OpsOps;
+    OPERATIONS.(ops.name):= ops;
+    return ops;
+end;
+
+#############################################################################
+##
+#F  Object( <type> )
+##
+##  how to initialize an object of type <type>.
+##
+Object:= function(type)
+    local   object;
+    object:= rec();
+    object.(Concatenation("is", type)):= true;
+    object.operations:= OPERATIONS.(Concatenation(type, "Ops"));
+    return object;
+end;
+
+#############################################################################
+##
+#F
+##
+TypeCheck:= function(type)
+    local   comp;
+    comp:= Concatenation("is", type);
+    return obj-> IsRec(obj) and IsBound(obj.(comp)) and obj.(comp) = true;
+end;
+
+#############################################################################
+##
 #F  Call( <object>, <method> ) . . . . . . . . . . . . . . . . . method call. 
 ##
 ##  <#GAPDoc Label="Call">

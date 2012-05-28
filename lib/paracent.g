@@ -23,7 +23,7 @@
 ##  
 #O  OrderedShapeOps  . . . . . . . . . . . . . . . . . . . operations record.
 ##  
-OrderedShapeOps:= OperationsRecord("OrderedShapeOps", DomainOps);
+OrderedShapeOps:= Ops("OrderedShape", DomainOps);
 
 
 #############################################################################
@@ -52,14 +52,12 @@ OrderedShapeOps:= OperationsRecord("OrderedShapeOps", DomainOps);
 ##  <#/GAPDoc>
 ##
 OrderedShape:= function(W, J)
-    return 
-      rec(
-          isDomain:= true,
-          isOrderedShape:= true,
-          operations:= OrderedShapeOps,
-          W:= W,
-          J:= J
-          );
+    local   obj;
+    obj:= Object("OrderedShape");
+    obj.isDomain:= true;
+    obj.W:= W;
+    obj.J:= J;
+    return obj;
 end;
 
 
@@ -76,10 +74,7 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##                   
-IsOrderedShape:= function(obj)
-    return IsRec(obj) and IsBound(obj.isOrderedShape) 
-           and obj.isOrderedShape = true;
-end;
+IsOrderedShape:= TypeCheck("OrderedShape");
 
 
 #############################################################################  
@@ -243,26 +238,27 @@ end;
 ##  <ManSection>
 ##  <Meth Name="Edges" Arg="shape" Label="for ordered shapes"/>
 ##  <Returns>
-##    the list of edges of the graph formed by the elements of the ordered shape 
+##    the list  of edges of the graph  formed by the elements  of the ordered
+##    shape 
 ##    <A>shape</A>.
 ##  </Returns>
 ##  <Description>
-##    The elements of a shape form the vertices of a directed graph.  The
-##    <E>edges</E> of a shape are the edges of this graph and they are
-##    defined as follows.  Let <M>J</M> be an element of the shape and let
-##    <M>s \in S \setminus J</M>.  Let <M>M = J \cup \{s\}</M> and let <M>w
-##    \in W</M> be the longest element of the parabolic subgroup <M>W_M</M>.
-##    Then <M>J^w</M> is a subset of <M>M</M> and thus an element of the
-##    shape.  In the graph, this yields and edge from <M>J</M> to <M>J^w</M>
+##    The elements of an ordered shape form the vertices of a directed graph.
+##    The <E>edges</E>  of a shape are the  edges of this graph  and they are
+##    defined as  follows.  Let <M>J</M> be  an element of the  shape and let
+##    <M>s \in S  \setminus J</M>.  Let <M>M = J \cup  \{s\}</M> and let <M>w
+##    \in W</M> be the longest  element of the parabolic subgroup <M>W_M</M>.
+##    Then <M>J^w</M>  is a  subset of  <M>M</M> and thus  an element  of the
+##    shape.  In the graph, this  yields and edge from <M>J</M> to <M>J^w</M>
 ##    with labels <M>s</M> and <M>w</M>.<P/>
 ##
 ##    The function <C>Edges</C> returns all these edges in the form of a list
-##    of lists, with one list for every vertex (element <M>J</M> of the
-##    shape).  The entries in the list for <M>J</M> correspond to the
-##    generators <M>s \in S</M> with unbound entries for <M>s \in J</M>.  In
-##    the other cases the list element is a record with components <C>v</C>
-##    and <C>w</C>, where <C>v</C> gives the address of <M>J^w</M> in the
-##    list of elements, and where <C>w</C> gives the permutation
+##    of  lists, with  one list  for every  vertex (element  <M>J</M>  of the
+##    shape).   The  entries in  the  list  for  <M>J</M> correspond  to  the
+##    generators <M>s \in S</M> with  unbound entries for <M>s \in J</M>.  In
+##    the other cases  the list element is a  record with components <C>v</C>
+##    and <C>w</C>,  where <C>v</C>  gives the address  of <M>J^w</M>  in the
+##    list   of  elements,   and   where  <C>w</C>   gives  the   permutation
 ##    <M>w</M>.<P/>
 ##  
 ##    <C>ShapeOps.Edges(shape)</C> returns a list of lists <C>l</C> with
