@@ -205,12 +205,10 @@ ShapeOps.Elements:= function(self)
     # under the longest element of the parabolic to $J \cup \{i\}.
     # The function assumes $i \notin J$ and will not test this.
     # Note how the action of W on the roots is used:
-    # By theory $J$ is mapped to a subset of $S$, represented by $[1..n]$
-    # and their negatives $[1..n]+N$. 
-    # Mod by $N$ takes everything back into $[0..n-1]$.
+    # By theory $J$ is always mapped to a subset of $S = [1..n]$
     onParabolics:= function(J, i)
         d:= LongestElement(W, J) * LongestElement(W, Union(J, [i]));
-        return Set(List(OnSets(J, d), x-> (x-1) mod W.parentN + 1));
+        return OnSets(J, d);
     end;
 
     # extended orbit algorithm.
