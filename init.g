@@ -56,7 +56,7 @@ AUTO( ReadPkg( "zigzag", "lib", "forests" ), LeanTreeOps, LeanTree,
   ForestClassOps, ForestClass, IsForestClass, LeanForestAlgebraEltOps,
   LeanForestAlgebraElt, IsLeanForestAlgebraElt, ForestAlgebraEltOps,
   ForestAlgebraElt, IsForestAlgebraElt, ForestClassPartition,
-  ForestAlgebraEltPartitionPath);
+  ForestAlgebraEltPartitionPath, ForestAlgebraEltPartitionQuiverElt);
 
 AUTO( ReadPkg( "zigzag", "lib", "blocks" ), VecBlVec, BlVecVec, MatBlMat,
   BlMatMat);
@@ -108,7 +108,8 @@ AUTO( ReadPkg( "zigzag", "lib", "walker" ), BreadthFirst,
 AUTO( ReadPkg( "zigzag", "lib", "quiver" ), QuiverOps, Quiver, IsQuiver,
   EdgeOps, Edge, IsEdge, NextPartition, PartitionEdge, NextSubset,
   TakeAwayEdge, PathOps, Path, IsPath, AddPartPartitionPath, QuiverEltOps,
-  QuiverElt, IsQuiverElt, AddPartPartitionQuiverElt, PathsPartitionQuiver);
+  QuiverElt, IsQuiverElt, AddPartPartitionQuiverElt, PathsPartitionQuiver,
+  SegmentsWord, TreeSegment);
 
 AUTO( ReadPkg( "zigzag", "lib", "streets" ), StreetOps, Street, IsStreet,
   Streets, NrStreets, ProductStreetMatrices, ProductStreetMatrixList,
@@ -123,6 +124,9 @@ AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
   FaceElt, IsFaceElt, ImageSupportMap, IncidenceIntersectionLattice,
   onReflectionSubgroups, PrimitiveIdempotentsFaceElts, NilpotentFaceElts,
   ProdMat);
+
+AUTO( ReadPkg( "zigzag", "lib", "paracent" ), OrderedShapeOps, OrderedShape,
+  IsOrderedShape, OrthogonalComplement, CentralizerParabolic);
 
 AUTO( ReadPkg( "zigzag", "lib", "classes" ), CyclicShiftsOps, CyclicShifts,
   IsCyclicShifts, MinimalLengthConjugate, MaximalLengthConjugate,
@@ -144,11 +148,12 @@ AUTO( ReadPkg( "zigzag", "lib", "groupoid" ), GroupoidOps, Groupoid,
   IsGroupoid, GroupoidEltOps, GroupoidElt, IsGroupoidElt);
 
 AUTO( ReadPkg( "zigzag", "lib", "shapes" ), ShapeOps, Shape, IsShape,
-  NormalizerComplement, IsBulkyParabolic, BulkyShapes, ShapesRank, Shapes,
-  SubsetsShapes, ComplementsShapes, IncidenceMatShapes, XCharacters,
-  ParabolicTom, YCharacters, ZCharacters, InvolutionShapes, Involutions,
-  SpecialInvolutions, OrlikSolomonCharacter, NamesShapes, LabelsShapes,
-  PathsShapes, IncMatShapes, QIncMatShapes, FusMatShapes, QFusMatShapes);
+  NormalizerComplement, NormalizerParabolic, IsBulkyParabolic, BulkyShapes,
+  ShapesRank, Shapes, SubsetsShapes, ComplementsShapes, IncidenceMatShapes,
+  XCharacters, ParabolicTom, YCharacters, ZCharacters, InvolutionShapes,
+  Involutions, SpecialInvolutions, OrlikSolomonCharacter, NamesShapes,
+  LabelsShapes, PathsShapes, IncMatShapes, QIncMatShapes, FusMatShapes,
+  QFusMatShapes);
 
 AUTO( ReadPkg( "zigzag", "lib", "category" ), CategoryOps, Category,
   IsCategory, CategoryEltOps, CategoryElt, IsCategoryElt);
