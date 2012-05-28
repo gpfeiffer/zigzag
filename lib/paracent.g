@@ -429,36 +429,39 @@ end;
 
 ##  centralizing elements from components.
 OrderedShapeOps.Centre:= function(self)
-    local   W,  J,  gens,  list,  component,  K,  wK,  L,  set,  l;
+    local   W,  J,  gens,  list,  set,  K,  wK,  L,  centre,  l;
 
     W:= self.W;
     J:= self.J;
     
     # separate central w0 from non-central ones.
-    gens:= rec(central:= [], inner:= []);  list:= [];
-    for component in CartanType(ReflectionSubgroup(W, J)) do
-        K:= J{component[2]};
+    gens:= []; list:= [];
+    for set in CartanType(ReflectionSubgroup(W, J)) do
+        K:= J{set[2]};
         wK:= LongestElement(W, K);
         L:= List(OnTuples(K, wK), x-> (x-1) mod W.parentN + 1);
         if L = K then
-            Add(gens.central, wK);
+            Add(gens, wK);
         else
             Add(list, K);
         fi;
     od;
+    centre:= Subgroup(W, gens);
+    
+    # find generators of the form wK * n
+    gens:= [];
     for set in Combinations(list) do
         K:= Union(set);
         wK:= LongestElement(W, K);
         L:= List(OnTuples(J, wK), x-> (x-1) mod W.parentN + 1);
         l:= Position(Elements(self), L);
         if l <> false then
-            Print(list, ", ", K, ", ", l, "\n");
-            Add(gens.inner, Call(self, "Transversal")[l] * wK);
+            Add(gens, wK * Call(self, "Transversal")[l]);
         fi;
     od;
-    gens.inner:= GeneratorsAbelianGroup(Subgroup(W, gens.inner));
-
-    return gens;
+    gens:= GeneratorsAbelianGroup(Subgroup(W, gens));
+    
+    return Closure(centre, Subgroup(W, gens));
 end;
 
 
@@ -479,21 +482,15 @@ end;
 
 
 CentralizerParabolic:= function(W, J)
-    local   shape,  com,  ears,  centre,  a;
+    local   shape,  com,  ears,  centre;
 
     shape:= OrderedShape(W, J);        
     com:= Call(shape, "Complement");
     ears:= com.ears;
     centre:= Call(shape, "Centre");
-    for a in centre.central do
-        com:= Closure(com, a);
-    od;
-    for a in centre.inner do
-        com:= Closure(com, a);
-    od;
+    com:= Closure(com, centre);
     com.ears:= ears;
-    com.central:= centre.central;
-    com.inner:= centre.inner;
+    com.legs:= Generators(centre);
     return com;
 
 end;
