@@ -228,6 +228,41 @@ CyclicShiftsOps.Elements:= function(self)
 end;
 
 
+CyclicShiftsOps.Centralizer:= function(self)
+    local   W,  S,  orbit,  trans,  gens,  j,  x,  i,  s,  y,  z,  k;
+
+    W:= self.W;
+    S:= W.rootInclusion{[1 .. W.semisimpleRank]};
+
+    orbit:= [self.w];  trans:= [()];  gens:= [];  j:= 0;
+    for x in orbit do
+        j:= j+1;  # x = orbit[j];
+        for i in S do
+            s:= W.(W.rootRestriction[i]);
+            y:= s * x;
+            z:= y * s;
+            #if i^x > N then
+            if IsLeftDescent(W, x, i) then
+                #if i/y <= N then
+                if not IsRightDescent(W, y, i) then
+                    k:= Position(orbit, z);
+                    if k = false then
+                        Add(orbit, z);
+                        Add(trans, trans[j] * s);
+                    else
+                        Add(gens, trans[j] * s * trans[k]^-1);
+                    fi;
+                fi;
+            fi;
+        od;
+    od;
+    return rec(gens:=gens,
+               orbit:= orbit,
+               trans:= trans);
+
+end;
+
+
 #############################################################################
 ##
 #F  IsMinimal( <shifts> )
