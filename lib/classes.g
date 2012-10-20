@@ -187,16 +187,19 @@ end;
 ##
 ##
 CyclicShiftsOps.Elements:= function(self)
-    local   W,  S,  orb,  x,  i,  s,  y,  z;
+    local   W,  S,  orb,  transversal,  gens,  j,  edges,  x,  i,  s,  
+            y,  z,  k,  perm;
 
     W:= self.W;
     S:= W.rootInclusion{[1 .. W.semisimpleRank]};
 
     self.above:= [];
     self.below:= [];
-
-    orb:= [self.w];
+    
+    orb:= [self.w];  transversal:= [()];  gens:= [];  j:= 0;
+    edges:= [];
     for x in orb do
+        j:= j+1;  # x = orb[j];
         for i in S do
             s:= W.(W.rootRestriction[i]);
             y:= s * x;
@@ -207,59 +210,39 @@ CyclicShiftsOps.Elements:= function(self)
                 if IsRightDescent(W, y, i) then
                     AddSet(self.below, z);
                 else
-                    if not z in orb then
+                    k:= Position(orb, z);
+                    if k = false then
                         Add(orb, z);
+                        Add(transversal, transversal[j] * s);
+                        Add(edges, [j, Length(orb), i]);
+                    else
+                        Add(gens, transversal[j] * s * transversal[k]^-1);
+                        Add(edges, [j, k, i]);
                     fi;
                 fi;
             else
                 # if i/y > N then
-                if IsRightDescent(W, y, i) then
-                    if not z in orb then
-                        Add(orb, z);
-                    fi;
-                else
+                if not IsRightDescent(W, y, i) then
                     AddSet(self.above, z);
                 fi;
             fi;
         od;
     od;
-    return Set(orb);
+    self.gens:= gens;
+    
+    # sort orbit lexicographically and keep transversal, edges in sync.
+    perm:= Sortex(orb);
+    self.transversal:= Permuted(transversal, perm);
+    self.edges:= List(edges, e -> [e[1]^perm, e[2]^perm, e[3]]);
+    self.root:= 1^perm;  ##  the position of w in the list.
 
+    return orb;
 end;
 
 
 CyclicShiftsOps.Centralizer:= function(self)
-    local   W,  S,  orbit,  trans,  gens,  j,  x,  i,  s,  y,  z,  k;
-
-    W:= self.W;
-    S:= W.rootInclusion{[1 .. W.semisimpleRank]};
-
-    orbit:= [self.w];  trans:= [()];  gens:= [];  j:= 0;
-    for x in orbit do
-        j:= j+1;  # x = orbit[j];
-        for i in S do
-            s:= W.(W.rootRestriction[i]);
-            y:= s * x;
-            z:= y * s;
-            #if i^x > N then
-            if IsLeftDescent(W, x, i) then
-                #if i/y <= N then
-                if not IsRightDescent(W, y, i) then
-                    k:= Position(orbit, z);
-                    if k = false then
-                        Add(orbit, z);
-                        Add(trans, trans[j] * s);
-                    else
-                        Add(gens, trans[j] * s * trans[k]^-1);
-                    fi;
-                fi;
-            fi;
-        od;
-    od;
-    return rec(gens:=gens,
-               orbit:= orbit,
-               trans:= trans);
-
+    Elements(self);
+    return Subgroup(self.W, self.gens);
 end;
 
 
@@ -330,13 +313,20 @@ end;
 ##
 #F  Edges( <shifts> )  . . . . . . . . . . . . . . . . . . . . . . . . edges.
 ##
+CyclicShiftsOps.Edges:= function(self)
+    Elements(self);
+    return self.edges;
+end;
 
 
 #############################################################################
 ##
 #F  Transversal( <shifts> )  . . . . . . . . . . . . . . . . . . transversal.
 ##
-
+CyclicShiftsOps.Transversal:= function(self)
+    Elements(self);
+    return self.transversal;
+end;
 
 #############################################################################
 ##
