@@ -226,6 +226,24 @@ PartitionOps.RemovableBoxes:= function(self)
 end;
 
 #############################################################################
+StandardTableaus:= function(n)
+    return Union(List(Partitions(n), p-> Call(Partition(p), "StandardTableaus")));
+end;
+
+#############################################################################
+TableauOps.Descents:= function(self)
+    local   jco;
+    jco:= Call(self, "JCoordinates");
+    return Filtered([1..Length(jco)-1], i-> jco[i] < jco[i+1]);
+end; 
+
+TableauOps.MajorIndex:= function(self)
+    return Sum(Call(self, "Descents"));    
+end;
+    
+
+
+#############################################################################
 ##  
 #O  ContentOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
 ##  
@@ -319,6 +337,25 @@ ContentOps.Tableau:= function(self)
     
     return Tableau(rows);
 end;
+
+
+#############################################################################
+##
+##  list the possible n+1-th entries for a Content of Length n
+##
+ContentOps.Next:= function(self)
+    local   next,  reversed,  a,  j;
+    next:= [];
+    reversed:= Reversed(self.list);
+    for a in [Minimum(self.list) - 1 .. Maximum(self.list) + 1] do
+        j:= Position(reversed, a);
+        if j = false or IsSubset(reversed{[1..j-1]}, [a+1, a-1]) then
+            Add(next, a);
+        fi;
+    od;
+    return next;
+end;
+
 
 #############################################################################
 ##
