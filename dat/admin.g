@@ -15,7 +15,7 @@
 ##
 ##  a list of those types for which we have stored explicit data.
 ##
-ZIGZAG.TYPES:= ["D7", "D8", "E7", "E8", "H4"];
+ZIGZAG.TYPES:= ["B7", "D7", "D8", "E7", "E8", "H4"];
 
 
 #############################################################################
