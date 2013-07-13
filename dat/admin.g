@@ -4,7 +4,7 @@
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2010-2011  Götz Pfeiffer
+#Y  Copyright (C) 2010-2013  Götz Pfeiffer
 ##
 ##  This file contains the administrative part of ZigZag's explicit data.
 ##
@@ -15,7 +15,7 @@
 ##
 ##  a list of those types for which we have stored explicit data.
 ##
-ZIGZAG.TYPES:= ["B7", "D7", "D8", "E7", "E8", "H4"];
+ZIGZAG.TYPES:= ["B7", "B8", "D7", "D8", "E7", "E8", "H4"];
 
 
 #############################################################################
