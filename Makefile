@@ -21,7 +21,7 @@
 	latex $*
 	latex $*
 
-VERSION=0.79
+VERSION=0.80
 DATE = $(shell date +%d-%m-%Y)
 
 
