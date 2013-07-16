@@ -799,7 +799,7 @@ end;
 ##  <Description>
 ##    The quiver with relations of the descent algebra of a finite Coxeter
 ##    group <M>W</M> is computed by the algorithm from <Cite
-##    Key="pfeiffer-quiver"/>.  The result is a directed graph which has the
+##    Key="Pfeiffer2009"/>.  The result is a directed graph which has the
 ##    shapes of <M>W</M> as its vertex set.  This graph is here
 ##    represented by a record with components <K>path0</K>, the list of
 ##    vertices as streets of length 0, <K>path</K>, a list of lists of

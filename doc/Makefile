@@ -35,10 +35,7 @@ all: zigzag.pdf
 zigzag.tex: $(XMLFILES) $(GAPFILES)
 	gap4 -b -r < makedoc.g
 
-zigzag.pdf: zigzag.tex descent.bib
-
-descent.bib: ~/text/descent/descent.bib
-	ln -f $< $@
+zigzag.pdf: zigzag.tex zigzag.bib
 
 clean:
 	rm -fv *.aux *.log *.blg *.ilg

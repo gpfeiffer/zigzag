@@ -85,7 +85,7 @@ in various ways.
 <#Include SYSTEM "forests.xml">
 </Body>
 
-<Bibliography Databases="descent" Style="amsplain"/>
+<Bibliography Databases="zigzag" Style="amsplain"/>
 
 <TheIndex/>
 
