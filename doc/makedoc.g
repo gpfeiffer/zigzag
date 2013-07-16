@@ -1,4 +1,5 @@
-path:= Directory("/home/goetz/projects/zigzag/doc");
+path:= Directory("/home/goetz/Projects/zigzag/doc");
+path:= Directory(".");
 main:= "zigzag.xml";
 lib:= "../lib/";
 files:= [ 

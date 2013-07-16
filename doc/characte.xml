@@ -28,6 +28,8 @@ particular named characters.
 
 <#Include Label="SignCharacter">
 
+<#Include Label="AlphaCharacter">
+
 </Section>
 
 <Section Label="Sect:LinearChars">

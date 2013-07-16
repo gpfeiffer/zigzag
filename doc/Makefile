@@ -5,14 +5,14 @@ DOC = .
 
 GAPFILES = $(LIB)/descent.g $(LIB)/methods.g $(LIB)/iterator.g\
            $(LIB)/walker.g $(LIB)/subsets.g $(LIB)/skyline.g\
-           $(LIB)/shapes.g\
+           $(LIB)/shapes.g $(LIB)/classes.g $(LIB)/characte.g\
            $(LIB)/alleys.g $(LIB)/streets.g $(LIB)/category.g\
 	   $(LIB)/groupoid.g
 
 XMLFILES = $(DOC)/zigzag.xml  $(DOC)/introduc.xml\
 	   $(DOC)/descent.xml $(DOC)/methods.xml $(DOC)/iterator.xml\
            $(DOC)/walker.xml $(DOC)/subsets.xml $(DOC)/skyline.xml\
-           $(DOC)/shapes.xml\
+           $(DOC)/shapes.xml $(DOC)/classes.xml $(DOC)/characte.xml\
            $(DOC)/alleys.xml $(DOC)/streets.xml $(DOC)/category.xml\
 	   $(DOC)/groupoid.xml
 
@@ -32,8 +32,10 @@ XMLFILES = $(DOC)/zigzag.xml  $(DOC)/introduc.xml\
 
 all: zigzag.pdf
 
-zigzag.tex: $(XMLFILES) $(GAPFILES) descent.bib
+zigzag.tex: $(XMLFILES) $(GAPFILES)
 	gap4 -b -r < makedoc.g
+
+zigzag.pdf: zigzag.tex descent.bib
 
 descent.bib: ~/text/descent/descent.bib
 	ln -f $< $@

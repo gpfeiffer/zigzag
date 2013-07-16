@@ -4,7 +4,7 @@
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2011  Götz Pfeiffer
+#Y  Copyright (C) 2011-2013  Götz Pfeiffer
 ##
 ##  This file contains routines for characters of finite Coxeter groups.
 ##
@@ -12,12 +12,13 @@
 ##    Characters ...<P/>
 ##
 ##    This chapter describes functions which compute certain named
-##    characters of a finite group <M>G</M>, or a finite Coxeter group 
-##    <M>W</M>; see <Ref Func="RegularCharacter"/>, 
-##    <Ref Func="TrivialCharacter"/>, and <Ref Func="SignCharacter"/>.
+##    characters of a finite group <M>G</M> 
+##    (see <Ref Func="TrivialCharacter"/> and <Ref Func="RegularCharacter"/>)
+##    or, more specially of a finite Coxeter group <M>W</M> 
+##    (see <Ref Func="SignCharacter"/> and <Ref Func="AlphaCharacter"/>).
 ##    Moreover, there is a function to compute all linear characters
 ##    of a finite group; see <Ref Func="LinearCharacters"/>.
-##    And there are various list of characters of some importance
+##    And there are various lists of characters of some importance
 ##    for a finite Coxeter group; see <Ref Func="ECharacters"/>.
 ##
 ##    The functions described in this chapter are implemented in the file
@@ -316,6 +317,49 @@ ECharacters:= function(W)
     return List(mat, x-> List([1..Length(x)], i-> x[i] * dia[i]));    
 end;
 
+#############################################################################
+##
+#F  AlphaCharacter( <W>, <J> )  . . . . . . . . . . . . . .  alpha character.
+##
+##  <#GAPDoc Label="AlphaCharacter">
+##  <ManSection>
+##  <Func Name="AlphaCharacter" Arg="W, J"/>
+##  <Returns>
+##    the character <M>\alpha_J</M> of the normalizer <M>N_W(W_J)</M>.
+##  </Returns>
+##  <Description>
+##    The character <M>\alpha_J \colon N_W(W_J) \to \C</M> is defined 
+##    (in <Cite Key="HowLeh1982"/>) as
+##    the determinant on the orthogonal complement of the <M>V_J</M>
+##    spanned by the simple roots corresponding to the reflections in
+##    the subset <M>J</M> of <M>S</M>.  Obviously, this character has
+##    the parabolic subgroup <M>W_J</M> in its kernel.  And
+##    according to Lemma 2.1 in <Cite Key ="DoPfRo2012"/>,
+##    it equals
+##    sign times the determinant of the permutation induced on <M>J</M>
+##    on the normalizer complement (see <Ref Func="NormalizerComplement"/>).
+##  <Example>
+##  gap> AlphaCharacter(CoxeterGroup("A", 3), [1]);
+##  Character( Subgroup( CoxeterGroup("A", 3), 
+##  [ ( 1, 7)( 2, 4)( 5, 6)( 8,10)(11,12), 
+##    ( 2, 5)( 3, 9)( 4, 6)( 8,11)(10,12) ] ), [ 1, -1, 1, -1 ] )
+##  </Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+AlphaCharacter:= function(W, J)
+    local   nor,  vals,  w;
+    
+    nor:= NormalizerParabolic(W, J);
+    vals:= [];
+    for w in List(ConjugacyClasses(nor), Representative) do
+        w:= ParabolicCoordinates(W, J, w)[2];
+        Add(vals, (-1)^CoxeterLength(W, w) * SignPerm(Sortex(OnTuples(J, w))));
+    od;
+        
+    return Character(nor, vals);
+end;
 
 #############################################################################
 ##
