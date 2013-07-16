@@ -363,6 +363,161 @@ end;
 
 #############################################################################
 ##
+#F  LambdaCharacter( <lambda>, <cval>, <xval> )
+##
+LambdaCharacter:= function(lambda, cval, xval)
+    local   u,  n,  W,  ct,  t,  s,  i,  ttt,  sss,  o,  old,  w,  
+            gens,  vals,  l,  cycle,  cen,  lin,  phi;
+    
+    n:= Sum(lambda);
+    W:= CoxeterGroup("A", n-1);
+    ct:= CharTable(W);
+    
+    # name the generators of W
+    s:= [];
+    for i in [1..n-1] do
+        s[i]:= W.(i); 
+    od;
+    
+    # the product s_a ... s_b
+    sss:= function(a, b)
+        if b < a then
+            return ();
+        fi;
+        return Product(s{[a..b]});
+    end;
+
+    o:= 0;  # offset
+    old:= 0;  # previous part considered
+    
+    w:= ();  # to make w_{lambda}
+    gens:= [];  vals:= [];
+     
+    # loop over the parts
+    for l in lambda do
+        cycle:= sss(o+1, o+l-1);
+        w:= w * cycle;
+        if  l = old then   # add a swapper
+            Add(gens, sss(o-l+1, o+l-1)^l);
+            Add(vals, xval(l)); 
+        else               # add the cycle and an r
+            Add(gens, cycle);
+            Add(vals, cval(l)); 
+        fi;
+        old:= l;  o:= o+l;  # update offset and old
+    od;
+    
+    cen:= Subgroup(W, gens);
+    lin:= LinearCharacters(cen);
+    phi:= First(lin, chi-> OnTuples(gens, chi) = vals);
+    phi.element:= w;
+    
+    return phi;
+end;
+
+
+#############################################################################
+##
+#F  Lambda2Character( <lambda>, <cval>, <dval>, <xval>, <yval>, <rval> )
+##
+##
+##  the ?val arguments are 5 functions, to compute the character values
+##  of a c, d, x, y, r element respectively, from the current part l.
+##
+Lambda2Character:= function(lambda, cval, dval, xval, yval, rval)
+    local   u,  n,  W,  ct,  t,  s,  i,  ttt,  sss,  o,  old,  w,  
+            gens,  vals,  l,  cycle,  cen,  lin,  phi;
+    
+    # rare case
+    u:= 0;
+    if not IsList(lambda[2]) then
+        if lambda[2] = '-' then u:= 1; fi;
+        lambda[2]:= [];
+    fi;
+    
+    n:= Sum(lambda, Sum);
+    W:= CoxeterGroup("B", n);
+    ct:= CharTable(W);
+    
+    # name the generators of W(B_n)
+    t:= W.1;
+    s:= [];
+    for i in [2..n] do
+        s[i-1]:= W.(i); 
+    od;
+    
+    # conjugating element
+    u:= t^u;
+    
+    # the product t_a ... t_b
+    ttt:= function(a, b)
+        if b < a then
+            return t^0;
+        fi;
+        return Product([a..b], i-> t^sss(1, i-1));
+    end;
+     
+    # the product s_a ... s_b
+    sss:= function(a, b)
+        if b < a then
+            return t^0;
+        fi;
+        return Product(s{[a..b]});
+    end;
+
+    o:= 0;  # offset
+    old:= 0;  # previous part considered
+    
+    w:= ();  # to make w_{lambda}
+    gens:= [];  vals:= [];
+     
+    # loop over the negative parts in reverse
+    for l in Reversed(lambda[2]) do
+        cycle:= t^sss(1, o) * sss(o+1, o+l-1);
+        w:= w * cycle;
+        if  l = old then   # add a swapper
+            Add(gens, sss(o-l+1, o+l-1)^l);
+            Add(vals, xval(l)); 
+        else               # add the cycle
+            Add(gens, cycle);
+            Add(vals, cval(l)); 
+        fi;
+        old:= l;  o:= o+l;  # update offset and old
+    od;
+    
+    old:= 0;
+    
+    # loop over the positive parts
+    for l in lambda[1] do
+        cycle:= sss(o+1, o+l-1);
+        w:= w * cycle;
+        if  l = old then   # add a swapper
+            Add(gens, sss(o-l+1, o+l-1)^l);
+            Add(vals, yval(l)); 
+        else               # add the cycle and an r
+            Add(gens, cycle);
+            Add(vals, dval(l)); 
+            Add(gens, ttt(o+1, o+l));
+            Add(vals, rval(l));
+        fi;
+        old:= l;  o:= o+l;  # update offset and old
+    od;
+    
+    # conjugate if necessary.
+    gens:= OnTuples(gens, u);
+    w:= w^u;
+    
+    cen:= Subgroup(W, gens);
+    lin:= LinearCharacters(cen);
+    phi:= First(lin, chi-> OnTuples(gens, chi) = vals);
+    phi.element:= w;
+    
+    return phi;
+end;
+
+
+#############################################################################
+##
 #E  Emacs  . . . . . . . . . . . . . . . . . . . . . . local emacs variables.
 ##
 ##  Local Variables:

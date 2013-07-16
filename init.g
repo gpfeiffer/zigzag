@@ -60,7 +60,8 @@ AUTO( ReadPkg( "zigzag", "lib", "alleys" ), ProductAlleys, ProductAlleyList,
 
 AUTO( ReadPkg( "zigzag", "lib", "characte" ), RegularCharacter,
   TrivialCharacter, SignCharacter, GeneratorsAbelianGroup,
-  LinearCharactersAbelianGroup, LinearCharacters, ECharacters, AlphaCharacter);
+  LinearCharactersAbelianGroup, LinearCharacters, ECharacters, AlphaCharacter,
+  LambdaCharacter, Lambda2Character);
 
 AUTO( ReadPkg( "zigzag", "lib", "subsets" ), SetComposition, IsLeftDescent,
   IsRightDescent, LongestElement, ConnectedComponent, ConnectedComponents,
