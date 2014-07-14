@@ -364,6 +364,7 @@ end;
 #############################################################################
 ##
 #F  LambdaCharacter( <lambda>, <cval>, <xval> )
+#F  ACharacter( <lambda> )
 ##
 LambdaCharacter:= function(lambda, cval, xval)
     local   u,  n,  W,  ct,  t,  s,  i,  ttt,  sss,  o,  old,  w,  
@@ -413,6 +414,13 @@ LambdaCharacter:= function(lambda, cval, xval)
     phi.element:= w;
     
     return phi;
+end;
+
+ACharacter:= function(lambda)
+    local   ell,  one;
+    ell:= l-> E(l);
+    one:= l-> 1;
+    return LambdaCharacter(lambda, ell, one);
 end;
 
 
@@ -515,6 +523,29 @@ Lambda2Character:= function(lambda, cval, dval, xval, yval, rval)
     return phi;
 end;
 
+BCharacter:= function(lambda)
+    local   tpp,  ell,  two,  one,  alt;
+    tpp:= function(l)
+        while l mod 2 = 0 do
+            l:= l/2;
+        od;
+        return -E(l);  # = E(2*l) as l is odd here.
+    end;
+    ell:= l-> E(l);
+    two:= l-> -1; 
+    one:= l-> 1;
+    alt:= l-> (-1)^(l-1);
+    return Lambda2Character(lambda, tpp, ell, two, one, alt);
+end;
+
+DCharacter:= function(lambda)
+    local   tel,  ell,  two,  one;
+    tel:= l-> E(2*l);
+    ell:= l-> E(l);
+    two:= l-> -1;
+    one:= l-> 1;
+    return Lambda2Character(lambda, tel, ell, two, one, two);
+end;
 
 #############################################################################
 ##

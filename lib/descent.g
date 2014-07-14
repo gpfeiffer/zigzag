@@ -205,7 +205,7 @@ DescentEltOps.x:= function(self)
     if self.basis = "x" then
         return self;
     elif self.basis = "y" then
-        mat:= IncidenceMatShapes(Shapes(self.W));
+        mat:= IncidenceMatShapes(Shapes(self.D.W));
         return DescentElt(self.D, "x", self.coeff / mat);
     elif self.basis = "e" then
         mat:= Call(self.D, "Mu");
