@@ -118,6 +118,17 @@ SignCharacter:= function(W)
 end;
 
 
+#############################################################################
+##
+##  MultiplicitiesCharacter
+##
+##  compute the multiplicities of each irreducible character in chi.
+##
+MultiplicitiesCharacter:= function(chi)
+    return List(Irr(chi.source), x-> ScalarProduct(x, chi));
+end;
+
+
 ##  Computing Linear Characters.
 
 #############################################################################
