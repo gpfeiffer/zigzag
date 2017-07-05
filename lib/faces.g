@@ -247,6 +247,36 @@ end;
 
 
 #############################################################################
+FaceOps.Closure:= function(self)
+    local   S,  faces,  K,  L,  w;
+    S:= [1..self.W.semisimpleRank];
+    faces:= [];
+    for K in Combinations(Difference(S, self.J)) do
+        L:= Union(self.J, K);
+        w:= ReducedInCoxeterCoset(ReflectionSubgroup(self.W, L), self.x);
+        Print(L, ": ", CoxeterWord(self.W, w), "\n");
+        Add(faces, Face(self.W, L, w));
+    od;
+    return faces;
+end;
+
+#############################################################################
+Hyperplanes:= function(W)
+    local   reflections,  planes,  face,  sign,  i;
+    reflections:= [1..W.N];
+    planes:= List(reflections, x-> []);
+    for face in Faces(W) do
+        sign:= Call(face, "Sign");
+        for i in reflections do
+            if sign[i] = '0' then
+                Add(planes[i], face);
+            fi;
+        od;
+    od;
+    return planes;
+end;
+
+#############################################################################
 OnFaces:= function(face, w)
     return Face(face.W, face.J, 
       ReducedInCoxeterCoset(ReflectionSubgroup(face.W, face.J), face.x * w));
