@@ -434,6 +434,33 @@ ACharacter:= function(lambda)
     return LambdaCharacter(lambda, ell, one);
 end;
 
+ACharacters:= function(n)
+    local   W,  sum,  lambda;
+    W:= CoxeterGroup("A", n-1);
+    sum:= List([1..n], x-> []);
+    for lambda in Partitions(n) do
+        Add(sum[Length(lambda)], ACharacter(lambda)^W);
+    od;
+    return List(sum, Sum);
+end;
+
+A1Character:= function(lambda)
+    local   alt,  mel;
+    alt:= l-> (-1)^(l-1);
+    mel:= l-> alt(l)*E(l);
+    return LambdaCharacter(lambda, mel, alt);
+end;
+
+A1Characters:= function(n)
+    local   W,  sum,  lambda;
+    W:= CoxeterGroup("A", n-1);
+    sum:= List([1..n], x-> []);
+    for lambda in Partitions(n) do
+        Add(sum[Length(lambda)], A1Character(lambda)^W);
+    od;
+    return List(sum, Sum);
+end;
+
 
 #############################################################################
 ##
