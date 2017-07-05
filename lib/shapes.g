@@ -1248,6 +1248,10 @@ end;
 ##
 ##  undocumented utility functions.
 ##
+ShapeOps.CartanType:= function(sh)
+    return CartanType(ReflectionSubgroup(sh.W, sh.J));
+end;
+
 ShapeOps.CartanName:= function(sh)
     #FIXME: this naming scheme works only for small irreducibles ...
     #FIXME: and maybe we have to take care of types B and F ...
