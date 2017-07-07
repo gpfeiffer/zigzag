@@ -146,6 +146,57 @@ NBCBasis:= function(vecs)
 end;
 
 #############################################################################
+ZeroVecNBC:= rec(sets:= [], vals:= []);
+
+# how to multiply vec by scalar
+MulVecNBC:= function(h, vec)
+    if h = 0 then
+        return ZeroVecNBC;
+    else
+        return rec(sets:= ShallowCopy(vec.sets), vals:= List(vec.vals, x-> h * x));
+    fi;
+end;
+
+# normalize vec in place (sort sets, ignore zero vals)
+NormalVecNBC:= function(vec)
+    local   l,  sets,  vals,  i,  set,  val;
+
+    l:= Length(vec.sets);
+    SortParallel(vec.sets, vec.vals);
+
+    sets:= [];
+    vals:= [];
+
+    i:= 1;
+    while i <= l do
+        set:= vec.sets[i];
+        val:= 0;
+        while i <= l and vec.sets[i] = set do
+            val:= val + vec.vals[i];
+            i:= i+1;
+        od;
+        if val <> 0 then
+            Add(sets, set);
+            Add(vals, val);
+        fi;
+    od;
+
+    vec.sets:= sets;
+    vec.vals:= vals;
+    return vec;
+end;
+
+# how to add two vecs.
+AddVecNBC:= function(l, r)
+    local   sum;
+    sum:= rec(sets:= Concatenation(l.sets, r.sets),
+              vals:= Concatenation(l.vals, r.vals));
+    return NormalVecNBC(sum);
+end;
+
+
+
+#############################################################################
 ##
 ##  how to write a (non-basis) set as combination of basis sets
 ##  given: a set, a basis, and a big enough list of broken circuits
@@ -156,58 +207,8 @@ end;
 ##  returns: a sparse list of coefficient/basis element pairs
 ##
 NBCCoeffsSet:= function(set, basis, vecs)
-    local   zeroVec,  mulVec,  normalVec,  addVec,  positionChild,
-            nodeSet,  k,  sub,  big,  j,  sum,  poss,  i;
-
-#    Print(">\c");
-
-    zeroVec:= rec(sets:= [], vals:= []);
-
-    # how to multiply vec by scalar
-    mulVec:= function(h, vec)
-        if h = 0 then
-            return zeroVec;
-        else
-            return rec(sets:= ShallowCopy(vec.sets), vals:= List(vec.vals, x-> h * x));
-        fi;
-    end;
-
-    # normalize vec in place (sort sets, ignore zero vals)
-    normalVec:= function(vec)
-        local   l,  sets,  vals,  i,  set,  val;
-
-        l:= Length(vec.sets);
-        SortParallel(vec.sets, vec.vals);
-
-        sets:= [];
-        vals:= [];
-
-        i:= 1;
-        while i <= l do
-            set:= vec.sets[i];
-            val:= 0;
-            while i <= l and vec.sets[i] = set do
-                val:= val + vec.vals[i];
-                i:= i+1;
-            od;
-            if val <> 0 then
-                Add(sets, set);
-                Add(vals, val);
-            fi;
-        od;
-
-        vec.sets:= sets;
-        vec.vals:= vals;
-        return vec;
-    end;
-
-    # how to add two vecs.
-    addVec:= function(l, r)
-        local   sum;
-        sum:= rec(sets:= Concatenation(l.sets, r.sets),
-                  vals:= Concatenation(l.vals, r.vals));
-        return normalVec(sum);
-    end;
+    local   positionChild,  nodeSet,  k,  sub,  null,  big,  j,  sum,
+            poss,  i;
 
     # how to find a particular child: binary search
     positionChild:= function(children, k)
@@ -267,7 +268,7 @@ NBCCoeffsSet:= function(set, basis, vecs)
     # can this happen?
     if sub[k+1] in set then
         Print("0\c");
-        return zeroVec;
+        return ZeroVecNBC;
     fi;
 
     # otherwise, there is a relation; choose sign so that set would
@@ -278,13 +279,13 @@ NBCCoeffsSet:= function(set, basis, vecs)
     big{[j..Length(big)]+1}:= big{[j..Length(big)]};
     big[j]:= sub[k+1];
 
-    sum:= zeroVec;
+    sum:= ZeroVecNBC;
 
 #    Print("set: ", set, " sub: ", sub, " big: ", big, "\n");
     poss:= [1..Length(set)]+1;
     for i in [1..k] do
         if null[i] <> 0 then
-            sum:= addVec(sum, mulVec(-(-1)^(i-j), NBCCoeffsSet(big{poss}, basis, vecs)));
+            sum:= AddVecNBC(sum, MulVecNBC(-(-1)^(i-j), NBCCoeffsSet(big{poss}, basis, vecs)));
         fi;
         poss[i]:= i;
     od;
