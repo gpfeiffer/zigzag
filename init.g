@@ -4,15 +4,15 @@
 ##
 #A  This file is part of ZigZag <http://schmidt.nuigalway.ie/zigzag>.
 ##
-#Y  Copyright (C) 2010  Götz Pfeiffer
+#Y  Copyright (C) 2010-2017  Götz Pfeiffer
 ##
 ##  This is the init file of the ZigZag package.
 ##
 
 #############################################################################
 ZIGZAG:= rec();
-ZIGZAG.Version:= "0.80";
-ZIGZAG.Date:= "16-07-2013";
+ZIGZAG.Version:= "0.81";
+ZIGZAG.Date:= "07-07-2017";
 ReadPkg("zigzag", "dat", "admin");
 
 #############################################################################
@@ -59,9 +59,10 @@ AUTO( ReadPkg( "zigzag", "lib", "alleys" ), ProductAlleys, ProductAlleyList,
   IsAlleyAlgebra);
 
 AUTO( ReadPkg( "zigzag", "lib", "characte" ), RegularCharacter,
-  TrivialCharacter, SignCharacter, GeneratorsAbelianGroup,
-  LinearCharactersAbelianGroup, LinearCharacters, ECharacters, AlphaCharacter,
-  LambdaCharacter, Lambda2Character);
+  TrivialCharacter, SignCharacter, MultiplicitiesCharacter,
+  GeneratorsAbelianGroup, LinearCharactersAbelianGroup, LinearCharacters,
+  ECharacters, AlphaCharacter, LambdaCharacter, ACharacter, ACharacters,
+  A1Character, A1Characters, Lambda2Character, BCharacter, DCharacter);
 
 AUTO( ReadPkg( "zigzag", "lib", "subsets" ), SetComposition, IsLeftDescent,
   IsRightDescent, LongestElement, ConnectedComponent, ConnectedComponents,
@@ -137,16 +138,23 @@ AUTO( ReadPkg( "zigzag", "lib", "methods" ), OPERATIONS, Ops, Object,
   TypeCheck, Call, ApplyMethod, Map, Iverson, PartitionOps, Partition);
 
 AUTO( ReadPkg( "zigzag", "lib", "faces" ), FaceOps, Face, IsFace, Faces,
-  ProductLSigns, ProductRSigns, OnFaces, KernelSupportMap, FaceEltOps,
-  FaceElt, IsFaceElt, ImageSupportMap, IncidenceIntersectionLattice,
-  onReflectionSubgroups, PrimitiveIdempotentsFaceElts, NilpotentFaceElts,
-  ProdMat);
+  ProductLSigns, ProductRSigns, Hyperplanes, OnFaces, KernelSupportMap,
+  FaceEltOps, FaceElt, IsFaceElt, ImageSupportMap,
+  IncidenceIntersectionLattice, onReflectionSubgroups,
+  PrimitiveIdempotentsFaceElts, NilpotentFaceElts, ProdMat);
 
 AUTO( ReadPkg( "zigzag", "lib", "paracent" ), OrderedShapeOps, OrderedShape,
   IsOrderedShape, OrthogonalComplement, CentralizerParabolic);
 
+AUTO( ReadPkg( "zigzag", "lib", "nodes" ), NodeOps, Node, CompressTree,
+  ShowGraph, JsonGraph);
+
 AUTO( ReadPkg( "zigzag", "lib", "blocks" ), VecBlVec, BlVecVec, MatBlMat,
   BlMatMat);
+
+AUTO( ReadPkg( "zigzag", "lib", "broken" ), InfoBroken, HyperplanesRoots,
+  EnlargedTree, NBCBasis, NBCCoeffsSet, NBCCoeffBasic, NBCDiagonalSet,
+  TraceNBC, OSCharacterValueCRG, OSCharacterCRG);
 
 AUTO( ReadPkg( "zigzag", "lib", "skyline" ), FallingSequence, SkylineAOps,
   SkylineA, IsSkylineA, SkylineAPerm, SkylineAWord, SkylineBOps, SkylineB,
