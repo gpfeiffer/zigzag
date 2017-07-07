@@ -257,8 +257,10 @@ NBCCoeffsSet:= function(set, basis, vecs)
     # now set is not basic and set{[1..k]} contains a broken circuit.
     # find the extra element.
     sub:= set{[1..k]};  sub[k+1]:= Length(vecs);
-    while RankMat(vecs{sub}) > k do
+    null:= NullspaceMat(vecs{sub});
+    while null = [] do
         sub[k+1]:= sub[k+1] - 1;
+        null:= NullspaceMat(vecs{sub});
     od;
 
     # if set also contains the extra element it is dependent hence 0
@@ -270,20 +272,23 @@ NBCCoeffsSet:= function(set, basis, vecs)
 
     # otherwise, there is a relation; choose sign so that set would
     # occur with -
+    null:= null[1];
     big:= Copy(set);
     j:= PositionSorted(big, sub[k+1]);
     big{[j..Length(big)]+1}:= big{[j..Length(big)]};
     big[j]:= sub[k+1];
+
     sum:= zeroVec;
 
 #    Print("set: ", set, " sub: ", sub, " big: ", big, "\n");
     poss:= [1..Length(set)]+1;
     for i in [1..k] do
-        sum:= addVec(sum, mulVec(-(-1)^(i-j), NBCCoeffsSet(big{poss}, basis, vecs)));
+        if null[i] <> 0 then
+            sum:= addVec(sum, mulVec(-(-1)^(i-j), NBCCoeffsSet(big{poss}, basis, vecs)));
+        fi;
         poss[i]:= i;
-
     od;
-#    Print("<\c");
+
     return sum;
 end;
 
@@ -376,10 +381,7 @@ NBCCoeffBasic:= function(img, set, basis, vecs)
 
     sum:= 0;
 
-#    if k > 4 then Error(); fi;
-
-    #    Print("img: ", img, " sub: ", sub, " big: ", big, "\n");
-#    Print(">\c");
+#    Print("img: ", img, " sub: ", sub, " big: ", big, "\n");
     poss:= [1..Length(set)]+1;
     for i in [1..k] do
         if null[i] <> 0 then
@@ -387,7 +389,6 @@ NBCCoeffBasic:= function(img, set, basis, vecs)
         fi;
         poss[i]:= i;
     od;
-#    Print("<\c");
 
     return sum;
 end;
@@ -465,4 +466,3 @@ OSCharacterCRG:= function(W)
     od;
     return Character(W, chi);
 end;
-
