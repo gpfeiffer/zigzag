@@ -26,12 +26,8 @@ ZIGZAG.TYPES:= ["B7", "B8", "D7", "D8", "E7", "E8", "H4"];
 ##
 ZIGZAG.Data:= function(W, dat)
     local   name,  comp,  file;
-    
-    if not IsBound(W.createArgs) then
-        return false;
-    fi;
-    
-    name:= Concatenation(List(W.createArgs, String));
+
+    name:= ReflectionName(W);
     if name in ZIGZAG.TYPES then
         if not IsBound(ZIGZAG.(name)) then
             ZIGZAG.(name):= rec();
