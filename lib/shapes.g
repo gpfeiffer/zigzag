@@ -367,7 +367,7 @@ ShapeOps.Display:= function(self, options)
 
     # determine name, if necessary.
     if not IsBound(self.name) then
-        self.name:= CartanName(ReflectionSubgroup(self.W, self.J));
+        self.name:= ReflectionName(ReflectionSubgroup(self.W, self.J));
         if self.name = "" then self.name:= "1"; fi;  # trivial subgroup.
     fi;
 
@@ -530,7 +530,7 @@ end;
 ##    Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 5 ] ),
 ##    Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 4 ] ),
 ##    Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 4, 5 ] ) ]
-##  gap> List(last, x-> Call(x, "Label"));
+##  gap> Map(last, "Label");
 ##  [ [ 1, 1, 1, 1, 1, 1 ], [ 2, 1, 1, 1, 1 ], [ 3, 1, 1, 1 ], [ 3, 2, 1 ],
 ##    [ 4, 1, 1 ], [ 4, 2 ], [ 5, 1 ], [ 6 ] ]
 ##  </Example>
@@ -1248,58 +1248,47 @@ end;
 ##
 ##  undocumented utility functions.
 ##
-ShapeOps.CartanType:= function(sh)
-    return CartanType(ReflectionSubgroup(sh.W, sh.J));
+ShapeOps.ReflectionType:= function(sh)
+    return ReflectionType(ReflectionSubgroup(sh.W, sh.J));
 end;
 
-ShapeOps.CartanName:= function(sh)
+ShapeOps.ReflectionName:= function(sh)
     #FIXME: this naming scheme works only for small irreducibles ...
     #FIXME: and maybe we have to take care of types B and F ...
     #FIXME: the best solution probably leaves room for changes by hand ...
     local   typ,  t,  name;
 
     # get Cartan type.
-    typ:= Copy(CartanType(ReflectionSubgroup(sh.W, sh.J)));
+    typ:= Copy(ReflectionType(ReflectionSubgroup(sh.W, sh.J)));
 
     # trivial case first.
     if typ = [] then return "\\emptyset"; fi;
-
-    # switch to rank information.
-    for t in typ do
-        t[2]:= Length(t[2]);
-    od;
 
     Sort(typ, function(a, b) return a > b; end);
 
     #FIXME: this naming scheme works only for small irreducibles ...
     for t in [2..Length(typ)] do
-        if typ[t][1] <> "A" then
+        if typ[t].series <> "A" then
             Error("not yet implemented");
         fi;
     od;
 
-#    for t in [1..Length(typ)] do
-#        if typ[t][2] > 9 then
-#            Error("not yet implemented");
-#        fi;
-#    od;
-
-    name:= typ[1][1];
+    name:= typ[1].series;
     Append(name, "_{");
     for t in typ do
-        if t[2] > 9 then
+        if t.rank > 9 then
             Add(name, '(');
-            Append(name, String(t[2]));
+            Append(name, String(t.rank));
             Add(name, ')');
         else
-            Append(name, String(t[2]));
+            Append(name, String(t.rank));
         fi;
     od;
     Append(name, "}");
     t:= typ[1];
-    if Length(t) = 3 then
+    if IsBound(t.bond) then
         Add(name, '(');
-        Append(name, String(t[3]));
+        Append(name, String(t.bond));
         Add(name, ')');
     fi;
     IsString(name);
@@ -1310,7 +1299,7 @@ end;
 
 NamesShapes:= function(shapes)
     local   nam,  n,  pos,  i,  j;
-    nam:= List(shapes, CartanName);
+    nam:= Map(shapes, "ReflectionName");
     for n in nam do
         pos:= Filtered([1..Length(nam)], i-> nam[i] = n);
         if Length(pos) > 1 then
@@ -1331,12 +1320,12 @@ end;
 ShapeOps.Label:= function(self)
     local   type,  n,  cmp,  par,  i,  sgn;
 
-    type:= CartanType(self.W);
+    type:= ReflectionType(self.W);
     if Length(type) > 1 then
         Error("not yet implemented");
     fi;
 
-    if type[1][1] = "A" then
+    if type[1].series = "A" then
         n:= self.W.semisimpleRank;
         cmp:= Difference([0..n+1], self.J);
         par:= [];
@@ -1346,7 +1335,7 @@ ShapeOps.Label:= function(self)
         Sort(par, function(a, b) return a > b; end);
         return par;
 
-    elif type[1][1] = "B" or type[1][1] = "C" then
+    elif type[1].series = "B" or type[1].series = "C" then
         n:= self.W.semisimpleRank;
         cmp:= Difference([0..n], self.J - 1);
         par:= [];
@@ -1356,7 +1345,7 @@ ShapeOps.Label:= function(self)
         Sort(par, function(a, b) return a > b; end);
         return par;
 
-    elif type[1][1] = "D" then
+    elif type[1].series = "D" then
         n:= self.W.semisimpleRank;
         cmp:= Difference([0..n], self.J - 1);
         sgn:= '+';
@@ -1383,7 +1372,7 @@ ShapeOps.Label:= function(self)
 end;
 
 LabelsShapes:= function(shapes)
-    return List(shapes, x-> Call(x, "Label"));
+    return Map(shapes, "Label");
 end;
 
 
@@ -1391,9 +1380,9 @@ end;
 PathsShapes:= function(shapes)
     local   verts,  edges,  paths,  p,  e,  new;
 
-    verts:= List(shapes, x-> Call(x, "Street"));
-    edges:= Union(List(verts, x-> Call(x, "Shakers")));
-    Append(edges, Union(List(verts, x-> Call(x, "MoversPlus"))));
+    verts:= Map(shapes, "Street");
+    edges:= Union(Map(verts, "Shakers"));
+    Append(edges, Union(Map(verts, "MoversPlus")));
     paths:= ShallowCopy(verts);
     for p in paths do
         for e in edges do
@@ -1404,7 +1393,7 @@ PathsShapes:= function(shapes)
         od;
     od;
 
-    #    return List(paths, x-> Call(x, "Shapes"));
+    #    return Map(paths, "Shapes");
     return paths;
 end;
 

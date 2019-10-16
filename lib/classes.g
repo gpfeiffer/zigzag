@@ -715,7 +715,7 @@ CyclicShiftClasses:= function(W, w)
     old:= classes;
     while old <> [] do
         new:= [];
-        all:= Union(List(old, x-> Call(x, "AllAbove")));
+        all:= Union(Map(old, "AllAbove"));
         while all <> [] do
             cyc:= CyclicShifts(W, all[1]);
             Add(new, cyc);

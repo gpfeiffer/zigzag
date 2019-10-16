@@ -153,7 +153,7 @@ end;
 # (this is a partition of what number?)
 # (note that paths in the partition quiver have profiles, too)
 LeanTreeOps.Profile:= function(self)
-    return List(Call(self, "SubTrees"), x-> Call(x, "Top"));
+    return Map(Call(self, "SubTrees"), "Top");
 end;
 
 
@@ -324,28 +324,28 @@ end;
 ##  this produces the composition corresponding to the source of the forest.
 ##
 LeanForestOps.Top:= function(self)
-    return List(self.list, t-> Call(t, "Top"));
+    return Map(self.list, "Top");
 end;
 
 #  the bottom of a forest is the joined bottoms of its trees.
 # this produces the composition corresponding to the target of the forest.
 LeanForestOps.Bot:= function(self)
-    return Concatenation(List(self.list, t-> Call(t, "Bot")));
+    return Concatenation(Map(self.list, "Bot"));
 end;
 
 LeanForestOps.Leaves:= function(self)
-    return Concatenation(List(self.list, t-> Call(t, "Leaves")));
+    return Concatenation(Map(self.list, "Leaves"));
 end;
 
 LeanForestOps.SubTrees:= function(self)
     local list;
-    list:= Concatenation(List(self.list, x-> Call(x, "SubTrees")));
+    list:= Concatenation(Map(self.list, "SubTrees"));
     Sort(list);
     return list;
 end;
 
 LeanForestOps.Profile:= function(self)
-    return List(Call(self, "SubTrees"), x-> Call(x, "Top"));
+    return Map(Call(self, "SubTrees"), "Top");
 end;
 
 
@@ -1015,7 +1015,7 @@ end;
 ##  Forest also have indices.
 ##
 ForestOps.Index:= function(self)
-    return Concatenation(List(self.list, t-> Call(t, "Indices")));
+    return Concatenation(Map(self.list, "Indices"));
 end;
 
 
@@ -1023,7 +1023,7 @@ ForestOps.IndicesPostfix:= function(self)
     local   ind,  l;
 
     ind:= [];
-    for l in List(self.list, t-> Call(t, "IndicesPostfix")) do
+    for l in Map(self.list, "IndicesPostfix") do
         Append(ind, l);
         Add(ind, 0);
     od;
@@ -1034,7 +1034,7 @@ ForestOps.Indices:= function(self)
     local   ind,  l;
 
     ind:= [];
-    for l in List(self.list, t-> Call(t, "Indices")) do
+    for l in Map(self.list, "Indices") do
         Append(ind, l);
         Add(ind, 0);
     od;
@@ -1271,7 +1271,7 @@ end;
 ##  how to forget all the indices.
 ##
 ForestOps.Lean:= function(self)
-    return LeanForest(List(self.list, x-> Call(x, "Lean")));
+    return LeanForest(Map(self.list, "Lean"));
 end;
 
 
@@ -1505,7 +1505,7 @@ end;
 IsCoreNiceRelation:= function(r)
     local   l;
 
-    l:= List(r.path, p-> List(p, x-> Call(x, "Orphans")));
+    l:= List(r.path, p-> Map(p, "Orphans"));
     l:= List(l, Intersection);
     return Intersection(l) = [];
 end;
@@ -1650,7 +1650,7 @@ end;
 ##
 LeanForestClassOps.Top:= function(self)
     local   top;
-    top:= List(self.list, t-> Call(t, "Top"));
+    top:= Map(self.list, "Top");
     Sort(top); # <- this should not be necessary.
     return top;
 end;
@@ -1658,7 +1658,7 @@ end;
 #############################################################################
 LeanForestClassOps.Bot:= function(self)
     local   bot;
-    bot:= Concatenation(List(self.list, t-> Call(t, "Bot")));
+    bot:= Concatenation(Map(self.list, "Bot"));
     Sort(bot); # <- this should not be necessary.
     return bot;
 end;
