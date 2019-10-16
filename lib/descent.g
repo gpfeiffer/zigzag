@@ -1914,7 +1914,7 @@ DisplayQuiver0:= function(qr)
 
     vertex:= qr.path0;
     name:= NamesShapes(Shapes(vertex[1].W));
-    PrintDynkinDiagram(vertex[1].W);
+    PrintDiagram(vertex[1].W);
 
     Print("\nVertices:\n");
     for i in [1..Length(vertex)] do
@@ -1983,7 +1983,7 @@ DisplayQuiver1:= function(qr)
 
     vertex:= qr.path0;
     name:= NamesShapes(Shapes(vertex[1].W));
-    PrintDynkinDiagram(vertex[1].W);
+    PrintDiagram(vertex[1].W);
 
     Print("\nVertices:\n");
     for i in [1..Length(vertex)] do

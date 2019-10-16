@@ -338,7 +338,7 @@ OrderedShapeOps.Display:= function(self, options)
 
     # determine name, if necessary.
     if not IsBound(self.name) then
-        self.name:= CartanName(ReflectionSubgroup(self.W, self.J));
+        self.name:= ReflectionName(ReflectionSubgroup(self.W, self.J));
         if self.name = "" then self.name:= "1"; fi;  # trivial subgroup.
     fi;
 
@@ -432,7 +432,7 @@ OrderedShapeOps.Centre:= function(self)
 
     # separate central w0 from non-central ones.
     gens:= []; list:= [];
-    for set in CartanType(ReflectionSubgroup(W, J)) do
+    for set in ReflectionType(ReflectionSubgroup(W, J)) do
         K:= J{set[2]};
         wK:= LongestElement(W, K);
         L:= List(OnTuples(K, wK), x-> (x-1) mod W.parentN + 1);
