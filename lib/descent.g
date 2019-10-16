@@ -835,7 +835,7 @@ QuiverRelations0:= function(D)
     # a path is a sequence of streets, with adjacent ones multiplyable.
     deltaPath:= function(path)
         local   p;
-        p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
+        p:= ProductStreetMatrixList(Map(path, "Matrix"));
         return rec(support:= p.target, mat:= Sum(p.mat));
     end;
 
@@ -987,7 +987,7 @@ QuiverRelations1:= function(D)
     # ... and an associated delta-value.
     deltaPath:= function(path)
         local   p;
-        p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
+        p:= ProductStreetMatrixList(Map(path, "Matrix"));
         return rec(support:= p.target, mat:= Sum(p.mat));
     end;
 
@@ -1387,7 +1387,7 @@ DescentQuiver:= function(W)
     # ... and an associated delta-value.
     deltaPath:= function(path)
         local   p;
-        p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
+        p:= ProductStreetMatrixList(Map(path, "Matrix"));
         return rec(support:= p.target, mat:= Sum(p.mat));
     end;
 
@@ -1481,7 +1481,7 @@ DescentQuiver:= function(W)
         all:= [];
         for aaa in grp do
             mat:= List(aaa, x-> Call(x, "Delta").mat);
-            sha:= List(aaa, x-> Call(x, "Shapes"));
+            sha:= Map(aaa, "Shapes");
             len:= List(mat, x-> x*x);
             sol:= [];  wgt:= [];
             r:= RankMat(mat);

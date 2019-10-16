@@ -1279,15 +1279,15 @@ end;
 ##
 #gen:= [];
 #for i in [1..9] do l:= 0*[1..i]; l[i]:= 1; Add(gen, SkylineA(l)); od;
-#A:= Group(List(gen, x-> Call(x, "Permutation")), ());
+#A:= Group(Map(gen, "Permutation"), ());
 #
 #gen:= [SkylineB([-1])];
 #for i in [1..9] do l:= 0*[1..i]; l[i+1]:= 1; Add(gen, SkylineB(l)); od;
-#B:= Group(List(gen, x-> Call(x, "Permutation")), ());
+#B:= Group(Map(gen, "Permutation"), ());
 #
 #gen:= [SkylineD([-2])];
 #for i in [1..9] do l:= 0*[1..i]; l[i]:= 1; Add(gen, SkylineD(l)); od;
-#D:= Group(List(gen, x-> Call(x, "Permutation")), ());
+#D:= Group(Map(gen, "Permutation"), ());
 #
 #a:= function(m, k)
 #    local   lis;

@@ -530,7 +530,7 @@ end;
 ##    Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 5 ] ),
 ##    Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 4 ] ),
 ##    Shape( CoxeterGroup("A", 5), [ 1, 2, 3, 4, 5 ] ) ]
-##  gap> List(last, x-> Call(x, "Label"));
+##  gap> Map(last, "Label");
 ##  [ [ 1, 1, 1, 1, 1, 1 ], [ 2, 1, 1, 1, 1 ], [ 3, 1, 1, 1 ], [ 3, 2, 1 ],
 ##    [ 4, 1, 1 ], [ 4, 2 ], [ 5, 1 ], [ 6 ] ]
 ##  </Example>
@@ -1372,7 +1372,7 @@ ShapeOps.Label:= function(self)
 end;
 
 LabelsShapes:= function(shapes)
-    return List(shapes, x-> Call(x, "Label"));
+    return Map(shapes, "Label");
 end;
 
 
@@ -1380,9 +1380,9 @@ end;
 PathsShapes:= function(shapes)
     local   verts,  edges,  paths,  p,  e,  new;
 
-    verts:= List(shapes, x-> Call(x, "Street"));
-    edges:= Union(List(verts, x-> Call(x, "Shakers")));
-    Append(edges, Union(List(verts, x-> Call(x, "MoversPlus"))));
+    verts:= Map(shapes, "Street");
+    edges:= Union(Map(verts, "Shakers"));
+    Append(edges, Union(Map(verts, "MoversPlus")));
     paths:= ShallowCopy(verts);
     for p in paths do
         for e in edges do
@@ -1393,7 +1393,7 @@ PathsShapes:= function(shapes)
         od;
     od;
 
-    #    return List(paths, x-> Call(x, "Shapes"));
+    #    return Map(paths, "Shapes");
     return paths;
 end;
 

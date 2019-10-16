@@ -1227,7 +1227,7 @@ BasicStreets:= function(W)
     isNonZero:= m -> m <> 0*m;
 
     # start with a reasonably small set of alley classes.
-    basic:= List(Shapes(W), x-> Call(x, "Street"));
+    basic:= Map(Shapes(W), "Street");
     for a in basic do
         Append(basic, Call(a, "MoversPlus"));
     od;
@@ -1253,7 +1253,7 @@ BasicStreetsNonZero:= function(W)
     isNonZero:= m -> m <> 0*m;
 
     # start with a reasonably small set of alley classes.
-    basic:= List(Shapes(W), x-> Call(x, "Street"));
+    basic:= Map(Shapes(W), "Street");
     for a in basic do
         Append(basic, Call(a, "MoversPlus"));
     od;
