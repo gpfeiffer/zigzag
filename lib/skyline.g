@@ -10,20 +10,20 @@
 ##
 ##  <#GAPDoc Label="Intro:Skyline">
 ##    A finite Coxeter group <M>W</M> of classical type ...
-##      
+##
 ##    The functions described in this chapter are implemented in the file
-##    <F>skyline.g</F>.  
+##    <F>skyline.g</F>.
 ##  <#/GAPDoc>
 ##
 
-# how to translate between permutations (as elements of the symmetric group) 
+# how to translate between permutations (as elements of the symmetric group)
 # and elements of the Coxeter group of type A.
 
 
 # from i, length k.
 FallingSequence:= function(i, k)
     local   lis;
-    
+
     lis:= [1..i+1];
     lis{[i+1-k..i]}:= [i+2-k..i+1];
     lis[i+1]:= i+1-k;
@@ -44,16 +44,16 @@ end;
 ##
 
 #############################################################################
-##  
+##
 #O  SkylineAOps . . . . . . . . . . . . . . . . . . . . .  operations record.
-##  
+##
 SkylineAOps:= OperationsRecord("SkylineAOps", GroupElementOps);
 
 
 #############################################################################
-##  
+##
 #C  SkylineA( <list> )  . . . . . . . . . . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="SkylineA">
 ##  <ManSection>
 ##  <Func Name="SkylineA" Arg="list"/>
@@ -65,7 +65,7 @@ SkylineAOps:= OperationsRecord("SkylineAOps", GroupElementOps);
 ##  This is the simple constructor for the skyline class of type <M>A</M>.
 ##  It constructs and
 ##  returns the skyline described by the list <A>list</A> of integers.
-##  No checks on the argument are done, but trailing zeros are deleted 
+##  No checks on the argument are done, but trailing zeros are deleted
 ##  from <A>list</A>.
 ##  <Example>
 ##  gap> SkylineA([1,0,3,0]);
@@ -77,19 +77,19 @@ SkylineAOps:= OperationsRecord("SkylineAOps", GroupElementOps);
 ##
 ##  public fields:
 ##    skylinw, the list of integers
-##  
+##
 SkylineA:= function(list)
     local   n;
-    
+
     # expect a list of numbers.
     n:= Length(list);
-    
+
     # delete trailing zeroes.
-    while n > 0 and list[n] = 0 do 
+    while n > 0 and list[n] = 0 do
         Unbind(list[n]);
         n:= n - 1;
     od;
-    
+
     # construct object.
     return rec(
              isGroupElt:= true,
@@ -104,15 +104,15 @@ end;
 #F  IsSkylineA( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
 ##
 IsSkylineA:= function(obj)
-    return IsRec(obj) and IsBound(obj.isSkylineA) 
+    return IsRec(obj) and IsBound(obj.isSkylineA)
            and obj.isSkylineA = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Print( <skyline> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 SkylineAOps.Print:= function(self)
     Print("SkylineA( ", self.skyline, " )");
 end;
@@ -132,7 +132,7 @@ end;
 #############################################################################
 SkylineAOps.Permutation:= function(self)
     local   perm,  i;
-    
+
     perm:= ();
     for i in [1..Length(self.skyline)] do
         perm:= perm * FallingSequence(i, self.skyline[i]);
@@ -143,14 +143,14 @@ end;
 #############################################################################
 SkylineAPerm:= function(pi)
     local   n,  set,  k;
-    
+
     # trivial case first.
     if pi = () then return SkylineA([]); fi;
-    
+
     n:= LargestMovedPointPerm(pi);
-    
+
     set:= [];
-    
+
     while n > 1 do
         k:= n^pi;
         set[n-1]:= n-k;
@@ -163,7 +163,7 @@ end;
 #############################################################################
 SkylineAOps.Word:= function(self)
     local   word,  i;
-    
+
     word:= [];
     for i in [1..Length(self.skyline)] do
         Append(word, [i, i-1 .. i - self.skyline[i] + 1]);
@@ -174,7 +174,7 @@ end;
 #############################################################################
 SkylineAOps.Descents:= function(self)
     local   old,  des,  i,  new;
-    
+
     old:= 0;
     des:= [];
     for i in [1..Length(self.skyline)] do
@@ -196,29 +196,29 @@ end;
 #############################################################################
 SkylineAOps.\*:= function(lft, rgt)
     local   product,  j,  l,  m,  k;
-    
+
     # check arguments.
     if not IsSkylineA(rgt) or not IsSkylineA(lft) then
         Error("don't know how to compute the product of <lft> and <rgt>");
     fi;
-    
+
     # trivial case.
     if rgt.skyline = [] then  return lft;  fi;
-    
+
     # make a fresh copy of lft skyline, extend if necessary.
     product:= Copy(lft.skyline);
     Append(product, 0*[Length(lft.skyline) + 1 .. Length(rgt.skyline)]);
-    
+
     # loop over factors of rgt
     for j in [1..Length(rgt.skyline)] do
-        
+
         # multiply product with factor rgt.skyline[j] = l
         l:= rgt.skyline[j];
         m:= Length(product);
-        
+
         while l > 0 do
             k:= product[m];
-            
+
             # multiply product.skyline[m] = k by skyline[j] = l
             if j > m - k + l then  # shift
                 j:= j - 1;
@@ -230,26 +230,26 @@ SkylineAOps.\*:= function(lft, rgt)
                 k:= k + l;
                 l:= 0;
             fi;                    #  pass: do nothing.
-            
+
             product[m]:= k;
             m:= m - 1;
         od;
-    
+
     od;
-    
+
     return SkylineA(product);
 end;
 
-    
+
 #############################################################################
 SkylineAOps.Inverse:= function(self)
     local   inverse,  l,  n,  i,  j;
-    
+
     inverse:= Copy(self.skyline);
     l:= Length(inverse);
-    
+
     for n in [l, l-1 .. 1] do
-        
+
         # locate rightmost zero.
         i:= 0;
         for j in [1..n] do
@@ -257,7 +257,7 @@ SkylineAOps.Inverse:= function(self)
                 i:= j;
             fi;
         od;
-        
+
         # shift remainder of word.
         if i > 0 then
             inverse{[i..n-1]}:= inverse{[i+1..n]} - 1;
@@ -267,16 +267,16 @@ SkylineAOps.Inverse:= function(self)
 
         # record inverse entry.
         inverse[n]:= n - i;
-        
+
     od;
-    
+
     return SkylineA(inverse);
 end;
 
 #############################################################################
 SkylineAWord:= function(word)
     local   prod,  a,  l;
-    
+
     prod:= SkylineA([]);
     for a in word do
         l:= 0*[1..a];
@@ -286,7 +286,7 @@ SkylineAWord:= function(word)
     return prod;
 end;
 
-    
+
 #############################################################################
 SkylineAOps.IsDescent:= function(self, i)
     if i = 1 then
@@ -297,7 +297,7 @@ SkylineAOps.IsDescent:= function(self, i)
 end;
 
 
-    
+
 #############################################################################
 #############################################################################
 ##
@@ -317,28 +317,28 @@ end;
 
 
 #############################################################################
-##  
+##
 #O  SkylineBOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
-##  
+##
 SkylineBOps:= OperationsRecord("SkylineBOps", GroupElementOps);
 
 
 #############################################################################
-##  
+##
 #C  SkylineB( <list> )  . . . . . . . . . . . . . . . . . . . . . constructor.
-##  
+##
 SkylineB:= function(list)
     local   n;
-    
+
     # expect a list of numbers.
     n:= Length(list);
-    
+
     # delete trailing zeroes.
-    while n > 0 and list[n] = 0 do 
+    while n > 0 and list[n] = 0 do
         Unbind(list[n]);
         n:= n - 1;
     od;
-    
+
     # construct object.
     return rec(
              isGroupElt:= true,
@@ -353,15 +353,15 @@ end;
 #F  IsSkylineB( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
 ##
 IsSkylineB:= function(obj)
-    return IsRec(obj) and IsBound(obj.isSkylineB) 
+    return IsRec(obj) and IsBound(obj.isSkylineB)
            and obj.isSkylineB = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Print( <skyline> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 SkylineBOps.Print:= function(self)
     Print("SkylineB( ", self.skyline, " )");
 end;
@@ -384,7 +384,7 @@ end;
 ##
 SkylineBOps.Word:= function(self)
     local   word,  i,  k;
-    
+
     word:= [];
     for i in [1..Length(self.skyline)] do
         k:= self.skyline[i];
@@ -393,7 +393,7 @@ SkylineBOps.Word:= function(self)
             Append(word, [1..i+k]);
         else
             Append(word, [i-1, i-2 .. i-k]);
-        fi;                 
+        fi;
     od;
     return word;
 end;
@@ -407,7 +407,7 @@ end;
 # the long cycle (i-k, i-k+1, ..., i, followed by the negatives in the same order)
 SkylineBOps.permN:= function(i, k)
     local   lis;
-    
+
     lis:= [1..2*i];
     lis{2*[i-k .. i-1]}:= 2*[i-k+1..i];
     lis[2*i]:= 2*(i-k)-1;
@@ -415,12 +415,12 @@ SkylineBOps.permN:= function(i, k)
     lis[2*i-1]:= 2*(i-k);
     return PermList(lis);
 end;
-    
+
 # how to turn skyline[i] = k >= 0 into a permutation:
 # the double cycle (i-k, i-k+1, ..., i) and its negative copy
 SkylineBOps.permP:= function(i, k)
     local   lis;
-    
+
     lis:= [1..2*i];
     lis{2*[i-k .. i-1]}:= 2*[i-k+1..i];
     lis[2*i]:= 2*(i-k);
@@ -438,7 +438,7 @@ end;
 ##
 SkylineBOps.Permutation:= function(self)
     local   perm,  i,  k;
-    
+
     perm:= ();
     for i in [1..Length(self.skyline)] do
         k:= self.skyline[i];
@@ -454,14 +454,14 @@ end;
 #############################################################################
 SkylineBPerm:= function(pi)
     local   n,  set,  k;
-    
+
     # trivial case first.
     if pi = () then return SkylineB([]); fi;
-    
+
     n:= LargestMovedPointPerm(pi)/2;  # is always even!
-    
+
     set:= [];
-    
+
     while n > 0 do
         k:= (2*n)^pi;
         if k mod 2 = 0 then
@@ -479,25 +479,25 @@ end;
 #############################################################################
 SkylineBOps.\*:= function(lft, rgt)
     local   product,  j,  l,  m,  k,  del,  eps;
-    
+
     # check arguments.
     if not IsSkylineB(rgt) or not IsSkylineB(lft) then
         Error("don't know how to compute the product of <lft> and <rgt>");
     fi;
-    
+
     # trivial case.
     if rgt.skyline = [] then  return lft;  fi;
-    
+
     # make a fresh copy of lft skyline, extend if necessary.
     product:= Copy(lft.skyline);
     Append(product, 0*[Length(lft.skyline) + 1 .. Length(rgt.skyline)]);
-    
+
     # loop over factors of rgt
     for j in [1..Length(rgt.skyline)] do
-        
+
         # multiply product with factor rgt.skyline[j] = l
         l:= rgt.skyline[j];
-        
+
         # adjust possible sign
         if l < 0 then
             del:= -1;
@@ -505,14 +505,14 @@ SkylineBOps.\*:= function(lft, rgt)
         else
             del:= 1;
         fi;
-        
+
         # loop over the factors of product
         m:= Length(product);
         while l > 0 or del = -1 do
-            
+
             # multiply product.skyline[m] = k by skyline[j] = l
             k:= product[m];
-            
+
             # adjust possible sign
             if k < 0 then
                 eps:= -1;
@@ -520,7 +520,7 @@ SkylineBOps.\*:= function(lft, rgt)
             else
                 eps:= 1;
             fi;
-            
+
             # distinguish four cases
             if j > m - k + l then  # shift
                 j:= j - 1;
@@ -534,25 +534,25 @@ SkylineBOps.\*:= function(lft, rgt)
                 eps:= eps * del;
                 del:= 1;
             fi;                    #  pass: do nothing.
-            
+
             # adjust possible sign
             if eps = -1 then
                 k:= -k-1;
             fi;
-            
+
             product[m]:= k;
             m:= m - 1;
         od;
-    
+
     od;
-    
+
     return SkylineB(product);
 end;
 
 #############################################################################
 SkylineBWord:= function(word)
     local   prod,  a,  l;
-    
+
     prod:= SkylineB([]);
     for a in word do
         l:= 0*[1..a];
@@ -569,12 +569,12 @@ end;
 #############################################################################
 SkylineBOps.Inverse:= function(self)
     local   inverse,  l,  n,  i,  j,  new;
-    
+
     inverse:= Copy(self.skyline);
     l:= Length(inverse);
-    
+
     for n in [l, l-1 .. 1] do
-        
+
         # locate rightmost 0 or -1.
         i:= 0;
         for j in [1..n] do
@@ -582,31 +582,31 @@ SkylineBOps.Inverse:= function(self)
                 i:= j;
             fi;
         od;
-        
+
         # compute inverse entry
         new:= n - i;
         if inverse[i] = -1 then
             new:= -new-1;
         fi;
-                
+
         # shift remainder of word (assert i > 0).
         for j in [i..n-1] do
             inverse[j]:= inverse[j+1] - SignInt(inverse[j+1]);
         od;
-        
+
         # record inverse entry.
         inverse[n]:= new;
-        
+
     od;
-    
+
     return SkylineB(inverse);
 end;
 
-    
+
 #############################################################################
 SkylineBOps.Descents:= function(self)
     local   old,  des,  n,  i,  new;
-    
+
     old:= 0;
     des:= [];
     n:= Length(self.skyline);
@@ -638,7 +638,7 @@ SkylineBOps.SmallestDescent:= function(self)
     return PositionProperty(self.skyline, x-> x <> 0) - 1;
 end;
 
-    
+
 #############################################################################
 SkylineBOps.IsDescent:= function(self, i)
     if i = 0 then
@@ -671,28 +671,28 @@ end;
 
 
 #############################################################################
-##  
+##
 #O  SkylineDOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
-##  
+##
 SkylineDOps:= OperationsRecord("SkylineDOps", GroupElementOps);
 
 
 #############################################################################
-##  
+##
 #C  SkylineD( <list> )  . . . . . . . . . . . . . . . . . . . . . constructor.
-##  
+##
 SkylineD:= function(list)
     local   n;
-    
+
     # expect a list of numbers.
     n:= Length(list);
-    
+
     # delete trailing zeroes.
-    while n > 0 and list[n] = 0 do 
+    while n > 0 and list[n] = 0 do
         Unbind(list[n]);
         n:= n - 1;
     od;
-    
+
     # construct object.
     return rec(
              isGroupElt:= true,
@@ -707,15 +707,15 @@ end;
 #F  IsSkylineD( <obj> )  . . . . . . . . . . . . . . . . . . . . .  type check.
 ##
 IsSkylineD:= function(obj)
-    return IsRec(obj) and IsBound(obj.isSkylineD) 
+    return IsRec(obj) and IsBound(obj.isSkylineD)
            and obj.isSkylineD = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Print( <skyline> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 SkylineDOps.Print:= function(self)
     Print("SkylineD( ", self.skyline, " )");
 end;
@@ -738,7 +738,7 @@ end;
 ##
 SkylineDOps.Word:= function(self)
     local   word,  i,  k;
-    
+
     word:= [];
     for i in [1..Length(self.skyline)] do
         k:= self.skyline[i];
@@ -747,7 +747,7 @@ SkylineDOps.Word:= function(self)
             Append(word, [0 .. i+k+1]);
         else
             Append(word, [i, i-1 .. i-k+1]);
-        fi;                 
+        fi;
     od;
     return word;
 end;
@@ -761,7 +761,7 @@ end;
 # the long cycle (1,-1)(i-k+1, i-k+2, ..., i+1, followed by the negatives in the same order)
 SkylineDOps.permN:= function(i, k)
     local   lis;
-    
+
     lis:= [1..2*i+2];
     lis{2*[i-k+1 .. i]}:= 2*[i-k+2..i+1];
     lis[2*i+2]:= 2*(i-k)+1;
@@ -769,12 +769,12 @@ SkylineDOps.permN:= function(i, k)
     lis[2*i+1]:= 2*(i-k+1);
     return (1,2)*PermList(lis);
 end;
-    
+
 # how to turn skyline[i] = k >= 0 into a permutation:
 # the double cycle (i-k+1, i-k+2, ..., i+1) and its negative copy
 SkylineDOps.permP:= function(i, k)
     local   lis;
-    
+
     lis:= [1..2*i+2];
     lis{2*[i-k+1 .. i]}:= 2*[i-k+2..i+1];
     lis[2*i+2]:= 2*(i-k+1);
@@ -792,7 +792,7 @@ end;
 ##
 SkylineDOps.Permutation:= function(self)
     local   perm,  i,  k;
-    
+
     perm:= ();
     for i in [1..Length(self.skyline)] do
         k:= self.skyline[i];
@@ -808,14 +808,14 @@ end;
 #############################################################################
 SkylineDPerm:= function(pi)
     local   n,  set,  k;
-    
+
     # trivial case first.
     if pi = () then return SkylineD([]); fi;
-    
+
     n:= LargestMovedPointPerm(pi)/2;  # is always even!
-    
+
     set:= [];
-    
+
     while n > 1 do
         k:= (2*n)^pi;
         if k mod 2 = 0 then
@@ -833,29 +833,29 @@ end;
 #############################################################################
 SkylineDOps.\*:= function(lft, rgt)
     local   product,  j,  l,  n,  k;
-    
+
     # check arguments.
     if not IsSkylineD(rgt) or not IsSkylineD(lft) then
         Error("don't know how to compute the product of <lft> and <rgt>");
     fi;
-    
+
     # trivial case.
     if rgt.skyline = [] then  return lft;  fi;
-    
+
     # make a fresh copy of lft skyline, extend if necessary.
     product:= Copy(lft.skyline);
     Append(product, 0*[Length(lft.skyline) + 1 .. Length(rgt.skyline)]);
-    
+
     # loop over factors of rgt
     for j in [1..Length(rgt.skyline)] do
-        
+
         # multiply product with factor rgt.skyline[j] = l
         l:= rgt.skyline[j];
         n:= Length(product);
-        
+
         while l <> 0 do
             k:= product[n];
-            
+
             # multiply product.skyline[n] = k by skyline[j] = l
             if l < 0 then
                 l:= -l-1;
@@ -864,19 +864,19 @@ SkylineDOps.\*:= function(lft, rgt)
                     if j = n - k then           # join
                         k:= -(k + l) - 1;       # !!! :) force k to come out positive
                         l:= -1;                 # !!! :) force l to come out positive
-                    elif j > n - k then  
+                    elif j > n - k then
                         if j - l <= n - k then  # cancel
                             l:= l - 1;
                             k:= k - 1;
                         fi;                     # shift
                         j:= j - 1;
                     fi;                         # pass: do nothing.
-                    k:= -k-1;    
+                    k:= -k-1;
                 else
                     if j = n - k then           # join
                         k:= -(k + l) - 1;       # !!! :) make k come out negative
                         l:= -1;                 # !!! :) force l to come out positive
-                    elif j > n - k then  
+                    elif j > n - k then
                         if j - l <= n - k then  # cancel
                             l:= l - 1;
                             k:= k - 1;
@@ -891,7 +891,7 @@ SkylineDOps.\*:= function(lft, rgt)
                     if j = n - k then           # join
                         k:= k + l;
                         l:= 0;
-                    elif j > n - k then  
+                    elif j > n - k then
                         if j - l <= n - k then  # cancel
                             l:= l - 1;
                             k:= k - 1;
@@ -903,7 +903,7 @@ SkylineDOps.\*:= function(lft, rgt)
                     if j = n - k then           # join
                         k:= k + l;
                         l:= 0;
-                    elif j > n - k then  
+                    elif j > n - k then
                         if j - l <= n - k then  # cancel
                             l:= l - 1;
                             k:= k - 1;
@@ -915,39 +915,39 @@ SkylineDOps.\*:= function(lft, rgt)
             product[n]:= k;
             n:= n-1;
         od;
-    
+
     od;
-    
+
     return SkylineD(product);
 end;
 
 SkylineDOps.\*:= function(lft, rgt)
     local   product,  j,  l,  m,  k,  del,  eps;
-    
+
     # check arguments.
     if not IsSkylineD(rgt) or not IsSkylineD(lft) then
         Error("don't know how to compute the product of <lft> and <rgt>");
     fi;
-    
+
     # trivial case.
     if rgt.skyline = [] then  return lft;  fi;
-    
+
     # make a fresh copy of lft skyline, extend if necessary.
     product:= Copy(lft.skyline);
     Append(product, 0*[Length(lft.skyline) + 1 .. Length(rgt.skyline)]);
-    
+
     # loop over factors of rgt
     for j in [1..Length(rgt.skyline)] do
-        
+
         # multiply product with factor rgt.skyline[j] = l
         l:= rgt.skyline[j];
-        
+
         m:= Length(product);
-        
+
 #        while l <> 0 and m > 0 do
         while l <> 0 and m > 0 do
             k:= product[m];
-            
+
             # multiply product.skyline[m] = k by skyline[j] = l
             if l < 0 then
                 del:= -1;
@@ -955,14 +955,14 @@ SkylineDOps.\*:= function(lft, rgt)
             else
                 del:= 1;
             fi;
-            
+
             if k < 0 then
                 eps:= -1;
                 k:= -k-1;
             else
                 eps:= 1;
             fi;
-            
+
             if j > m - k + l then  # shift
                 j:= j - 1;
                 if eps = -1 then
@@ -1003,11 +1003,11 @@ SkylineDOps.\*:= function(lft, rgt)
                                 del:= 1;
                             fi;
                         fi;
-                           
+
                     fi;
                 else
                     if del = -1 then
-                        if m = k then 
+                        if m = k then
                             eps:= -1;
                             if j = l then
                                 del:= 1;
@@ -1029,43 +1029,43 @@ SkylineDOps.\*:= function(lft, rgt)
                         del:= -del;
                     fi;
                 fi;
-            fi; 
-            
+            fi;
+
             if del = -1 and j > 0 then
                 l:= -l-1;
             fi;
-            
+
             if eps = -1 then
                 k:= -k-1;
             fi;
-            
+
             product[m]:= k;
             m:= m - 1;
         od;
-    
+
     od;
-    
+
     return SkylineD(product);
 end;
-    
+
 SkylineDOps.\*:= function(lft, rgt)
     local   product,  j,  l,  m,  k,  del,  eps;
-    
+
     # check arguments.
     if not IsSkylineD(rgt) or not IsSkylineD(lft) then
         Error("don't know how to compute the product of <lft> and <rgt>");
     fi;
-    
+
     # trivial case.
     if rgt.skyline = [] then  return lft;  fi;
-    
+
     # make a fresh copy of lft skyline, extend if necessary.
     product:= Copy(lft.skyline);
     Append(product, 0*[Length(lft.skyline) + 1 .. Length(rgt.skyline)]);
-    
+
     # loop over factors of rgt
     for j in [1..Length(rgt.skyline)] do
-        
+
         # multiply product with factor rgt.skyline[j] = l
         l:= rgt.skyline[j];
         if l < 0 then
@@ -1075,22 +1075,22 @@ SkylineDOps.\*:= function(lft, rgt)
             del:= 1;
         fi;
         m:= Length(product);
-        
+
         while (l > 0 or del = -1) and m > 0 do
             k:= product[m];
-            
+
             if k < 0 then
                 eps:= -1;
                 k:= -k-1;
             else
                 eps:= 1;
             fi;
-            
+
             # conjugate d_eps(m,k) by t(del)
             if m = k and del = -1 then
                 eps:= -eps;
             fi;
-                        
+
             # multiply product.skyline[m] = k by skyline[j] = l
             if j > m - k + l then  # shift
                 j:= j - 1;
@@ -1104,29 +1104,29 @@ SkylineDOps.\*:= function(lft, rgt)
                 eps:= eps * del;
                 del:= 1;
             fi;                    #  pass: do nothing.
-            
+
             # conjugate d_del(j,l) by t(eps)
             if j = l and eps = -1 then
                 del:= -del;
             fi;
-                        
+
             if eps = -1 then
                 k:= -k-1;
             fi;
-            
+
             product[m]:= k;
             m:= m - 1;
         od;
-    
+
     od;
-    
+
     return SkylineD(product);
 end;
 
 #############################################################################
 SkylineDWord:= function(word)
     local   prod,  a,  l;
-    
+
     prod:= SkylineD([]);
     for a in word do
         l:= 0*[1..a];
@@ -1144,12 +1144,12 @@ end;
 #############################################################################
 SkylineDOps.Inverse:= function(self)
     local   inverse,  l,  n,  k,  j,  new;
-    
+
     inverse:= Copy(self.skyline);
     l:= Length(inverse);
-    
+
     for n in [l, l-1 .. 1] do
-        
+
         # locate rightmost 0 or -1.
         k:= 0;
         for j in [1..n] do
@@ -1157,7 +1157,7 @@ SkylineDOps.Inverse:= function(self)
                 k:= j;
             fi;
         od;
-        
+
         # compute inverse entry
         new:= n - k;
         if k = 0 then
@@ -1169,7 +1169,7 @@ SkylineDOps.Inverse:= function(self)
                 new:= -new-1;
             fi;
         fi;
-        
+
         # shift or adjust remainder of word
         if k > 0 and inverse[k] < 0 then
             for j in [1..k-1] do
@@ -1178,27 +1178,27 @@ SkylineDOps.Inverse:= function(self)
                 fi;
             od;
         fi;
-                
+
         for j in [Maximum(k, 1)..n-1] do
             inverse[j]:= inverse[j+1] - SignInt(inverse[j+1]);
         od;
-        
+
         # record inverse entry.
         inverse[n]:= new;
-        
+
     od;
-    
+
     return SkylineD(inverse);
 end;
 
 #### HOPEFULLY CORRECT UP TO HERE #####
 
 
-    
+
 #############################################################################
 SkylineDOps.Descents:= function(self)
     local   old,  des,  n,  i,  new;
-    
+
     old:= 0;
     des:= [];
     n:= Length(self.skyline);
@@ -1230,7 +1230,7 @@ SkylineDOps.SmallestDescent:= function(self)
     return PositionProperty(self.skyline, x-> x <> 0) - 1;
 end;
 
-    
+
 #############################################################################
 SkylineDOps.IsDescent:= function(self, i)
     if i = 0 then
@@ -1256,17 +1256,17 @@ end;
 ##
 MajorIndex:= function(perm)
     local   maj,  i;
-    
+
     # trivial case first.
     if perm = () then return 0; fi;
-    
+
     maj:= 0;
     for i in [1..LargestMovedPointPerm(perm)] do
         if i^perm > (i+1)^perm then
             maj:= maj + i;
         fi;
     od;
-    
+
     return maj;
 end;
 

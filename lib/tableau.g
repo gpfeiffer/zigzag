@@ -7,26 +7,26 @@
 #Y  Copyright (C) 2012  Götz Pfeiffer
 ##
 ##  This file contains support for Young tableaus.
-##  
+##
 ##  <#GAPDoc Label="Intro:Tableau">
 ##    A <E>tableau</E><Index>tableau</Index> is ...
 ##    <P/>
 ##
 ##    The functions described in this chapter are implemented in the file
-##    <F>tableau.g</F>.  
+##    <F>tableau.g</F>.
 ##  <#/GAPDoc>
 ##
 
 #############################################################################
-##  
+##
 #O  TableauOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
-##  
+##
 TableauOps:= OperationsRecord("TableauOps");
 
 #############################################################################
-##  
+##
 #C  Tableau( <W>, <alley> ) . . . . . . . . . . . . . . . . . . . constructor.
-##  
+##
 ##  <#GAPDoc Label="Tableau">
 ##  <ManSection>
 ##  <Func Name="Tableau" Arg="rows"/>
@@ -43,7 +43,7 @@ TableauOps:= OperationsRecord("TableauOps");
 ##  <#/GAPDoc>
 ##
 Tableau:= function(rows)
-    return 
+    return
       rec(
           isTableau:= true,
           operations:= TableauOps,
@@ -64,17 +64,17 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsTableau:= function(obj)
-    return IsRec(obj) and IsBound(obj.isTableau) 
+    return IsRec(obj) and IsBound(obj.isTableau)
            and obj.isTableau = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Print( <tableau> ) . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 TableauOps.Print:= function(self)
     Print("Tableau( ", self.rows, " )");
 end;
@@ -90,7 +90,7 @@ PartitionOps.PartialSums:= function(self)
     od;
     return sums;
 end;
-      
+
 
 #############################################################################
 PartitionOps.CanonicalTableau:= function(self)
@@ -146,13 +146,13 @@ TableauOps.ICoordinates:= function(self)
     od;
     return list;
 end;
-    
+
 #############################################################################
 TableauOps.JCoordinates:= function(self)
     local   list,  row,  j;
     list:= [];
     for row in self.rows do
-        for j in [1..Length(row)] do 
+        for j in [1..Length(row)] do
             list[row[j]]:= j;
         od;
     od;
@@ -180,7 +180,7 @@ TableauOps.AdmissibleTranspositions:= function(self)
     local   ico,  jco;
     ico:= Call(self, "ICoordinates");
     jco:= Call(self, "JCoordinates");
-    return Filtered([1..Length(ico)-1], 
+    return Filtered([1..Length(ico)-1],
                    k-> ico[k] <> ico[k+1] and jco[k]<>jco[k+1]);
 end;
 
@@ -193,7 +193,7 @@ TableauOps.FurtherTranspositions:= function(self)
     local   ico,  jco;
     ico:= Call(self, "ICoordinates");
     jco:= Call(self, "JCoordinates");
-    return Filtered([1..Length(ico)-1], 
+    return Filtered([1..Length(ico)-1],
                    k-> ico[k] < ico[k+1] and jco[k]<>jco[k+1]);
 end;
 
@@ -203,7 +203,7 @@ end;
 ##
 PartitionOps.StandardTableaus:=  function(self)
     local   orbit,  tab,  i,  new;
-    
+
     ##  orbit algorithm
     orbit:= [Call(self, "CanonicalTableau")];
     for tab in orbit do
@@ -235,24 +235,24 @@ TableauOps.Descents:= function(self)
     local   jco;
     jco:= Call(self, "JCoordinates");
     return Filtered([1..Length(jco)-1], i-> jco[i] < jco[i+1]);
-end; 
+end;
 
 TableauOps.MajorIndex:= function(self)
-    return Sum(Call(self, "Descents"));    
+    return Sum(Call(self, "Descents"));
 end;
-    
+
 
 
 #############################################################################
-##  
+##
 #O  ContentOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
-##  
+##
 ContentOps:= OperationsRecord("ContentOps");
 
 #############################################################################
-##  
+##
 #C  Content( <list> ) . . . . . . . . . . . . . . . . . . . constructor.
-##  
+##
 ##  <#GAPDoc Label="Content">
 ##  <ManSection>
 ##  <Func Name="Content" Arg="list"/>
@@ -269,7 +269,7 @@ ContentOps:= OperationsRecord("ContentOps");
 ##  <#/GAPDoc>
 ##
 Content:= function(list)
-    return 
+    return
       rec(
           isContent:= true,
           operations:= ContentOps,
@@ -290,17 +290,17 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsContent:= function(obj)
-    return IsRec(obj) and IsBound(obj.isContent) 
+    return IsRec(obj) and IsBound(obj.isContent)
            and obj.isContent = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Print( <content> ) . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 ContentOps.Print:= function(self)
     Print("Content( ", self.list, " )");
 end;
@@ -313,7 +313,7 @@ end;
 #############################################################################
 ContentOps.Tableau:= function(self)
     local   n,  len,  rows,  k,  a,  l,  j,  i;
-    
+
     # keep track of diagonal lengths [-n+1..-1,0,1..n-1]
     n:= Length(self.list);
     len:= 0*[1..2*n-1];
@@ -327,14 +327,14 @@ ContentOps.Tableau:= function(self)
             if j = 1 then
                 rows[i]:= [];
             fi;
-        else 
+        else
             i:= l + 1;
             j:= a + i;
         fi;
         rows[i][j]:= k;
         len[a+n]:= len[a+n] + 1;
     od;
-    
+
     return Tableau(rows);
 end;
 

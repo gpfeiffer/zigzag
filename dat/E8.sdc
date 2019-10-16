@@ -1,4 +1,4 @@
-#  SizesDescentConjugacyClasses(CoxeterGroup("E", 8)) 
+#  SizesDescentConjugacyClasses(CoxeterGroup("E", 8))
 #  takes 28.6 hours on eastwood.
 
 ZIGZAG.E8.sdc:=

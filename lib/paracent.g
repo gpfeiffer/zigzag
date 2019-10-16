@@ -9,27 +9,27 @@
 ##  This file contains the routines for centralizers of parabolic subgroups.
 ##
 ##  <#GAPDoc Label="Intro:ParaCent">
-##    
+##
 ##    Ordered  shapes are  domains, so  every  set theoretic  function for  a
 ##    domain  can  be applied  to  an  ordered  shape (see  section&nbsp;<Ref
 ##    Label="Sect:OrderedShapesAsSets"/>).<P/>
-##      
+##
 ##    The functions  described in  this chapter are  implemented in  the file
 ##    <F>paracent.g</F>.
 ##  <#/GAPDoc>
 ##
 
 #############################################################################
-##  
+##
 #O  OrderedShapeOps  . . . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 OrderedShapeOps:= Ops("OrderedShape", DomainOps);
 
 
 #############################################################################
-##  
+##
 #C  OrderedShape( <W>, <J> ) . . . . . . . . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="OrderedShape">
 ##  <ManSection>
 ##  <Func Name="OrderedShape" Arg="W, J"/>
@@ -73,14 +73,14 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsOrderedShape:= TypeCheck("OrderedShape");
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #F  Print( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 OrderedShapeOps.Print:= function(self)
     Print("OrderedShape( ", self.W, ", ", self.J, " )");
 end;
@@ -96,7 +96,7 @@ end;
 ##  <ManSection>
 ##  <Meth Name="Representative" Arg="shape" Label="for shapes"/>
 ##  <Returns>a representative of the shape <A>shape</A>.</Returns>
-##  <Description>The representative of a shape constructed 
+##  <Description>The representative of a shape constructed
 ##  as <C>Shape(W, J)</C> (see <Ref Label="Shape"/>) will be its
 ##  initial element <C>J</C>.
 ##  <Example>
@@ -107,7 +107,7 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 OrderedShapeOps.Representative:= function(self)
     return self.J;
 end;
@@ -133,16 +133,16 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 OrderedShapeOps.Rank:= function(self)
     return Length(self.J);
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #F  Elements( <shape> )  . . . . . . . . . . . . . . . . . . . . .  elements.
-##  
+##
 ##  <#GAPDoc Label="Elements(shape)">
 ##  <ManSection>
 ##  <Meth Name="Elements" Arg="shape" Label="for shapes"/>
@@ -158,14 +158,14 @@ end;
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
 ##  gap> Elements(Shape(W, [2]));
-##  [ [ 1 ], [ 2 ], [ 3 ] ] 
+##  [ [ 1 ], [ 2 ], [ 3 ] ]
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
 OrderedShapeOps.Elements:= function(self)
-    local   W,  S,  K,  L, onParabolics,  orbit,  transversal,  edges,  k,  
+    local   W,  S,  K,  L, onParabolics,  orbit,  transversal,  edges,  k,
             l,  i,  pos,  perm, d, e;
 
     # get the Coxeter System (W, S) to work in.
@@ -185,7 +185,7 @@ OrderedShapeOps.Elements:= function(self)
     orbit:= [self.J];  transversal:= [()];  edges:= [];  k:= 0;  l:= 1;
     for K in orbit do
         k:= k+1;  edges[k]:= [];
-        for i in Difference(S, K) do 
+        for i in Difference(S, K) do
             L:= onParabolics(K, i);  pos:= Position(orbit, L);
             if pos = false then
                 Add(orbit, L);
@@ -239,7 +239,7 @@ end;
 ##  <Meth Name="Edges" Arg="shape" Label="for ordered shapes"/>
 ##  <Returns>
 ##    the list  of edges of the graph  formed by the elements  of the ordered
-##    shape 
+##    shape
 ##    <A>shape</A>.
 ##  </Returns>
 ##  <Description>
@@ -260,7 +260,7 @@ end;
 ##    and <C>w</C>,  where <C>v</C>  gives the address  of <M>J^w</M>  in the
 ##    list   of  elements,   and   where  <C>w</C>   gives  the   permutation
 ##    <M>w</M>.<P/>
-##  
+##
 ##    <C>ShapeOps.Edges(shape)</C> returns a list of lists <C>l</C> with
 ##    <C>l[i][k]</C> bound to a record <C>r</C> if vertex <C>i</C> is the
 ##    initial vertex of a directed edge with label <C>k</C>.  In that case
@@ -283,7 +283,7 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 OrderedShapeOps.Edges:= function(self)
     Call(self, "Elements");  # expand the shape.
     return self.edges;
@@ -298,7 +298,7 @@ end;
 ##  <ManSection>
 ##  <Meth Name="Transversal" Arg="shape" Label="for ordered shapes"/>
 ##  <Returns>
-##    a transversal of the graph formed by the elements of the ordered shape 
+##    a transversal of the graph formed by the elements of the ordered shape
 ##    <A>shape</A>.
 ##  </Returns>
 ##  <Description>
@@ -323,17 +323,17 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##    
+##
 OrderedShapeOps.Transversal:= function(self)
     Call(self, "Elements");  # expand the shape.
     return self.transversal;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #F  Display( <shape> ) . . . . . . . . . . . . . . . . . . . . . . . display.
-##  
+##
 OrderedShapeOps.Display:= function(self, options)
 
     # determine name, if necessary.
@@ -365,7 +365,7 @@ end;
 ##    <M>J</M> yields a set of Schreier generators for this subgroup of
 ##    <M>W</M>.  If such a generator involves a loop it is called an
 ##    <E>ear</E>, otherwise it is called an <E>eye</E>.<P/>
-##  
+##
 ##    The group returned has extra fields <C>ears</C> and <C>eyes</C> that
 ##    contain these lists of generators.  The <C>ears</C> alone generate a
 ##    Coxeter group.
@@ -396,7 +396,7 @@ end;
 OrderedShapeOps.Complement:= function(self)
     local   edges,  t,  eyes,  ears,  i,  e,  j,  T,  com;
 
-    edges:= Call(self, "Edges");  
+    edges:= Call(self, "Edges");
     t:= Call(self, "Transversal");
     eyes:= [];  ears:= [];  i:= 0;
     for e in edges do
@@ -411,11 +411,11 @@ OrderedShapeOps.Complement:= function(self)
             fi;
         od;
     od;
-    
+
     T:= Reflections(W);
     com:= ReflectionSubgroup(W, Set(List(ears, x-> Position(T, x))));
     com.ears:= ears;
-    
+
     if Difference(eyes, [()]) <> [] then
         Error("Complement: ordered shape should not have eyes");
     fi;
@@ -429,7 +429,7 @@ OrderedShapeOps.Centre:= function(self)
 
     W:= self.W;
     J:= self.J;
-    
+
     # separate central w0 from non-central ones.
     gens:= []; list:= [];
     for set in CartanType(ReflectionSubgroup(W, J)) do
@@ -443,7 +443,7 @@ OrderedShapeOps.Centre:= function(self)
         fi;
     od;
     centre:= Subgroup(W, gens);
-    
+
     # find generators of the form wK * n
     gens:= [];
     for set in Combinations(list) do
@@ -456,23 +456,23 @@ OrderedShapeOps.Centre:= function(self)
         fi;
     od;
     gens:= GeneratorsAbelianGroup(Subgroup(W, gens));
-    
+
     return Closure(centre, Subgroup(W, gens));
 end;
 
 
 OrthogonalComplement:= function(W, J)
     local   shape,  j,  x,  com,  new;
-    
-    shape:= OrderedShape(W, J);        
-    
+
+    shape:= OrderedShape(W, J);
+
     j:= Position(Elements(shape), J);
     x:= shape.transversal[j];
-    
+
     com:= Call(shape, "Complement");
     new:= OnTuples(com.rootInclusion{[1..com.semisimpleRank]}, x);
-    
-    return ReflectionSubgroup(W, Set(new));    
+
+    return ReflectionSubgroup(W, Set(new));
 end;
 
 
@@ -480,7 +480,7 @@ end;
 CentralizerParabolic:= function(W, J)
     local   shape,  com,  ears,  centre;
 
-    shape:= OrderedShape(W, J);        
+    shape:= OrderedShape(W, J);
     com:= Call(shape, "Complement");
     ears:= com.ears;
     centre:= Call(shape, "Centre");

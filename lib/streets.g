@@ -7,26 +7,26 @@
 #Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains support for streets.
-##  
+##
 ##  <#GAPDoc Label="Intro:Streets">
 ##    A <E>street</E><Index>street</Index> is an orbit of alleys under the
 ##    action of the free monoid <M>S^*</M>.<P/>
 ##
 ##    The functions described in this chapter are implemented in the file
-##    <F>streets.g</F>.  
+##    <F>streets.g</F>.
 ##  <#/GAPDoc>
 ##
 
 #############################################################################
-##  
+##
 #O  StreetOps . . . . . . . . . . . . . . . . . . . . . .  operations record.
-##  
+##
 StreetOps:= OperationsRecord("StreetOps", DomainOps);
 
 #############################################################################
-##  
+##
 #C  Street( <W>, <alley> ) . . . . . . . . . . . . . . . . . . . constructor.
-##  
+##
 ##  <#GAPDoc Label="Street">
 ##  <ManSection>
 ##  <Func Name="Street" Arg="W, alley"/>
@@ -38,7 +38,7 @@ StreetOps:= OperationsRecord("StreetOps", DomainOps);
 ##    This is the simple constructor for streets.  It constructs and returns
 ##    the street of <A>alley</A> in <A>W</A>.
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 5);; 
+##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> Street(W, [[1,2,3], [3]]);
 ##  Street( CoxeterGroup("A", 5), [ [ 1, 2, 3 ], [ 3 ] ] )
 ##  </Example>
@@ -49,9 +49,9 @@ StreetOps:= OperationsRecord("StreetOps", DomainOps);
 ##  public fields:
 ##    W, the Coxeter group.
 ##    alley, an alley for W.
-##  
+##
 Street:= function(W, alley)
-    return 
+    return
       rec(
           isDomain:= true,
           isStreet:= true,
@@ -74,17 +74,17 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsStreet:= function(obj)
-    return IsRec(obj) and IsBound(obj.isStreet) 
+    return IsRec(obj) and IsBound(obj.isStreet)
            and obj.isStreet = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Print( <street> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 StreetOps.Print:= function(self)
     Print("Street( ", self.W, ", ", self.alley, " )");
 end;
@@ -100,7 +100,7 @@ end;
 ##  <ManSection>
 ##  <Meth Name="Representative" Arg="street" Label="for streets"/>
 ##  <Returns>a representative of the street <A>street</A>.</Returns>
-##  <Description>The representative of a street constructed 
+##  <Description>The representative of a street constructed
 ##  as <C>Street(W, J)</C> (see <Ref Label="Street"/>) will be its
 ##  initial element <C>J</C>.
 ##  <Example>
@@ -111,15 +111,15 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 StreetOps.Representative:= function(self)
     return self.alley;
 end;
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Elements( <street> )  . . . . . . . . . . . . . . . . . . . . . elements.
-##  
+##
 ##  <#GAPDoc Label="Elements(street)">
 ##  <ManSection>
 ##  <Meth Name="Elements" Arg="street" Label="for streets"/>
@@ -130,8 +130,8 @@ end;
 ##    The street of the alley <M>(L; s, t, \dots)</M> is its orbit under the
 ##    action of <M>S^*</M>.
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 5);;                
-##  gap> Elements(Street(W, [[1,2,3], [3]]));      
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> Elements(Street(W, [[1,2,3], [3]]));
 ##  [ [ [ 1, 2, 3 ], [ 3 ] ], [ [ 2, 3, 4 ], [ 4 ] ], [ [ 3, 4, 5 ], [ 5 ] ] ]
 ##  </Example>
 ##  </Description>
@@ -140,10 +140,10 @@ end;
 ##
 StreetOps.Elements:= function(self)
     local   elm,  W,  sh,  i,  j,  L,  list,  o,  x,  J,  t;
-    
+
     elm:= [];
     W:= self.W;
-    
+
     sh:= Shapes(W);  # carefully bring in sync with shape internals ...
     i:= PositionProperty(sh, x-> self.alley[1] in x);
     j:= Position(Elements(sh[i]), self.alley[1]);
@@ -164,7 +164,7 @@ end;
 #M  Movers( <street> ) . . . . . . . . . . . . . . . . . . . . . . . movers.
 ##
 ##  The edges of the graph of a street are either movers or shakers.
-##  
+##
 ##  <#GAPDoc Label="Movers(street)">
 ##  <ManSection>
 ##  <Meth Name="Movers" Arg="street" Label="for streets"/>
@@ -180,11 +180,11 @@ end;
 ##    returns the list of streets comprising the movers of <A>street</A>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
-##  gap> Call(Street(W, [[1,2,3], [3]]), "Movers"); 
-##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 1, 4 ] ] ), 
+##  gap> Call(Street(W, [[1,2,3], [3]]), "Movers");
+##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 1, 4 ] ] ),
 ##    Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 4, 3 ] ] ) ]
 ##  gap> Union(last);
-##  [ [ [ 1, 2, 3, 4 ], [ 1, 4 ] ], [ [ 1, 2, 3, 4 ], [ 4, 3 ] ], 
+##  [ [ [ 1, 2, 3, 4 ], [ 1, 4 ] ], [ [ 1, 2, 3, 4 ], [ 4, 3 ] ],
 ##    [ [ 2, 3, 4, 5 ], [ 2, 5 ] ], [ [ 2, 3, 4, 5 ], [ 5, 4 ] ] ]
 ##  </Example>
 ##  </Description>
@@ -193,7 +193,7 @@ end;
 ##
 StreetOps.Movers:= function(self)
     local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  new;
-    
+
     n:= self.W.semisimpleRank;
     movers:= [];
     for a in Elements(self) do
@@ -203,21 +203,21 @@ StreetOps.Movers:= function(self)
                 K:= a[1];  L:= b[1];
                 d:= LongestElement(self.W, K) * LongestElement(self.W, L);
                 c:= OnAlleys(a, d);
-                
+
                 if c <> a then
                     AddSet(movers, b);
                 fi;
             fi;
         od;
     od;
-    
+
     new:= [];
     while movers <> [] do
         a:= Street(self.W, movers[1]);
         Add(new, a);
         movers:= Difference(movers, Elements(a));
     od;
-    
+
     return new;
 end;
 
@@ -227,7 +227,7 @@ end;
 ##
 StreetOps.MoversPlus:= function(self)
     local   n,  movers,  a,  i,  b,  K,  L,  d,  c,  new;
-    
+
     n:= self.W.semisimpleRank;
     movers:= [];
     for a in Elements(self) do
@@ -237,14 +237,14 @@ StreetOps.MoversPlus:= function(self)
                 K:= a[1];  L:= b[1];
                 d:= LongestElement(self.W, K) * LongestElement(self.W, L);
                 c:= OnAlleys(a, d);
-                
+
                 if c <> a then
                     AddSet(movers, b);
                 fi;
             fi;
         od;
     od;
-    
+
     new:= [];
     while movers <> [] do
         a:= Street(self.W, movers[1]);
@@ -253,7 +253,7 @@ StreetOps.MoversPlus:= function(self)
         movers:= Difference(movers, Elements(a));
         movers:= Difference(movers, Elements(b));
     od;
-    
+
     return new;
 end;
 
@@ -263,7 +263,7 @@ end;
 #M  Shakers( <street> ) . . . . . . . . . . . . . . . . . . . . . . . shakers.
 ##
 ##  The edges of the graph of a street are either movers or shakers.
-##  
+##
 ##  <#GAPDoc Label="Shakers(street)">
 ##  <ManSection>
 ##  <Meth Name="Shakers" Arg="street" Label="for streets"/>
@@ -280,7 +280,7 @@ end;
 ##    shakers of <A>street</A>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
-##  gap> Call(Street(W, [[1,2,3], [3]]), "Shakers"); 
+##  gap> Call(Street(W, [[1,2,3], [3]]), "Shakers");
 ##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 5 ], [ 5, 3 ] ] ) ]
 ##  gap> Elements(last[1]);
 ##  [ [ [ 1, 2, 3, 5 ], [ 5, 3 ] ], [ [ 1, 3, 4, 5 ], [ 1, 5 ] ] ]
@@ -291,7 +291,7 @@ end;
 ##
 StreetOps.Shakers:= function(self)
     local   n,  shakers,  a,  i,  b,  K,  L,  d,  c,  new;
-    
+
     n:= self.W.semisimpleRank;
     shakers:= [];
     for a in Elements(self) do
@@ -301,21 +301,21 @@ StreetOps.Shakers:= function(self)
                 K:= a[1];  L:= b[1];
                 d:= LongestElement(self.W, K) * LongestElement(self.W, L);
                 c:= OnAlleys(a, d);
-                
+
                 if c = a then
                     AddSet(shakers, b);
                 fi;
             fi;
         od;
     od;
-    
+
     new:= [];
     while shakers <> [] do
         a:= Street(self.W, shakers[1]);
         Add(new, a);
         shakers:= Difference(shakers, Elements(a));
     od;
-    
+
     return new;
 end;
 
@@ -346,12 +346,12 @@ end;
 ##  <#/GAPDoc>
 ##
 StreetOps.Suffix:= function(self)
-    
+
     # an alley of length 0 has no suffix.
     if self.alley[2] = [] then
         Error("street must have length > 0");
     fi;
-    
+
     # otherwise, return the suffix of the representative.
     return Street(self.W, SuffixAlley(self.alley));
 end;
@@ -376,9 +376,9 @@ end;
 ##    <M>\alpha</M> (see <Ref Meth="Shakers" Label="for streets"/>).
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
-##  gap> Call(Street(W, [[1,2,3], [2,3]]), "InverseSuffix");  
-##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 1, 3, 4 ] ] ), 
-##    Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 4, 2, 3 ] ] ), 
+##  gap> Call(Street(W, [[1,2,3], [2,3]]), "InverseSuffix");
+##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 1, 3, 4 ] ] ),
+##    Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 4 ], [ 4, 2, 3 ] ] ),
 ##    Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 5 ], [ 5, 2, 3 ] ] ) ]
 ##  </Example>
 ##  </Description>
@@ -418,12 +418,12 @@ end;
 ##  <#/GAPDoc>
 ##
 StreetOps.Prefix:= function(self)
-    
+
     # an alley of length 0 has no prefix.
     if self.alley[2] = [] then
         Error("street must have length > 0");
     fi;
-    
+
     # otherwise, return the prefix of the representative.
     return Street(self.W, PrefixAlley(self.alley));
 end;
@@ -451,7 +451,7 @@ end;
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> Call(Street(W, [[1,2,3,5], [5,2]]), "InversePrefix");
-##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 5 ], [ 5, 2, 1 ] ] ), 
+##  [ Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 5 ], [ 5, 2, 1 ] ] ),
 ##    Street( CoxeterGroup("A", 5), [ [ 1, 2, 3, 5 ], [ 5, 2, 3 ] ] ) ]
 ##  </Example>
 ##  </Description>
@@ -460,7 +460,7 @@ end;
 ##
 StreetOps.InversePrefix:= function(self)
     local   stab,  children,  o,  new;
-    
+
     if IsBound(self.stab) then
         stab:= self.stab;
     elif IsBound(self.parent) then
@@ -470,18 +470,18 @@ StreetOps.InversePrefix:= function(self)
         stab:= StabilizerAlley(self.W, self.alley);
     fi;
     self.stab:= stab;
-    
+
     children:= [];
     for o in Orbits(stab, ApplyFunc(Difference, self.alley)) do
         new:= [self.alley[1], Copy(self.alley[2])];
         Add(new[2], o[1]);
         Add(children, Street(self.W, new));
     od;
-    
+
     for o in children do
         o.parent:= self;
     od;
-    
+
     return children;
 end;
 
@@ -510,7 +510,7 @@ StreetOps.Children:= StreetOps.InversePrefix;
 #############################################################################
 ##
 #F  Streets( <W> ) . . . . . . . . . . . . . . . . . . . . . . . . . streets.
-##  
+##
 ##  <#GAPDoc Label="Streets">
 ##  <ManSection>
 ##  <Func Name="Streets" Arg="W"/>
@@ -520,10 +520,10 @@ StreetOps.Children:= StreetOps.InversePrefix;
 ##  <Description>
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 2);;  W.name:= "W";;
-##  gap> Streets(W);                               
-##  [ Street( W, [ [  ], [  ] ] ), Street( W, [ [ 1 ], [  ] ] ), 
-##    Street( W, [ [ 1 ], [ 1 ] ] ), Street( W, [ [ 1, 2 ], [  ] ] ), 
-##    Street( W, [ [ 1, 2 ], [ 1 ] ] ), Street( W, [ [ 1, 2 ], [ 2 ] ] ), 
+##  gap> Streets(W);
+##  [ Street( W, [ [  ], [  ] ] ), Street( W, [ [ 1 ], [  ] ] ),
+##    Street( W, [ [ 1 ], [ 1 ] ] ), Street( W, [ [ 1, 2 ], [  ] ] ),
+##    Street( W, [ [ 1, 2 ], [ 1 ] ] ), Street( W, [ [ 1, 2 ], [ 2 ] ] ),
 ##    Street( W, [ [ 1, 2 ], [ 1, 2 ] ] ), Street( W, [ [ 1, 2 ], [ 2, 1 ] ] ) ]
 ##  gap> List(Streets(W), Size);
 ##  [ 1, 2, 2, 1, 1, 1, 1, 1 ]
@@ -533,14 +533,14 @@ StreetOps.Children:= StreetOps.InversePrefix;
 ##  <#/GAPDoc>
 ##
 Streets:= function(W)
-    return Concatenation(List(Shapes(W), 
+    return Concatenation(List(Shapes(W),
                    x-> BreadthFirst(Call(x, "Street"))));
 end;
 
 #############################################################################
 ##
 #F  NrStreets( <W> ) . . . . . . . . . . . . . . . . . . . number of streets.
-##  
+##
 ##  <#GAPDoc Label="NrStreets">
 ##  <ManSection>
 ##  <Func Name="NrStreets" Arg="W"/>
@@ -565,7 +565,7 @@ end;
 NrStreets:= function(W)
     return Sum(Shapes(W), x-> NrPreOrder(Call(x, "Street")));
 end;
-    
+
 
 #############################################################################
 ##
@@ -595,16 +595,16 @@ end;
 ##
 StreetOps.Source:= function(self)
     local   source;
-    
+
     # maybe we know it already.
     if IsBound(self.source) then
         return self.source;
     fi;
-    
+
     # otherwise: compute source.
     source:= SourceAlley(self.alley);
     source:= PositionProperty(Shapes(self.W), x-> source in x);
-    
+
     # remember for next visit.
     self.source:= source;
     return self.source;
@@ -639,16 +639,16 @@ end;
 ##
 StreetOps.Target:= function(self)
     local   target;
-    
+
     # maybe we know it already.
     if IsBound(self.target) then
         return self.target;
     fi;
-    
+
     # otherwise: compute target.
     target:= TargetAlley(self.alley);
     target:= PositionProperty(Shapes(self.W), x-> target in x);
-    
+
     # remember for next visit.
     self.target:= target;
     return self.target;
@@ -661,7 +661,7 @@ end;
 ##
 StreetOps.Shapes:= function(self)
     local   sh,  a,  lis,  i;
-    
+
     sh:= Shapes(self.W);
     a:= self.alley;
     lis:= [PositionProperty(sh, x-> a[1] in x)];
@@ -670,7 +670,7 @@ StreetOps.Shapes:= function(self)
     od;
     return lis;
 end;
-      
+
 
 #############################################################################
 StreetOps.Transversal:= function(self)
@@ -695,11 +695,11 @@ end;
 ##  <Example>
 ##  gap> b:= Street(CoxeterGroup("A", 5), [[1,3,5], [1,3]]);;
 ##  gap> Elements(b);
-##  [ [ [ 1, 3, 5 ], [ 1, 3 ] ], [ [ 1, 3, 5 ], [ 1, 5 ] ], 
-##    [ [ 1, 3, 5 ], [ 3, 1 ] ], [ [ 1, 3, 5 ], [ 3, 5 ] ], 
+##  [ [ [ 1, 3, 5 ], [ 1, 3 ] ], [ [ 1, 3, 5 ], [ 1, 5 ] ],
+##    [ [ 1, 3, 5 ], [ 3, 1 ] ], [ [ 1, 3, 5 ], [ 3, 5 ] ],
 ##    [ [ 1, 3, 5 ], [ 5, 1 ] ], [ [ 1, 3, 5 ], [ 5, 3 ] ] ]
-##  gap> Call(b, "Edges");                                  
-##  [ [ , 3,, 2 ], [ , 4,, 1 ], [ , 1,, 5 ], [ , 2,, 6 ], [ , 6,, 3 ], 
+##  gap> Call(b, "Edges");
+##  [ [ , 3,, 2 ], [ , 4,, 1 ], [ , 1,, 5 ], [ , 2,, 6 ], [ , 6,, 3 ],
 ##    [ , 5,, 4 ] ]
 ##  </Example>
 ##  </Description>
@@ -708,7 +708,7 @@ end;
 ##
 StreetOps.Edges:= function(self)
     local   W,  S,  source,  hhh,  eee,  all,  edges,  a,  new,  l,  s;
-    
+
     W:= self.W;
     S:= [1..W.semisimpleRank];
     source:= Shapes(W)[Call(self, "Source")];
@@ -745,8 +745,8 @@ end;
 ##  <Example>
 ##  gap> b:= Street(CoxeterGroup("A", 5), [[1,3,5], [1,3]]);;
 ##  gap> Elements(b);
-##  [ [ [ 1, 3, 5 ], [ 1, 3 ] ], [ [ 1, 3, 5 ], [ 1, 5 ] ], 
-##    [ [ 1, 3, 5 ], [ 3, 1 ] ], [ [ 1, 3, 5 ], [ 3, 5 ] ], 
+##  [ [ [ 1, 3, 5 ], [ 1, 3 ] ], [ [ 1, 3, 5 ], [ 1, 5 ] ],
+##    [ [ 1, 3, 5 ], [ 3, 1 ] ], [ [ 1, 3, 5 ], [ 3, 5 ] ],
 ##    [ [ 1, 3, 5 ], [ 5, 1 ] ], [ [ 1, 3, 5 ], [ 5, 3 ] ] ]
 ##  gap> Call(b, "Relation");
 ##  Relation( [ [ 2, 3 ], [ 1, 4 ], [ 1, 5 ], [ 2, 6 ], [ 3, 6 ], [ 4, 5 ] ] )
@@ -814,7 +814,7 @@ end;
 ##  gap> Call(b, "Depth");
 ##  2
 ##  gap> Elements(b);
-##  [ [ [ 1, 3 ], [ 1 ] ], [ [ 1, 3 ], [ 3 ] ], [ [ 1, 4 ], [ 1 ] ], 
+##  [ [ [ 1, 3 ], [ 1 ] ], [ [ 1, 3 ], [ 3 ] ], [ [ 1, 4 ], [ 1 ] ],
 ##    [ [ 1, 4 ], [ 4 ] ], [ [ 2, 4 ], [ 2 ] ], [ [ 2, 4 ], [ 4 ] ] ]
 ##  </Example>
 ##  </Description>
@@ -848,7 +848,7 @@ end;
 ##  gap> Call(b, "Width");
 ##  3
 ##  gap> Elements(b);
-##  [ [ [ 1, 3 ], [ 1 ] ], [ [ 1, 3 ], [ 3 ] ], [ [ 1, 4 ], [ 1 ] ], 
+##  [ [ [ 1, 3 ], [ 1 ] ], [ [ 1, 3 ], [ 3 ] ], [ [ 1, 4 ], [ 1 ] ],
 ##    [ [ 1, 4 ], [ 4 ] ], [ [ 2, 4 ], [ 2 ] ], [ [ 2, 4 ], [ 4 ] ] ]
 ##  </Example>
 ##  </Description>
@@ -876,7 +876,7 @@ end;
 ##    <Ref Func="ReversedAlley"/>.
 ##  <Example>
 ##  gap> b:= Street(CoxeterGroup("A", 4), [[1, 2, 3], [1, 3]]);;
-##  gap> Call(b, "Reversed");                                   
+##  gap> Call(b, "Reversed");
 ##  Street( CoxeterGroup("A", 4), [ [ 1, 2, 3 ], [ 3, 2 ] ] )
 ##  </Example>
 ##  </Description>
@@ -942,15 +942,15 @@ StreetOps.Matrix:= function(self)
         od;
         self.matrix:= mat;
     fi;
-    
+
     return rec(target:= self.target, source:= self.source, mat:= self.matrix);
 end;
 
 ## Deprecate:
 StreetOps.BigMatrix:= function(self)
     local   sh,  m,  l,  mat;
-    
-    sh:= Shapes(self.W); 
+
+    sh:= Shapes(self.W);
     m:= Sum(sh, Size);
     l:= SetComposition(List(sh, Size));
     mat:= NullMat(m, m);
@@ -959,7 +959,7 @@ StreetOps.BigMatrix:= function(self)
     return mat;
 end;
 
-    
+
 #  how to multiply two such matrices.  checked!  Turn into proper objects?
 ProductStreetMatrices:= function(a, b)
     if a.target = b.source then
@@ -971,15 +971,15 @@ end;
 ##  the product of a list of streets.
 ProductStreetMatrixList:= function(list)
     local   product,  i;
-    
+
     # trivial case: the empty product.
     if list = [] then return 1; fi;  # ???
-    
+
     product:= list[1];
     for i in [2..Length(list)] do
         product:= ProductStreetMatrices(product, list[i]);
     od;
-    
+
     return product;
 end;
 
@@ -1042,9 +1042,9 @@ end;
 ##
 StreetOps.\*:= function(l, r)
     local   W,  res,  all,  a,  b,  c;
-    
+
     res:= [];
-    
+
     #  alley * street.
     if not IsStreet(l) then
         for b in Elements(r) do
@@ -1055,7 +1055,7 @@ StreetOps.\*:= function(l, r)
         od;
         return res;
     fi;
-    
+
     # street * alley
     if not IsStreet(r) then
         for a in Elements(l) do
@@ -1066,19 +1066,19 @@ StreetOps.\*:= function(l, r)
         od;
         return res;
     fi;
-    
+
     # street * street.
     if l.W <> r.W then
         Error("factors must have same W component");
     fi;
-    
+
     W:= l.W;
-    
+
     # unless they fit together
     if Call(l, "Target") <> Call(r, "Source") then
         return res;
     fi;
-    
+
     # form all products of all members.
     all:= [];
     for a in Elements(l) do
@@ -1089,17 +1089,17 @@ StreetOps.\*:= function(l, r)
             fi;
         od;
     od;
-    
+
     # Q: can the same nonzero c ever occur twice ?
     # no: because of unique factorization.
-    
+
     a:= Length(all);
     all:= Set(all);
     if a <> Size(all) then
         Error("Panic: problem with unique factorization!");
     fi;
-    
-    
+
+
     # split into classes
     while all <> [] do
         c:= Street(W, all[1]);
@@ -1110,7 +1110,7 @@ StreetOps.\*:= function(l, r)
             Error("Panic:  problem with alley class products!");
         fi;
     od;
-    
+
     return res;
 end;
 
@@ -1131,23 +1131,23 @@ end;
 
 
 #############################################################################
-##  
+##
 ##  Find the last irreducible factor (actually the first when you read
 ##  left to right ...)
 ##
 StreetOps.LongestSuffix:= function(self)
     local   fff,  i,  lft,  rgt,  pro;
-    
+
     # idempotent case first.
     if self.alley[2] = [] then
         return self;
     fi;
-    
+
     # short case next.
     if Length(self.alley[2]) = 1 then
         return self;
     fi;
-    
+
     fff:= FactorsAlley(self.alley);
     for i in [1..Length(fff)-1] do
         lft:= Street(self.W, ProductAlleyList(fff{[1..i]}));
@@ -1157,21 +1157,21 @@ StreetOps.LongestSuffix:= function(self)
             return lft;
         fi;
     od;
-    
+
     return self;
-          
+
 end;
 
 ##FIXME:  does a street have a unique factorization into irreducibles?
 StreetOps.Factors:= function(self)
     local   fff,  fac,  o,  i,  lft,  rgt,  pro;
-    
+
     # idempotent case first.
     if self.alley[2] = [] then
         return self;
     fi;
-    
-    
+
+
     fff:= FactorsAlley(self.alley);
     fac:= [];
     o:= 1;
@@ -1192,7 +1192,7 @@ end;
 #############################################################################
 StreetOps.Monoid:= function(self)
     local   W,  S,  source,  hhh,  eee,  all,  edges,  a,  new,  l,  s, i;
-    
+
     W:= self.W;
     S:= [1..W.semisimpleRank];
     source:= Shapes(W)[Call(self, "Source")];
@@ -1222,25 +1222,25 @@ end;
 ## a subset of streets, big enough to generate the descent algebra.
 BasicStreets:= function(W)
     local   isNonZero,  basic,  a;
-    
+
     # how to test for zero matrix.
     isNonZero:= m -> m <> 0*m;
 
     # start with a reasonably small set of alley classes.
     basic:= List(Shapes(W), x-> Call(x, "Street"));
-    for a in basic do 
+    for a in basic do
         Append(basic, Call(a, "MoversPlus"));
     od;
     InfoZigzag1("Generated ", Length(basic), " streets\n");
-    
+
     # test for irreducibility.
     basic:= Filtered(basic, x-> x = Call(x, "LongestSuffix"));
     InfoZigzag1("of which ", Length(basic), " are irreducible\n");
-    
+
     # test for Delta = 0.
     basic:= Filtered(basic, x-> isNonZero(Call(x, "Delta").mat));
     InfoZigzag1("Starting with ", Length(basic), " nonzero streets\n");
-    
+
     # return survivors.
     return basic;
 end;
@@ -1248,21 +1248,21 @@ end;
 #  leave out irrducibility test!
 BasicStreetsNonZero:= function(W)
     local   isNonZero,  basic,  a;
-    
+
     # how to test for zero matrix.
     isNonZero:= m -> m <> 0*m;
 
     # start with a reasonably small set of alley classes.
     basic:= List(Shapes(W), x-> Call(x, "Street"));
-    for a in basic do 
+    for a in basic do
         Append(basic, Call(a, "MoversPlus"));
     od;
     InfoZigzag1("Generated ", Length(basic), " streets\n");
-    
+
     # test for Delta = 0.
     basic:= Filtered(basic, x-> isNonZero(Call(x, "Delta").mat));
     InfoZigzag1("Starting with ", Length(basic), " nonzero streets\n");
-    
+
     # return survivors.
     return basic;
 end;
@@ -1277,7 +1277,7 @@ end;
 ##
 PathsStreets:= function(streets, len)
     local   paths,  old,  i,  new,  a,  b;
-    
+
     paths:= [];
     old:= List(streets, x-> [x]);
     #    while old <> [] do
@@ -1293,25 +1293,25 @@ PathsStreets:= function(streets, len)
         od;
         old:= new;
     od;
-    
+
     return paths;
 end;
 
 PathsStreets1:= function(streets)
     local   paths,  edges,  old,  new,  a,  b;
-    
+
     paths:= [];
-    
+
     # ignore streets of length 0.
     edges:= Filtered([1..Length(streets)], i-> Call(streets[i], "Length") > 0);
-    
+
     old:= List(edges, x-> [x]);
     while old <> [] do
         Add(paths, old);
         new:= [];
         for a in old do
             for b in edges do
-                if Call(streets[a[Length(a)]], "Target") 
+                if Call(streets[a[Length(a)]], "Target")
                    = Call(streets[b], "Source") then
                     Add(new, Concatenation(a, [b]));
                 fi;
@@ -1319,7 +1319,7 @@ PathsStreets1:= function(streets)
         od;
         old:= new;
     od;
-    
+
     return paths;
 end;
 
@@ -1331,7 +1331,7 @@ end;
 ##
 CartanMatStreets:= function(W)
     local   l,  mat,  b,  i,  j;
-    
+
     l:= Length(Shapes(W));
     mat:= NullMat(l, l);
     for b in Streets(W) do
@@ -1339,7 +1339,7 @@ CartanMatStreets:= function(W)
         j:= Call(b, "Target");
         mat[i][j]:= mat[i][j] + 1;
     od;
-    
+
     return mat;
 end;
 
@@ -1358,7 +1358,7 @@ end;
 # this only makes sense for W of type A
 CartanMatSlantedStreets0:= function(W)
     local   l,  n,  mat,  b,  i,  j;
-    
+
     l:= Length(Shapes(W));
     n:= W.semisimpleRank+1;
     mat:= NullMat(l, l);
@@ -1369,7 +1369,7 @@ CartanMatSlantedStreets0:= function(W)
             mat[i][j]:= mat[i][j] + 1;
         fi;
     od;
-    
+
     return mat;
 end;
 
@@ -1379,7 +1379,7 @@ end;
 # the quiver, and prefersone of a pair of negatives)
 SlantedStreets:= function(W)
     local   l,  sla,  q,  i,  j,  p;
-    
+
     l:= Length(Shapes(W));
     sla:= [];
     q:= DescentQuiver(W);
@@ -1392,14 +1392,14 @@ SlantedStreets:= function(W)
             od;
         od;
     od;
-        
+
     return Concatenation(q.path0, sla);
 end;
 
 
 CartanMatSlantedStreets:= function(W)
     local   l,  mat,  q,  i,  j,  p;
-    
+
     l:= Length(Shapes(W));
     mat:= [];
     q:= DescentQuiver(W);
@@ -1416,7 +1416,7 @@ CartanMatSlantedStreets:= function(W)
             od;
         od;
     od;
-        
+
     return mat;
 end;
 
@@ -1429,7 +1429,7 @@ end;
 
 #  colours.
 #
-#  the colour of an alley (L; s) of length 1 is the pair of shapes 
+#  the colour of an alley (L; s) of length 1 is the pair of shapes
 #  [K], [K_s], where K is the connected component of s in L.
 #
 #  the colour of a street is the multiset of colours of
@@ -1447,15 +1447,15 @@ end;
 ##
 
 #############################################################################
-##  
+##
 #O  StreetAlgebraEltOps . . . . . . . . . . . . . . . . operations record.
-##  
+##
 StreetAlgebraEltOps:= OperationsRecord("StreetAlgebraEltOps");
 
 #############################################################################
-##  
+##
 #C  StreetAlgebraElt( <coef>, <elts> ) . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="StreetAlgebraElt">
 ##  <ManSection>
 ##  <Func Name="StreetAlgebraElt" Arg="coef, elts"/>
@@ -1494,7 +1494,7 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsStreetAlgebraElt:= function(obj)
     return IsRec(obj) and IsBound(obj.isStreetAlgebraElt) and obj.isStreetAlgebraElt = true;
 end;
@@ -1527,18 +1527,18 @@ StreetAlgebraEltOps.Normalize:= function(self)
             Add(ccc, coe);
         fi;
     od;
-    
+
     # copy normalized lists back into originals.
     self.elts:= eee;
     self.coef:= ccc;
 end;
-    
+
 
 
 #############################################################################
 StreetAlgebraEltOps.\*:= function(l, r)
     local   c,  e,  i,  j,  a,  s,  pro;
- 
+
     if IsStreetAlgebraElt(l) then
         if IsStreetAlgebraElt(r) then
             c:= [];
@@ -1559,15 +1559,15 @@ StreetAlgebraEltOps.\*:= function(l, r)
     else
         pro:= StreetAlgebraElt(l * r.coef, r.elts);
     fi;
-    
+
     Call(pro, "Normalize");
     return pro;
-end;    
+end;
 
 #############################################################################
 StreetAlgebraEltOps.\+:= function(l, r)
     local   q,  sum;
-    
+
     # check arguments.
     if not IsStreetAlgebraElt(r) then
         Error("<r> is not a StreetAlgebraElt");
@@ -1575,13 +1575,13 @@ StreetAlgebraEltOps.\+:= function(l, r)
     if not IsStreetAlgebraElt(l) then
         Error("<l> is not a StreetAlgebraElt");
     fi;
-    
+
     # from the sum and normalize.
-    sum:= StreetAlgebraElt(Concatenation(l.coef, r.coef), 
+    sum:= StreetAlgebraElt(Concatenation(l.coef, r.coef),
                           Concatenation(l.elts, r.elts));
     Call(sum, "Normalize");
     return sum;
-end;    
+end;
 
 
 #############################################################################

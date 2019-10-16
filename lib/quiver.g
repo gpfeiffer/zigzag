@@ -10,9 +10,9 @@
 ##
 ##  <#GAPDoc Label="Intro:Quivers">
 ##    Quivers are directed graphs ...
-##      
+##
 ##    The functions described in this chapter are implemented in the file
-##    <F>quiver.g</F>.  
+##    <F>quiver.g</F>.
 ##  <#/GAPDoc>
 ##
 ##  TODO: make them a proper GAP algebra !?!
@@ -22,12 +22,12 @@
 ##
 ##  Quivers.  (As path algebras)
 ##
-    
-    
+
+
 #############################################################################
-##  
+##
 #O  QuiverOps  . . . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 ##  A quiver is a ...
 ##
 QuiverOps:= OperationsRecord("QuiverOps", AlgebraOps);
@@ -40,7 +40,7 @@ Quiver:= function(q)
     q.operations:= QuiverOps;
     return q;
 end;
-    
+
 
 #############################################################################
 ##
@@ -55,7 +55,7 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsQuiver:= function(obj)
     return IsRec(obj) and IsBound(obj.isQuiver) and obj.isQuiver = true;
 end;
@@ -68,7 +68,7 @@ QuiverOps.\=:= function(l, r)
         return false;
     fi;
 end;
-    
+
 
 #############################################################################
 QuiverOps.Edges:= function(self)
@@ -80,12 +80,12 @@ end;
 ##
 ##  Edges.  (of quivers)
 ##
-    
-    
+
+
 #############################################################################
-##  
+##
 #O  EdgeOps  . . . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 ##  An edge is an operator, capable of turning one vertex into the next
 ##  through the function stored in its 'nextVertex' component.
 ##
@@ -104,7 +104,7 @@ Edge:= function(data, nextVertex)
     self.operations:= EdgeOps;
     return self;
 end;
-    
+
 
 #############################################################################
 ##
@@ -119,7 +119,7 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsEdge:= function(obj)
     return IsRec(obj) and IsBound(obj.isEdge) and obj.isEdge = true;
 end;
@@ -168,7 +168,7 @@ NextPartition:= function(vertex, edge)
     Sort(new);
     return new;
 end;
-    
+
 PartitionEdge:= function(a, b)
     return Edge([a,b], NextPartition);
 end;
@@ -197,9 +197,9 @@ end;
 ##
 
 #############################################################################
-##  
+##
 #O  PathOps  . . . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 ##  A path is a pair, consisting of a vertex 'source' and a (possibly empty)
 ##  list of edges.
 ##
@@ -211,7 +211,7 @@ PathOps:= OperationsRecord("PathOps");
 ##
 Path:= function(source, edges)
     local   target,  edge,  self;
-    
+
     # compute target.
     target:= source;
     for edge in edges do
@@ -220,7 +220,7 @@ Path:= function(source, edges)
             return false;
         fi;
     od;
-    
+
     # construct new object.
     self:= rec();
     self.source:= source;
@@ -230,7 +230,7 @@ Path:= function(source, edges)
     self.operations:= PathOps;
     return self;
 end;
-    
+
 
 #############################################################################
 ##
@@ -245,7 +245,7 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsPath:= function(obj)
     return IsRec(obj) and IsBound(obj.isPath) and obj.isPath = true;
 end;
@@ -269,7 +269,7 @@ PathOps.\*:= function(l, r)
     if IsEdge(r) then
         return Path(l.source, Concatenation(l.edges, [r]));
     fi;
-    
+
     # path * path
     if l.target <> r.source then
         return false;
@@ -286,20 +286,20 @@ AddPartPartitionPath:= function(path, part)
     Sort(source);
     return Path(source, path.edges);
 end;
-    
+
 
 #############################################################################
-##  
+##
 #O  QuiverEltOps  . . . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 ##  A quiver element is a linear combination of paths
 ##
 QuiverEltOps:= OperationsRecord("QuiverEltOps");
 
 #############################################################################
-##  
+##
 #C  QuiverElt( <coef>, <elts> ) . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="QuiverElt">
 ##  <ManSection>
 ##  <Func Name="QuiverElt" Arg="coef, elts"/>
@@ -338,14 +338,14 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsQuiverElt:= function(obj)
     return IsRec(obj) and IsBound(obj.isQuiverElt) and obj.isQuiverElt = true;
 end;
 
 #############################################################################
 QuiverEltOps.\=:= function(l, r)
-    
+
     if IsQuiverElt(l) then
         if IsQuiverElt(r) then
             return l.coef = r.coef and l.elts = r.elts;
@@ -355,7 +355,7 @@ QuiverEltOps.\=:= function(l, r)
     else
         return false;
     fi;
-end;    
+end;
 
 
 #############################################################################
@@ -386,18 +386,18 @@ QuiverEltOps.Normalize:= function(self)
             Add(ccc, coe);
         fi;
     od;
-    
+
     # copy normalized lists back into originals.
     self.elts:= eee;
     self.coef:= ccc;
 end;
-    
+
 
 
 #############################################################################
 QuiverEltOps.\*:= function(l, r)
     local   c,  e,  i,  j,  path,  pro;
- 
+
     if IsQuiverElt(l) then
         if IsQuiverElt(r) then
             c:= [];
@@ -420,15 +420,15 @@ QuiverEltOps.\*:= function(l, r)
     else
         pro:= QuiverElt(l * r.coef, r.elts);
     fi;
-    
+
     Call(pro, "Normalize");
     return pro;
-end;    
+end;
 
 #############################################################################
 QuiverEltOps.\+:= function(l, r)
     local   sum;
-    
+
     # check arguments.
     if not IsQuiverElt(r) then
         Error("<r> is not a QuiverElt");
@@ -436,13 +436,13 @@ QuiverEltOps.\+:= function(l, r)
     if not IsQuiverElt(l) then
         Error("<l> is not a QuiverElt");
     fi;
-    
+
     # form the sum.
-    sum:= QuiverElt(Concatenation(l.coef, r.coef), 
+    sum:= QuiverElt(Concatenation(l.coef, r.coef),
                   Concatenation(l.elts, r.elts));
     Call(sum, "Normalize");
     return sum;
-end;    
+end;
 
 
 #############################################################################
@@ -455,28 +455,28 @@ end;
 AddPartPartitionQuiverElt:= function(qe, part)
     return QuiverElt(qe.coef, List(qe.elts, x-> AddPartPartitionPath(x, part)));
 end;
-    
+
 #############################################################################
 PathsPartitionQuiver:= function(n)
     local   vertices,  edges,  j,  i,  paths,  v,  p,  e;
-    
+
     vertices:= List(Partitions(n), Reversed);
     edges:= [];
     for j in [2..n-1] do
-        for i in [1..Minimum(j-1, n-j)] do 
+        for i in [1..Minimum(j-1, n-j)] do
             Add(edges, PartitionEdge(i, j));
         od;
     od;
-    
+
     paths:= [];
-    
+
     for v in vertices do
         p:= Path(v, []);
         if p <> false then
             Add(paths, p);
         fi;
     od;
-    
+
     # orbit algorithm.
     for p in paths do
         for e in edges do
@@ -486,9 +486,9 @@ PathsPartitionQuiver:= function(n)
             fi;
         od;
     od;
-    
+
     return paths;
-    
+
 end;
 
 #############################################################################
@@ -497,7 +497,7 @@ end;
 ##
 SegmentsWord:= function(word)
     local   isLessPartitionEdges,  i,  l;
-    
+
     # how to compare two PartitionEdges. (return true only if a < b)
     isLessPartitionEdges:= function(a, b)
         local   sumA,  sumB;
@@ -509,40 +509,40 @@ SegmentsWord:= function(word)
             return sumA < sumB;
         fi;
     end;
-    
+
     # trivial case first.
     if word = [] then
         return [];
     fi;
-    
+
     # locate first letter >= word[1]
     i:= 2;  l:= Length(word);
     while i <= l and isLessPartitionEdges(word[i], word[1]) do
         i:= i+1;
     od;
-    
+
     return Concatenation([word{[1..i-1]}], SegmentsWord(word{[i..l]}));
 end;
-                   
+
 
 #  how to turn a segment into a tree (or fail) with label offset o
 TreeSegment:= function(segment, o)
     local   ab,  tree,  segments,  next,  s,  sum,  child;
-    
+
     ab:= segment[1].data;
     tree:=  SimpleTree(ab[1], ab[2])^o;
     segments:= SegmentsWord(segment{[2..Length(segment)]});
-    
+
     # next child to try
     next:= 1;
-    
+
     # loop over the segments
     for s in segments do
         sum:= Sum(s[1].data);
         while next < 3 and sum <> ab[next] do
             next:= next + 1;
         od;
-        
+
         if next < 3 then
             o:= o + 1;
             child:= TreeSegment(s, o);
@@ -559,7 +559,6 @@ TreeSegment:= function(segment, o)
             return false;
         fi;
     od;
-                
+
     return tree;
 end;
-
