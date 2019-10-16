@@ -465,4 +465,3 @@ OSCharacterCRG:= function(W)
     od;
     return Character(W, chi);
 end;
-

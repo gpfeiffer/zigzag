@@ -7,7 +7,7 @@
 #Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains support for the category of shapes and its elements.
-##  
+##
 ##  <#GAPDoc Label="Intro:Category">
 ##    The pairs <M>(J, x)</M> form a category with partial
 ##    multiplication ...
@@ -18,27 +18,27 @@
 
 
 #############################################################################
-##  
+##
 #O  CategoryOps  . . . . . . . . . . . . . . . . . . . . . operations record.
-## 
+##
 CategoryOps:= OperationsRecord("CategoryOps", DomainOps);
 
 #############################################################################
-##  
+##
 #C  Category( <W> ) . . . . . . . . . . . . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="Category">
 ##  <ManSection>
 ##  <Func Name="Category" Arg="W"/>
 ##  <Returns>
-##    a new category, an object that represents the category of <A>W</A>. 
+##    a new category, an object that represents the category of <A>W</A>.
 ##  </Returns>
 ##  <Description>
 ##  This is the simple constructor for categories.  It constructs and
 ##  returns the category of <A>W</A>.  Here <A>W</A> is a finite
 ##  Coxeter group of rank.
 ##  <Example>
-##  gap> W:= CoxeterGroup("E", 6);; 
+##  gap> W:= CoxeterGroup("E", 6);;
 ##  gap> Category(W);
 ##  Category( CoxeterGroup("E", 6) )
 ##  </Example>
@@ -47,7 +47,7 @@ CategoryOps:= OperationsRecord("CategoryOps", DomainOps);
 ##  <#/GAPDoc>
 ##
 Category:= function(W)
-    return 
+    return
       rec(
           isDomain:= true,
           isCategory:= true,
@@ -69,32 +69,32 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsCategory:= function(obj)
     return IsRec(obj) and IsBound(obj.isCategory) and obj.isCategory = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #F  Print( <category> )  . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 CategoryOps.Print:= function(self)
     Print("Category( ", self.W, " )");
 end;
 
 
 #############################################################################
-##  
+##
 #O  CategoryEltOps . . . . . . . . . . . . . . . . . . . . operations record.
-## 
+##
 CategoryEltOps:= OperationsRecord("CategoryEltOps");
 
 
 #############################################################################
-##  
+##
 #C  CategoryElt( <W>, <elt> ) . . . . . . . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="CategoryElt">
 ##  <ManSection>
 ##  <Func Name="CategoryElt" Arg="W, elt"/>
@@ -103,8 +103,8 @@ CategoryEltOps:= OperationsRecord("CategoryEltOps");
 ##  </Returns>
 ##  <Description>
 ##  This is the simple constructor for category elements.  It constructs and
-##  returns the category element <A>elt</A> of <A>W</A>.  Here <A>W</A> is 
-##  a finite Coxeter, and <A>elt</A> is the pair <M>(J, x)</M>, where 
+##  returns the category element <A>elt</A> of <A>W</A>.  Here <A>W</A> is
+##  a finite Coxeter, and <A>elt</A> is the pair <M>(J, x)</M>, where
 ##  <M>J</M> is a subset of <M>S</M> and <M>x \in X_J</M> is such that
 ##  <M>J^x</M> is a subset of <M>S</M>, too.
 ##  <Example>
@@ -117,7 +117,7 @@ CategoryEltOps:= OperationsRecord("CategoryEltOps");
 ##  </ManSection>
 ##  <#/GAPDoc>
 CategoryElt:= function(W, elt)
-    return 
+    return
       rec(
           isDomain:= true,
           isCategoryElt:= true,
@@ -141,17 +141,17 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsCategoryElt:= function(obj)
-    return IsRec(obj) and IsBound(obj.isCategoryElt) 
+    return IsRec(obj) and IsBound(obj.isCategoryElt)
            and obj.isCategoryElt = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #F  Print( <categoryelt> ) . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 CategoryEltOps.Print:= function(self)
     Print("CategoryElt( ", self.W, ", ", self.elt, " )");
 end;
@@ -163,7 +163,7 @@ end;
 
 #############################################################################
 CategoryEltOps.Target:= function(self)
-    return Call(Call(self, "GroupoidElt"), "Target");    
+    return Call(Call(self, "GroupoidElt"), "Target");
 end;
 
 #############################################################################
@@ -191,10 +191,10 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 CategoryEltOps.GroupoidElt:= function(self)
     local   w,  d,  J,  s,  L,  a;
-    
+
     w:= self.W.identity;
     d:= function(J, L)
         return LongestElement(self.W, J) * LongestElement(self.W, L);
@@ -206,16 +206,16 @@ CategoryEltOps.GroupoidElt:= function(self)
         w:= w * a;
         J:= OnSets(J, a);
     od;
-    
+
     return GroupoidElt(self.W, [self.elt[1], w]);
-end;    
-        
+end;
+
 
 #############################################################################
 CategoryEltOps.\*:= function(l, r)
     local   wl,  wr;
     #FIXME: check arguments
-    
+
     wl:= l.elt[2];
     wr:= r.elt[2];
     if OnSets(l.elt[1], wl) = r.elt[1] then
@@ -235,7 +235,7 @@ CategoryEltOps.Restricted:= function(self, J)
     if not IsSubset(L, J) then
         Error("<J> must be a subset");
     fi;
-    
+
     seq:= [];  K:= J;
     for s in self.elt[2] do
         c:= CategoryElt(W, [L, [s]]);
@@ -246,10 +246,10 @@ CategoryEltOps.Restricted:= function(self, J)
         c:= Call(c, "CategoryElt");
         Append(seq, c.elt[2]);
     od;
-    
+
     return CategoryElt(W, [J, seq]);
 end;
- 
+
 
 #############################################################################
 ##

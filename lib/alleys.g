@@ -7,17 +7,17 @@
 #Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains support for alleys.
-##  
+##
 ##  <#GAPDoc Label="Intro:Alleys">
 ##    An <E>alley</E> <Index>alley</Index> is a pair <M>(L; s_1, \dots,
 ##    s_l)</M> consisting of a subset <M>L</M> of <M>S</M> and a list
 ##    <M>(s_1, \dots, s_l)</M> of pairwise different elements of
 ##    <M>L</M>. <P/>
-##    
+##
 ##    Alleys are to be treated as immutable objects.<P/>
 ##
 ##    The functions described in this chapter are implemented in the file
-##    <F>alleys.g</F>.  
+##    <F>alleys.g</F>.
 ##  <#/GAPDoc>
 ##
 
@@ -75,10 +75,10 @@ end;
 ##
 ProductAlleyList:= function(list)
     local   product,  i;
-    
+
     # trivial case: the empty product.
     if list = [] then return 1; fi;
-    
+
     product:= list[1];
     for i in [2..Length(list)] do
         product:= ProductAlleys(product, list[i]);
@@ -86,7 +86,7 @@ ProductAlleyList:= function(list)
             return 0;
         fi;
     od;
-    
+
     return product;
 end;
 
@@ -114,20 +114,20 @@ end;
 ##
 FactorsAlley:= function(a)
     local   factors,  b;
-    
+
     # protect a against accidental corruption.
     a:= Copy(a);
-    
+
     # trivial case first.
     if a[2] = [] then return [a];  fi;
-    
+
     factors:= [];
     while Length(a[2]) > 0 do
         b:= a[2]{[1]};
         Add(factors, [a[1], b]);
         a:= [Difference(a[1], b), a[2]{[2..Length(a[2])]}];
     od;
-    
+
     return factors;
 end;
 
@@ -165,7 +165,7 @@ end;
 OnAlleys:= function(alley, d)
     return [OnSets(alley[1], d), OnTuples(alley[2], d)];
 end;
-                   
+
 #############################################################################
 ##
 #F  StabilizerAlley( <W>, <alley> ) . . . . . . . . . . . . . . . stabilizer.
@@ -216,7 +216,7 @@ end;
 ##  <Example>
 ##  gap> List([0..9], NrAlleys);
 ##  [ 1, 3, 10, 38, 168, 872, 5296, 37200, 297856, 2681216 ]
-##  gap> NrAlleys(55);          
+##  gap> NrAlleys(55);
 ##  93814436634832245005010260707043886255914618433202630120004150861368393728
 ##  </Example>
 ##  </Description>
@@ -395,7 +395,7 @@ SuffixAlley:= function(alley)
     if alley[2] = [] then
         Error("alley must have length > 0");
     fi;
-    return [Difference(alley[1], alley[2]{[1]}), 
+    return [Difference(alley[1], alley[2]{[1]}),
             alley[2]{[2..Length(alley[2])]}];
 end;
 
@@ -414,9 +414,9 @@ end;
 ##    0</M> corresponds to an edge from <M>\sigma(a)</M> to
 ##    <M>\sigma(a).s</M> labelled by <M>s</M>.  This function returns the
 ##    pair <M>(\sigma(a), \sigma(a).s)</M>.
-##    
+##
 ##    Note that <M>\delta(a)</M> is defined as the difference of the end
-##    points of the edge corresponding to the alley <M>a</M>, i.e., 
+##    points of the edge corresponding to the alley <M>a</M>, i.e.,
 ##    <M>\delta(a) = \sigma(a) - \sigma(a).s</M>.
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
@@ -432,7 +432,7 @@ end;
 ActionAlley:= function(W, alley)
     local   suf;
     suf:= SuffixAlley(alley);
-    return [suf, 
+    return [suf,
      OnAlleys(suf, LongestElement(W, suf[1]) * LongestElement(W, alley[1]))];
 end;
 
@@ -455,7 +455,7 @@ end;
 ##  [ 0, 1, 0, 0, -1, 0 ]
 ##  gap> DeltaAlley(W, [[1, 2, 3, 5], [3, 1]]);
 ##  [ 0, 0, -1, 0, 2, -1 ]
-##  gap> DeltaAlley(W, [[1, 2, 3, 5], [5]]);   
+##  gap> DeltaAlley(W, [[1, 2, 3, 5], [5]]);
 ##  [ 0, 0, 0 ]
 ##  </Example>
 ##  </Description>
@@ -467,7 +467,7 @@ end;
 ##
 DeltaAlley:= function(W, alley)
     local   L,  shape,  res,  act;
-    
+
     L:= alley[1];
     if alley[2] = [] then
         shape:= Elements(Shape(W, L));
@@ -491,14 +491,14 @@ end;
 #
 BigMatrixAlley:= function(W, alley)
     local   sub,  mat,  sh,  l,  i,  j;
-    
+
     sub:= SubsetsShapes(Shapes(W));
     mat:= NullMat(Length(sub), Length(sub));
     sh:= Shapes(W);
     l:= SetComposition(List(sh, Size));
     i:= Position(sub, alley[1]);
     j:= PositionProperty(sh, x-> Difference(alley[1], alley[2]) in x);
-    mat[i]{l[j]}:= DeltaAlley(W, alley);    
+    mat[i]{l[j]}:= DeltaAlley(W, alley);
     return mat;
 end;
 
@@ -535,13 +535,13 @@ end;
 ReversedAlley:= function(W, alley)
 
     local   L,  list,  s,  K,  wL,  d,  rev;
-    
+
     L:= alley[1];
     list:= alley[2];
     if list = [] then
         Error("alley must have length > 0");
     fi;
-    
+
     s:= list[1];
     wL:= LongestElement(W, L);
     K:= Difference(L, [s]);
@@ -555,7 +555,7 @@ end;
 #############################################################################
 LittleDeltaBarAlley:= function(W, alley)
     local   delta;
-    
+
     delta:= ActionAlley(W, alley);
     delta[2]:= ReversedAlley(W, delta[2]);
     return delta;
@@ -568,18 +568,18 @@ end;
 ##
 ReducedWordAlley:= function(W, alley)
     local   z,  K,  Kz,  c;
-    
+
     if alley[2] = [] then
         return CategoryElt(W, alley);
     fi;
-    
+
     z:= alley[2]{[Length(alley[2])]};
     K:= Difference(alley[1], alley[2]);
-    
+
     Kz:= Call(CategoryElt(W, [K, z]), "Target");
     c:= ApplyMethod(ReducedWordAlley(W, PrefixAlley(alley)), "Restricted", Kz);
     Append(z, c.elt[2]);
-    
+
     return CategoryElt(W, [K, z]);
 end;
 
@@ -591,11 +591,11 @@ end;
 ##
 ColoursAlley:= function(W, alley)
     local   sh,  col,  factor,  com;
-    
+
     if alley[2] = [] then
         return [];
     fi;
-    
+
     sh:= Shapes(W);
     col:= [];
     for factor in FactorsAlley(alley) do
@@ -603,11 +603,11 @@ ColoursAlley:= function(W, alley)
         Add(col, [PositionProperty(sh, s-> com in s),
                 PositionProperty(sh, s-> Difference(com, factor[2]) in s)]);
     od;
-    
+
     return Collected(col);
 end;
 
-        
+
 
 #############################################################################
 ##
@@ -621,7 +621,7 @@ AlleyAlgebraOps:= OperationsRecord("AlleyAlgebraOps", AlgebraOps);
 #############################################################################
 AlleyAlgebra:= function(W)
     local   self;
-    
+
     self:= rec();
     self.isAlleyAlgebra:= true;
     self.W:= W;
@@ -636,9 +636,9 @@ IsAlleyAlgebra:= function(obj)
 end;
 
 #############################################################################
-##  
-#F  Print( <aa> )  
-##  
+##
+#F  Print( <aa> )
+##
 AlleyAlgebraOps.Print:= function(self)
     if IsBound(self.name) then
         Print(self.name);

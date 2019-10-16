@@ -12,23 +12,23 @@
 ##  <#GAPDoc Label="Intro:Faces">
 ##    Let <M>(W, S)</M> be a finite Coxeter system.  The <E>face</E>
 ##    <Index>face</Index> ... <P/>
-##      
+##
 ##    The functions described in this chapter are implemented in the file
-##    <F>faces.g</F>.  
+##    <F>faces.g</F>.
 ##  <#/GAPDoc>
 ##
 
 #############################################################################
-##  
+##
 #O  FaceOps . . . . . . . . . . . . . . . . . . . . . . .  operations record.
-##  
+##
 FaceOps:= OperationsRecord("FaceOps", DomainOps);
 
 
 #############################################################################
-##  
+##
 #C  Face( <W>, <J>, <x> ) . . . . . . . . . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="Face">
 ##  <ManSection>
 ##  <Func Name="Face" Arg="W, J, x"/>
@@ -40,7 +40,7 @@ FaceOps:= OperationsRecord("FaceOps", DomainOps);
 ##    This is the simple constructor for the face class.  It
 ##    constructs and returns the face <M>W_J x</M>.
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 3);; 
+##  gap> W:= CoxeterGroup("A", 3);;
 ##  gap> Face(W, [1, 2], PermCoxeterWord(W, [3, 2]));
 ##  Face( CoxeterGroup("A", 3), [ 1, 2 ], ( 1, 4, 6)( 2, 3,11)( 5, 8, 9)
 ##  ( 7,10,12) )
@@ -53,14 +53,14 @@ FaceOps:= OperationsRecord("FaceOps", DomainOps);
 ##    W, the Coxeter group.
 ##    J, the parabolic subset of S.
 ##    x, a coset rep of W_J
-##  
+##
 Face:= function(W, J, x)
-    
+
     # check arguments?
-    if IsList(x) then 
+    if IsList(x) then
         x:= PermCoxeterWord(W, x);
     fi;
-    
+
     return rec(
                isDomain:= true,
                isFace:= true,
@@ -84,7 +84,7 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsFace:= function(obj)
     return IsRec(obj) and IsBound(obj.isFace) and obj.isFace = true;
 end;
@@ -97,15 +97,15 @@ FaceOps.\=:= function(l, r)
     if not IsFace(l) or not IsFace(r) then
         return false;
     fi;
-    
+
     return l.W = r.W and l.J = r.J and l.x = r.x;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #F  Print( <face> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 FaceOps.PrintFormat:= "perm";  # "perm" or "word"
 
 FaceOps.Print:= function(self)
@@ -122,20 +122,20 @@ end;
 ##
 Faces:= function(W)
     local   faces,  J,  x;
-    
+
     # lets see, we might know them already.
     if IsBound(W.faces) then  return W.faces;  fi;
 
     # initialize.
     faces:= [];
-    
+
     # loop over all subsets
     for J in SubsetsShapes(Shapes(W)) do
         for x in Elements(ParabolicTransversal(W, J)) do
             Add(faces, Face(W, J, x));
         od;
     od;
-    
+
     # remember the faces before returning them.
     W.faces:= faces;
     return faces;
@@ -149,7 +149,7 @@ end;
 ##
 FaceOps.Sign:= function(self)
     local   sign,  i,  r;
-    
+
     sign:= "";
     for i in [1..self.W.N] do
         if i/self.x > self.W.N then
@@ -168,12 +168,12 @@ end;
 #############################################################################
 ProductLSigns:= function(l, r)
     local   pro,  i;
-    
+
     # check arguments
     if Length(l) <> Length(r) then
         Error("<l> and <r> must be string of the same length");
     fi;
-    
+
     # calculate product gravitating towards l.
     pro:= "";
     for i in [1..Length(l)] do
@@ -188,12 +188,12 @@ end;
 
 ProductRSigns:= function(l, r)
     local   pro,  i;
-    
+
     # check arguments
     if Length(l) <> Length(r) then
         Error("<l> and <r> must be string of the same length");
     fi;
-    
+
     # calculate product gravitating towards r.
     pro:= "";
     for i in [1..Length(l)] do
@@ -210,7 +210,7 @@ end;
 #############################################################################
 FaceOps.\*:= function(l, r)
     local   W,  J,  K,  x,  y,  dv,  d,  v;
-    
+
     # check arguments
     if l.W <> r.W then
         Error("<l> and <r> must be faces of the same Coxeter group");
@@ -218,7 +218,7 @@ FaceOps.\*:= function(l, r)
     W:= l.W;
     J:= l.J;  K:= r.J;
     x:= l.x;  y:= r.x;
-    
+
     # write x/y as udv, u in W_J, d in X_{JK}, v in X_{J^d \cap K}^K.
     dv:= ReducedInCoxeterCoset(ReflectionSubgroup(W, J), x/y);
     d:= ReducedInCoxeterCoset(ReflectionSubgroup(W, K), dv^-1)^-1;
@@ -278,10 +278,10 @@ end;
 
 #############################################################################
 OnFaces:= function(face, w)
-    return Face(face.W, face.J, 
+    return Face(face.W, face.J,
       ReducedInCoxeterCoset(ReflectionSubgroup(face.W, face.J), face.x * w));
 end;
-    
+
 #############################################################################
 FaceOps.Support:= function(self)
     return ReflectionSubgroup(W, OnSets(self.J, self.x));
@@ -290,7 +290,7 @@ end;
 #############################################################################
 KernelSupportMap:= function(W)
     local   fff,  sup,  pos,  ker,  i,  s,  p;
-    
+
     fff:= Faces(W);
     sup:= [];  pos:= [];  ker:= [];
     for i in [1..Length(fff)] do
@@ -319,7 +319,7 @@ end;
 
 FaceOps.Facets:= function(self)
     local   WJ,  list,  s,  K,  u;
-    
+
     WJ:= ReflectionSubgroup(W, self.J);
     list:= [];
     for s in self.J do
@@ -330,7 +330,7 @@ FaceOps.Facets:= function(self)
     od;
     return list;
 end;
-    
+
 
 #############################################################################
 ##
@@ -338,16 +338,16 @@ end;
 ##
 
 #############################################################################
-##  
+##
 #O  FaceEltOps . . . . . . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 FaceEltOps:= OperationsRecord("FaceEltOps", AlgebraElementOps);
 
 
 #############################################################################
-##  
+##
 #C  FaceElt( <W>, <coef> ) . . . . . . . . . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="FaceElt">
 ##  <ManSection>
 ##  <Func Name="Face" Arg="W, coef"/>
@@ -384,18 +384,18 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsFaceElt:= function(obj)
     return IsRec(obj) and IsBound(obj.isFaceElt) and obj.isFaceElt = true;
 end;
 
-#############################################################################  
-##  
+#############################################################################
+##
 #F  Print( <faceelt> ) . . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 FaceEltOps.Print:= function(self)
     local   null,  fff,  i;
-    
+
     null:= true;
     fff:= Faces(self.W);
     for i in [1..Length(fff)] do
@@ -403,19 +403,19 @@ FaceEltOps.Print:= function(self)
             if not null then Print(" + "); fi;
             Print(self.coef[i], "*", fff[i]);
             null:= false;
-        elif self.coef[i] < 0 then 
+        elif self.coef[i] < 0 then
             Print(" - ", -self.coef[i], "*", fff[i]);
             null:= false;
         fi;
     od;
-        
+
     if null then Print(0); fi;
 end;
 
 #############################################################################
 FaceOps.FaceElt:= function(self)
     local   fff,  coef,  p;
-    
+
     fff:= Faces(self.W);
     coef:= List(fff, x-> 0);
     p:= Position(fff, self);
@@ -432,7 +432,7 @@ FaceEltOps.\=:= function(l, r)
     if not IsFaceElt(l) or not IsFaceElt(r) then
         return false;
     fi;
-    
+
     return l.W = r.W and l.coef = r.coef;
 end;
 
@@ -452,19 +452,19 @@ FaceEltOps.\+:= function(l, r)
         else
             Error("don't know how to <l> + <r>");
         fi;
-        
+
     elif l = 0 then
         if IsFaceElt(r) then
             return r;
         else
             Error("don't know how to <l> + <r>");
         fi;
-    
+
     else
-            
+
         Error("don't know how to <l> + <r>");
     fi;
-    
+
 end;
 
 
@@ -474,7 +474,7 @@ end;
 ##
 FaceEltOps.\*:= function(l, r)
     local   fff,  prod,  i,  j,  k;
-    
+
     if IsFaceElt(l) then
         if IsFaceElt(r) then
             if l.W <> r.W then
@@ -511,11 +511,11 @@ end;
 
 #############################################################################
 ##
-##  
+##
 ##
 FaceOps.Delta:= function(self)
     local   epsilon,  sum,  x;
-    
+
     epsilon:= function(a, b) # suppose a covers b
         local   s;
         s:= Difference(a.J, b.J)[1];
@@ -532,7 +532,7 @@ end;
 
 FaceEltOps.Delta:= function(self)
     local   fff,  sum,  i;
-    
+
     fff:= Faces(self.W);
     sum:= 0 * self;
     for i in [1..Length(fff)] do
@@ -552,7 +552,7 @@ end;
 #############################################################################
 ##
 ##  Its elements.  How does this relate to KernelSupportMap?
-##  Call(fff[s], "Support") = ImageSupportMap(W)[i] for all s in 
+##  Call(fff[s], "Support") = ImageSupportMap(W)[i] for all s in
 ##  Set(KernelSupportMap(W))[i]
 ##
 ImageSupportMap:= function(W)
@@ -561,7 +561,7 @@ ImageSupportMap:= function(W)
     list:= [];
     for face in Faces(W) do
         sup:= Call(face, "Support");
-        if not sup in list then 
+        if not sup in list then
             Add(list, sup);
         fi;
     od;
@@ -591,19 +591,19 @@ end;
 ##
 PrimitiveIdempotentsFaceElts:= function(W)
     local   fff,  ker,  lll,  ell,  id,  i,  new,  sum,  j;
-    
+
     fff:= Faces(W);
     ker:= Set(KernelSupportMap(W));
     lll:= ImageSupportMap(W);
-    
+
     ell:= function(class)
         return Call(fff[class[1]], "FaceElt");
     end;
-    
+
     ell:= function(class)
         return 1/Length(class) * Sum(class, k-> Call(fff[k], "FaceElt"));
     end;
-    
+
     id:= [];
     for i in [1..Length(ker)] do
         new:= ell(ker[i]);
@@ -618,10 +618,10 @@ PrimitiveIdempotentsFaceElts:= function(W)
     return id;
 end;
 
-         
-NilpotentFaceElts:= function(W)    
+
+NilpotentFaceElts:= function(W)
     local   fff,  ker,  lll,  has,  id,  nil,  i,  del,  new,  j;
-    
+
     fff:= Faces(W);
     ker:= Set(KernelSupportMap(W));
     lll:= ImageSupportMap(W);
@@ -647,11 +647,11 @@ end;
 # helper
 ProdMat:= function(a, b)
     local   c,  i,  j,  k;
-    
+
     if Length(a[1]) <> Length(b) then
         Error("product not defined");
     fi;
-    
+
     c:= [];
     for i in [1..Length(a)] do
         c[i]:= [];

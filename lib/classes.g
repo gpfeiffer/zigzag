@@ -11,7 +11,7 @@
 ##  <#GAPDoc Label="Intro:Classes">
 ##    The conjugation action of a finite group on itself naturally
 ##    partitions the group into conjugacy classes.
-##    The conjugacy classes of a finite Coxeter group <M>W</M> are 
+##    The conjugacy classes of a finite Coxeter group <M>W</M> are
 ##    further partitioned into cyclic shift classes, see
 ##    <Ref Func="CyclicShifts"/> and <Ref Func="CyclicShiftClasses"/>.<P/>
 ##
@@ -19,35 +19,35 @@
 ##    <M>w \in W</M> is a parabolic subgroup <M>P</M> of <M>W</M>.
 ##    According to Konvalinka,  Pfeiffer and Röver <Cite Key="KoPfRo2011"/>,
 ##    the centralizer of <M>w</M> in <M>P</M> usually has a complement
-##    (isomorphic to the complement of <M>P</M> in its normalizer; see 
+##    (isomorphic to the complement of <M>P</M> in its normalizer; see
 ##    <Ref Func="NormalizerComplement"/>) in the full centralizer of
 ##    <M>w</M> in <M>W</M>.  This complement, if it exists, is computed by
 ##    the function <Ref Func="CentralizerComplement"/>.<P/>
-##    
+##
 ##    The functions described in this chapter are implemented in the file
-##    <F>classes.g</F>.  
+##    <F>classes.g</F>.
 ##  <#/GAPDoc>
 ##
 
 
 #############################################################################
-##  
+##
 #O  CyclicShiftsOps  . . . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 CyclicShiftsOps:= OperationsRecord("CyclicShiftsOps", DomainOps);
 
 
 #############################################################################
-##  
+##
 #C  CyclicShifts( <W>, <w> )  . . . . . . . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="CyclicShifts">
 ##  <ManSection>
 ##  <Func Name="CyclicShifts" Arg="W, w"/>
 ##  <Returns>
 ##    a new cyclic shift class, an object that represents the set of cyclic
-##    shifts of <A>w</A> in 
-##    <A>W</A>. 
+##    shifts of <A>w</A> in
+##    <A>W</A>.
 ##  </Returns>
 ##  <Description>
 ##  This is the simple constructor for the cyclic shifts class.  It constructs and
@@ -68,11 +68,11 @@ CyclicShiftsOps:= OperationsRecord("CyclicShiftsOps", DomainOps);
 ##  public fields:
 ##    W, the Coxeter group.
 ##    w, the element
-##  
+##
 ##  actually, w doesn't need to be in W as long as both have a common parent ...
 ##
 CyclicShifts:= function(W, w)
-    return 
+    return
       rec(
           isDomain:= true,
           isCyclicShifts:= true,
@@ -96,17 +96,17 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsCyclicShifts:= function(obj)
-    return IsRec(obj) and IsBound(obj.isCyclicShifts) 
+    return IsRec(obj) and IsBound(obj.isCyclicShifts)
            and obj.isCyclicShifts = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #F  Print( <shifts> )  . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 CyclicShiftsOps.Print:= function(self)
     Print("CyclicShifts( ", self.W, ", ", self.w, " )");
 end;
@@ -123,7 +123,7 @@ end;
 ##  <Meth Name="Representative" Arg="shifts" Label="for cyclic shifts"/>
 ##  <Returns>a representative of the cyclic shift class <A>shifts</A>.</Returns>
 ##  <Description>
-##  The representative of a cyclic shift class constructed 
+##  The representative of a cyclic shift class constructed
 ##  as <C>CyclicShifts(W, w)</C> (see <Ref Label="CyclicShifts"/>) will be its
 ##  initial element <C>w</C>.
 ##  <Example>
@@ -138,16 +138,16 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 CyclicShiftsOps.Representative:= function(self)
     return self.w;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #F  Elements( <shifts> ) . . . . . . . . . . . . . . . . . . . . .  elements.
-##  
+##
 ##  <#GAPDoc Label="Elements(shifts)">
 ##  <ManSection>
 ##  <Meth Name="Elements" Arg="shifts" Label="for cyclic shifts"/>
@@ -158,8 +158,8 @@ end;
 ##  An element <M>w'</M> of <M>W</M> is a cyclic shift of <M>w</M>
 ##  if there are elements <M>v</M> and <M>v'</M> of<M>W</M> such that
 ##  <M>w = vv'</M> with <M>\ell(w) = \ell(v) + \ell(v')</M> and
-##  <M>w' = v'v</M> with <M>\ell(w') = \ell(v') + \ell(v) = \ell(w)</M>. 
-##  The cyclic shift class of <M>w</M> in <M>W</M> consists of all cyclic 
+##  <M>w' = v'v</M> with <M>\ell(w') = \ell(v') + \ell(v) = \ell(w)</M>.
+##  The cyclic shift class of <M>w</M> in <M>W</M> consists of all cyclic
 ##  shifts of <M>w</M>.
 ##
 ##  As a side effect, <C>Elements</C> also computes lists of elements
@@ -174,7 +174,7 @@ end;
 ##  CyclicShifts( CoxeterGroup("A", 4), ( 1,20, 4, 3, 2)( 5,19,18, 7, 6)
 ##  ( 8,17,16,15, 9)(10,14,13,12,11) )
 ##  gap> List(Elements(cyc), x-> CoxeterWord(W, x));
-##  [ [ 4, 3, 2, 1 ], [ 3, 2, 1, 4 ], [ 2, 1, 4, 3 ], [ 2, 1, 3, 4 ], 
+##  [ [ 4, 3, 2, 1 ], [ 3, 2, 1, 4 ], [ 2, 1, 4, 3 ], [ 2, 1, 3, 4 ],
 ##    [ 1, 4, 3, 2 ], [ 1, 3, 2, 4 ], [ 1, 2, 4, 3 ], [ 1, 2, 3, 4 ] ]
 ##  </Example>
 ##  </Description>
@@ -183,11 +183,11 @@ end;
 ##
 ##  y = s_i x s_i is a cyclic shift of x if either
 ##  l(s_i x) > l(x) and l(s_i x s_i) < l(s_i x) or
-##  l(s_i x) < l(x) and l(s_i x s_i) > l(s_i x) 
+##  l(s_i x) < l(x) and l(s_i x s_i) > l(s_i x)
 ##
 ##
 CyclicShiftsOps.Elements:= function(self)
-    local   W,  S,  orb,  transversal,  gens,  j,  edges,  x,  i,  s,  
+    local   W,  S,  orb,  transversal,  gens,  j,  edges,  x,  i,  s,
             y,  z,  k,  perm;
 
     W:= self.W;
@@ -195,7 +195,7 @@ CyclicShiftsOps.Elements:= function(self)
 
     self.above:= [];
     self.below:= [];
-    
+
     orb:= [self.w];  transversal:= [()];  gens:= [];  j:= 0;
     edges:= [];
     for x in orb do
@@ -229,7 +229,7 @@ CyclicShiftsOps.Elements:= function(self)
         od;
     od;
     self.gens:= gens;
-    
+
     # sort orbit lexicographically and keep transversal, edges in sync.
     perm:= Sortex(orb);
     self.transversal:= Permuted(transversal, perm);
@@ -339,7 +339,7 @@ end;
 #F  Iterator( <shifts> ) . . . . . . . . . . . . . . . . . . . . .  iterator.
 ##
 ##  the iterator version of a cyclic shift class:
-##  
+##
 ##  <#GAPDoc Label="Iterator(shifts)">
 ##  <ManSection>
 ##  <Meth Name="Iterator" Arg="shifts" Label="for cyclic shifts"/>
@@ -366,25 +366,25 @@ CyclicShiftsOps.Iterator:= function(self)
     orb:= [self.w];
     pos:= 1;
     next:= pos;
-    
+
     itr:= rec();
-    
-##    
+
+##
 ##  hasNext() simply checks whether there is more left in the orbit.
-##    
+##
     itr.hasNext:= function()
         return IsBound(orb[pos]);
     end;
-    
+
 ##
 ##  next() simply returns the element 'focus' is looking at.  But before it
 ##  does that it needs to advance 'focus' to the next element in the queue,
-##  and if the queue in front of 'focus' happens to be empty it needs to 
+##  and if the queue in front of 'focus' happens to be empty it needs to
 ##  fill it up with prefixes of elements between 'back and 'focus'.
 ##
     itr.next:= function()
         local   x,  i,  s,  y,  z;
-        
+
         while pos = Length(orb) and next <= pos do # expand next in line
             x:= orb[next];
             for i in S do
@@ -461,7 +461,7 @@ end;
 ##
 MinimalLengthConjugate:= function(W, w)
     local   cyc;
-    
+
     cyc:= CyclicShifts(W, w);
     while not Call(cyc, "IsMinimal") do
         cyc:= CyclicShifts(W, Call(cyc, "OneBelow"));
@@ -478,7 +478,7 @@ end;
 ##
 MaximalLengthConjugate:= function(W, w)
     local   cyc;
-    
+
     cyc:= CyclicShifts(W, w);
     while not Call(cyc, "IsMaximal") do
         cyc:= CyclicShifts(W, Call(cyc, "OneAbove"));
@@ -496,8 +496,8 @@ end;
 ##  <Func Name="CentralizerComplement" Arg="W, w"/>
 ##  <Func Name="CentralizerComplementMinimal" Arg="W, w"/>
 ##  <Returns>
-##    a complement of the centralizer of <A>w</A> in the smallest parabolic 
-##    subgroup of <A>W</A> containing <A>w</A>, or <C>false</C> if none 
+##    a complement of the centralizer of <A>w</A> in the smallest parabolic
+##    subgroup of <A>W</A> containing <A>w</A>, or <C>false</C> if none
 ##    exists.
 ##  </Returns>
 ##  <Description>
@@ -511,19 +511,19 @@ end;
 ##  <#/GAPDoc>
 ##
 CyclicShiftsOps.Complement0:= function(self)
-    local   W,  w,  J,  WJ,  NJ,  CJ,  gen,  res,  x,  new,  K,  wK,  
+    local   W,  w,  J,  WJ,  NJ,  CJ,  gen,  res,  x,  new,  K,  wK,
             car,  can;
-    
+
     W:= self.W;
     w:= self.w;
-    
+
     # assert that w has minimal length in its class.
     J:= Set(CoxeterWord(W, w));
     WJ:= ReflectionSubgroup(W, J);
     NJ:= NormalizerComplement(W, J);
     CJ:= Centralizer(WJ, NJ);
     gen:= Generators(NJ);
-    
+
     res:= [];
     for x in gen do
         # don't fix what's not broken.
@@ -543,7 +543,7 @@ CyclicShiftsOps.Complement0:= function(self)
         fi;
         Add(res, new);
     od;
-    
+
     # try all combinations of possible generators.
     for car in Cartesian(res) do
         can:= List([1..Length(gen)], i-> gen[i] * car[i]);
@@ -556,24 +556,24 @@ CyclicShiftsOps.Complement0:= function(self)
 #            Print("-\c");
         fi;
     od;
-    
+
     # if everything fails ...
     return false;
 end;
 
 CyclicShiftsOps.Complement1:= function(self)
-    local   W,  w,  J,  WJ,  NJ,  gen,  res,  x,  new,  K,  wK,  car,  
+    local   W,  w,  J,  WJ,  NJ,  gen,  res,  x,  new,  K,  wK,  car,
             can;
-    
+
     W:= self.W;
     w:= self.w;
-    
+
     # assert that w has minimal length in its class.
     J:= Set(CoxeterWord(W, w));
     WJ:= ReflectionSubgroup(W, J);
     NJ:= NormalizerComplement(W, J);
     gen:= Generators(NJ);
-    
+
     res:= [];
     for x in gen do
         # don't fix what's not broken.
@@ -593,7 +593,7 @@ CyclicShiftsOps.Complement1:= function(self)
         fi;
         Add(res, new);
     od;
-    
+
     # try all combinations of possible generators.
     for car in Cartesian(res) do
         can:= List([1..Length(gen)], i-> gen[i] * car[i]);
@@ -606,7 +606,7 @@ CyclicShiftsOps.Complement1:= function(self)
 #            Print("+\c");
         fi;
     od;
-    
+
     # if everything fails ...
     return false;
 end;
@@ -615,7 +615,7 @@ end;
 # minimal length case.
 CentralizerComplementMinimal:= function(W, w)
     local   v,  com,  u;
-    
+
     # first round: try to find wK's that centralize all of NJ
     for v in Elements(CyclicShifts(W, w)) do
         com:= Call(CyclicShifts(W, v), "Complement0");
@@ -624,7 +624,7 @@ CentralizerComplementMinimal:= function(W, w)
             return com^u;
         fi;
     od;
-    
+
     # second round: relax centralising condition
     for v in Elements(CyclicShifts(W, w)) do
         com:= Call(CyclicShifts(W, v), "Complement1");
@@ -633,7 +633,7 @@ CentralizerComplementMinimal:= function(W, w)
             return com^u;
         fi;
     od;
-    
+
     return false;
 end;
 
@@ -664,10 +664,10 @@ end;
 # cuspidal classes
 CuspidalClasses:= function(W)
     local   cc,  n;
-    
+
     cc:= ConjugacyClasses(W);
     n:= W.semisimpleRank;
-    return Filtered([1..Length(cc)], i-> 
+    return Filtered([1..Length(cc)], i->
                    Size(Set(CoxeterWord(W, Representative(cc[i])))) = n);
 end;
 
@@ -690,7 +690,7 @@ end;
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;  W.name:= "W";;
 ##  gap> cyc:= CyclicShiftClasses(W, PermCoxeterWord(W, [1..3]));
-##  [ CyclicShifts( W, ( 1,12, 3, 2)( 4,11,10, 5)( 6, 9, 8, 7) ), 
+##  [ CyclicShifts( W, ( 1,12, 3, 2)( 4,11,10, 5)( 6, 9, 8, 7) ),
 ##    CyclicShifts( W, ( 1, 3, 7, 9)( 2,11, 6,10)( 4, 8, 5,12) ) ]
 ##  gap> List(cyc, Size);
 ##  [ 4, 2 ]
@@ -701,16 +701,16 @@ end;
 ##
 CyclicShiftClasses:= function(W, w)
     local   classes,  a,  old,  new,  all,  cyc;
-    
+
     # make sure w has minimal length in its class
     w:= MinimalLengthConjugate(W, w);
-    
+
     # initialize list with minimal length cyclic shift classes.
     classes:= [];
     for a in Call(Shape(W, Set(CoxeterWord(W, w))), "Transversal") do
         Add(classes, CyclicShifts(W, w^a));
     od;
-    
+
     # grow to completion.
     old:= classes;
     while old <> [] do
@@ -724,11 +724,11 @@ CyclicShiftClasses:= function(W, w)
         Append(classes, new);
         old:= new;
     od;
-    
+
     # return result.
     return classes;
 end;
-    
+
 
 #############################################################################
 ##

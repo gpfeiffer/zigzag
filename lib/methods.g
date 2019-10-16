@@ -7,7 +7,7 @@
 #Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains support for methods.
-##  
+##
 ##  <#GAPDoc Label="Intro:Methods">
 ##    A <E>method</E> <Index>method</Index> is a &GAP; function that is
 ##    defined in the operations record of an object and is usually applied to
@@ -17,7 +17,7 @@
 ##    or without further arguments.<P/>
 ##
 ##    The functions described in this chapter are implemented in the file
-##    <F>methods.g</F>.  
+##    <F>methods.g</F>.
 ##  <#/GAPDoc>
 ##
 
@@ -66,7 +66,7 @@ end;
 
 #############################################################################
 ##
-#F  Call( <object>, <method> ) . . . . . . . . . . . . . . . . . method call. 
+#F  Call( <object>, <method> ) . . . . . . . . . . . . . . . . . method call.
 ##
 ##  <#GAPDoc Label="Call">
 ##  <ManSection>
@@ -94,7 +94,7 @@ end;
 
 #############################################################################
 ##
-#F  ApplyMethod( <object>, <method>, <arg1>, ... ) . . . . . . . method call. 
+#F  ApplyMethod( <object>, <method>, <arg1>, ... ) . . . . . . . method call.
 ##
 ##  <#GAPDoc Label="ApplyMethod">
 ##  <ManSection>
@@ -121,7 +121,7 @@ end;
 ##
 ApplyMethod:= function(arg)
     local   object,  method,  list;
-    
+
     object:= arg[1];
     method:= object.operations.(arg[2]);
     if Length(arg) = 2 then
@@ -144,7 +144,7 @@ end;
 
 #############################################################################
 ##
-#F  Iverson  
+#F  Iverson
 ##
 ##  not really a method but a useful general concept: maps true/false to 1/0.
 ##
@@ -181,15 +181,15 @@ end;
 
 PartitionOps.Transposed:= function(self)
     local   tran,  p;
-    
+
     if self.parts = [] then return Partition([]); fi;
     tran:= 0 * [1..self.parts[1]];
     for p in self.parts do
         tran{[1..p]}:= tran{[1..p]} + 1;
     od;
     return Partition(tran);
-end;          
-    
+end;
+
 
 #############################################################################
 ##

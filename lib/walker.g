@@ -7,7 +7,7 @@
 #Y  Copyright (C) 2010  Götz Pfeiffer
 ##
 ##  This file contains some tree walking and counting functions.
-##  
+##
 ##  <#GAPDoc Label="Intro:Walker">
 ##    An <E>tree</E><Index>tree</Index>, or more precisely an ordered
 ##    rooted tree, is a collection of nodes, each of which has a list
@@ -26,14 +26,14 @@
 ##    corresponding to the elements of <M>X_2</M>, etc.  This chapter
 ##    contains two efficient algorithms for the traveral of such a tree;
 ##    see <Ref Func="VisitMixedTuplesM"/> and <Ref Func="VisitMixedTuplesH"/>.
-##    As an application, we get two efficient function for the 
+##    As an application, we get two efficient function for the
 ##    enumeration of the elements of a finite abelian group,
 ##    regarded as a direct product of cyclic groups; see
 ##    <Ref Func="ProductsMixedTuplesM"/> and <Ref Func="ProductsMixedTuplesH"/>.
 ##    <P/>
 ##
 ##    The functions described in this chapter are implemented in the file
-##    <F>walker.g</F>.  
+##    <F>walker.g</F>.
 ##  <#/GAPDoc>
 ##
 
@@ -71,7 +71,7 @@
 ##
 BreadthFirst:= function(arg)
     local   usage,  children,  list,  next;
-    
+
     # check arguments.
     usage:= "usage: BreadthFirst( tree [, children] )";
     if Length(arg) < 1 or Length(arg) > 2 then
@@ -79,9 +79,9 @@ BreadthFirst:= function(arg)
     elif Length(arg) = 2 then
         children:= arg[2];
     else
-        children:= "Children";         
+        children:= "Children";
     fi;
-    
+
     # recurse.
     list:= [arg[1]];
     for next in list do
@@ -135,7 +135,7 @@ end;
 ##
 IteratorBreadthFirst:= function(arg)
     local   usage,  children,  head,  focus,  back,  itr,  w,  x,  c;
-    
+
     # check arguments.
     usage:= "usage: IteratorBreadthFirst( tree [, children] )";
     if Length(arg) < 1 or Length(arg) > 2 then
@@ -143,13 +143,13 @@ IteratorBreadthFirst:= function(arg)
     elif Length(arg) = 2 then
         children:= arg[2];
     else
-        children:= "Children";         
+        children:= "Children";
     fi;
-    
+
     # initialize.
     head:= rec();
     focus:= rec(w:= arg[1], next:= head);
-    back:= focus; 
+    back:= focus;
 
     itr:= rec();
 
@@ -157,7 +157,7 @@ IteratorBreadthFirst:= function(arg)
     itr.hasNext:= function()
         return IsBound(focus.w);
     end;
-    
+
 ##  next() simply returns the element 'focus' is lookin at.  But before it
 ##  does that it needs to advance 'focus' to the next element in the queue,
 ##  and to fill the queue up with the children of the elements between 'back
@@ -165,8 +165,8 @@ IteratorBreadthFirst:= function(arg)
     itr.next:= function()
         local   w,  x,  c;
         w:=  focus.w;
-        focus:= focus.next;   
-        
+        focus:= focus.next;
+
         # expand back.w to focus.w
         while not IsIdentical(back, focus) do
             x:= back.w;
@@ -216,7 +216,7 @@ end;
 ##
 PreOrderNC:= function(tree, children)
     local   usage,  children,  list,  c;
-    
+
     list:= [tree];
     for c in Call(list[1], children) do
         Append(list, PreOrderNC(c, children));
@@ -226,7 +226,7 @@ end;
 
 PreOrder:= function(arg)
     local   usage,  children;
-    
+
     # check arguments.
     usage:= "usage: PreOrder( tree [, children] )";
     if Length(arg) < 1 or Length(arg) > 2 then
@@ -234,9 +234,9 @@ PreOrder:= function(arg)
     elif Length(arg) = 2 then
         children:= arg[2];
     else
-        children:= "Children";         
+        children:= "Children";
     fi;
-    
+
     # recurse.
     return PreOrderNC(arg[1], children);
 end;
@@ -269,7 +269,7 @@ end;
 
 NrPreOrder:= function(arg)
     local   usage,  children;
-    
+
     # check arguments.
     usage:= "usage: NrPreOrder( tree [, children] )";
     if Length(arg) < 1 or Length(arg) > 2 then
@@ -277,9 +277,9 @@ NrPreOrder:= function(arg)
     elif Length(arg) = 2 then
         children:= arg[2];
     else
-        children:= "Children";         
+        children:= "Children";
     fi;
-    
+
     # recurse.
     return NrPreOrderNC(arg[1], children);
 end;
@@ -313,7 +313,7 @@ end;
 ##
 IteratorPreOrder:= function(arg)
     local   usage,  children,  stack,  len,  push,  pop,  itr;
-    
+
     # check arguments.
     usage:= "usage: IteratorPreOrder( tree [, children] )";
     if Length(arg) < 1 or Length(arg) > 2 then
@@ -321,43 +321,43 @@ IteratorPreOrder:= function(arg)
     elif Length(arg) = 2 then
         children:= arg[2];
     else
-        children:= "Children";         
+        children:= "Children";
     fi;
-    
+
     # initialize stack.
     stack:= [];  len:= 0;
-    
+
     # how to push an item.
     push:= function(obj)
         len:= len + 1;
         stack[len]:= obj;
     end;
-    
+
     # how to pop.
     pop:= function()
         len:= len - 1;
         return stack[len+1];
     end;
-    
+
     # push the tree.
     push(arg[1]);
-    
+
     itr:= rec();
-    
+
     itr.next:= function()
         local   a,  c;
-        
+
         a:= pop();
         for c in Reversed(Call(a, "Children")) do
             push(c);
         od;
         return a;
     end;
-    
+
     itr.hasNext:= function()
         return len > 0;
     end;
-    
+
     return itr;
 end;
 
@@ -387,12 +387,12 @@ end;
 ##
 PreOrderPropertyNC:= function(tree, property, children)
     local   list,  c;
-    
+
     list:= [];
     if property(tree) then
         Add(list, tree);
     fi;
-    
+
     for c in Call(tree, children) do
         Append(list, PreOrderPropertyNC(c, property, children));
     od;
@@ -401,7 +401,7 @@ end;
 
 PreOrderProperty:= function(arg)
     local   usage,  children;
-    
+
     # check arguments.
     usage:= "usage: PreOrderProperty( tree, property [, children] )";
     if Length(arg) < 2 or Length(arg) > 3 then
@@ -409,9 +409,9 @@ PreOrderProperty:= function(arg)
     elif Length(arg) = 3 then
         children:= arg[3];
     else
-        children:= "Children";         
+        children:= "Children";
     fi;
-    
+
     return PreOrderPropertyNC(arg[1], arg[2], children);
 end;
 
@@ -441,15 +441,15 @@ end;
 ##
 NrPreOrderPropertyNC:= function(tree, property, children)
     local a;
-    
+
     a:= 0;  if property(tree)  then a:= 1;  fi;
-    return a + Sum(Call(tree, children), 
+    return a + Sum(Call(tree, children),
                    c-> NrPreOrderPropertyNC(c, property, children));
 end;
 
 NrPreOrderProperty:= function(arg)
     local   usage,  children;
-    
+
     # check arguments.
     usage:= "usage: NrPreOrderProperty( tree, property [, children] )";
     if Length(arg) < 2 or Length(arg) > 3 then
@@ -457,9 +457,9 @@ NrPreOrderProperty:= function(arg)
     elif Length(arg) = 3 then
         children:= arg[3];
     else
-        children:= "Children";         
+        children:= "Children";
     fi;
-    
+
     return NrPreOrderPropertyNC(arg[1], arg[2], children);
 end;
 
@@ -496,7 +496,7 @@ end;
 ##
 PostOrderNC:= function(tree, children)
     local   list,  c;
-    
+
     list:= [];
     for c in Call(tree, children) do
         Append(list, PostOrderNC(c, children));
@@ -507,7 +507,7 @@ end;
 
 PostOrder:= function(arg)
     local   usage,  children;
-    
+
     # check arguments.
     usage:= "usage: PostOrder( tree [, children] )";
     if Length(arg) < 1 or Length(arg) > 2 then
@@ -515,9 +515,9 @@ PostOrder:= function(arg)
     elif Length(arg) = 2 then
         children:= arg[2];
     else
-        children:= "Children";         
+        children:= "Children";
     fi;
-    
+
     return PostOrderNC(arg[1], children);
 end;
 
@@ -550,7 +550,7 @@ end;
 ##
 PostOrderPropertyNC:= function(tree, property, children)
     local   list,  c;
-    
+
     list:= [];
     for c in Call(tree, children) do
         Append(list, PostOrderPropertyNC(c, property, children));
@@ -558,13 +558,13 @@ PostOrderPropertyNC:= function(tree, property, children)
     if list <> [] or property(tree) then
         Add(list, tree);
     fi;
-    
+
     return list;
 end;
 
 PostOrderProperty:= function(arg)
     local   usage,  children;
-    
+
     # check arguments.
     usage:= "usage: PostOrderProperty( tree, property [, children] )";
     if Length(arg) < 2 or Length(arg) > 3 then
@@ -572,12 +572,12 @@ PostOrderProperty:= function(arg)
     elif Length(arg) = 3 then
         children:= arg[3];
     else
-        children:= "Children";         
+        children:= "Children";
     fi;
-    
+
     return PostOrderPropertyNC(arg[1], arg[2], children);
 end;
-    
+
 
 #############################################################################
 ##
@@ -607,19 +607,19 @@ end;
 ##
 NrPostOrderPropertyNC:= function(tree, property, children)
     local   sum;
-    
-    sum:= Sum(Call(tree, children), 
+
+    sum:= Sum(Call(tree, children),
               x-> NrPostOrderPropertyNC(x, property, children));
     if sum > 0 or property(tree) then
         sum:= sum + 1;
     fi;
-    
+
     return sum;
 end;
 
 NrPostOrderProperty:= function(arg)
     local   usage,  children;
-    
+
     # check arguments.
     usage:= "usage: NrPostOrderProperty( tree, property [, children] )";
     if Length(arg) < 2 or Length(arg) > 3 then
@@ -627,12 +627,12 @@ NrPostOrderProperty:= function(arg)
     elif Length(arg) = 3 then
         children:= arg[3];
     else
-        children:= "Children";         
+        children:= "Children";
     fi;
-    
+
     return NrPostOrderPropertyNC(arg[1], arg[2], children);
 end;
-    
+
 
 #############################################################################
 ##
@@ -652,9 +652,9 @@ end;
 
 BinomialTreeOps.indent:= 0;
 
-BinomialTreeOps.Display:= function(self, dummy)   
+BinomialTreeOps.Display:= function(self, dummy)
     local  c;
-    
+
     if self.n > 0 then
         for c in [1..BinomialTreeOps.indent] do
             Print(" ");
@@ -664,7 +664,7 @@ BinomialTreeOps.Display:= function(self, dummy)
     if self.n = 0 then
         Print("\n");
     fi;
-    
+
     BinomialTreeOps.indent:= BinomialTreeOps.indent + 2;
     for c in Call(self, "Children") do
         Display(c);
@@ -710,23 +710,23 @@ end;
 ##
 VisitMixedTuplesM:= function(list, visit)
     local   n,  m,  a,  c,  j;
-    
+
     n:= Length(list);
     m:= List(list, Length);
     a:= List(list, x-> 1);
     c:= list{[1..n]}[1];
-    
+
     while true do
         visit(c);
         j:= n;
-        
+
         while a[j] = m[j] do
             if  j = 1  then  return;  fi;
             a[j]:= 1;
             c[j]:= list[j][1];
             j:= j - 1;
         od;
-        
+
         a[j]:= a[j] + 1;
         c[j]:= list[j][a[j]];
     od;
@@ -759,16 +759,16 @@ end;
 ##
 ProductsMixedTuplesM:= function(gens, m)
     local   n,  a,  c,  all,  j;
-    
+
     n:= Length(gens);
     a:= List(gens, x-> 1);
     c:= Product(gens, x-> x^0);  # or c:= gens[1]^0;
-    
+
     all:= [];
     while true do
         Add(all, c);
         j:= n;
-        
+
         while a[j] = m[j] do
             if j = 1 then
                 return all;
@@ -777,7 +777,7 @@ ProductsMixedTuplesM:= function(gens, m)
             c:= c * gens[j];
             j:= j - 1;
         od;
-        
+
         a[j]:= a[j] + 1;
         c:= c * gens[j];
     od;
@@ -818,23 +818,23 @@ VisitMixedTuplesH:= function(list, visit)
     m:= List(list, Length);
     a:= List(list, x-> 1);
     c:= list{[1..n]}[1];
-    
+
     f:= [0..n];
     o:= List(list, x-> 1);
-    
+
     while true do
         visit(c);
-        
-        if f[1] = n then 
+
+        if f[1] = n then
             return;
         fi;
-        
+
         j:= f[1]+1;
         f[1]:= 0;
-        
+
         a[j]:= a[j] + o[j];
         c[j]:= list[j][a[j]];
-        
+
         if a[j] = 1 or a[j] = m[j] then
             o[j]:= -o[j];
             f[j]:= f[j+1];
@@ -848,7 +848,7 @@ end;
 ##  Application: generate all elements of a finite abelian group.
 ##
 ##  given list gens of (images of) independent generators of an abelian group
-##  and their orders m, generate all elements; this time by multiplying with 
+##  and their orders m, generate all elements; this time by multiplying with
 ##  a single generator only (or its inverse) in each step.
 ##
 ##  <#GAPDoc Label="ProductsMixedTuplesH">
@@ -870,29 +870,29 @@ end;
 ##
 ProductsMixedTuplesH:= function(gens, m)
     local   n,  a,  c,  f,  o,  all,  j;
-    
+
     n:= Length(gens);
     a:= List(gens, x-> 1);
     c:= Product(gens, x-> x^0);  # or c:= gens[1]^0;
-    
+
     f:= [0..n];
     o:= List(gens, x-> 1);
-    
+
     all:= [];
-    
+
     while true do
         Add(all, c);
-        
-        if f[1] = n then 
+
+        if f[1] = n then
             return all;
         fi;
-        
+
         j:= f[1]+1;
         f[1]:= 0;
-        
+
         a[j]:= a[j] + o[j];
         c:= c * gens[j]^o[j];
-        
+
         if a[j] = 1 or a[j] = m[j] then
             o[j]:= -o[j];
             f[j]:= f[j+1];
@@ -919,9 +919,9 @@ end;
 ##
 ##  gap> sum:= [ 1, 2, 1 ];;
 ##  gap> con:= [
-##  > [ [ 1, 0, 0 ], [ 0, 0, 1 ] ], 
-##  > [ [ 1, 1, 0 ], [ 0, 1, 1 ] ], 
-##  > [ [ 0, 1, 0 ], [ 1, 0, 1 ] ]  
+##  > [ [ 1, 0, 0 ], [ 0, 0, 1 ] ],
+##  > [ [ 1, 1, 0 ], [ 0, 1, 1 ] ],
+##  > [ [ 0, 1, 0 ], [ 1, 0, 1 ] ]
 ##  > ];;
 ##  gap> ExactPackings(sum, con);
 ##  [ [ 2, 1, 1 ], [ 1, 2, 1 ] ]
@@ -958,9 +958,9 @@ end;
 ##  <Example>
 ##  gap> sum:= [ 1, 2, 1 ];;
 ##  gap> con:= [
-##  > [ [ 1, 0, 0 ], [ 0, 0, 1 ] ], 
-##  > [ [ 1, 1, 0 ], [ 0, 1, 1 ] ], 
-##  > [ [ 0, 1, 0 ], [ 1, 0, 1 ] ]  
+##  > [ [ 1, 0, 0 ], [ 0, 0, 1 ] ],
+##  > [ [ 1, 1, 0 ], [ 0, 1, 1 ] ],
+##  > [ [ 0, 1, 0 ], [ 1, 0, 1 ] ]
 ##  > ];;
 ##  gap> ExactPackings(sum, con);
 ##  [ [ 2, 1, 1 ], [ 1, 2, 1 ] ]
@@ -969,53 +969,53 @@ end;
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-ExactPackings:= function(sum, con) 
+ExactPackings:= function(sum, con)
     local   isPositive,  log,  count,  idx,  cmp,  cur,  all,  zero,  search;
-    
+
     # how to test if a list has no negative entries.
     isPositive:= a-> ForAll(a, x-> x >= 0);
-    
+
     # keep track of where we are.
     log:= []; count:= 0;
-    idx:= [];  
+    idx:= [];
     cmp:= [1..Length(con)];   # idx \disjoint cmp = [1..Length(con)]
     cur:= 0 * cmp; # current solution
     all:= []; # all solutions found
-    
+
     zero:= 0*sum;
-    
+
     # how to recurse
     search:= function(sum, pos)
         local   l,  qos,  k,  wgt,  sub,  j,  i;
-        
+
         if cmp = [] then
             if sum = zero then
                 Add(all, Copy(cur));  # one solution found.
             fi;
             return;
         fi;
-        
+
         #  compute positions of subtractable constituents.
         l:= Length(pos);
         pos:= List([1..l], i-> Filtered(pos[i], j-> isPositive(sum - con[cmp[i]][j])));
-        
+
         # stop if dead end.
         if [] in pos then  return;  fi;
-        
+
         # sort out uniq choices.
         k:= PositionProperty(pos, x-> Length(x) = 1);
-        
+
         # otherwise go for largest contribution
         if k = false then
             wgt:= List([1..l], i-> Sum(con[cmp[i]][pos[i][1]]));
             k:= Position(wgt, Maximum(wgt));
         fi;
-        
+
         sub:= Difference([1..l], [k]);
-        
+
         Add(log, Length(pos[k]));
         j:= cmp[k];
-        Add(idx, j); 
+        Add(idx, j);
         RemoveSet(cmp, j);
         for i in pos[k] do
             log[Length(log)]:= log[Length(log)] - 1;
@@ -1029,13 +1029,13 @@ ExactPackings:= function(sum, con)
         Unbind(idx[Length(idx)]);
         cur[j]:= 0;
     end;
-    
+
     # recurse and return all solutions found.
-    search(sum, List(con, x-> [1..Length(x)])); 
+    search(sum, List(con, x-> [1..Length(x)]));
     InfoZigzag1(count, " partial solutions considered in total.\n");
     return all;
 end;
-    
+
 
 #############################################################################
 FunCon:= function(con, fun)
@@ -1060,19 +1060,19 @@ RestrictCon1:= function(sum, con)
         for i in Reversed([1..N]) do
 
             # pick values in i-th position.
-            lis:= List(con, x-> List(x, y-> y[i]));  
+            lis:= List(con, x-> List(x, y-> y[i]));
 
             # do we have to take minimal values throughout?
             min:= List(lis, Minimum);
             if Sum(min) = sum[i] then
-                con:= List(con, x-> Filtered(x, 
+                con:= List(con, x-> Filtered(x,
                               z-> z[i] = Minimum(List(x, y-> y[i]))));
             fi;
 
             # do we have to take maximal values throughout?
             max:= List(lis, Maximum);
             if Sum(max) = sum[i] then
-                con:= List(con, x-> Filtered(x, 
+                con:= List(con, x-> Filtered(x,
                               z-> z[i] = Maximum(List(x, y-> y[i]))));
             fi;
         od;
@@ -1092,7 +1092,7 @@ RestrictCon2:= function(sum, con)
 
     # another way to restrict choices.
     for i in Reversed([1..N]) do
-        lis:= List(con, x-> Set(List(x, y-> y[i]))); 
+        lis:= List(con, x-> Set(List(x, y-> y[i])));
         new:= Filtered(Cartesian(lis), x-> Sum(x) = sum[i]);
         new:= List(TransposedMat(new), Set);
         if new <> lis then

@@ -9,30 +9,30 @@
 ##  This file contains the basic routines for descent algebras.
 ##
 ##  <#GAPDoc Label="Intro:Descent">
-##    The descent algebra of a finite Coxeter group <M>W</M> ... 
+##    The descent algebra of a finite Coxeter group <M>W</M> ...
 ##
 ##    The functions described in this chapter are implemented in the file
-##    <F>descent.g</F>.  
+##    <F>descent.g</F>.
 ##  <#/GAPDoc>
 ##
 ##  TODO:  clean up: need only one program for the quiver!!!
 ##  TODO:  elements, bases, ..., in blocks by shape, ...
-##  
+##
 
 RequirePackage("chevie");
 
 
 #############################################################################
-##  
+##
 ##  create descent algebras as a subclass of Algebra -- need to provide
 ##  special functions later ...
-##  
+##
 DescentAlgebraOps:= OperationsRecord("DescentAlgebraOps", AlgebraOps);
 
 #############################################################################
 ##
 #F  DescentAlgebra( <W> ) . . . . . . . . . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="DescentAlgebra">
 ##  <ManSection>
 ##  <Func Name="DescentAlgebra" Arg="W"/>
@@ -42,7 +42,7 @@ DescentAlgebraOps:= OperationsRecord("DescentAlgebraOps", AlgebraOps);
 ##  </Returns>
 ##  <Description>
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 5);; 
+##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> D:= DescentAlgebra(W);
 ##  DescentAlgebra( CoxeterGroup("A", 5) )
 ##  </Example>
@@ -54,7 +54,7 @@ DescentAlgebra:= function(W)
     local   self,  i;
 
     self:= rec(W:= W, operations:= DescentAlgebraOps, isDescentAlgebra:= true);
-    
+
     self.GetAJKL:= function(J, K, L)
         local   xxx,  l;
         if L > K then return 0; fi;
@@ -65,10 +65,10 @@ DescentAlgebra:= function(W)
     end;
 
     self.basis:= "x";  # default basis
-    
+
     # a standard labelling of basis elements ...
     self.sss:= SubsetsShapes(Shapes(W));
-    
+
     # ... and how to locate a label in the list
     self.encodeSet:= set -> Sum(set, i-> 2^(i-1)) + 1;
     self.pos:= [];
@@ -89,9 +89,9 @@ IsDescentAlgebra:= function(obj)
 end;
 
 #############################################################################
-##  
-#F  Print( <descalg> )  
-##  
+##
+#F  Print( <descalg> )
+##
 DescentAlgebraOps.Print:= function(self)
     if IsBound(self.name) then
         Print(self.name);
@@ -102,25 +102,25 @@ end;
 
 
 #############################################################################
-##  
-##  
-##  
+##
+##
+##
 DescentAlgebraOps.Dimension:= function(self)
     return 2^self.W.semisimpleRank;
 end;
 
 
 #############################################################################
-##  
+##
 #F  DescentAlgebraOps.Mu( <D> )
-##  
-##  The idempotents from BBHT.  
+##
+##  The idempotents from BBHT.
 ##  the rows of nu express the quasi-idempotents e_J in terms of the x_J.
 ##  <init> could be any list of 2^n entries > 0.
-##    
+##
 DescentAlgebraOps.Mu:= function(D)
     local   lll,  mu,  j0,  a,  j,  k0,  b,  k,  l;
-    
+
     lll:= List(Shapes(D.W), Size);
     mu:= [];  j0:= 0;
     for a in lll do
@@ -145,21 +145,21 @@ end;
 
 
 #############################################################################
-##  
+##
 ##  A DescentElt is an element of a DescentAlgebra
-##  
+##
 
 
 #############################################################################
-##  
-#O  DescentEltOps  
-##  
+##
+#O  DescentEltOps
+##
 DescentEltOps:= OperationsRecord("DescentEltOps", AlgebraElementOps);
 
 #############################################################################
-##  
+##
 ##  DescentElt
-## 
+##
 DescentElt:= function(D, basis, coeff)
     return rec(D:= D,
                basis:= basis,
@@ -183,7 +183,7 @@ DescentAlgebraOps.Basis:= function(arg)
         od;
         return basis;
     elif Length(arg) = 2 then
-        if arg[2] in ["x", "y", "z", "e"] then 
+        if arg[2] in ["x", "y", "z", "e"] then
             d:= arg[2];
             return function(arg)
                 new:= 0 * [1..Dimension(self)];
@@ -201,7 +201,7 @@ end;
 ##  base changes ...
 DescentEltOps.x:= function(self)
     local   mat;
-    
+
     if self.basis = "x" then
         return self;
     elif self.basis = "y" then
@@ -214,10 +214,10 @@ DescentEltOps.x:= function(self)
         Error("not yet implemented");
     fi;
 end;
-    
+
 DescentEltOps.y:= function(self)
     local   mat;
-    
+
     if self.basis = "y" then
         return self;
     elif self.basis = "x" then
@@ -230,10 +230,10 @@ DescentEltOps.y:= function(self)
         Error("not yet implemented");
     fi;
 end;
-    
+
 DescentEltOps.e:= function(self)
     local   mat;
-    
+
     if self.basis = "e" then
         return self;
     elif self.basis = "x" then
@@ -246,14 +246,14 @@ DescentEltOps.e:= function(self)
         Error("not yet implemented");
     fi;
 end;
-    
+
 
 #############################################################################
-##  
+##
 ##  IsDescentElt
-##  
+##
 IsDescentElt:= function(obj)
-    return IsRec(obj) and IsBound(obj.isDescentElt) 
+    return IsRec(obj) and IsBound(obj.isDescentElt)
            and obj.isDescentElt = true;
 end;
 
@@ -276,7 +276,7 @@ DescentEltOps.String:= function(self)
         od;
         return str;
     end;
-    
+
     sss:= SubsetsShapes(Shapes(self.D.W));
     more:= false;
 
@@ -304,14 +304,14 @@ DescentEltOps.String:= function(self)
                 Append(str, "*");
             fi;
         fi;
-            
+
         Append(str, self.basis);
         Add(str, '(');
         Append(str, bracketless(sss[i]));
         Add(str, ')');
         return str;
     end;
-    
+
     str:= "";
     for i in [1..Length(sss)] do
         Append(str, summand(i));
@@ -319,15 +319,15 @@ DescentEltOps.String:= function(self)
             more:= true;
         fi;
     od;
-    
-    if str = "" then 
+
+    if str = "" then
         return "0";
     else
         return str;
     fi;
 end;
 
-##  
+##
 DescentEltOps.Print:= function(self)
     Print("DescentElt(", self.D, ", \"", self.basis, "\", ", self.coeff, ")");
 end;
@@ -414,7 +414,7 @@ CharacterDescentElt:= function(W, elt)
 
    return chi;
 end;
-   
+
 #############################################################################
 #
 #  Given W and s in S. Let M = S - s.  Loop over X_M and determine a_{JML}.
@@ -435,7 +435,7 @@ MaximalAJKL:= function(W, s)
    cosrep:= Iterator(ParabolicTransversal(W, M));
 
    aJML:= List(ddd, x-> 0*pos);
-   
+
 #   for x in cosrep do
    while cosrep.hasNext() do
       x:= cosrep.next();
@@ -467,7 +467,7 @@ end;
 # a function to blow up an aJML.
 MatCompressedAJKL:= function(aJKL)
     local   n,  mat,  i,  j;
-    
+
     n:= Length(aJKL.pos);
     mat:= List([1..n], x-> 0*[1..n]);
     for i in [1..n] do
@@ -482,7 +482,7 @@ end;
 # a function to multiply two aJMLs.
 ProductCompressedAJKL:= function(A, B)
     local   fus,  C,  k,  i,  c,  j,  p, inv;
-    
+
     # c_{ik} = \sum_j a_{ij} * b_{jk}
     fus:= List(B.ddd, x-> Position(A.ddd, x));
     inv:= [];
@@ -503,25 +503,25 @@ ProductCompressedAJKL:= function(A, B)
             fi;
         od;
     od;
-    
+
     C.ddd:= A.ddd;
-    C.sub:= C.ddd{fus{Union(B.pos)}}; 
-                
+    C.sub:= C.ddd{fus{Union(B.pos)}};
+
     return C;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #F  RightRegularX( <D> )
-##  
+##
 RightRegularX:= function(D)
     local   W,  S,  subsets,  complmt,  xxx,  d,  m,  c,  e,  p,  WJ;
-    
+
     if IsBound(D.rightRegularX) then
         return D.rightRegularX;
     fi;
-    
+
     W:= D.W;
     S:= W.rootInclusion{[1..W.semisimpleRank]};
     subsets:= SubsetsShapes(Shapes(W));
@@ -540,7 +540,7 @@ RightRegularX:= function(D)
         fi;
         Add(xxx, m);
     od;
-    
+
     D.rightRegularX:= xxx{complmt};
     return D.rightRegularX;
 end;
@@ -549,11 +549,11 @@ end;
 # deprecate:
 LeftRegularX:= function(D)
     local   xxx,  x,  i,  j;
-    
+
     if IsBound(D.leftRegularX) then
         return D.leftRegularX;
     fi;
-    
+
     xxx:= List(RightRegularX(D), MatCompressedAJKL);
     x:= [];
     for i in [1..Length(xxx)] do
@@ -562,7 +562,7 @@ LeftRegularX:= function(D)
             x[i][j]:= xxx[j][i];
         od;
     od;
-    
+
     D.leftRegularX:= x;
     return x;
 end;
@@ -589,7 +589,7 @@ end;
 #  deprecate:
 LeftRegularE:= function(D)
     local   nu;
-    nu:= Call(D, "Mu")^-1;    
+    nu:= Call(D, "Mu")^-1;
     return List(nu, l-> l * LeftRegularX(D));
 end;
 
@@ -613,9 +613,9 @@ end;
 ##  <Example>
 ##  gap> D:= DescentAlgebra(CoxeterGroup("A", 3));;
 ##  gap> SymmetricMatrix(D);
-##  [ [ 24, 24, 24, 24, 24, 24, 24, 24 ], [ 24, 18, 18, 18, 14, 14, 14, 12 ], 
-##    [ 24, 18, 18, 18, 14, 14, 14, 12 ], [ 24, 18, 18, 18, 14, 14, 14, 12 ], 
-##    [ 24, 14, 14, 14, 10, 8, 8, 6 ], [ 24, 14, 14, 14, 8, 7, 7, 4 ], 
+##  [ [ 24, 24, 24, 24, 24, 24, 24, 24 ], [ 24, 18, 18, 18, 14, 14, 14, 12 ],
+##    [ 24, 18, 18, 18, 14, 14, 14, 12 ], [ 24, 18, 18, 18, 14, 14, 14, 12 ],
+##    [ 24, 14, 14, 14, 10, 8, 8, 6 ], [ 24, 14, 14, 14, 8, 7, 7, 4 ],
 ##    [ 24, 14, 14, 14, 8, 7, 7, 4 ], [ 24, 12, 12, 12, 6, 4, 4, 1 ] ]
 ##  gap> PrintArray(last);
 ##  [ [  24,  24,  24,  24,  24,  24,  24,  24 ],
@@ -630,7 +630,7 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 SymmetricMatrix:= function(D)
     local  inc,  sz,  yct;
 
@@ -648,10 +648,10 @@ end;
 ##  ??? This should be a binary relation ...
 ##
 ##  FIXME: use standard ordering on partitions.
-##  
+##
 MatQuiverSym:= function(n)
     local   shrirev,  ppp,  l,  mat,  i,  pp,  p,  new,  j;
-    
+
     shrirev:= function(list)  # return list reversed and w/o holes.
         local   res,  i;
         res:= [];
@@ -680,12 +680,12 @@ MatQuiverSym:= function(n)
     return mat;
 end;
 
-##  
+##
 ##  and the Cartan Matrix after [Garsia-Reutenauer]
-##  
+##
 LyndonFactorisation:= function(word)
     local   lastFactor,  factors,  f;
-    
+
     # The last factor is the lexicographically smallest tail of list.
     lastFactor:= function(list)
         local l, tail;
@@ -709,11 +709,11 @@ end;
 CartanMatrixA:=function(n)
     local   typeComposition,  par,  p,  car,  i,  x,  j;
 
-    #  the type of a composition is determined by the sums of the 
+    #  the type of a composition is determined by the sums of the
     #  factors of its Lyndon Factorization
     typeComposition:=function(com)
         local sum;
-        
+
         sum:= List(LyndonFactorisation(com), Sum);
         Sort(sum);
         return Reversed(sum);
@@ -722,7 +722,7 @@ CartanMatrixA:=function(n)
     par:= LabelsShapes(Shapes(CoxeterGroup("A", n)));
     p:= Length(par);
     car:= NullMat(p, p);
-    for i in [1..p] do 
+    for i in [1..p] do
         for x in Arrangements(par[i], Length(par[i])) do
             j:= Position(par, typeComposition(x));
             car[j][i]:= car[j][i] + 1;
@@ -734,11 +734,11 @@ end;
 QCartanMatrixA:=function(n, q)
     local   typeComposition,  par,  p,  car,  i,  x,  j;
 
-    #  the type of a composition is determined by the sums of the 
+    #  the type of a composition is determined by the sums of the
     #  factors of its Lyndon Factorization
     typeComposition:=function(com)
         local sum;
-        
+
         sum:= List(LyndonFactorisation(com), Sum);
         Sort(sum);
         return Reversed(sum);
@@ -747,7 +747,7 @@ QCartanMatrixA:=function(n, q)
     par:= LabelsShapes(Shapes(CoxeterGroup("A", n)));
     p:= Length(par);
     car:= q * NullMat(p, p);
-    for i in [1..p] do 
+    for i in [1..p] do
         for x in Arrangements(par[i], Length(par[i])) do
             j:= Position(par, typeComposition(x));
             car[j][i]:= car[j][i] + q^(Length(par[i]) - Length(par[j]));
@@ -756,16 +756,16 @@ QCartanMatrixA:=function(n, q)
     return car;
 end;
 
-##  this is only conjecturally correct:  
-##  
+##  this is only conjecturally correct:
+##
 CartanMatrixB:=function(n)
     local   typeComposition,  par,  p,  car,  i,  x,  j;
 
-    #  the type of a composition is determined by the sums of the 
+    #  the type of a composition is determined by the sums of the
     #  factors of its Lyndon Factorization
     typeComposition:=function(com)
         local   fac,  sum;
-        
+
         fac:= Filtered(LyndonFactorisation(com), x-> Length(x) mod 2 = 1);
         sum:= List(fac, Sum);
         Sort(sum);
@@ -775,7 +775,7 @@ CartanMatrixB:=function(n)
     par:= LabelsShapes(Shapes(CoxeterGroup("B", n)));
     p:= Length(par);
     car:= NullMat(p, p);
-    for i in [1..p] do 
+    for i in [1..p] do
         for x in Arrangements(par[i], Length(par[i])) do
             j:= Position(par, typeComposition(x));
             car[j][i]:= car[j][i] + 1;
@@ -793,7 +793,7 @@ end;
 ##  <ManSection>
 ##  <Func Name="QuiverRelations" Arg="D"/>
 ##  <Returns>
-##    the quiver with relations of the descent algebra 
+##    the quiver with relations of the descent algebra
 ##    <A>D</A>.
 ##  </Returns>
 ##  <Description>
@@ -809,8 +809,8 @@ end;
 ##  <Example>
 ##  gap> qr:= QuiverRelations(DescentAlgebra(CoxeterGroup("A", 2)));
 ##  rec(
-##    path0 := [ Street( CoxeterGroup("A", 2), [ [  ], [  ] ] ), 
-##        Street( CoxeterGroup("A", 2), [ [ 1 ], [  ] ] ), 
+##    path0 := [ Street( CoxeterGroup("A", 2), [ [  ], [  ] ] ),
+##        Street( CoxeterGroup("A", 2), [ [ 1 ], [  ] ] ),
 ##        Street( CoxeterGroup("A", 2), [ [ 1, 2 ], [  ] ] ) ],
 ##    path := [ [ [ Street( CoxeterGroup("A", 2), [ [ 1, 2 ], [ 1 ] ] ) ] ] ],
 ##    relations := [  ] )
@@ -820,18 +820,18 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 QuiverRelations0:= function(D)
-    local   deltaPath,  path,  path0,  more,  a,  relations,  sss,  l,  
-            null,  all,  mat,  delta,  new,  kern,  adr,  delete,  
+    local   deltaPath,  path,  path0,  more,  a,  relations,  sss,  l,
+            null,  all,  mat,  delta,  new,  kern,  adr,  delete,
             line,  pos,  i,  b;
-    
+
     # maybe we know it already.
     if IsBound(D.quiverRelations) then
         return D.quiverRelations;
     fi;
 
-    
+
     # a path is a sequence of streets, with adjacent ones multiplyable.
     deltaPath:= function(path)
         local   p;
@@ -849,21 +849,21 @@ QuiverRelations0:= function(D)
         fi;
     od;
     InfoZigzag1("of which ", Length(path0), " have length 0.\n");
-    
+
     relations:= [];
-    
+
     sss:= SubsetsShapes(Shapes(D.W));
     l:= SetComposition(List(Shapes(D.W), Size));
     null:= List(sss, x-> 0);
-    
+
     while more <> [] do
-        
+
         Add(path, more);
         InfoZigzag1("Added ", Length(more), " paths of length ", Length(path), ".\n");
-        
+
         # consider all paths at once.
         all:= Concatenation(path);
-        
+
         mat:= [];
         for a in all do
             delta:= deltaPath(a);
@@ -871,17 +871,17 @@ QuiverRelations0:= function(D)
             new{l[delta.support]}:= delta.mat;
             Add(mat, new);
         od;
-        
+
         kern:= NullspaceMat(mat);
         InfoZigzag1("Found ", Length(kern), " relations.\n");
-        
-        
+
+
         # FIXME:
-        # suppose adr is a list of back references such that 
+        # suppose adr is a list of back references such that
         #   all[i] = path[adr[i][1]][adr[i][2]] ...
         adr:= Concatenation(List([1..Length(path)], i-> TransposedMat([List(path[i], x-> i), [1..Length(path[i])]])));
 
-        
+
         # find all relations.
         delete:= List(path, x-> []);
         for line in kern do
@@ -889,110 +889,110 @@ QuiverRelations0:= function(D)
             Add(relations, rec(paths:= all{pos}, coeffs:= line{pos}));
             Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
         od;
-        
+
         # remove obsoletes.
         for i in [1..Length(path)] do
             path[i]:= path[i]{Difference([1..Length(path[i])], delete[i])};
         od;
-        
+
         InfoZigzag1("Deleted: ", List(delete, Length), "\n");
         InfoZigzag1("Length: ", List(path, Length), ": ", Length(path0) + Sum(path, Length), ".\n");
-        
+
         # extend paths.
         more:= [];
         for a in path[Length(path)] do
             for b in path[1] do
                 if a[Length(a)] * b[1] <> [] then
                     Add(more, Concatenation(a, b));
-                fi; 
+                fi;
             od;
         od;
-        
+
     od;
-    
+
     # remember for next visit.
     D.quiverRelations:= rec(path0:= path0, path:= path, relations:= relations);
-    
+
     return D.quiverRelations;
 end;
 
 
 
-#  alternatively:  
+#  alternatively:
 #  with a slightly different, more efficient data structure.
-#  
+#
 ##  The resulting object qr has components:
-##  
+##
 ##  path0
 ##  a list of streets of length 0, the vertices, or paths of length 0.
-##  
+##
 ##  path
 ##  a list, with path[i] being the list of all? paths of length i,
 ##  where a path is a list of Streets of length > 0.
 ##  In particular path[1] is the list of streets chosen to represent
 ##  the edges
-##  
+##
 ##  relations
-##  
+##
 ##  pathmat
 ##  a matrix with one entry for each  homspace with components
 ##
 ##    path
 ##    the list of paths in this hom-space
-##  
+##
 ##    adr
 ##    the list of addresses of the paths in the above lists path0, path.
-##  
+##
 ##    mat
 ##    the list of delta-values, ie. images in the descent algebra
-##  
+##
 ##    kern
 ##    the nullspacemat of mat, a basis of the kernel of delta
-##  
+##
 ##    basis
 ##    a list of positions in path, selecting a preimage of a basis
-##  
+##
 ##    map
 ##    how to express the image of a path in terms of the basis.
-##  
+##
 ##    cons
 ##    consequences of relations in other hom spaces to this one
-##  
+##
 ##    rela
 ##    essential relations on this hom-space
 ##
 
 QuiverRelations1:= function(D)
-    local   sourcePath,  targetPath,  deltaPath,  path1,  path0,  s,  
-            path,  sh,  pathmat,  j,  i,  t,  delete,  adr,  mat,  a,  
-            kern,  line,  pos,  e,  k,  map,  p,  new,  rel,  cons,  
+    local   sourcePath,  targetPath,  deltaPath,  path1,  path0,  s,
+            path,  sh,  pathmat,  j,  i,  t,  delete,  adr,  mat,  a,
+            kern,  line,  pos,  e,  k,  map,  p,  new,  rel,  cons,
             space,  relations;
-    
+
 #    # maybe we know it already.
 #    if IsBound(D.quiverRelations) then
 #        return D.quiverRelations;
 #    fi;
-#        
+#
     # a path is a sequence of streets, with adjacent ones multiplyable:
     # it has a source ...
     sourcePath:= function(path)
         return Call(path[1], "Source");
     end;
-    
+
     # ... it has a target ...
     targetPath:= function(path)
         return Call(path[Length(path)], "Target");
     end;
-    
+
     # ... and an associated delta-value.
     deltaPath:= function(path)
         local   p;
         p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
         return rec(support:= p.target, mat:= Sum(p.mat));
     end;
-    
+
     # split idempotent from nilpotent generators.
-    path1:= [];  path0:= []; 
+    path1:= [];  path0:= [];
     for s in BasicStreets(D.W) do
         if s.alley[2] = [] then
             Add(path0, s);
@@ -1002,11 +1002,11 @@ QuiverRelations1:= function(D)
     od;
     InfoZigzag1("Starting with ", Length(path0) + Length(path1), " paths,\n");
     InfoZigzag1("of which ", Length(path0), " have length 0.\n");
-        
-    repeat 
+
+    repeat
         path:= PathsStreets(path1, D.W.semisimpleRank);
         sh:= Shapes(D.W);
-        
+
         # distribute paths over hom-spaces
         pathmat:= List(sh, x-> List(sh, x-> rec(path:= [], adr:= [])));
         for j in [1..Length(path0)] do  # here actually s == j !!!
@@ -1022,10 +1022,10 @@ QuiverRelations1:= function(D)
                 Add(pathmat[s][t].path, path[i][j]);
             od;
         od;
-        
+
         # calculate all relations
         delete:= List(path, x-> []);
-        
+
         for i in [1..Length(sh)] do
             for j in [1..Length(sh)] do
                 adr:= pathmat[i][j].adr;
@@ -1042,17 +1042,17 @@ QuiverRelations1:= function(D)
                 else
                     kern:= NullspaceMat(mat);
                 fi;
-                
+
                 for line in kern do
                     pos:= Filtered([1..Length(line)], i-> line[i] <> 0);
                     Add(delete[adr[pos[1]][1]], adr[pos[1]][2]);
                 od;
-                
-                
+
+
                 pathmat[i][j].mat:= mat;
                 pathmat[i][j].kern:= kern;
                 pathmat[i][j].basis:= Difference([1..Length(mat)], List(kern, x-> Position(x, 1)));
-                
+
                 # express each path in terms of chosen basis.
                 mat:= TransposedMat(Reversed(mat));
                 TriangulizeMat(mat);
@@ -1060,22 +1060,22 @@ QuiverRelations1:= function(D)
                 pathmat[i][j].map:= Reversed(TransposedMat(Reversed(mat)));
             od;
         od;
-        
+
         InfoZigzag1(delete, " ", delete[1], "\n");
-        
+
         path1:= path1{Difference([1..Length(path1)], delete[1])};
     until delete[1] =  [];
-        
+
     # determine consequences of relations.
     for i in [1..Length(sh)] do
         for j in [1..Length(sh)] do
             pathmat[i][j].cons:= [];
         od;
     od;
-                
+
     for e in path[1] do
         j:= sourcePath(e);  k:= targetPath(e);
-        
+
         # postmultply edge and make map from (i, j) to (i, k).
         for i in [1..Length(sh)] do
             map:= [];
@@ -1092,8 +1092,8 @@ QuiverRelations1:= function(D)
                 Add(pathmat[i][k].cons, new);
             fi;
         od;
-        
-        
+
+
         # premultiply edge and make map from (k, i) to (j, i).
         for i in [1..Length(sh)] do
             map:= [];
@@ -1109,12 +1109,12 @@ QuiverRelations1:= function(D)
             if new <> [] then
                 Add(pathmat[j][i].cons, new);
             fi;
-            
+
         od;
-        
-        
+
+
     od;
-    
+
     # find essential relations.
     for i in [1..Length(sh)] do
         for j in [1..Length(sh)] do
@@ -1127,10 +1127,10 @@ QuiverRelations1:= function(D)
             fi;
         od;
     od;
-        
+
     # calculate all relations
     relations:= [];
-    
+
     for i in [1..Length(sh)] do
         for j in [1..Length(sh)] do
             adr:= pathmat[i][j].adr;
@@ -1140,8 +1140,8 @@ QuiverRelations1:= function(D)
             od;
         od;
     od;
-        
-        
+
+
     return rec(path0:= path0, path:= path, pathmat:= pathmat, relations:= relations);
 end;
 
@@ -1150,7 +1150,7 @@ QuiverRelations:= QuiverRelations1;
 
 SyzygiesQuiver:= function(qr)
     local   basisPim,  N,  prores,  matrixEdge;
-    
+
     # how to find the basis of a pim.
     basisPim:= function(i)
         return Concatenation(List(qr.pathmat[i], x-> x.adr{x.basis}));
@@ -1164,7 +1164,7 @@ SyzygiesQuiver:= function(qr)
 
     # how to turn an edge into a matrix (of the hom from one pim to another)
     matrixEdge:= function(e)
-        local   j,  k,  pj,  pk,  dimj,  dimk,  comj,  comk,  matrix,  
+        local   j,  k,  pj,  pk,  dimj,  dimk,  comj,  comk,  matrix,
                 i,  map,  p;
 
         j:= Call(e[1], "Source");
@@ -1203,10 +1203,10 @@ SyzygiesQuiver:= function(qr)
 end;
 
 ##  Suppose a module M is given as a submodule of a direct sum of projectives, ie., as a list of indices and a basis, find a projective cover, ie. a direct sum P of pims and a linear map  P -> M.
-##  
-ProjectiveCover:= function(qr, pims, basis) 
-    local   N,  iii,  lll,  dim,  o,  com,  d,  ind,  pim,  i,  space,  
-            radical,  eMat,  e,  j,  k,  new,  pi,  map,  p,  ss,  
+##
+ProjectiveCover:= function(qr, pims, basis)
+    local   N,  iii,  lll,  dim,  o,  com,  d,  ind,  pim,  i,  space,
+            radical,  eMat,  e,  j,  k,  new,  pi,  map,  p,  ss,
             simples,  matrix,  top,  line,  a;
 
     N:= Length(qr.pathmat);  # nr of shapes.
@@ -1247,7 +1247,7 @@ ProjectiveCover:= function(qr, pims, basis)
             for p in pi[j].path{pi[j].basis} do
                 Add(map, pi[k].map[Position(pi[k].path, Concatenation(p, e))]);
             od;
-            if map <> [] then 
+            if map <> [] then
                 new{lll}{com[i][k]}:= basis{lll}{com[i][j]} * map;
             fi;
         od;
@@ -1333,64 +1333,64 @@ ProjectiveResolutions:= function(qr)
 end;
 
 
-#  even better:  
+#  even better:
 #  with a much slimmer, even more efficient data structure.
-#  
+#
 ##  The resulting object quiver has components:
-##  
+##
 ##  path0
 ##  a list of streets of length 0, the vertices, or paths of length 0.
 ##
 ##  path1
 ##  a list of streets chosen to represent the edges.
-##  
+##
 ##  pathmat
 ##  a matrix with one entry for each  homspace with components
 ##
 ##    path
 ##    the list of paths in this hom-space
-##  
+##
 ##    mat
 ##    the list of delta-values, ie. images in the descent algebra
-##  
+##
 ##    basis
 ##    a list of positions in path, selecting a preimage of a basis
-##  
+##
 ##    map
 ##    how to express the image of a path in terms of the basis.
-##  
+##
 ##
 ##  FIXME:  move this into streets.g???
 ##
 DescentQuiver:= function(W)
-    local   sourcePath,  targetPath,  deltaPath,  positionsProperty,  
-            pathsStreets,  line,  cleanUp,  path1,  path0,  s,  path,  
-            sh,  pathmat,  i,  where,  j,  t,  delete,  ij,  ppp,  
+    local   sourcePath,  targetPath,  deltaPath,  positionsProperty,
+            pathsStreets,  line,  cleanUp,  path1,  path0,  s,  path,
+            sh,  pathmat,  i,  where,  j,  t,  delete,  ij,  ppp,
             mat,  p,  kern,  pos;
-    
+
 #    # maybe we know it already.
 #    if IsBound(W.quiver) then
 #        return W.quiver;
 #    fi;
-#        
+#
     # a path is a sequence of streets, with adjacent ones multiplyable:
     # it has a source ...
     sourcePath:= function(path)
         return Call(path[1], "Source");
     end;
-    
+
     # ... it has a target ...
     targetPath:= function(path)
         return Call(path[Length(path)], "Target");
     end;
-    
+
     # ... and an associated delta-value.
     deltaPath:= function(path)
         local   p;
         p:= ProductStreetMatrixList(List(path, x-> Call(x, "Matrix")));
         return rec(support:= p.target, mat:= Sum(p.mat));
     end;
-    
+
     # how to find the positions of the elements with a given property.
     positionsProperty:= function(list, func)
         return Filtered([1..Length(list)], i-> func(list[i]));
@@ -1399,7 +1399,7 @@ DescentQuiver:= function(W)
     # how to generate all paths from a given set of streets.
     pathsStreets:= function(streets)
         local   edges,  paths,  old,  new,  a,  b;
-        
+
         # ignore streets of length 0.
         edges:= positionsProperty(streets, x-> Call(x, "Length") > 0);
 
@@ -1417,21 +1417,21 @@ DescentQuiver:= function(W)
             od;
             old:= new;
         od;
-        
+
         return paths;
     end;
-    
+
 
     # how to find a std gen of a line
     line:= v-> v/v[PositionProperty(v, x-> x<>0)];
-    
+
 
     # how to remove those streets which are in line with a product.
     cleanUp:= function(bbb)
-        local   lin,  cls,  a,  delta,  l,  pos,  poss,  b,  p,  hom,  
-                grp,  i,  all,  aaa,  mat,  sha,  len,  sol,  wgt,  r,  
+        local   lin,  cls,  a,  delta,  l,  pos,  poss,  b,  p,  hom,
+                grp,  i,  all,  aaa,  mat,  sha,  len,  sol,  wgt,  r,
                 sub;
-    
+
         # sort streets into classes.
         lin:= [];  cls:= [];
         for a in bbb do
@@ -1444,14 +1444,14 @@ DescentQuiver:= function(W)
                 Add(cls[pos], a);
             fi;
         od;
-        
+
         # use a transversal, form all products, find their positions.
         poss:= [];
         for a in cls do
             a:= Call(a[1], "Matrix");
             for b in cls do
                 b:= Call(b[1], "Matrix");
-                
+
                 p:= ProductStreetMatrices(a, b);
                 if p <> 0 then
                     delta:= rec(support:= p.target, mat:= Sum(p.mat));
@@ -1462,7 +1462,7 @@ DescentQuiver:= function(W)
                 fi;
             od;
         od;
-        
+
         # now group into hom spaces.
         hom:= [];
         grp:= [];
@@ -1476,7 +1476,7 @@ DescentQuiver:= function(W)
                 Append(grp[pos], cls[i]);
             fi;
         od;
-        
+
         # for each hom space, find a lightweight basis.
         all:= [];
         for aaa in grp do
@@ -1492,17 +1492,17 @@ DescentQuiver:= function(W)
                 fi;
             od;
             pos:= Position(wgt, Minimum(wgt));
-            
+
 #            Append(all, aaa{sol[pos]});
             Append(all, aaa{Random(sol)});
         od;
-        
+
         # return survivors
         return all;
     end;
 
     # split idempotent from nilpotent generators.
-    path1:= [];  path0:= []; 
+    path1:= [];  path0:= [];
     for s in BasicStreets(W) do
         if s.alley[2] = [] then
             Add(path0, s);
@@ -1512,16 +1512,16 @@ DescentQuiver:= function(W)
     od;
     InfoZigzag1("Starting with ", Length(path0) + Length(path1), " paths,\n");
     InfoZigzag1("of which ", Length(path0), " have length 0.\n");
-        
+
     path1:= cleanUp(path1);
     InfoZigzag1("remaining edges: ", Length(path1), "\n");
-    
+
     path:= pathsStreets(path1);
-        
+
     # distribute paths over hom-spaces
     sh:= Shapes(W);
     pathmat:= List(sh, x-> List(sh, x-> rec(path:= [])));
-    for i in [1..Length(pathmat)] do 
+    for i in [1..Length(pathmat)] do
         Add(pathmat[i][i].path, []);   # path0[i] is the idempotent in pathmat[i][i]
     od;
     where:= List(path, x-> []);
@@ -1533,12 +1533,12 @@ DescentQuiver:= function(W)
             AddSet(where[i], [s,t]);
         od;
     od;
-    
+
     # calculate all relations
     delete:= [];
     for ij in where[1] do
         i:= ij[1];  j:=  ij[2];
-    
+
         ppp:= pathmat[i][j].path;
         mat:= [];
         for p in ppp do
@@ -1553,7 +1553,7 @@ DescentQuiver:= function(W)
         else
             kern:= NullspaceMat(mat);
         fi;
-        
+
         for line in kern do
             pos:= PositionProperty(line, x-> x <> 0);
             if Length(ppp[pos]) = 1 then
@@ -1561,17 +1561,17 @@ DescentQuiver:= function(W)
             fi;
         od;
     od;
-        
+
     # trim edge set for ker delta to be admissible.
     if delete <> [] then
-        
+
         InfoZigzag1("delete ", delete, "\n");
         path1:= path1{Difference([1..Length(path1)], delete)};
         path:= pathsStreets(path1);
-        
+
         # redistribute paths over hom-spaces
         pathmat:= List(sh, x-> List(sh, x-> rec(path:= [])));
-        for i in [1..Length(pathmat)] do 
+        for i in [1..Length(pathmat)] do
             Add(pathmat[i][i].path, []);   # path0[i] is the idempotent in pathmat[i][i]
         od;
         for i in [1..Length(path)] do
@@ -1581,11 +1581,11 @@ DescentQuiver:= function(W)
             od;
         od;
     fi;
-    
-        
+
+
     # calculate all relations
     delete:= [];
-    
+
     for i in [1..Length(sh)] do
         for j in [1..Length(sh)] do
             ppp:= pathmat[i][j].path;
@@ -1602,18 +1602,18 @@ DescentQuiver:= function(W)
             else
                 kern:= NullspaceMat(mat);
             fi;
-            
+
             for line in kern do
                 pos:= PositionProperty(line, x-> x <> 0);
                 if Length(ppp[pos]) = 1 then
                     Add(delete, ppp[pos][1]);
                 fi;
             od;
-            
-            
+
+
             pathmat[i][j].mat:= mat;
             pathmat[i][j].basis:= Difference([1..Length(mat)], List(kern, x-> Position(x, 1)));
-            
+
             # express each path in terms of chosen basis.
             mat:= TransposedMat(Reversed(mat));
             TriangulizeMat(mat);
@@ -1621,14 +1621,14 @@ DescentQuiver:= function(W)
             pathmat[i][j].map:= Reversed(TransposedMat(Reversed(mat)));
         od;
     od;
-    
+
     if delete <> [] then
         Error("delete <> [] ", delete);
     fi;
-        
+
     return Quiver(rec(name:= "DescentQuiver(W)",
-               path0:= path0, 
-               path1:= path1, 
+               path0:= path0,
+               path1:= path1,
                pathmat:= pathmat));
 end;
 
@@ -1643,16 +1643,16 @@ end;
 # a direct sum of pims, and a matrix map, describing a surjective linear map pi from Q
 # onto some module M, find a new list pims and a new matrix, describing a minimal projective cover of the kernel of pi
 NextProjectiveCover:= function(qr, pims, map)
-    local   pathsUnderPath,  vectorUnderPath,  basis,  N,  iii,  lll,  
-            o,  com,  j,  d,  ind,  pim,  x,  fil,  space,  radical,  
+    local   pathsUnderPath,  vectorUnderPath,  basis,  N,  iii,  lll,
+            o,  com,  j,  d,  ind,  pim,  x,  fil,  space,  radical,
             e,  k,  new,  i,  mat,  ss,  matrix,  pi,  p;
-    
+
     # compute a basis of the kernel
     basis:= NullspaceMat(map);
     if basis = [] then
         return 0;
     fi;
-        
+
     N:= Length(qr.pathmat);  # nr of shapes.
     iii:= [1..Length(pims)];
     lll:= [1..Length(basis)];
@@ -1680,12 +1680,12 @@ NextProjectiveCover:= function(qr, pims, map)
             Add(pim, fil[1]);
         fi;
     od;
- 
+
     # how to compute the effect of a path a (from j to k) on pim i
     # as a matrix ....
     pathsUnderPath:= function(i, a)
         local   pi,  j,  k,  mat,  p;
-        
+
         pi:= qr.pathmat[i];
 
         j:= Call(qr.path1[a[1]], "Source");
@@ -1698,32 +1698,32 @@ NextProjectiveCover:= function(qr, pims, map)
 
         return mat;
     end;
-    
+
     vectorUnderPath:= function(b, a)
         local   j,  k,  new,  i,  mat;
-        
+
         if a = [] then
             return b;
         fi;
-        
+
         j:= Call(qr.path1[a[1]], "Source");
         k:= Call(qr.path1[a[Length(a)]], "Target");
 
         new:= 0 * b;
         for i in iii do
             mat:= pathsUnderPath(pims[i], a);
-            if mat <> [] then 
+            if mat <> [] then
                 new{com[i][k]}:= b{com[i][j]} * mat;
             fi;
         od;
-        
+
         return new;
     end;
-    
-    
+
+
     # compute radical of the module: postmultiply edges
     space:= RowSpace(Rationals, basis);
-    
+
     radical:= [];
     for e in [1..Length(qr.path1)] do
         j:= Call(qr.path1[e], "Source");
@@ -1731,12 +1731,12 @@ NextProjectiveCover:= function(qr, pims, map)
         new:= 0*basis;
         for i in iii do
             mat:= pathsUnderPath(pims[i], [e]);
-            if mat <> [] then 
+            if mat <> [] then
                 new{lll}{com[i][k]}:= basis{lll}{com[i][j]} * mat;
             fi;
         od;
         UniteSet(radical, new);
-        
+
     od;
 
     # assert that a subset of the original basis is a basis of the quotient.
@@ -1766,31 +1766,31 @@ ProjectiveResolution:= function(qr, i)
     n:= Sum(pi, x-> Length(x.basis));
     a:= 0*[1..n];  a[n]:= 1;
     p:= rec(pims:= [i], map:= TransposedMat([a]));
-    
+
     res:= [];
-    
+
     repeat
         pims:= p.pims;  map:= p.map;
         Add(res, p);
         p:= NextProjectiveCover(qr, pims, map);
     until p = 0;
-    
+
     return res;
 end;
 
 
 #############################################################################
-##  
+##
 ##  RelationsDescentQuiver
-##  
-##  
-##  
+##
+##
+##
 RelationsDescentQuiver:= function(q)
-    local   N,  i,  j,  rels,  pr,  basi,  pos,  path,  r,  basr,  
+    local   N,  i,  j,  rels,  pr,  basi,  pos,  path,  r,  basr,
             edge,  rel,  p;
-    
+
     N:= Length(q.pathmat);
-    
+
     # do we really want to store them?
     for i in [1..N] do
         for j in [1..N] do
@@ -1798,13 +1798,13 @@ RelationsDescentQuiver:= function(q)
         od;
     od;
     rels:= [];
-    
+
     for i in [1..N] do
         pr:= ProjectiveResolution(q, i);
         if Length(pr) > 2 then
-            
+
             basi:= Concatenation(List(q.pathmat[i], x-> x.path{x.basis}));
-            
+
             # identify paths.
             pos:= 0;
             path:= [];
@@ -1814,7 +1814,7 @@ RelationsDescentQuiver:= function(q)
                 edge:= basi[Position(pr[2].map[pos], 1)];
                 Append(path, List(basr, x-> Concatenation(edge, x)));
             od;
-                
+
             # find relations.
             pos:= 0;
             for r in pr[3].pims do
@@ -1828,13 +1828,13 @@ RelationsDescentQuiver:= function(q)
                     else
                         Add(rel, pr[3].map[pos][j]);
                     fi;
-                od;                    
+                od;
                 Add(q.pathmat[i][r].relation, rel);
                 Add(rels, [i, r, rel]);
             od;
         fi;
     od;
-    
+
     return rels;
 end;
 
@@ -1855,7 +1855,7 @@ end;
 ##  gap> quiver:= QuiverRelations(DescentAlgebra(CoxeterGroup("A", 5)));;
 ##  gap> DisplayQuiver(quiver);
 ##  A5    1 - 2 - 3 - 4 - 5
-##  
+##
 ##  Vertices:
 ##  1. \emptyset []
 ##  2. A_{1} [1]
@@ -1868,7 +1868,7 @@ end;
 ##  9. A_{31} [1235]
 ##  10. A_{4} [1234]
 ##  11. A_{5} [12345]
-##  
+##
 ##  Edges:
 ##  2 --> 4. [12;1]
 ##  3 --> 6. [124;1]
@@ -1879,21 +1879,21 @@ end;
 ##  7 --> 10. [1234;1]
 ##  9 --> 11. [12345;2]
 ##  10 --> 11. [12345;1]
-##  
+##
 ##  Relations:
-##  +1(11---9---6---3) +-1(11---10---6---3) [12345;2][1235;1][124;1], [12345;1][1234;2][124;1], 
+##  +1(11---9---6---3) +-1(11---10---6---3) [12345;2][1235;1][124;1], [12345;1][1234;2][124;1],
 ##  </Example>
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 DisplayQuiver0:= function(qr)
-    local   short,  shortalley,  name,  vertex,  i,  gens,  e,  mat,  
+    local   short,  shortalley,  name,  vertex,  i,  gens,  e,  mat,
             r,  p;
-    
+
     short:= function(set)
         local   text,  s;
-        
+
         text:= "";
         for s in set do
             Append(text, String(s));
@@ -1901,7 +1901,7 @@ DisplayQuiver0:= function(qr)
         IsString(text);
         return text;
     end;
-    
+
     shortalley:= function(a)
         local   text;
         text:= "[";
@@ -1911,26 +1911,26 @@ DisplayQuiver0:= function(qr)
         Append(text, "]");
         return text;
     end;
-    
+
     vertex:= qr.path0;
     name:= NamesShapes(Shapes(vertex[1].W));
     PrintDynkinDiagram(vertex[1].W);
-    
+
     Print("\nVertices:\n");
     for i in [1..Length(vertex)] do
         Print(i, ". ", name[i], " [", short(vertex[i].alley[1]), "]\n");
     od;
-    
+
     if qr.path = [] then return; fi;
-    
+
     gens:= List(qr.path[1], x-> x[1]);
     Print("\nEdges:\n");
     for e in gens do
         mat:= Call(e, "Matrix");
-        Print(mat.target, " --> ", mat.source, ". ", 
+        Print(mat.target, " --> ", mat.source, ". ",
               shortalley(e.alley), "\n");
     od;
-    
+
     Print("\nRelations:\n");
     for r in qr.relations do
         if Difference(Union(r.paths), gens) = [] then
@@ -1953,16 +1953,16 @@ DisplayQuiver0:= function(qr)
             Print("\n");
         fi;
     od;
-        
+
 end;
 
 DisplayQuiver1:= function(qr)
-    local   short,  shortalley,  name,  vertex,  i,  gens,  e,  mat,  
+    local   short,  shortalley,  name,  vertex,  i,  gens,  e,  mat,
             r,  p;
-    
+
     short:= function(set)
         local   text,  s;
-        
+
         text:= "";
         for s in set do
             Append(text, String(s));
@@ -1970,7 +1970,7 @@ DisplayQuiver1:= function(qr)
         IsString(text);
         return text;
     end;
-    
+
     shortalley:= function(a)
         local   text;
         text:= "[";
@@ -1980,26 +1980,26 @@ DisplayQuiver1:= function(qr)
         Append(text, "]");
         return text;
     end;
-    
+
     vertex:= qr.path0;
     name:= NamesShapes(Shapes(vertex[1].W));
     PrintDynkinDiagram(vertex[1].W);
-    
+
     Print("\nVertices:\n");
     for i in [1..Length(vertex)] do
         Print(i, ". ", name[i], " [", short(vertex[i].alley[1]), "]\n");
     od;
-    
+
     if qr.path = [] then return; fi;
-    
+
     gens:= List(qr.path[1], x-> x[1]);
     Print("\nEdges:\n");
     for e in gens do
         mat:= Call(e, "Matrix");
-        Print(mat.target, " --> ", mat.source, ". ", 
+        Print(mat.target, " --> ", mat.source, ". ",
               shortalley(e.alley), "\n");
     od;
-    
+
     Print("\nRelations:\n");
     for r in qr.relations do
         i:= 0;
@@ -2020,7 +2020,7 @@ DisplayQuiver1:= function(qr)
         od;
         Print("\n");
     od;
-        
+
 end;
 
 DisplayQuiver:= DisplayQuiver1;
@@ -2031,7 +2031,7 @@ DisplayQuiver:= DisplayQuiver1;
 ##
 DimensionsMatrix0:= function(qr)
     local   W,  l,  dim,  k,  mat,  p,  i,  j;
-    
+
     W:= qr.path0[1].W;
     l:= Length(Shapes(W));
     dim:= [];
@@ -2044,17 +2044,17 @@ DimensionsMatrix0:= function(qr)
         od;
         dim[k]:= mat;
     od;
-    
+
     return dim;
 end;
 
 DimensionsMatrix1:= function(qr)
     local   l,  dim,  i,  j,  m,  k,  a;
-    
+
     l:= Length(qr.pathmat);
     dim:= List([1..Length(qr.path)], k-> NullMat(l, l));
-    
-    for i in [1..l] do 
+
+    for i in [1..l] do
         for j in [1..l] do
             m:= qr.pathmat[i][j];
             for k in m.basis do
@@ -2065,7 +2065,7 @@ DimensionsMatrix1:= function(qr)
             od;
         od;
     od;
-    
+
     return dim;
 end;
 
@@ -2075,35 +2075,35 @@ DimensionsMatrix:= DimensionsMatrix1;
 #############################################################################
 CartanMatQuiver0:= function(qr)
     local   car;
-    
+
     car:= Sum(DimensionsMatrix0(qr));
     return car + car^0;
 end;
-  
+
 CartanMatQuiver1:= function(qr)
     return List(qr.pathmat, x-> List(x, y-> Length(y.basis)));
 end;
 
 CartanMatQuiver:= CartanMatQuiver1;
-  
-  
+
+
 QCartanMatQuiver0:= function(qr, q)
     local   dim,  car;
-    
+
     dim:= DimensionsMatrix0(qr);
     car:= Sum([1..Length(dim)], i-> q^i * dim[i]);
     return car + car^0;
 end;
 
 QCartanMatQuiver1:= function(qr, q)
-    return q^0 * 
-           List(qr.pathmat, x-> List(x, y-> Sum(y.adr{y.basis}, x-> q^x[1]))); 
+    return q^0 *
+           List(qr.pathmat, x-> List(x, y-> Sum(y.adr{y.basis}, x-> q^x[1])));
 end;
 
 QCartanMatQuiver:= QCartanMatQuiver1;
 
 
-##  
+##
 ##  how to typeset a square matrix with named rows and cols.
 LaTeXMatNames:= function(mat, names, blocks, list)
     local   bb,  l,  i,  j;
@@ -2111,23 +2111,23 @@ LaTeXMatNames:= function(mat, names, blocks, list)
     blocks:= Filtered(List(blocks, x-> Intersection(x, list)), y-> y <> []);
     bb:= List(blocks, x-> x[1]); # the block beginners.
     l:= Length(mat);  # the common length of *all* arguments
-    
+
     # print preamble
     Print("\\begin{array}{r|\c");
     for i in list do
-        if i in bb then 
+        if i in bb then
             Print("|");
         fi;
         Print("c");
     od;
     Print("|}\n");
-    
+
     # print rows
     for i in list do
         if i in bb then
             Print("\\hline\n");
         fi;
-        
+
         Print(names[i]);
         for j in list do
             Print("&\c");
@@ -2139,7 +2139,7 @@ LaTeXMatNames:= function(mat, names, blocks, list)
         od;
         Print("\\\\\n");
     od;
-    
+
     # print closing
     Print("\\hline\n\\end{array}\n");
 end;
@@ -2160,8 +2160,8 @@ KernelList:= function(list)
     return Set(List(RecFields(vals), v-> vals.(v)));
 end;
 
-    
-LaTeXQCartan:= function(W, file)    
+
+LaTeXQCartan:= function(W, file)
     local   D,  qr,  car,  q,  qar,  sh,  nam,  list,  blocks;
 
     D:= DescentAlgebra(W);
@@ -2177,9 +2177,9 @@ LaTeXQCartan:= function(W, file)
     PrintTo(file, LaTeXMatNames(qar, nam, blocks, list));
     AppendTo(file, LaTeXMatNames(qar^-1, nam, blocks, list));
 end;
-    
-    
-##  given a Cartan matrix, determine the blocks (as an equivalence on the 
+
+
+##  given a Cartan matrix, determine the blocks (as an equivalence on the
 ##  row and column indices
 BlocksCartan:= function(car)
     local   n,  equ,  i,  j,  new,  k;
@@ -2213,9 +2213,9 @@ end;
 ##
 MatNrStreetsQuiver:= function(quiver)
     local   l,  mat,  i,  j,  streets,  p,  m;
-    
+
     l:= Length(quiver.pathmat);
-    
+
     mat:= IdentityMat(l);
     for i in [1..l] do
         for j in [1..i-1] do
@@ -2231,16 +2231,16 @@ MatNrStreetsQuiver:= function(quiver)
             fi;
         od;
     od;
-    
+
     return mat;
 end;
 
 #  q-version, sort by path length
 QMatNrStreetsQuiver:= function(quiver, q)
     local   l,  mat,  i,  j,  streets,  p,  m;
-    
+
     l:= Length(quiver.pathmat);
-    
+
     mat:= q^0 * IdentityMat(l);
     for i in [1..l] do
         for j in [1..i-1] do
@@ -2254,32 +2254,32 @@ QMatNrStreetsQuiver:= function(quiver, q)
             fi;
         od;
     od;
-    
+
     return mat;
 end;
 
 
 MatNrPathsQuiver:= function(quiver)
     local   l,  mat,  i,  j;
-    
+
     l:= Length(quiver.pathmat);
-    
+
     mat:= IdentityMat(l);
     for i in [1..l] do
         for j in [1..i-1] do
             mat[i][j]:= Length(quiver.pathmat[i][j].path);
         od;
     od;
-    
+
     return mat;
 end;
 
 #  q-version, sort by path length
 QMatNrPathsQuiver:= function(quiver, q)
     local   l,  mat,  i,  j,  m;
-    
+
     l:= Length(quiver.pathmat);
-    
+
     mat:= q^0 * IdentityMat(l);
     for i in [1..l] do
         for j in [1..i-1] do
@@ -2289,7 +2289,7 @@ QMatNrPathsQuiver:= function(quiver, q)
             fi;
         od;
     od;
-    
+
     return mat;
 end;
 
@@ -2300,10 +2300,10 @@ end;
 ##  a redundant relation between s and t is an essential relation
 ##  between i and j, extended by a path a from s to i on the left,
 ##  and a path b from j to t on the right, in all possible ways.
-##  
+##
 RedundantRelations:= function(quiver, s, t)
     local   rel,  inf,  i,  a,  j,  b,  poss,  r,  new;
-    
+
     rel:= [];
     inf:= [];
 
@@ -2325,11 +2325,11 @@ RedundantRelations:= function(quiver, s, t)
             od;
         od;
     od;
-    
+
     return rec(rel:= rel, inf:= inf);
 end;
 
-      
+
 
 
 #############################################################################

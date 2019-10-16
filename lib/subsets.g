@@ -6,7 +6,7 @@
 ##
 #Y  Copyright (C) 2010  Götz Pfeiffer
 ##
-##  This file contains structures and functions for certain subsets of a 
+##  This file contains structures and functions for certain subsets of a
 ##  finite Coxeter group.
 ##
 ##  <#GAPDoc Label="Intro:Subsets">
@@ -17,9 +17,9 @@
 ##    and other sets, such as descent classes, related to these.<P/>
 ##
 ##    The functions described in this chapter are implemented in the file
-##    <F>subsets.g</F>.  
+##    <F>subsets.g</F>.
 ##  <#/GAPDoc>
-##  
+##
 
 #############################################################################
 ##
@@ -43,8 +43,8 @@
 ##    A set composition of <M>I = \{1, \dots, n\}</M> is an ordered partition
 ##    of the set <M>I</M>.  The sizes of the parts of a set composition of
 ##    <M>I</M> determine a composition of the integer <M>n</M>.  Denote
-##    by <M>[i]</M> the unique part containing <M>i \in I</M>.  The function 
-##    <C>SetComposition</C> computes for a given composition of the integer 
+##    by <M>[i]</M> the unique part containing <M>i \in I</M>.  The function
+##    <C>SetComposition</C> computes for a given composition of the integer
 ##    <M>n</M> the unique set composition of <M>I</M> with parts of sizes as
 ##    in the composition and in which the part <M>[i]</M> of <M>i \in I</M>
 ##    precedes the part <M>[k]</M> of <M>k \in I</M> whenever <M>i &lt;
@@ -53,8 +53,8 @@
 ##  gap> l:= List(Shapes(CoxeterGroup("A", 5)), Size);
 ##  [ 1, 5, 6, 4, 1, 6, 3, 1, 2, 2, 1 ]
 ##  gap> SetComposition(l);
-##  [ [ 1 ], [ 2, 3, 4, 5, 6 ], [ 7, 8, 9, 10, 11, 12 ], [ 13, 14, 15, 16 ], 
-##    [ 17 ], [ 18, 19, 20, 21, 22, 23 ], [ 24, 25, 26 ], [ 27 ], [ 28, 29 ], 
+##  [ [ 1 ], [ 2, 3, 4, 5, 6 ], [ 7, 8, 9, 10, 11, 12 ], [ 13, 14, 15, 16 ],
+##    [ 17 ], [ 18, 19, 20, 21, 22, 23 ], [ 24, 25, 26 ], [ 27 ], [ 28, 29 ],
 ##    [ 30, 31 ], [ 32 ] ]
 ##  </Example>
 ##  </Description>
@@ -145,8 +145,8 @@ end;
 ##    and so has each of its parabolic subgroups.  The longest element of the
 ##    parabolic subgroup <M>W_J</M> is ususally denoted by <M>w_J</M>.
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 5);;                      
-##  gap> wJ:= LongestElement(W, [1,2,3,5]);                   
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> wJ:= LongestElement(W, [1,2,3,5]);
 ##  ( 1,18)( 2,17)( 3,16)( 4,15)( 5,20)( 6,22)( 7,21)( 8,14)( 9,13)(10,25)(11,12)
 ##  (19,30)(23,29)(24,28)(26,27)
 ##  gap> CoxeterWord(W, wJ);
@@ -158,7 +158,7 @@ end;
 ##
 #LongestElement:= function(W, J)
 #    local   first,  wJ,  s;
-#    
+#
 #    first:= function(list)
 #        local l;
 #        for l in list do
@@ -168,7 +168,7 @@ end;
 #        od;
 #        return false;
 #    end;
-#    
+#
 #    wJ:= ();
 #    while true do
 #        s:= first(J);
@@ -211,14 +211,14 @@ ConnectedComponents:= function(W, J)
         AddSet(com, new);
         SubtractSet(all, new);
     od;
-    
+
     return com;
 end;
 
 
 #############################################################################
 ##
-##  Prefixes.  
+##  Prefixes.
 ##
 ##  <#GAPDoc Label="Intro:Prefixes">
 ##    An element <M>v \in W</M> is called a
@@ -251,8 +251,8 @@ PrefixesOps:= OperationsRecord("PrefixesOps", DomainOps);
 ##  <ManSection>
 ##  <Func Name="Prefixes" Arg="W, w"/>
 ##  <Returns>
-##    an object that represents the prefixes  of <A>w</A> in 
-##    <A>W</A>. 
+##    an object that represents the prefixes  of <A>w</A> in
+##    <A>W</A>.
 ##  </Returns>
 ##  <Description>
 ##    This is the constructor for the prefixes class.  It constructs and
@@ -269,7 +269,7 @@ PrefixesOps:= OperationsRecord("PrefixesOps", DomainOps);
 ##  <#/GAPDoc>
 ##
 Prefixes:= function(W, w)
-    return 
+    return
       rec(
           isDomain:= true,
           isPrefixes:= true,
@@ -311,11 +311,11 @@ end;
 #############################################################################
 ##
 #F  <w> in <prefixes>  . . . . . . . . . . . . . . . . . . . . .  membership.
-## 
+##
 ##  <w> is in the prefix set  <prefixes> if and only if ...
 ##
 PrefixesOps.\in:= function(w, self)
-    return CoxeterLength(self.W, w^-1 * self.w) = 
+    return CoxeterLength(self.W, w^-1 * self.w) =
            CoxeterLength(self.W, self.w) - CoxeterLength(self.W, w);
 end;
 
@@ -379,7 +379,7 @@ PrefixesOps.Elements:= function(self)
         od;
     od;
     self.edges:= edges;
-    
+
     return X;
 end;
 
@@ -443,27 +443,27 @@ PrefixesOps.Iterator:= function(self)
 
     head:= rec();
     focus:= rec(w:= self.w, next:= head);
-    back:= focus; 
+    back:= focus;
 
     itr:= rec();
-    
-##    
+
+##
 ##  hasNext() simply checks whether 'focus' is looking at an element.
-##    
+##
     itr.hasNext:= function()
         return IsBound(focus.w);
     end;
-    
+
 ##
 ##  next() simply returns the element 'focus' is looking at.  But before it
 ##  does that it needs to advance 'focus' to the next element in the queue,
-##  and if the queue in front of 'focus' happens to be empty it needs to 
+##  and if the queue in front of 'focus' happens to be empty it needs to
 ##  fill it up with prefixes of elements between 'back and 'focus'.
 ##
     itr.next:= function()
         local   w,  x,  i,  Z, y;
         w:=  focus.w;
-        focus:= focus.next;   
+        focus:= focus.next;
         if not IsBound(focus.w) then
 
             # expand back.w to focus.w
@@ -501,7 +501,7 @@ end;
 ##  <Meth Name="Edges" Arg="prefixes" Label="for prefixes"/>
 ##  <Meth Name="PrefixesOps.Edges" Arg="prefixes"/>
 ##  <Returns>
-##    the list of edges of the graph formed by the elements of the prefixes 
+##    the list of edges of the graph formed by the elements of the prefixes
 ##    <A>prefixes</A>.
 ##  </Returns>
 ##  <Description>
@@ -521,7 +521,7 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 PrefixesOps.Edges:= function(self)
     Call(self, "Elements");  # expand the prefixes.
     return self.edges;
@@ -557,7 +557,7 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 PrefixesOps.Relation:= function(self)
     return Relation(List(Call(self, "Edges"), Set));
 end;
@@ -604,9 +604,9 @@ WeakIntervalOps:= OperationsRecord("WeakIntervalOps", DomainOps);
 ##    <A>top</A> in <A>W</A>.  If <A>bot</A> is not a prefix of <A>top</A> an
 ##    error is raised.
 ##  <Example>
-##  gap> W:= CoxeterGroup("A", 5);;                                     
-##  gap> w:= PermCoxeterWord(W, [ 1, 2, 3, 4, 5, 4 ]);;                   
-##  gap> v:= PermCoxeterWord(W, [ 3, 4, 5, 4 ]);;                   
+##  gap> W:= CoxeterGroup("A", 5);;
+##  gap> w:= PermCoxeterWord(W, [ 1, 2, 3, 4, 5, 4 ]);;
+##  gap> v:= PermCoxeterWord(W, [ 3, 4, 5, 4 ]);;
 ##  gap> weak:= WeakInterval(W, v, w);
 ##  WeakInterval( CoxeterGroup("A", 5), ( 2,14, 7)( 3,27, 9)( 4, 8,20)( 5,19,23)
 ##  ( 6,15,10)(12,24,18)(17,29,22)(21,30,25), ( 1,30, 9, 3, 2)( 4, 8,11,13,20)
@@ -621,7 +621,7 @@ WeakInterval:= function(W, bot, top)
     if not bot in Prefixes(W, top) then
         Error("<bot> must be a prefix of <top>");
     fi;
-    return 
+    return
       rec(
           isDomain:= true,
           isWeakInterval:= true,
@@ -649,7 +649,7 @@ end;
 ##  <#/GAPDoc>
 ##
 IsWeakInterval:= function(obj)
-    return IsRec(obj) and IsBound(obj.isWeakInterval) 
+    return IsRec(obj) and IsBound(obj.isWeakInterval)
            and obj.isWeakInterval = true;
 end;
 
@@ -666,14 +666,14 @@ end;
 #############################################################################
 ##
 #F  <w> in <interval>  . . . . . . . . . . . . . . . . . . . . .  membership.
-## 
+##
 ##  <w> is in the weak interval <interval> if and only if ...
 ##
 WeakIntervalOps.\in:= function(w, self)
-    return self.bot in Prefixes(self.W, w) and 
+    return self.bot in Prefixes(self.W, w) and
            self.bot^-1 * w in self.pre;
 end;
-    
+
 #############################################################################
 ##
 #F  Elements( <interval> ) . . . . . . . . . . . . . . . . . . . .  elements.
@@ -691,10 +691,10 @@ end;
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 5);;
 ##  gap> w:= PermCoxeterWord(W, [ 1, 2, 3, 4, 5, 4 ]);;
-##  gap> v:= PermCoxeterWord(W, [ 1, 2]);;       
+##  gap> v:= PermCoxeterWord(W, [ 1, 2]);;
 ##  gap> interval:= WeakInterval(W, v, w);;
 ##  gap> List(Elements(interval), x-> CoxeterWord(W, x));
-##  [ [ 1, 2 ], [ 1, 2, 5 ], [ 1, 2, 3 ], [ 1, 2, 3, 5 ], [ 1, 2, 3, 4 ], 
+##  [ [ 1, 2 ], [ 1, 2, 5 ], [ 1, 2, 3 ], [ 1, 2, 3, 5 ], [ 1, 2, 3, 4 ],
 ##    [ 1, 2, 3, 5, 4 ], [ 1, 2, 3, 4, 5 ], [ 1, 2, 3, 4, 5, 4 ] ]
 ##  </Example>
 ##  </Description>
@@ -771,8 +771,8 @@ end;
 
 #############################################################################
 ##
-##  Parabolic Transversals.  
-##  
+##  Parabolic Transversals.
+##
 ##  Aka Right Coset Representatives.  Aka $X_J$, the prefix set of $w_J w_0$.
 ##
 ##  <#GAPDoc Label="Intro:ParabolicTransversal">
@@ -792,7 +792,7 @@ end;
 ##
 ##  A ParabolicTransversal is a Prefixes.
 ##
-ParabolicTransversalOps:= 
+ParabolicTransversalOps:=
   OperationsRecord("ParabolicTransversalOps", PrefixesOps);
 
 
@@ -804,8 +804,8 @@ ParabolicTransversalOps:=
 ##  <ManSection>
 ##  <Func Name="ParabolicTransversal" Arg="W, J"/>
 ##  <Returns>
-##    an object that represents the parabolic transversal  of <A>J</A> in 
-##    <A>W</A>. 
+##    an object that represents the parabolic transversal  of <A>J</A> in
+##    <A>W</A>.
 ##  </Returns>
 ##  <Description>
 ##  This is the constructor for ...
@@ -869,8 +869,8 @@ end;
 #############################################################################
 ##
 #F  <w> in <transversal> . . . . . . . . . . . . . . . . . . . .  membership.
-## 
-##  <w> is in the parabolic transversal <transversal> if and only if its 
+##
+##  <w> is in the parabolic transversal <transversal> if and only if its
 ##  LeftDescentSet  is disjoint from J.
 ##
 ParabolicTransversalOps.\in:= function(w, self)
@@ -906,11 +906,11 @@ end;
 ##
 ParabolicCoordinates:= function(W, J, w)
     local   u,  x,  i,  s;
-    
+
     u:= w^0;  x:= w;
     while true do
         i:= PositionProperty(J, j -> j^x > W.N);
-        if i = false then 
+        if i = false then
             return [u, x];
         fi;
         s:= W.(J[i]);
@@ -921,7 +921,7 @@ end;
 
 #############################################################################
 ##
-##  Descent Classes. 
+##  Descent Classes.
 ##
 ##  <#GAPDoc Label="Intro:DescentClass">
 ##    The (left) <E>descent set</E><Index>descent set</Index> of an element
@@ -955,8 +955,8 @@ DescentClassOps:= OperationsRecord("DescentClassOps", WeakIntervalOps);
 ##  <ManSection>
 ##  <Func Name="DescentClass" Arg="W, K"/>
 ##  <Returns>
-##    an object that represents the descent class  of <A>K</A> in 
-##    <A>W</A>. 
+##    an object that represents the descent class  of <A>K</A> in
+##    <A>W</A>.
 ##  </Returns>
 ##  <Description>
 ##    This is the constructor for the descent class <M>Y_K</M> in <M>W</M>.
@@ -974,11 +974,11 @@ DescentClassOps:= OperationsRecord("DescentClassOps", WeakIntervalOps);
 DescentClass:= function(W, K)
     local   S,  w1,  w2,  self;
     ##??? need to check the arguments?
-    
-    S:= W.rootInclusion{[1..W.semisimpleRank]};   
+
+    S:= W.rootInclusion{[1..W.semisimpleRank]};
     w1:= LongestElement(W, Difference(S, K));
     w2:= LongestElement(W, K) * LongestCoxeterElement(W);
-    self:= WeakInterval(W, w1, w2);   
+    self:= WeakInterval(W, w1, w2);
     self.operations:= DescentClassOps;
     self.isDescentClass:= true;
     self.K:= K;
@@ -1018,7 +1018,7 @@ end;
 #############################################################################
 ##
 #F  <w> in <class> . . . . . . . . . . . . . . . . . . . . . . .  membership.
-## 
+##
 ##  <w> is in the descent class <class> if and only if its LeftDescentSet
 ##  is the complement of K in S.
 ##
@@ -1055,13 +1055,13 @@ end;
 ##
 DescentClassOps.Size:= function(self)
     local   W,  S,  sum,  L;
-    
+
     W:= self.W;
-    S:= W.rootInclusion{[1..W.semisimpleRank]};   
-    
+    S:= W.rootInclusion{[1..W.semisimpleRank]};
+
     sum:= 0;    # loop over all J above K.
     for L in Combinations(Difference(S, self.K)) do
-        sum:= sum + (-1)^Size(L) 
+        sum:= sum + (-1)^Size(L)
               * Size(ParabolicTransversal(W, Union(self.K, L)));
     od;
     return sum;
@@ -1076,7 +1076,7 @@ end;
 DescentClassOps.Rank:= function(self)
     return Size(self.K);
 end;
-    
+
 #############################################################################
 ##
 #F  DescentClasses( <W> ) . . . . . . . . . . . . . . . . .  descent classes.
@@ -1100,7 +1100,7 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 DescentClasses:= function(W)
     return List(SubsetsShapes(Shapes(W)), x-> DescentClass(W, x));
 end;
@@ -1128,7 +1128,7 @@ end;
 ##  <Example>
 ##  gap> W:= CoxeterGroup("A", 3);;
 ##  gap> sdc:= SizesDescentConjugacyClasses(W);
-##  [ [ 0, 0, 1, 0, 0 ], [ 0, 1, 0, 1, 1 ], [ 0, 1, 1, 2, 1 ], [ 0, 1, 0, 1, 1 ], 
+##  [ [ 0, 0, 1, 0, 0 ], [ 0, 1, 0, 1, 1 ], [ 0, 1, 1, 2, 1 ], [ 0, 1, 0, 1, 1 ],
 ##    [ 0, 1, 1, 2, 1 ], [ 0, 1, 0, 1, 1 ], [ 0, 1, 0, 1, 1 ], [ 1, 0, 0, 0, 0 ] ]
 ##  </Example>
 ##    This matrix can be displayed in the form of a character table as
@@ -1138,9 +1138,9 @@ end;
 ##  gap> Display(ct, rec(chars:= sdc, letter:= "G", powermap:= false,
 ##  >            centralizers:= false));
 ##  W( A3 )
-##  
+##
 ##         1111 211 22 31 4
-##  
+##
 ##  G.1       .   .  1  . .
 ##  G.2       .   1  .  1 1
 ##  G.3       .   1  1  2 1
@@ -1149,42 +1149,42 @@ end;
 ##  G.6       .   1  .  1 1
 ##  G.7       .   1  .  1 1
 ##  G.8       1   .  .  . .
-##  
+##
 ##  </Example>
 ##    SizesDescentConjugacyClasses attempts to locate the data in ZigZag's
 ##    data library (see ...).
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 ##  Applications:  to calculate the symmetric matrix  \theta(x_J)(x_K)
 ##                 to calculate ECharacters
-##  
+##
 SizesDescentConjugacyClasses:= function(W)
-    local   subsets,  cc,  sdc,  csp,  per,  J,  row,  des,  w,  p,  
+    local   subsets,  cc,  sdc,  csp,  per,  J,  row,  des,  w,  p,
             class;
-    
+
     if IsBound(W.sizesDescentConjugacyClasses) then
         return W.sizesDescentConjugacyClasses;
     fi;
-    
+
     sdc:= ZIGZAG.Data(W, "sdc");
     if sdc <> false then
         W.sizesDescentConjugacyClasses:= sdc;
         return sdc;
     fi;
-    
+
     subsets:= SubsetsShapes(Shapes(W));
     cc:= ConjugacyClasses(W);
     sdc:= [];
-    
+
     csp:= List(cc, x-> CycleStructurePerm(Representative(x)));
     per:= Sortex(csp);
-    
+
     if IsSet(csp) then  # classes are distinguished by cycle structure!
         # now can identify class of w by
         #   PositionSorted(csp, CycleStructurePerm(w))/per
-        
+
        for J in subsets do
            row:= List(cc, x-> 0);
            des:= Iterator(DescentClass(W, J));
@@ -1211,7 +1211,7 @@ SizesDescentConjugacyClasses:= function(W)
        od;
        InfoZigzag2("\n");
    fi;
-   
+
    W.sizesDescentConjugacyClasses:= sdc;
    return sdc;
 end;
@@ -1236,7 +1236,7 @@ end;
 ##
 ##  A LeftParabolicTransversal is a Domain.
 ##
-LeftParabolicTransversalOps:= 
+LeftParabolicTransversalOps:=
   OperationsRecord("LeftParabolicTransversalOps", DomainOps);
 
 
@@ -1248,8 +1248,8 @@ LeftParabolicTransversalOps:=
 ##  <ManSection>
 ##  <Func Name="LeftParabolicTransversal" Arg="W, J"/>
 ##  <Returns>
-##    an object that represents the left parabolic transversal of <A>J</A> in 
-##    <A>W</A>. 
+##    an object that represents the left parabolic transversal of <A>J</A> in
+##    <A>W</A>.
 ##  </Returns>
 ##  <Description>
 ##  This is the constructor for ...
@@ -1262,7 +1262,7 @@ LeftParabolicTransversalOps:=
 ##  <#/GAPDoc>
 ##
 LeftParabolicTransversal:= function(W, J)
-    return 
+    return
       rec(
           isDomain:= true,
           isLeftParabolicTransversal:= true,
@@ -1339,7 +1339,7 @@ end;
 #############################################################################
 ##
 #F  <w> in <transversal> . . . . . . . . . . . . . . . . . . . .  membership.
-## 
+##
 LeftParabolicTransversalOps.\in:= function(w, self)
     return w^-1 in self.right;
 end;
@@ -1361,7 +1361,7 @@ end;
 ##
 ##  A DoubleParabolicTransversal is a Domain.
 ##
-DoubleParabolicTransversalOps:= 
+DoubleParabolicTransversalOps:=
   OperationsRecord("DoubleParabolicTransversalOps", DomainOps);
 
 
@@ -1387,7 +1387,7 @@ DoubleParabolicTransversalOps:=
 ##  <#/GAPDoc>
 ##
 DoubleParabolicTransversal:= function(W, J, K)
-    return 
+    return
       rec(
           isDomain:= true,
           isDoubleParabolicTransversal:= true,
@@ -1404,7 +1404,7 @@ end;
 #F  Print( <transversal> )  . . . . . . . . . . . . . . . . . . . . .  print.
 ##
 DoubleParabolicTransversalOps.Print:= function(self)
-    Print("DoubleParabolicTransversal( ", self.W, ", ", self.J, ", ", 
+    Print("DoubleParabolicTransversal( ", self.W, ", ", self.J, ", ",
           self.K, " )");
 end;
 
@@ -1438,7 +1438,7 @@ end;
 ##
 DoubleParabolicTransversalOps.Elements:= function(self)
     local   left,  itr,  list,  w;
-    
+
     left:= LeftParabolicTransversal(self.W, self.K);
     itr:= Iterator(ParabolicTransversal(self.W, self.J));
     list:= [];
@@ -1448,9 +1448,9 @@ DoubleParabolicTransversalOps.Elements:= function(self)
             Add(list, w);
         fi;
     od;
-    
+
     return Set(list);
-        
+
 #    return Filtered(Elements(ParabolicTransversal(self.W, self.J)),
 #                   w-> w in LeftParabolicTransversal(self.W, self.K));
 end;
@@ -1462,7 +1462,7 @@ end;
 ##
 ##  <#GAPDoc Label="Intro:XJKL">
 ##    For all subsets <M>J, K \subseteq S</M>, the set <M>X_{JK}</M> of
-##    double coset representatives is partitioned into sets <M>X_{JKL} = 
+##    double coset representatives is partitioned into sets <M>X_{JKL} =
 ##    \{x \in X_{JK} : J^x \cap K = L\}</M>, <M>L \subseteq S</M>.
 ##  <#/GAPDoc>
 
@@ -1501,7 +1501,7 @@ XJKL:= function(W, J, K, L)
     #??? take care of special cases
     # J or K or L = S or 0
     # J = K = L
-    return 
+    return
       rec(
           isDomain:= true,
           isXJKL:= true,
@@ -1547,7 +1547,7 @@ end;
 #F  Elements( <xjkl> ) . . . . . . . . . . . . . . . . . . . . . .  elements.
 ##
 XJKLOps.Elements:= function(self)
-    return 
+    return
       Filtered(Elements(DoubleParabolicTransversal(self.W, self.J, self.K)),
               d -> Intersection(OnSets(self.J, d), self.K) = self.L);
 end;

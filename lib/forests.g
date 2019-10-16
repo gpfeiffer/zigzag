@@ -10,9 +10,9 @@
 ##
 ##  <#GAPDoc Label="Intro:Forests">
 ##    Binary trees and forests are convenient data structures to represent alleys and streets in classical types...
-##      
+##
 ##    The functions described in this chapter are implemented in the file
-##    <F>forests.g</F>.  
+##    <F>forests.g</F>.
 ##  <#/GAPDoc>
 ##
 ##  TODO: rename Tree to BTree, BinTree, BinaryTree?
@@ -20,18 +20,18 @@
 
 
 #############################################################################
-##  
+##
 #O  LeanTreeOps  . . . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 ##  A lean tree is a tree w/o inner node labels.
 ##
 LeanTreeOps:= OperationsRecord("LeanTreeOps");
 
 #############################################################################
-##  
+##
 #C  LeanTree( <n> )  . . . . . . . . . . . . . . . . .  constructor.
 #C  LeanTree( <l>, <r> )  . . . . . . . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="LeanTree">
 ##  <ManSection>
 ##  <Func Name="LeanTree" Arg="n"/>
@@ -83,7 +83,7 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsLeanTree:= function(obj)
     return IsRec(obj) and IsBound(obj.isLeanTree) and obj.isLeanTree = true;
 end;
@@ -102,7 +102,7 @@ end;
 LeanTreeOps.\<:= function(l, r)
     if not IsLeanTree(l) then return true; fi;
     if not IsLeanTree(r) then return false; fi;
-    if l.n = r.n then 
+    if l.n = r.n then
         if Call(l, "Size") = Call(r, "Size") then
             return l.l < r.l or (l.l = r.l and l.r < r.r);
         else
@@ -159,12 +159,12 @@ end;
 
 # the size of a lean tree is the number of inner nodes (= number of leaves - 1)
 LeanTreeOps.Size:= function(self)
-    if self.l = 0 then 
+    if self.l = 0 then
         return 0;
     else
         return Call(self.l, "Size") + 1 + Call(self.r, "Size");
     fi;
-end;    
+end;
 
 
 #############################################################################
@@ -208,7 +208,7 @@ end;
 ##  increasing values.
 ##
 LeanTreeOps.IsSlanted:= function(self)
-    # leaves are slanted; otherwise left child weighs less than right. 
+    # leaves are slanted; otherwise left child weighs less than right.
     if self.l = 0 then
         return true;
     elif self.l.n < self.r.n then
@@ -216,12 +216,12 @@ LeanTreeOps.IsSlanted:= function(self)
     else
         return false;
     fi;
-end;    
+end;
 
 ##  make all lean trees of value n
 LeanTrees:= function(n)
     local   all,  i,  a,  b;
-    
+
     all:= [LeanTree(n)];
     for i in [1..n-1] do
         for a in LeanTrees(i) do
@@ -244,7 +244,7 @@ end;
 ##  make all slanted lean trees of value n
 SlantedLeanTrees:= function(n)
     local   all,  i,  a,  b;
-    
+
     all:= [LeanTree(n)];
     for i in [1..Int((n-1)/2)] do
         for a in SlantedLeanTrees(i) do
@@ -276,7 +276,7 @@ LeanTreeOps.Children:= function(self)
     fi;
 end;
 
-            
+
 
 #############################################################################
 
@@ -287,7 +287,7 @@ LeanForestOps:= OperationsRecord("LeanForestOps");
 ##  a lean forest is a sequence of lean trees.
 LeanForest:= function(list)
     local   self;
-    
+
     self:= rec();
     self.list:= list;
     self.isLeanForest:= true;
@@ -327,7 +327,7 @@ LeanForestOps.Top:= function(self)
     return List(self.list, t-> Call(t, "Top"));
 end;
 
-#  the bottom of a forest is the joined bottoms of its trees. 
+#  the bottom of a forest is the joined bottoms of its trees.
 # this produces the composition corresponding to the target of the forest.
 LeanForestOps.Bot:= function(self)
     return Concatenation(List(self.list, t-> Call(t, "Bot")));
@@ -364,32 +364,32 @@ end;
 ##
 LeanForestOps.\*:= function(l, r)
     local   prod,  leaf,  list,  i,  a;
-    
+
     if not IsLeanForest(l) or not IsLeanForest(r) then
         Error("don't know how to multiply <l> and <r>");
     fi;
-    
+
     prod:= Copy(l);
-    
+
     # replace leaves of l by trees of r if possible.
     leaf:= Call(prod, "Leaves");
     list:= r.list;
     if Length(leaf) <> Length(list) then
         return false;
     fi;
-    
+
     # loop over the leaf nodes.
     for i in [1..Length(leaf)] do
         if leaf[i].n <> list[i].n then
             return false;
         fi;
-        
+
         # attach tree to leaf node with same n-value.
         for a in "rl" do
             leaf[i].([a]):= list[i].([a]);      #;-)
         od;
     od;
-    
+
     # return result.
     return prod;
 end;
@@ -403,7 +403,7 @@ end;
 # make all lean forests of total value n
 LeanForests:= function(n)
     local   all,  p,  q;
-    
+
     all:= [];
     for p in Partitions(n) do
         for q in Arrangements(p, Length(p)) do
@@ -418,7 +418,7 @@ end;
 # make all slanted lean forests of total value n
 SlantedLeanForests:= function(n)
     local   all,  p,  q;
-    
+
     all:= [];
     for p in Partitions(n) do
         for q in Arrangements(p, Length(p)) do
@@ -432,7 +432,7 @@ end;
 # make all sorted slanted lean forests of total value n
 SortedSlantedLeanForests:= function(n)
     local   all,  p,  new,  q;
-    
+
     all:= [];
     for p in Partitions(n) do
         new:= Cartesian(List(p, SlantedLeanTrees));
@@ -447,7 +447,7 @@ end;
 #############################################################################
 CartanMatSortedSlantedLeanForests:= function(n)
     local   W,  lab,  mat,  a,  i,  j;
-    
+
     W:= CoxeterGroup("A", n-1);
     lab:= LabelsShapes(Shapes(W));
     mat:= 0*IdentityMat(Length(lab));
@@ -468,10 +468,10 @@ end;
 ##  in contrast to a forest, a lean forest can have several suffixes.
 LeanForestOps.Suffixes:= function(self)
     local   lis,  t,  i,  suf;
-    
+
     lis:= [];
     t:= self.list;
-    
+
     for i in [1..Length(t)] do
         if t[i].l <> 0 then
             suf:= Concatenation(t{[1..i]}, [0], t{[i+1..Length(t)]});
@@ -479,7 +479,7 @@ LeanForestOps.Suffixes:= function(self)
             Add(lis, LeanForest(suf));
         fi;
     od;
-    
+
     return lis;
 end;
 
@@ -494,36 +494,36 @@ LeanForestOps.Orphans:= function(self)
     return List(orp, t-> t.n);
 end;
 
-        
+
 #############################################################################
 ##
 ##  how to insert labels into a lean forest
 ##
 LeanForestOps.InverseLean:= function(self)
     local   lis,  t,  val,  flat,  i,  e,  suf;
-    
+
     lis:= [];
     t:= self.list;
     val:= List(Call(self, "Top"), Tree);
-    
+
     flat:= true;
     for i in [1..Length(t)] do
         if t[i].l <> 0 then
             flat:= false;
             e:= Copy(val);
-            e[i]:= Tree(1, Tree(Call(t[i].l, "Top")), 
+            e[i]:= Tree(1, Tree(Call(t[i].l, "Top")),
                         Tree(Call(t[i].r, "Top")));
             e:= Forest(e);
             suf:= Concatenation(t{[1..i]}, [0], t{[i+1..Length(t)]});
             suf{[i, i+1]}:= [t[i].l, t[i].r];
-            Append(lis, List(Call(LeanForest(suf), "InverseLean"), 
+            Append(lis, List(Call(LeanForest(suf), "InverseLean"),
                     x-> e * x));
         fi;
     od;
-    
+
     if flat then
         Add(lis, Forest(val));
-    fi;        
+    fi;
 
     return lis;
 end;
@@ -531,9 +531,9 @@ end;
 # canonically labelled tree -- postfix order.
 LeanForestOps.CanonicalLabels:= function(self)
     local   lab,  treeLabels;
-    
+
     lab:= 0;
-    
+
     treeLabels:= function(t)
         local   l,  r;
         if t.l = 0 then
@@ -545,16 +545,16 @@ LeanForestOps.CanonicalLabels:= function(self)
             return Tree(lab, l, r);
         fi;
     end;
-    
+
     return Forest(List(self.list, treeLabels));
 end;
- 
+
 # favorably labelled tree -- prefix order.
 LeanForestOps.FavoriteLabels:= function(self)
     local   lab,  treeLabels;
-    
+
     lab:= 0;
-    
+
     treeLabels:= function(t)
         local   l,  r;
         if t.l = 0 then
@@ -566,29 +566,29 @@ LeanForestOps.FavoriteLabels:= function(self)
             return Tree(lab, l, r);
         fi;
     end;
-    
+
     return Forest(Reversed(List(Reversed(self.list), treeLabels)));
 end;
- 
+
 
 
 #############################################################################
 ##  the multiplier of f is m = #[InverseLean(f)] / #[f]
 LeanForestOps.Multiplier:= function(self)
     local   szStab;
-    
+
     # how to find the size of the arrangement stabilizer
     szStab:= function(obj)
         return Product(Collected(obj.list), x-> Factorial(x[2]));
     end;
-    
+
     return szStab(self) / szStab(Call(self, "CanonicalLabels"));
 end;
 
 ##
 ##   suppose that QuiverElt(q, c, e)
 ##   represents an element of the path algebra of the quiver q
-##   with coefficients c applied to the paths e 
+##   with coefficients c applied to the paths e
 ##   and that we can add and multiply them ...
 ##
 
@@ -596,10 +596,10 @@ end;
 # this is Marcus's factorize-adjust.
 # returns: an element of the path algebra in the form of a list of paths (as indices in q.path1) in parallel to a list of coeffs
 LeanForestOps.Path:= function(self, q)
-    local   edge,  positionMin,  l,  top,  poss,  pos,  t,  x,  z,  w,  
-            xtop,  ztop,  wtop,  xbot,  zbot,  p1,  p2,  p,  xztop,  
+    local   edge,  positionMin,  l,  top,  poss,  pos,  t,  x,  z,  w,
+            xtop,  ztop,  wtop,  xbot,  zbot,  p1,  p2,  p,  xztop,
             posx,  xpol,  posz,  zpol,  v,  vtop;
-    
+
     # given a forest of size 1, find the corresponding edge in the quiver
     edge:= function(f)
         local   a,  pos;
@@ -608,16 +608,16 @@ LeanForestOps.Path:= function(self, q)
         if pos <> false then
             return QuiverElt(q, [1], [[pos]]);
         fi;
-        
+
         a:= Call(Call(f, "Reversed"), "Alley");
         pos:= PositionProperty(q.path1, e-> a in e);
         if pos <> false then
             return QuiverElt(q, [-1], [[pos]]);
         fi;
-        
+
         Error("Edge  not found");
     end;
-    
+
     # how to find the position of a minimal tree
     positionMin:= function(list)
         local   pos,  i;
@@ -632,85 +632,85 @@ LeanForestOps.Path:= function(self, q)
         od;
         return pos;
     end;
-    
+
     l:= Call(self, "Size");
     if l = 0 then
         return rec(path:= [], coef:= []); # FIXME: should this not be an idempotent?  maybe not, for paths of length 0 this question might never arise ...
-    elif l = 1 then 
+    elif l = 1 then
         return edge(self); # FIXME: the corresponding edge in q (or its reverse)
     else      # l > 1
-        
+
         # find minimal tree x^z and write self as x^z w
         top:= Call(self, "Top");
         poss:= Filtered([1..Length(self.list)], i-> self.list[i].l > 0);
         pos:= positionMin(top{poss});
         pos:= poss[pos];
-        
+
         t:= self.list[pos];
         x:= t.l;
         z:= t.r;
-        
+
         w:= self.list{Difference([1..Length(self.list)], [pos])};
-        
+
         xtop:= LeanTree(Call(x, "Top"));
         ztop:= LeanTree(Call(z, "Top"));
         wtop:= List(w, t-> LeanTree(Call(t, "Top")));
-        
+
         xbot:= List(Call(x, "Bot"), LeanTree);
         zbot:= List(Call(z, "Bot"), LeanTree);
-        
-        
+
+
         # make p
         p1:= LeanForest(Concatenation([LeanTree(xtop, ztop)], wtop));
         p2:= LeanForest(Concatenation([x, z], w));
         p:= ApplyMethod(p1, "Path", q) * ApplyMethod(p2, "Path", q);
-        
+
         xztop:= LeanTree(Call(x, "Top") + Call(z, "Top"));
-        
+
         # check pollination status
         posx:= Position(w, xtop);
         xpol:=  x.l > 0  and  posx <> false;
-        
+
         posz:= Position(w, ztop);
         zpol:=  z.l > 0  and  posz <> false;
-        
+
         # make px
         if xpol then
             v:= w{Difference([1..Length(w)], [posx])};
             vtop:= List(v, t-> LeanTree(Call(t, "Top")));
-            
+
             p1:= LeanForest(Concatenation([xztop, x], vtop));
             p2:= LeanForest(Concatenation([LeanTree(xtop, z)], xbot, v));
             p:= p - ApplyMethod(p1, "Path", q) * ApplyMethod(p2, "Path", q);
         fi;
-        
+
         # make pz
         if zpol then
             v:= w{Difference([1..Length(w)], [posz])};
             vtop:= List(v, t-> LeanTree(Call(t, "Top")));
-            
+
             p1:= LeanForest(Concatenation([xztop, z], vtop));
             p2:= LeanForest(Concatenation([LeanTree(x, ztop)], zbot, v));
             p:= p - ApplyMethod(p1, "Path", q) * ApplyMethod(p2, "Path", q);
         fi;
-        
+
         # make pxz
         if xpol and zpol then
             v:= w{Difference([1..Length(w)], [posx, posz])};
             vtop:= List(v, t-> LeanTree(Call(t, "Top")));
-            
+
             p1:= LeanForest(Concatenation([xztop, x, z], vtop));
             p2:= LeanForest(Concatenation([LeanTree(xtop, ztop)], xbot, zbot, v));
             p:= p - ApplyMethod(p1, "Path", q) * ApplyMethod(p2, "Path", q);
-        fi;            
-        
+        fi;
+
         return p;
     fi;
 end;
 
 
 #############################################################################
-##  
+##
 #O  TreeOps  . . . . . . . . . . . . . . . . . . . operations record.
 ##
 ##  inherits from LeanTree
@@ -718,10 +718,10 @@ end;
 TreeOps:= OperationsRecord("TreeOps", LeanTreeOps);
 
 #############################################################################
-##  
+##
 #C  Tree( <n> )  . . . . . . . . . . . . . . . . .  constructor.
 #C  Tree( <i>, <l>, <r> )  . . . . . . . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="Tree">
 ##  <ManSection>
 ##  <Func Name="Tree" Arg="n"/>
@@ -777,7 +777,7 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsTree:= function(obj)
     return IsRec(obj) and IsBound(obj.isTree) and obj.isTree = true;
 end;
@@ -808,7 +808,7 @@ end;
 TreeOps.\<:= function(l, r)
     if not IsTree(l) then return true; fi;
     if not IsTree(r) then return false; fi;
-    if l.n = r.n then 
+    if l.n = r.n then
         if Call(l, "Size") = Call(r, "Size") then
             if l.i = r.i then
                 return l.l < r.l or (l.l = r.l and l.r < r.r);
@@ -832,15 +832,15 @@ end;
 ##
 TreeOps.Draw:= function(self, of, ht)
     local   leaf,  inner,  x,  res,  xl,  xr;
-    
+
     leaf:= function(x, y, label)
         Print("\\draw (", x, ",", y, ") node (", x, ") {$_{", label, "}$};\n");
     end;
-    
+
     inner:= function(x, y, l, r, label)
         Print("\\draw (", x, ",", y, ") node[p] (", x, ") {$_{_{", label, "}}$} edge (", l, ") edge (", r, ");\n");
     end;
-    
+
     if self.i = 0 then  # leaf case
 #        Print("% draw leaf ", self.n, " at (", of, ", ", ht, ").\n");
         leaf(of, ht, self.n);
@@ -868,24 +868,24 @@ end;
 ##
 # the list of indices on the inner nodes.
 TreeOps.IndicesPostfix:= function(self)
-    if self.i = 0 then 
+    if self.i = 0 then
         return [];
     else
         # postfix order!
-        return Concatenation(Call(self.l, "IndicesPostfix"), 
+        return Concatenation(Call(self.l, "IndicesPostfix"),
                        Call(self.r, "IndicesPostfix"),
                        [self.i]);
     fi;
 end;
 
 TreeOps.Indices:= function(self)
-    if self.i = 0 then 
+    if self.i = 0 then
         return [];
     else
         # prefix order!
         return Concatenation(
                        [self.i],
-                       Call(self.l, "Indices"), 
+                       Call(self.l, "Indices"),
                        Call(self.r, "Indices")
                        );
     fi;
@@ -895,22 +895,22 @@ end;
 # return a new tree with indices shifted by r.
 TreeOps.\^:= function(l, r)
     local   usage;
-    
+
     usage:= "usage: <tree> ^ <int>";
     if not IsTree(l) or not IsInt(r) then
         Error(usage);
     fi;
-    
+
     if l.i = 0 then
         return Tree(l.n);
     else
         return Tree(l.i + r, l.l^r, l.r^r);
     fi;
-end; 
+end;
 
 #############################################################################
 ##
-##  a simple tree consists of two leaves, a and b, joined by a node with 
+##  a simple tree consists of two leaves, a and b, joined by a node with
 ##  label 1.
 ##
 SimpleTree:= function(a, b)
@@ -923,7 +923,7 @@ end;
 ##  how to forget the labels.
 ##
 TreeOps.Lean:= function(self)
-    if self.l = 0 then 
+    if self.l = 0 then
         return LeanTree(self.n);
     else
         return LeanTree(Call(self.l, "Lean"), Call(self.r, "Lean"));
@@ -940,9 +940,9 @@ end;
 ##
 ##  how to turn a subset of [1..n-1] into a composition of n
 ##  * find the complement cmp of L in [0..n]
-##  * set com[i]:= cmp[i+1] - cmp[i] for i in [1..Length(cmp)-1]  
-##  e.g. n = 9, L = 45 7 \subseteq [1..8], 
-##        cmp = 0123  6 89, 
+##  * set com[i]:= cmp[i+1] - cmp[i] for i in [1..Length(cmp)-1]
+##  e.g. n = 9, L = 45 7 \subseteq [1..8],
+##        cmp = 0123  6 89,
 ##        com =  111  3 21)
 ##
 CompositionSubset:= function(n, set)
@@ -979,7 +979,7 @@ ForestOps:= OperationsRecord("ForestOps", LeanForestOps);
 ##
 Forest:= function(list)
     local   self;
-    
+
     self:= rec();
     self.list:= list;
     self.isForest:= true;
@@ -1021,7 +1021,7 @@ end;
 
 ForestOps.IndicesPostfix:= function(self)
     local   ind,  l;
-    
+
     ind:= [];
     for l in List(self.list, t-> Call(t, "IndicesPostfix")) do
         Append(ind, l);
@@ -1032,7 +1032,7 @@ end;
 
 ForestOps.Indices:= function(self)
     local   ind,  l;
-    
+
     ind:= [];
     for l in List(self.list, t-> Call(t, "Indices")) do
         Append(ind, l);
@@ -1044,14 +1044,14 @@ end;
 
 ForestOps.\^:= function(l, r)
     local   usage;
-    
+
     usage:= "usage: <forest> ^ <int>";
     if not IsForest(l) or not IsInt(r) then
         Error(usage);
     fi;
-    
+
     return Forest(List(l.list, t-> t^r));
-end;    
+end;
 
 #############################################################################
 ##
@@ -1059,7 +1059,7 @@ end;
 ##
 ForestOps.Reversed:= function(self)
     local   pos,  max,  k,  new,  t;
-    
+
     # locate highest tree.
     pos:= 0;
     max:= 0;
@@ -1069,26 +1069,26 @@ ForestOps.Reversed:= function(self)
             max:= self.list[k].i;
         fi;
     od;
-    
+
     if pos = 0 then
         Error("Cannot reverse forest of size 0");
     fi;
-    
+
     new:= Copy(self.list);
     new[pos]:= Call(new[pos], "Flipped");
-    
+
     return Forest(new);
 end;
 
-    
-    
+
+
 #############################################################################
 ##
 ##  x.Split(i) replaces x_i = u^v by  u, v
 ##
 ForestOps.Split:= function(self, i)
     local   new;
-    
+
     new:= self.list{[1..i-1]};
     Add(new, self.list[i].l);
     Add(new, self.list[i].r);
@@ -1117,50 +1117,50 @@ end;
 ##
 ForestOps.Join:= function(self, i, l)
     local   new;
-    
+
     new:= self.list{[1..i-1]};
     Add(new, Tree(l, self.list[i], self.list[i+1]));
     Append(new, self.list{[i+2..Length(self.list)]});
     return Forest(new);
 end;
 
-    
+
 #############################################################################
 ##
 ##  Products of forests.
 ##
 ForestOps.\*:= function(l, r)
     local   prod,  leaf,  list,  i,  a;
-    
+
     if not IsForest(l) or not IsForest(r) then
         Error("don't know how to multiply <l> and <r>");
     fi;
-    
+
     # shift indices in l.
     prod:= l^Call(r, "Size");
-    
+
     # replace leaves of l by trees of r if possible.
     leaf:= Call(prod, "Leaves");
     list:= r.list;
     if Length(leaf) <> Length(list) then
         return false;
     fi;
-    
+
     # loop over the leaf nodes.
     for i in [1..Length(leaf)] do
         if leaf[i].n <> list[i].n then
             return false;
         fi;
-        
+
         # attach tree to leaf node with same n-value.
         for a in "irl" do
             leaf[i].([a]):= list[i].([a]);      #;-)
         od;
     od;
-    
+
     # return result.
     return prod;
-    
+
 end;
 
 #############################################################################
@@ -1169,12 +1169,12 @@ end;
 ##
 ForestAlley:= function(n, a)
     local   s,  k;
-    
+
     # trivial case first
-    if a[2] = []  then  
-        return Forest(List(CompositionSubset(n, a[1]), Tree)); 
+    if a[2] = []  then
+        return Forest(List(CompositionSubset(n, a[1]), Tree));
     fi;
-    
+
     # otherwise recurse,
     s:= a[2][1];
     k:= s + 1 - Position(a[1], s); # = position of s in the complement of L_s
@@ -1190,7 +1190,7 @@ end;
 ##
 ForestOps.Expansions:= function(self, a, b)
     local   tree,  leaves,  exp,  i,  new;
-    
+
     tree:= SimpleTree(a, b);
     leaves:= Call(self, "Leaves");
 
@@ -1256,7 +1256,7 @@ ForestOps.Factors:= function(self)
     one:= Forest(List(self.list, x-> Tree(x.n)));
     one.list[pos]:= Tree(1, Tree(self.list[pos].l.n), Tree(self.list[pos].r.n));
 
-    return Concatenation([one], Call(new, "Factors"));            
+    return Concatenation([one], Call(new, "Factors"));
 end;
 
 
@@ -1369,7 +1369,7 @@ StandardBracketing:= function(word)
     for factor in lyndon do
         tree:= StandardBracketingLyndon(factor, index);
         Add(list, tree);
-        if tree.i > 0 then 
+        if tree.i > 0 then
             index:= tree.i;
         fi;
     od;
@@ -1417,7 +1417,7 @@ end;
 # 321               321                 1   3                3   2
 #                                          / \              / \
 # 2211              2211                  1   2            1   2
-#           
+#
 
 
 
@@ -1496,7 +1496,7 @@ DrawNiceRelation:= function(r)
             Call(p[j], "Draw");
         od;
         Print(")\n");
-    od;    
+    od;
     Print("& = 0.\n");
 end;
 
@@ -1519,9 +1519,9 @@ end;
 ##
 
 ###############################################################################
-##  
+##
 #O  LeanForestClassOps  . . . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 ##  inherit from Domain so that set operations apply ...
 ##
 LeanForestClassOps:= OperationsRecord("LeanForestClassOps", DomainOps);
@@ -1564,17 +1564,17 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsLeanForestClass:= function(obj)
-    return IsRec(obj) and IsBound(obj.isLeanForestClass) 
+    return IsRec(obj) and IsBound(obj.isLeanForestClass)
            and obj.isLeanForestClass = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Print( <lfcl> )  . . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 LeanForestClassOps.Print:= function(self)
     Print("LeanForestClass( ", self.list, " )");
 end;
@@ -1596,15 +1596,15 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 LeanForestClassOps.Representative:= function(self)
     return LeanForest(self.list);
 end;
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Elements( <fcl> ) . . . . . . . . . . . . . . . . . . . . . . . elements.
-##  
+##
 ##  <#GAPDoc Label="Elements(leanForest class)">
 ##  <ManSection>
 ##  <Meth Name="Elements" Arg="fcl" Label="for leanForest classes"/>
@@ -1634,7 +1634,7 @@ end;
 ##
 LeanForestClassOps.CoLength:= function(self)
     return Product(Collected(self.list), x-> Factorial(x[2]));
-end;    
+end;
 
 #############################################################################
 LeanForestClassOps.Size:= function(self)
@@ -1706,7 +1706,7 @@ LeanForestClassOps.\*:= function(l, r)
         cnt:= cnt{pos};
     od;
 
-    return result;    
+    return result;
 end;
 
 
@@ -1719,9 +1719,9 @@ end;
 ##
 
 #############################################################################
-##  
+##
 #O  ForestClassOps . . . . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 ##  inherit from Domain so that set operations apply ...
 ##
 ForestClassOps:= OperationsRecord("ForestClassOps", LeanForestClassOps);
@@ -1764,17 +1764,17 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsForestClass:= function(obj)
-    return IsRec(obj) and IsBound(obj.isForestClass) 
+    return IsRec(obj) and IsBound(obj.isForestClass)
            and obj.isForestClass = true;
 end;
 
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Print( <fcl> ) . . . . . . . . . . . . . . . . . . . . . . . . . . print.
-##  
+##
 ForestClassOps.Print:= function(self)
     Print("ForestClass( ", self.list, " )");
 end;
@@ -1796,15 +1796,15 @@ end;
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##  
+##
 ForestClassOps.Representative:= function(self)
     return Forest(self.list);
 end;
 
-#############################################################################  
-##  
+#############################################################################
+##
 #M  Elements( <fcl> ) . . . . . . . . . . . . . . . . . . . . . . . elements.
-##  
+##
 ##  <#GAPDoc Label="Elements(Forest class)">
 ##  <ManSection>
 ##  <Meth Name="Elements" Arg="fcl" Label="for Forest classes"/>
@@ -1878,7 +1878,7 @@ ForestClassOps.\*:= function(l,  r)
         pro:= Difference(pro, new);
     od;
 
-    return result;    
+    return result;
 end;
 
 
@@ -1890,15 +1890,15 @@ end;
 ##
 
 #############################################################################
-##  
+##
 #O  LeanForestAlgebraEltOps  . . . . . . . . . . . . . . . operations record.
-##  
+##
 LeanForestAlgebraEltOps:= OperationsRecord("LeanForestAlgebraEltOps");
 
 #############################################################################
-##  
+##
 #C  LeanForestAlgebraElt( <coef>, <elts> )  . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="LeanForestAlgebraElt">
 ##  <ManSection>
 ##  <Func Name="LeanForestAlgebraElt" Arg="coef, elts"/>
@@ -1937,9 +1937,9 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsLeanForestAlgebraElt:= function(obj)
-    return IsRec(obj) and IsBound(obj.isLeanForestAlgebraElt) 
+    return IsRec(obj) and IsBound(obj.isLeanForestAlgebraElt)
            and obj.isLeanForestAlgebraElt = true;
 end;
 
@@ -1955,7 +1955,7 @@ LeanForestAlgebraEltOps.\=:= function(l, r)
     else
         return false;
     fi;
-end;    
+end;
 
 
 #############################################################################
@@ -2020,7 +2020,7 @@ LeanForestAlgebraEltOps.\*:= function(l, r)
 
     Call(pro, "Normalize");
     return pro;
-end;    
+end;
 
 #############################################################################
 LeanForestAlgebraEltOps.\+:= function(l, r)
@@ -2035,11 +2035,11 @@ LeanForestAlgebraEltOps.\+:= function(l, r)
     fi;
 
     # form the sum.
-    sum:= LeanForestAlgebraElt(Concatenation(l.coef, r.coef), 
+    sum:= LeanForestAlgebraElt(Concatenation(l.coef, r.coef),
                   Concatenation(l.elts, r.elts));
     Call(sum, "Normalize");
     return sum;
-end;    
+end;
 
 
 #############################################################################
@@ -2056,15 +2056,15 @@ end;
 ##
 
 #############################################################################
-##  
+##
 #O  ForestAlgebraEltOps  . . . . . . . . . . . . . . . . . operations record.
-##  
+##
 ForestAlgebraEltOps:= OperationsRecord("ForestAlgebraEltOps", LeanForestAlgebraEltOps);
 
 #############################################################################
-##  
+##
 #C  ForestAlgebraElt( <coef>, <elts> ) . . . . . . . . . . .  constructor.
-##  
+##
 ##  <#GAPDoc Label="ForestAlgebraElt">
 ##  <ManSection>
 ##  <Func Name="ForestAlgebraElt" Arg="coef, elts"/>
@@ -2103,7 +2103,7 @@ end;
 ##  </Returns>
 ##  </ManSection>
 ##  <#/GAPDoc>
-##                   
+##
 IsForestAlgebraElt:= function(obj)
     return IsRec(obj) and IsBound(obj.isForestAlgebraElt) and obj.isForestAlgebraElt = true;
 end;
@@ -2120,7 +2120,7 @@ ForestAlgebraEltOps.\=:= function(l, r)
     else
         return false;
     fi;
-end;    
+end;
 
 
 #############################################################################
@@ -2155,7 +2155,7 @@ ForestAlgebraEltOps.\*:= function(l, r)
 
     Call(pro, "Normalize");
     return pro;
-end;    
+end;
 
 #############################################################################
 ForestAlgebraEltOps.\+:= function(l, r)
@@ -2170,11 +2170,11 @@ ForestAlgebraEltOps.\+:= function(l, r)
     fi;
 
     # form the sum.
-    sum:= ForestAlgebraElt(Concatenation(l.coef, r.coef), 
+    sum:= ForestAlgebraElt(Concatenation(l.coef, r.coef),
                   Concatenation(l.elts, r.elts));
     Call(sum, "Normalize");
     return sum;
-end;    
+end;
 
 
 #############################################################################
@@ -2197,7 +2197,7 @@ ForestAlgebraEltOps.Lean:= function(self)
     return lean;
 end;
 
-    
+
 
 #############################################################################
 ForestClassPartition:= function(partition)
@@ -2212,7 +2212,7 @@ ForestClassOps.Expansions:= function(self, a, b)
     forest:= Representative(self);
     leaves:= Call(forest, "Leaves");
     i:= PositionProperty(leaves, x-> x.n = tree.n);
-    if i = false then 
+    if i = false then
         return [];
     fi;
     leaves:= Copy(leaves);
@@ -2224,7 +2224,7 @@ ForestAlgebraEltOps.Expansions:= function(self, a, b)
     local   sum,  i;
     sum:= ForestAlgebraElt([], []);  # zero
     for i in [1..Length(self.coef)] do
-        sum:= sum + self.coef[i] * 
+        sum:= sum + self.coef[i] *
               Sum(ApplyMethod(self.elts[i], "Expansions", a, b),
                       x -> ForestAlgebraElt([1], [x]));
     od;
@@ -2261,36 +2261,36 @@ end;
 ##
 LeanForestClassOps.QuiverElt:= function(self)
     local   head,  tail,  qelt,  rest,  mult;
-    
+
     # trivial case first
     if self.list = [] then
         return QuiverElt([1], [Path([], [])]);  # empty partition
     fi;
-    
+
     # otherwise Length(self.list) > 1: distinguish between orphans and trees.
     head:= self.list[1];
     tail:= self.list{[2..Length(self.list)]};
-    
+
     # orphan case
-    if Call(head, "Size") = 0 then 
-        
+    if Call(head, "Size") = 0 then
+
         # remove orphan, recurse and bring it back in
         qelt:= Call(LeanForestClass(tail), "QuiverElt");
         qelt:= AddPartPartitionQuiverElt(qelt, head.n);
-        
+
         # live with the consequences.
         rest:= Call(ForestAlgebraEltPartitionQuiverElt(qelt), "Lean");
         rest:= Call(rest - LeanForestAlgebraElt([1], [self]), "QuiverElt");
-        return qelt - rest;        
-        
-    # tree case    
-    else 
-        
+        return qelt - rest;
+
+    # tree case
+    else
+
         #
         rest:= LeanForestClass(Concatenation([head.l, head.r], tail));
         mult:= List([rest, self], x-> Call(Representative(x), "Multiplier"));
         rest:= Call(rest, "QuiverElt");
-        
+
         qelt:= Path(Call(self, "Top"), []);
         qelt:= qelt * PartitionEdge(head.l.n, head.r.n);
         qelt:= QuiverElt([mult[1]/mult[2]], [qelt]);
@@ -2300,11 +2300,11 @@ end;
 
 LeanForestAlgebraEltOps.QuiverElt:= function(self)
     local   qelt,  i;
-    
+
     qelt:= QuiverElt([], []);  # zero
     for i in [1..Length(self.elts)] do
         qelt:= qelt + self.coef[i] * Call(self.elts[i], "QuiverElt");
     od;
-    
+
     return qelt;
 end;
