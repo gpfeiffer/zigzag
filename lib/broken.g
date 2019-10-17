@@ -467,3 +467,11 @@ OSCharacterCRG:= function(W)
     od;
     return Character(W, chi);
 end;
+
+#############################################################################
+OnSignedSets:= function ( sset, w )
+    local  img;
+    img := rec(set := OnTuples( sset.set, w ) );
+    img.sgn := sset.sgn * SignPerm( Sortex( img.set ) );
+    return img;
+end;
